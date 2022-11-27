@@ -53,7 +53,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start();
-			game.levelCounter.clear();
+			game.levelCounter().clear();
 		}
 
 		@Override
@@ -153,8 +153,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			gc.sounds().play(GameSound.GAME_READY);
 			game.reset();
 			game.setLevel(1);
-			game.levelCounter.clear();
-			game.levelCounter.addSymbol(game.level().bonusIndex());
+			game.levelCounter().clear();
+			game.levelCounter().addSymbol(game.level().bonusIndex());
 			game.enableScores(true);
 			game.gameScore().showContent = true;
 			game.resetGuys();

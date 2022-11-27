@@ -163,7 +163,7 @@ public abstract class GameModel {
 	protected int ghostsKilledByEnergizer;
 
 	/** List of collected level symbols. */
-	public final LevelCounter levelCounter = new LevelCounter(7);
+	protected final LevelCounter levelCounter = new LevelCounter();
 
 	/** Energizer animation. */
 	public final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
@@ -222,6 +222,10 @@ public abstract class GameModel {
 
 	public void setPlaying(boolean playing) {
 		this.playing = playing;
+	}
+
+	public LevelCounter levelCounter() {
+		return levelCounter;
 	}
 
 	public Score gameScore() {

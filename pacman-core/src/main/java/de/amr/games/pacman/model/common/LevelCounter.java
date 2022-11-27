@@ -33,13 +33,12 @@ import java.util.List;
  */
 public class LevelCounter implements Iterable<Integer> {
 
-	private final int maxSymbolCount;
+	private static final int MAX_COUNT = 7;
 	private final List<Integer> symbols;
 	private boolean visible;
 
-	public LevelCounter(int maxSymbolCount) {
-		this.maxSymbolCount = maxSymbolCount;
-		symbols = new ArrayList<>(maxSymbolCount);
+	public LevelCounter() {
+		symbols = new ArrayList<>(MAX_COUNT);
 		visible = true;
 	}
 
@@ -61,7 +60,7 @@ public class LevelCounter implements Iterable<Integer> {
 	}
 
 	public void addSymbol(int symbol) {
-		if (symbols.size() == maxSymbolCount) {
+		if (symbols.size() == MAX_COUNT) {
 			symbols.remove(0);
 		}
 		symbols.add(symbol);
