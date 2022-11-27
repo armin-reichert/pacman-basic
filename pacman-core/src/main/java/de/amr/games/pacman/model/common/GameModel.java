@@ -127,7 +127,7 @@ public abstract class GameModel {
 	public boolean isPacImmune;
 
 	/** If Pac-Man is controlled by autopilot. */
-	public boolean isPacAutoControlled;
+	protected boolean autoControlled;
 
 	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
 	protected final Ghost[] theGhosts;
@@ -422,6 +422,14 @@ public abstract class GameModel {
 	 */
 	public Pac pac() {
 		return pac;
+	}
+
+	public boolean isAutoControlled() {
+		return autoControlled;
+	}
+
+	public void setAutoControlled(boolean autoControlled) {
+		this.autoControlled = autoControlled;
 	}
 
 	public int lives() {
