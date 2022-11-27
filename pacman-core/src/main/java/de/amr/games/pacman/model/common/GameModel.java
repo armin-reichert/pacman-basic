@@ -124,7 +124,7 @@ public abstract class GameModel {
 	protected final TickTimer powerTimer = new TickTimer("Pac-power-timer", FPS);
 
 	/** Tells if Pac-Man can be killed by ghosts. */
-	public boolean isPacImmune;
+	protected boolean immune;
 
 	/** If Pac-Man is controlled by autopilot. */
 	protected boolean autoControlled;
@@ -432,6 +432,14 @@ public abstract class GameModel {
 		this.autoControlled = autoControlled;
 	}
 
+	public boolean isImmune() {
+		return immune;
+	}
+
+	public void setImmune(boolean immune) {
+		this.immune = immune;
+	}
+
 	public int lives() {
 		return lives;
 	}
@@ -684,7 +692,7 @@ public abstract class GameModel {
 	}
 
 	private boolean isPacMeetingKiller() {
-		return !isPacImmune && !powerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+		return !immune && !powerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	private void onPacMetKiller() {
