@@ -42,8 +42,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Stream;
@@ -193,7 +191,7 @@ public abstract class GameModel {
 	private boolean scoresEnabled;
 
 	/** Stores what happened during the last tick. */
-	public final Memo memo = new Memo();
+	public final Memory memo = new Memory();
 
 	protected GameModel(String pacName, String redGhostName, String pinkGhostName, String cyanGhostName,
 			String orangeGhostName) {
@@ -625,42 +623,6 @@ public abstract class GameModel {
 		powerTimer.advance();
 	}
 
-	public static class Memo {
-		public boolean allFoodEaten;
-		public boolean foodFound;
-		public boolean energizerFound;
-		public boolean bonusReached;
-		public boolean pacMetKiller;
-		public boolean pacGotPower;
-		public boolean pacPowerLost;
-		public boolean pacPowerFading;
-		public boolean ghostsKilled;
-		public Ghost[] edibleGhosts;
-		public final List<Ghost> killedGhosts = new ArrayList<>(4);
-		public Optional<Ghost> unlockedGhost;
-		public String unlockReason;
-
-		public Memo() {
-			forgetEverything();
-		}
-
-		public void forgetEverything() {
-			allFoodEaten = false;
-			foodFound = false;
-			energizerFound = false;
-			bonusReached = false;
-			pacMetKiller = false;
-			pacGotPower = false;
-			pacPowerLost = false;
-			pacPowerFading = false;
-			ghostsKilled = false;
-			edibleGhosts = new Ghost[0];
-			killedGhosts.clear();
-			unlockedGhost = Optional.empty();
-			unlockReason = null;
-		}
-	}
-
 	public void whatHappenedWithFood() {
 		checkFoodFound();
 		if (memo.foodFound) {
@@ -840,7 +802,7 @@ public abstract class GameModel {
 
 	// Ghost house rules, see Pac-Man dossier
 
-	private void checkGhostCanBeUnlocked(Memo memo) {
+	private void checkGhostCanBeUnlocked(Memory memo) {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == ID_RED_GHOST) {
 				memo.unlockedGhost = Optional.of(ghost);
