@@ -139,7 +139,7 @@ public abstract class GameModel {
 	protected final V2d[] ghostHomePosition = new V2d[4];
 
 	/** The tiles inside the house where the ghosts get revived. Amen. */
-	protected final V2d[] revivalPosition = new V2d[4];
+	protected final V2d[] ghostRevivalPosition = new V2d[4];
 
 	/** The (unreachable) tiles in the corners targeted during the scatter phase. */
 	protected final V2i[] ghostScatterTile = new V2i[4];
@@ -370,19 +370,19 @@ public abstract class GameModel {
 		cruiseElroyState = 0;
 		if (level.world() instanceof ArcadeWorld) {
 			ghostHomePosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
-			revivalPosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
+			ghostRevivalPosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			ghostScatterTile[ID_RED_GHOST] = v2i(25, 0);
 
 			ghostHomePosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			revivalPosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
+			ghostRevivalPosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			ghostScatterTile[ID_PINK_GHOST] = v2i(2, 0);
 
 			ghostHomePosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
-			revivalPosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
+			ghostRevivalPosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
 			ghostScatterTile[ID_CYAN_GHOST] = v2i(27, 34);
 
 			ghostHomePosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-			revivalPosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
+			ghostRevivalPosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
 			ghostScatterTile[ID_ORANGE_GHOST] = v2i(0, 34);
 		}
 	}
@@ -502,7 +502,7 @@ public abstract class GameModel {
 	 */
 	public V2d ghostRevivalPosition(int id) {
 		checkGhostID(id);
-		return revivalPosition[id];
+		return ghostRevivalPosition[id];
 	}
 
 	/**
@@ -523,7 +523,11 @@ public abstract class GameModel {
 		return true;
 	}
 
-	protected int ghostValue(int ghostKillIndex) {
+	/**
+	 * @param ghostKillIndex index telling when a ghost was killed using the same energizer (0..4)
+	 * @return value of killed ghost (200, 400, 800, 1600)
+	 */
+	public int ghostValue(int ghostKillIndex) {
 		return GHOST_VALUES[ghostKillIndex];
 	}
 
