@@ -27,6 +27,7 @@ import static de.amr.games.pacman.lib.V2i.v2i;
 
 import java.util.Optional;
 
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 
@@ -53,6 +54,11 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
+	}
+
+	@Override
+	public V2d pacStartPosition() {
+		return new V2d(13 * TS + HTS, 26 * TS);
 	}
 
 	@Override

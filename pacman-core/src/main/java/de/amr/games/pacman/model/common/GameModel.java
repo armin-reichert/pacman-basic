@@ -395,7 +395,7 @@ public abstract class GameModel {
 		powerTimer.reset(0);
 		energizerPulse.reset();
 		pac.reset();
-		pac.placeAtTile(v2i(13, 26), HTS, 0);
+		pac.setPosition(level.world().pacStartPosition());
 		pac.setMoveAndWishDir(Direction.LEFT);
 		pac.show();
 		pac.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);

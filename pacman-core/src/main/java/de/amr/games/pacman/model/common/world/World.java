@@ -164,6 +164,11 @@ public interface World {
 	boolean isTunnel(V2i tile);
 
 	/**
+	 * @return start position of Pac-Man in this world
+	 */
+	V2d pacStartPosition();
+
+	/**
 	 * @return the ghost house in this world
 	 */
 	GhostHouse ghostHouse();
