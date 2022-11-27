@@ -184,9 +184,6 @@ public abstract class GameModel {
 
 	protected byte[] privateDotLimits;
 
-	/** Number of current intermission scene in test mode. */
-	public int intermissionTestNumber;
-
 	private final Score gameScore = new Score("SCORE");
 
 	private final Score highScore = new Score("HIGH SCORE");
@@ -339,7 +336,6 @@ public abstract class GameModel {
 		playing = false;
 		lives = INITIAL_LIFES;
 		livesOneLessShown = false;
-		intermissionTestNumber = 1;
 		gameScore.reset();
 		loadScore(highScore, hiscoreFile);
 	}
