@@ -405,8 +405,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.pac().selectedAnimation().ifPresent(EntityAnimation::restart);
 				gc.sounds().play(GameSound.PACMAN_DEATH);
 			} else if (timer.atSecond(3.0)) {
-				game.lives--;
-				if (game.lives == 0) {
+				game.setLives(game.lives() - 1);
+				if (game.lives() == 0) {
 					game.energizerPulse.stop();
 					game.livesOneLessShown = false;
 				}
@@ -415,7 +415,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				if (!game.hasCredit()) {
 					gc.changeState(INTRO);
 				} else {
-					gc.changeState(game.lives == 0 ? GAME_OVER : READY);
+					gc.changeState(game.lives() == 0 ? GAME_OVER : READY);
 				}
 			}
 		}

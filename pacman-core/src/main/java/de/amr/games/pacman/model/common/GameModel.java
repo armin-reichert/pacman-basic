@@ -152,7 +152,7 @@ public abstract class GameModel {
 	protected GameLevel level;
 
 	/** Number of lives remaining. */
-	public int lives;
+	protected int lives;
 
 	/** If lives or one less is displayed in lives counter. */
 	public boolean livesOneLessShown;
@@ -431,6 +431,14 @@ public abstract class GameModel {
 	 */
 	public Pac pac() {
 		return pac;
+	}
+
+	public int lives() {
+		return lives;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
 	}
 
 	/**
