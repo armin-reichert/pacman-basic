@@ -48,6 +48,18 @@ public class ArcadeWorld extends MapBasedWorld {
 	/** Size of Arcade game world in pixels (28x8=224, 36x8=288). */
 	public static final V2i SIZE_PX = v2i(TILES_X * TS, TILES_Y * TS);
 
+	/** Scatter target north-west corner. */
+	public static final V2i SCATTER_TILE_NW = new V2i(2, 0);
+
+	/** Scatter target north-east corner. */
+	public static final V2i SCATTER_TILE_NE = new V2i(25, 0);
+
+	/** Scatter target south-east corner. */
+	public static final V2i SCATTER_TILE_SE = new V2i(27, 34);
+
+	/** Scatter target south-west corner. */
+	public static final V2i SCATTER_TILE_SW = new V2i(0, 34);
+
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
 	private EntityAnimation levelCompleteAnimation;

@@ -25,7 +25,6 @@ package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.V2i.v2i;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
@@ -331,19 +330,19 @@ public abstract class GameModel {
 		if (level.world() instanceof ArcadeWorld) {
 			ghostHomePosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
 			ghostRevivalPosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			ghostScatterTile[ID_RED_GHOST] = v2i(25, 0);
+			ghostScatterTile[ID_RED_GHOST] = ArcadeWorld.SCATTER_TILE_NE;
 
 			ghostHomePosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			ghostRevivalPosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			ghostScatterTile[ID_PINK_GHOST] = v2i(2, 0);
+			ghostScatterTile[ID_PINK_GHOST] = ArcadeWorld.SCATTER_TILE_NW;
 
 			ghostHomePosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
 			ghostRevivalPosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
-			ghostScatterTile[ID_CYAN_GHOST] = v2i(27, 34);
+			ghostScatterTile[ID_CYAN_GHOST] = ArcadeWorld.SCATTER_TILE_SE;
 
 			ghostHomePosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
 			ghostRevivalPosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-			ghostScatterTile[ID_ORANGE_GHOST] = v2i(0, 34);
+			ghostScatterTile[ID_ORANGE_GHOST] = ArcadeWorld.SCATTER_TILE_SW;
 		}
 	}
 
