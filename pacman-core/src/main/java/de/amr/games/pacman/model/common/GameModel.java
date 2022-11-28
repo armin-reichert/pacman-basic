@@ -92,7 +92,7 @@ public abstract class GameModel {
 	public static final int PELLET_RESTING_TICKS = 1;
 	public static final int ENERGIZER_VALUE = 50;
 	public static final int ENERGIZER_RESTING_TICKS = 3;
-	public static final int INITIAL_LIFES = 3;
+	public static final int INITIAL_LIVES = 3;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 	public static final int EXTRA_LIFE = 10_000;
 
@@ -297,7 +297,7 @@ public abstract class GameModel {
 		globalDotCounter = 0;
 		globalDotCounterEnabled = false;
 		playing = false;
-		lives = INITIAL_LIFES;
+		lives = INITIAL_LIVES;
 		livesOneLessShown = false;
 		gameScore.reset();
 		ScoreManager.loadScore(highScore, highScoreFile);
