@@ -26,11 +26,18 @@ package de.amr.games.pacman.model.common.actors;
 
 /**
  * @author Armin Reichert
- *
  */
-public record MoveResult(boolean moved, String message) {
+public record MoveResult(boolean moved, boolean teleported, String message) {
 
-	public MoveResult(boolean moved, String message, Object... args) {
-		this(moved, message.formatted(args));
+	public static MoveResult moved(String message, Object... args) {
+		return new MoveResult(true, false, message.formatted(args));
+	}
+
+	public static MoveResult notMoved(String message, Object... args) {
+		return new MoveResult(false, false, message.formatted(args));
+	}
+
+	public static MoveResult teleported(String message, Object... args) {
+		return new MoveResult(true, true, message.formatted(args));
 	}
 }

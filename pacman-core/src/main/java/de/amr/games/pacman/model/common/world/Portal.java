@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.common.world;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Creature;
+import de.amr.games.pacman.model.common.actors.MoveResult;
 
 /**
  * A portal connects two tunnel ends leading out of the map.
@@ -36,7 +37,7 @@ public interface Portal {
 
 	boolean contains(V2i tile);
 
-	boolean teleport(Creature guy);
+	MoveResult teleport(Creature guy);
 
 	double distance(Creature guy);
 }

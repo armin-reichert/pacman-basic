@@ -297,11 +297,14 @@ public class Creature extends Entity {
 	 */
 	public void tryMoving(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
+		MoveResult result;
 		var tileBefore = tile();
 		if (canTeleport) {
 			for (var portal : game.level().world().portals()) {
-				if (portal.teleport(this)) {
-					break;
+				result = portal.teleport(this);
+				if (result.teleported()) {
+					trace(result);
+					return;
 				}
 			}
 		}
@@ -309,7 +312,7 @@ public class Creature extends Entity {
 			setWishDir(moveDir.opposite());
 			reverse = false;
 		}
-		var result = trace(tryMoving(wishDir, game));
+		result = trace(tryMoving(wishDir, game));
 		if (result.moved()) {
 			setMoveDir(wishDir);
 		} else {
@@ -351,16 +354,16 @@ public class Creature extends Entity {
 			if (!turn) {
 				placeAtTile(tile()); // adjust exactly over tile if blocked
 			}
-			return new MoveResult(false, "Not moved: Cannot access tile %s", tileAt(touchPosition));
+			return MoveResult.notMoved("Not moved: Cannot access tile %s", tileAt(touchPosition));
 		}
 
 		if (turn && !atTurnPositionTo(dir)) {
-			return new MoveResult(false, "Wants to move %s but not at turn position", dir);
+			return MoveResult.notMoved("Wants to move %s but not at turn position", dir);
 		}
 
 		setVelocity(newVelocity);
 		move();
-		return new MoveResult(true, "Moved %5s", dir);
+		return MoveResult.moved("Moved %5s", dir);
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {

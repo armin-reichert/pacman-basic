@@ -25,12 +25,10 @@ package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Creature;
+import de.amr.games.pacman.model.common.actors.MoveResult;
 
 /**
  * A portal connects two tunnel ends leading out of the map.
@@ -42,8 +40,6 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements Portal {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
-
 	private static final int DEPTH = 2;
 
 	@Override
@@ -52,19 +48,16 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 	}
 
 	@Override
-	public boolean teleport(Creature guy) {
-		boolean teleported = false;
+	public MoveResult teleport(Creature guy) {
 		var oldPos = guy.position();
 		if (guy.tile().y() == leftTunnelEnd.y() && guy.position().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
-			guy.placeAtTile(rightTunnelEnd); // TODO fixme
-			LOGGER.info("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
-			teleported = true;
+			guy.placeAtTile(rightTunnelEnd);
+			return MoveResult.teleported("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
 		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
 			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
-			LOGGER.info("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
-			teleported = true;
+			return MoveResult.teleported("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
 		}
-		return teleported;
+		return MoveResult.notMoved("No teleport possible at position %s", oldPos);
 	}
 
 	@Override
