@@ -289,6 +289,20 @@ public class Creature extends Entity {
 		}
 	}
 
+	private MoveResult tryTeleport(GameModel game) {
+		MoveResult result = MoveResult.notMoved("No teleport");
+		if (canTeleport) {
+			for (var portal : game.level().world().portals()) {
+				result = portal.teleport(this);
+				if (result.teleported()) {
+					newTileEntered = true;
+					break;
+				}
+			}
+		}
+		return result;
+	}
+
 	/**
 	 * Move through the world.
 	 * <p>
@@ -297,38 +311,26 @@ public class Creature extends Entity {
 	 */
 	public void tryMoving(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
-		MoveResult result;
-		var tileBefore = tile();
-		if (canTeleport) {
-			for (var portal : game.level().world().portals()) {
-				result = portal.teleport(this);
-				if (result.teleported()) {
-					trace(result);
-					return;
-				}
-			}
+		V2i tileBeforeMove = tile();
+		MoveResult m = tryTeleport(game);
+		if (m.teleported()) {
+			return;
 		}
 		if (reverse && newTileEntered) {
 			setWishDir(moveDir.opposite());
 			reverse = false;
 		}
-		result = trace(tryMoving(wishDir, game));
-		if (result.moved()) {
+		m = tryMoving(wishDir, game);
+		if (m.moved()) {
 			setMoveDir(wishDir);
 		} else {
-			result = trace(tryMoving(moveDir, game));
+			m = tryMoving(moveDir, game);
 		}
-		stuck = !result.moved();
-		newTileEntered = !tileBefore.equals(tile());
-	}
-
-	private MoveResult trace(MoveResult result) {
-		if (result.moved()) {
-			LOGGER.trace(() -> "%-6s: %s %s".formatted(name, result.message(), this));
-		} else {
-			LOGGER.trace("%-6s: not moving", name);
+		stuck = !m.moved();
+		newTileEntered = !tileBeforeMove.equals(tile());
+		if (m.moved()) {
+			LOGGER.trace("%-6s: %s %s", name, m.message(), this);
 		}
-		return result;
 	}
 
 	private MoveResult tryMoving(Direction dir, GameModel game) {
