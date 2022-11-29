@@ -788,18 +788,21 @@ public abstract class GameModel {
 		});
 	}
 
-	private void unlockGhost(Ghost unlockedGhost, String reason) {
-		LOGGER.info("Unlock ghost %s (%s)", unlockedGhost.name(), reason);
+	private void unlockGhost(Ghost ghostToUnlock, String reason) {
+		LOGGER.info("Unlock %s: %s", ghostToUnlock.name(), reason);
 		var redGhost = theGhosts[ID_RED_GHOST];
-		if (unlockedGhost.id == ID_ORANGE_GHOST && cruiseElroyState < 0) {
-			cruiseElroyState = (byte) -cruiseElroyState; // resume Elroy mode
-			LOGGER.info("%s Elroy mode %d resumed", redGhost.name(), cruiseElroyState);
+		var orangeGhost = theGhosts[ID_ORANGE_GHOST];
+		if (ghostToUnlock == orangeGhost && cruiseElroyState < 0) {
+			// Cruise Elroy state is resumed when orange ghost is unlocked
+			cruiseElroyState = (byte) -cruiseElroyState;
+			LOGGER.info("%s: Cruise Elroy mode %d resumed", redGhost.name(), cruiseElroyState);
 		}
-		if (unlockedGhost == redGhost) {
-			unlockedGhost.setMoveAndWishDir(LEFT);
-			unlockedGhost.enterStateHuntingPac(this);
+		// Red ghost is outside of house, so enter hunting state and go left
+		if (ghostToUnlock == redGhost) {
+			ghostToUnlock.setMoveAndWishDir(LEFT);
+			ghostToUnlock.enterStateHuntingPac(this);
 		} else {
-			unlockedGhost.enterStateLeavingHouse(this);
+			ghostToUnlock.enterStateLeavingHouse(this);
 		}
 	}
 
