@@ -46,17 +46,17 @@ public class ScoreManager {
 	public static void saveHiscore(Score highScore, File hiscoreFile, GameVariant variant) {
 		Score existingHiscore = new Score("");
 		loadScore(existingHiscore, hiscoreFile);
-		if (highScore.points <= existingHiscore.points) {
+		if (highScore.points() <= existingHiscore.points()) {
 			return;
 		}
 		var props = new Properties();
-		props.setProperty("points", String.valueOf(highScore.points));
-		props.setProperty("level", String.valueOf(highScore.levelNumber));
-		props.setProperty("date", highScore.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
+		props.setProperty("points", String.valueOf(highScore.points()));
+		props.setProperty("level", String.valueOf(highScore.levelNumber()));
+		props.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
 		try (var out = new FileOutputStream(hiscoreFile)) {
 			props.storeToXML(out, "%s Hiscore".formatted(variant));
-			LOGGER.info("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), highScore.points,
-					highScore.levelNumber);
+			LOGGER.info("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(),
+					highScore.points(), highScore.levelNumber());
 		} catch (Exception x) {
 			LOGGER.info("Highscore could not be saved. File '%s' Reason: %s", hiscoreFile, x.getMessage());
 		}
@@ -66,16 +66,14 @@ public class ScoreManager {
 		try (var in = new FileInputStream(file)) {
 			var props = new Properties();
 			props.loadFromXML(in);
-			// parse
 			var points = Integer.parseInt(props.getProperty("points"));
 			var levelNumber = Integer.parseInt(props.getProperty("level"));
 			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
-			// parsing ok
-			score.points = points;
-			score.levelNumber = levelNumber;
-			score.date = date;
-			LOGGER.info("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points,
-					score.levelNumber);
+			score.setPoints(points);
+			score.setLevelNumber(levelNumber);
+			score.setDate(date);
+			LOGGER.info("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points(),
+					score.levelNumber());
 		} catch (Exception x) {
 			LOGGER.info("Score could not be loaded. File '%s' Reason: %s", file, x.getMessage());
 		}

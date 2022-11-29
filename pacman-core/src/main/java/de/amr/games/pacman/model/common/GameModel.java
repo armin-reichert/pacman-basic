@@ -246,14 +246,14 @@ public abstract class GameModel {
 		if (!scoresEnabled) {
 			return;
 		}
-		int scoreBeforeAddingPoints = gameScore.points;
-		gameScore.points += points;
-		if (gameScore.points > highScore.points) {
-			highScore.points = gameScore.points;
-			highScore.levelNumber = level.number();
-			highScore.date = LocalDate.now();
+		int scoreBefore = gameScore.points();
+		gameScore.setPoints(scoreBefore + points);
+		if (gameScore.points() > highScore.points()) {
+			highScore.setPoints(gameScore.points());
+			highScore.setLevelNumber(level.number());
+			highScore.setDate(LocalDate.now());
 		}
-		if (scoreBeforeAddingPoints < GameModel.EXTRA_LIFE && gameScore.points >= GameModel.EXTRA_LIFE) {
+		if (scoreBefore < GameModel.EXTRA_LIFE && gameScore.points() >= GameModel.EXTRA_LIFE) {
 			lives++;
 			GameEvents.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, pac.tile()));
 		}
@@ -308,9 +308,9 @@ public abstract class GameModel {
 	}
 
 	public void startLevel() {
-		levelCounter.addSymbol(level.bonusIndex());
 		resetGuys();
 		guys().forEach(Entity::hide);
+		levelCounter.addSymbol(level.bonusIndex());
 	}
 
 	public void endLevel() {

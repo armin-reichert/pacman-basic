@@ -30,13 +30,12 @@ import java.time.LocalDate;
  * @author Armin Reichert
  */
 public class Score {
-
-	public final String title;
-	public boolean visible;
-	public boolean showContent;
-	public int points;
-	public int levelNumber;
-	public LocalDate date;
+	private String title;
+	private boolean visible;
+	private boolean showContent;
+	private int points;
+	private int levelNumber;
+	private LocalDate date;
 
 	public Score(String title) {
 		this.title = title;
@@ -48,5 +47,53 @@ public class Score {
 		points = 0;
 		levelNumber = 1;
 		date = LocalDate.now();
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String title() {
+		return title;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setShowContent(boolean showContent) {
+		this.showContent = showContent;
+	}
+
+	public boolean isShowContent() {
+		return showContent;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
+	public int points() {
+		return points;
+	}
+
+	public void setLevelNumber(int levelNumber) {
+		this.levelNumber = levelNumber;
+	}
+
+	public int levelNumber() {
+		return levelNumber;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	public LocalDate date() {
+		return date;
 	}
 }

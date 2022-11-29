@@ -82,8 +82,8 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 		START {
 			@Override
 			public void onEnter(IntroData ctx) {
-				ctx.gameController.game().gameScore().showContent = false;
-				ctx.gameController.game().highScore().showContent = true;
+				ctx.gameController.game().gameScore().setShowContent(false);
+				ctx.gameController.game().highScore().setShowContent(true);
 				ctx.ghostIndex = 0;
 				Arrays.fill(ctx.pictureVisible, false);
 				Arrays.fill(ctx.nicknameVisible, false);
@@ -100,8 +100,8 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 			@Override
 			public void onUpdate(IntroData ctx) {
 				if (timer.tick() == 1) {
-					ctx.gameController.game().gameScore().visible = true;
-					ctx.gameController.game().highScore().visible = true;
+					ctx.gameController.game().gameScore().setVisible(true);
+					ctx.gameController.game().highScore().setVisible(true);
 				} else if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.tick() == 3) {
