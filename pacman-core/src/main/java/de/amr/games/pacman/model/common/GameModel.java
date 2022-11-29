@@ -31,6 +31,7 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
@@ -523,13 +524,13 @@ public abstract class GameModel {
 
 	/**
 	 * Advances the current hunting phase and enters the next phase when the current phase ends. On every change between
-	 * phases, the living ghosts outside of the ghosthouse reverse their move direction.
+	 * phases, the living ghosts outside of the ghost house reverse their move direction.
 	 */
 	private void advanceHunting() {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
-			ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
+			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirection);
 		}
 	}
 
@@ -742,9 +743,9 @@ public abstract class GameModel {
 	private void onPacGetsPower() {
 		huntingTimer.stop();
 		startPowerTimer(level.ghostFrightenedSeconds());
-		ghosts(HUNTING_PAC).forEach(ghost -> {
+		ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(ghost -> {
 			ghost.enterStateFrightened(this);
-			ghost.forceTurningBack();
+			ghost.reverseDirection();
 		});
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}

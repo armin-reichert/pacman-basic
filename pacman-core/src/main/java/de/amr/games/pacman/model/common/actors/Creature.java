@@ -215,7 +215,7 @@ public class Creature extends Entity {
 		setMoveDir(dir);
 	}
 
-	public void forceTurningBack() {
+	public void reverseDirection() {
 		reverse = true;
 		LOGGER.trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
 	}
