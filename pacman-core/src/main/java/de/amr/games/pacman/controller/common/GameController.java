@@ -156,6 +156,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void restartIntro() {
+		sounds().stopAll();
 		if (state() != CREDIT && state() != INTRO) {
 			game().consumeCredit();
 		}
@@ -164,6 +165,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void reboot() {
+		sounds().stopAll();
 		restartInState(BOOT);
 		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
