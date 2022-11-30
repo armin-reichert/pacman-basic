@@ -118,9 +118,14 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	@Override
+	protected boolean canReverseDirection(GameModel game) {
+		return is(HUNTING_PAC);
+	}
+
+	@Override
 	public String toString() {
 		return "Ghost[%-6s %s tile=%s pos=%s offset=%s velocity=%s dir=%s wishDir=%s stuck=%s reverse=%s]".formatted(name,
-				state, tile(), position, offset(), velocity, moveDir(), wishDir(), stuck, reverse);
+				state, tile(), position, offset(), velocity, moveDir(), wishDir(), stuck, reverseSignal);
 	}
 
 	// Here begins the state machine part
