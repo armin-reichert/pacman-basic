@@ -486,11 +486,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 	};
 
-	GameController gc;
-	final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
-
-	// only used by state INTERMISSION_TEST
-	public int intermissionTestNumber;
+	/* package */ GameController gc;
+	/* package */ final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
+	public int intermissionTestNumber; // only used in state INTERMISSION_TEST
 
 	@Override
 	public TickTimer timer() {

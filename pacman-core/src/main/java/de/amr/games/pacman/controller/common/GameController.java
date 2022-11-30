@@ -66,17 +66,20 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	private static final Map<GameVariant, GameModel> games = Map.of(//
-			GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
+	private final Map<GameVariant, GameModel> games = Map.of(//
+			GameVariant.MS_PACMAN, new MsPacManGame(), //
+			GameVariant.PACMAN, new PacManGame());
 
 	private final Steering autopilot = new Autopilot();
 	private Steering normalSteering;
-	FollowRoute attractModeSteering = new FollowRoute();
 	private GameVariant gameVariant;
 	private GameSoundController sounds = GameSoundController.NO_SOUND;
 
+	/* Visible for GameState: */
+	FollowRoute attractModeSteering = new FollowRoute();
+
 	public GameController() {
-		states = GameState.values();
+		super.states = GameState.values();
 		for (var state : states) {
 			state.gc = this;
 		}
