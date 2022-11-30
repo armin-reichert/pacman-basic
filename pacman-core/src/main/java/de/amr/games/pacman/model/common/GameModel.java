@@ -530,7 +530,7 @@ public abstract class GameModel {
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
 			ghosts(GhostState.HUNTING_PAC, GhostState.LOCKED, GhostState.LEAVING_HOUSE)
-					.forEach(Ghost::signalReverseDirection);
+					.forEach(Ghost::shouldReverse);
 		}
 	}
 
@@ -743,9 +743,9 @@ public abstract class GameModel {
 	private void onPacGetsPower() {
 		huntingTimer.stop();
 		startPowerTimer(level.ghostFrightenedSeconds());
-		ghosts(GhostState.HUNTING_PAC, GhostState.LOCKED, GhostState.LEAVING_HOUSE).forEach(ghost -> {
+		ghosts(GhostState.HUNTING_PAC).forEach(ghost -> {
 			ghost.enterStateFrightened(this);
-			ghost.signalReverseDirection();
+			ghost.shouldReverse();
 		});
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}

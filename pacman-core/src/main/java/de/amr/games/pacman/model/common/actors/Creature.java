@@ -76,7 +76,7 @@ public class Creature extends Entity {
 	protected boolean newTileEntered;
 
 	/** Triggers reversing the move direction at next possible point in time. */
-	protected boolean reverseSignal;
+	protected boolean shouldReverse;
 
 	/** Tells if the creature got stuck. */
 	protected boolean stuck;
@@ -102,7 +102,7 @@ public class Creature extends Entity {
 		wishDir = RIGHT;
 		targetTile = null;
 		newTileEntered = true;
-		reverseSignal = false;
+		shouldReverse = false;
 		stuck = false;
 		canTeleport = true;
 	}
@@ -215,13 +215,13 @@ public class Creature extends Entity {
 		setMoveDir(dir);
 	}
 
-	public void signalReverseDirection() {
-		reverseSignal = true;
+	public void shouldReverse() {
+		shouldReverse = true;
 		LOGGER.trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
 	}
 
 	protected boolean canReverseDirection(GameModel game) {
-		return false;
+		return newTileEntered;
 	}
 
 	/**
@@ -320,9 +320,9 @@ public class Creature extends Entity {
 		if (m.teleported()) {
 			return;
 		}
-		if (reverseSignal && newTileEntered && canReverseDirection(game)) {
+		if (shouldReverse && canReverseDirection(game)) {
 			setWishDir(moveDir.opposite());
-			reverseSignal = false;
+			shouldReverse = false;
 		}
 		m = tryMoving(wishDir, game);
 		if (m.moved()) {
