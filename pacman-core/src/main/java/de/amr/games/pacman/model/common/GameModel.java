@@ -529,6 +529,7 @@ public abstract class GameModel {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
+			// locked and house-leaving ghost will reverse as soon as he has left the house
 			ghosts(GhostState.HUNTING_PAC, GhostState.LOCKED, GhostState.LEAVING_HOUSE).forEach(Ghost::shouldReverse);
 		}
 	}
