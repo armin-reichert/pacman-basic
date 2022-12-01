@@ -127,7 +127,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	@Override
-	protected boolean canReverseDirection(GameModel game) {
+	protected boolean canReverse(GameModel game) {
 		return newTileEntered && is(HUNTING_PAC, FRIGHTENED);
 	}
 

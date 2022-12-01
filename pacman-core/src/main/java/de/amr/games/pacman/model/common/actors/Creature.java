@@ -113,12 +113,12 @@ public class Creature extends Entity {
 		return name;
 	}
 
-	// position vector stores upper left corner of bounding box which is a square of one tile
 	public V2d center() {
+		// center of bounding box (position stores upper left corner of bounding box)
 		return position.plus(HTS, HTS);
 	}
 
-	// current tile is the tile containing the center of the bounding box
+	// tile containing the center of the bounding box
 	public V2i tile() {
 		return tileAt(position.x() + HTS, position.y() + HTS);
 	}
@@ -210,7 +210,6 @@ public class Creature extends Entity {
 	}
 
 	public void setMoveAndWishDir(Direction dir) {
-		Objects.requireNonNull(dir, MSG_DIR_NULL);
 		setWishDir(dir);
 		setMoveDir(dir);
 	}
@@ -220,7 +219,11 @@ public class Creature extends Entity {
 		LOGGER.trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
 	}
 
-	protected boolean canReverseDirection(GameModel game) {
+	/**
+	 * @param game game model
+	 * @return if the creature can reverse its direction
+	 */
+	protected boolean canReverse(GameModel game) {
 		return newTileEntered;
 	}
 
@@ -320,7 +323,7 @@ public class Creature extends Entity {
 		if (m.teleported()) {
 			return;
 		}
-		if (shouldReverse && canReverseDirection(game)) {
+		if (shouldReverse && canReverse(game)) {
 			setWishDir(moveDir.opposite());
 			shouldReverse = false;
 		}
