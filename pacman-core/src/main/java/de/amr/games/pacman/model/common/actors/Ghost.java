@@ -79,8 +79,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	private EntityAnimationSet<AnimKeys> animationSet;
 
-	public int killedIndex;
+	private int killedIndex;
 
+	/** 0..3. Index when this ghost has been killed using the currently active energizer. */
 	private int attractRouteIndex;
 
 	public Ghost(int id, String name) {
@@ -100,6 +101,14 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public void setChasingTarget(Supplier<V2i> fnTargetTile) {
 		this.fnChasingTarget = Objects.requireNonNull(fnTargetTile);
+	}
+
+	public int killedIndex() {
+		return killedIndex;
+	}
+
+	public void setKilledIndex(int killedIndex) {
+		this.killedIndex = killedIndex;
 	}
 
 	@Override

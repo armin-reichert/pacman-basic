@@ -529,8 +529,7 @@ public abstract class GameModel {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
-			ghosts(GhostState.HUNTING_PAC, GhostState.LOCKED, GhostState.LEAVING_HOUSE)
-					.forEach(Ghost::shouldReverse);
+			ghosts(GhostState.HUNTING_PAC, GhostState.LOCKED, GhostState.LEAVING_HOUSE).forEach(Ghost::shouldReverse);
 		}
 	}
 
@@ -663,10 +662,10 @@ public abstract class GameModel {
 
 	private void killGhost(Ghost ghost) {
 		memo.killedGhosts.add(ghost);
-		ghost.killedIndex = ghostsKilledByEnergizer;
+		ghost.setKilledIndex(ghostsKilledByEnergizer);
 		ghostsKilledByEnergizer++;
 		ghost.enterStateEaten(this);
-		int value = ghostValue(ghost.killedIndex);
+		int value = ghostValue(ghost.killedIndex());
 		scorePoints(value);
 		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name(), ghost.tile(), value);
 	}
