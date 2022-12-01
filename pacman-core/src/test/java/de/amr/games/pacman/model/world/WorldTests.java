@@ -18,7 +18,7 @@ public class WorldTests {
 	@Test
 	public void testTileCoordinates() {
 		V2d pos = new V2d(0.0, 0.0);
-		assertEquals(V2i.NULL, World.tileAt(pos));
+		assertEquals(V2i.ZERO, World.tileAt(pos));
 		pos = new V2d(7.9, 7.9);
 		assertEquals(new V2i(0, 0), World.tileAt(pos));
 		pos = new V2d(8.0, 7.9);

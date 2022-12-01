@@ -32,7 +32,7 @@ import java.util.stream.Stream;
  */
 public record V2i(int x, int y) {
 
-	public static final V2i NULL = new V2i(0, 0);
+	public static final V2i ZERO = new V2i(0, 0);
 
 	public static V2i v2i(int x, int y) {
 		return new V2i(x, y);
