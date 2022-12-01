@@ -482,7 +482,7 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * @param ghostKillIndex index telling when a ghost was killed using the same energizer (0..4)
+	 * @param ghostKillIndex index telling when a ghost was killed using the same energizer (0..3)
 	 * @return value of killed ghost (200, 400, 800, 1600)
 	 */
 	public int ghostValue(int ghostKillIndex) {
