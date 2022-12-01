@@ -120,7 +120,7 @@ public class Creature extends Entity {
 
 	// current tile is the tile containing the center of the bounding box
 	public V2i tile() {
-		return tileAt(center());
+		return tileAt(position.x() + HTS, position.y() + HTS);
 	}
 
 	// offset: (0, 0) if centered, range: [-4, +4)
