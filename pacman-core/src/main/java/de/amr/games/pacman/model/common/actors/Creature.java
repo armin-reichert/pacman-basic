@@ -89,15 +89,11 @@ public class Creature extends Entity {
 		reset();
 	}
 
-	public String name() {
-		return name;
-	}
-
 	public void reset() {
 		visible = false;
-		position = V2d.NULL;
-		velocity = V2d.NULL;
-		acceleration = V2d.NULL;
+		position = V2d.ZERO;
+		velocity = V2d.ZERO;
+		acceleration = V2d.ZERO;
 		moveDir = RIGHT;
 		wishDir = RIGHT;
 		targetTile = null;
@@ -109,8 +105,12 @@ public class Creature extends Entity {
 
 	@Override
 	public String toString() {
-		return String.format("%s: pos=%s, tile=%s, velocity=%s, speed=%.2f, dir=%s, wishDir=%s", name, position, tile(),
+		return "%s: pos=%s, tile=%s, velocity=%s, speed=%.2f, moveDir=%s, wishDir=%s".formatted(name, position, tile(),
 				velocity, velocity.length(), moveDir(), wishDir());
+	}
+
+	public String name() {
+		return name;
 	}
 
 	// position vector stores upper left corner of bounding box which is a square of one tile
@@ -252,7 +252,7 @@ public class Creature extends Entity {
 	 * @param pixelsPerTick speed in pixels per tick
 	 */
 	public void setAbsSpeed(double pixelsPerTick) {
-		velocity = pixelsPerTick == 0 ? V2d.NULL : new V2d(moveDir.vec).scaled(pixelsPerTick);
+		velocity = pixelsPerTick == 0 ? V2d.ZERO : new V2d(moveDir.vec).scaled(pixelsPerTick);
 	}
 
 	/**

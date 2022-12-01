@@ -41,9 +41,9 @@ public class Entity {
 
 	public Entity() {
 		visible = false;
-		position = V2d.NULL;
-		velocity = V2d.NULL;
-		acceleration = V2d.NULL;
+		position = V2d.ZERO;
+		velocity = V2d.ZERO;
+		acceleration = V2d.ZERO;
 	}
 
 	public boolean isVisible() {

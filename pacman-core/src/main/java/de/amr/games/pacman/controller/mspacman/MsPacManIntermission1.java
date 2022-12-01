@@ -219,11 +219,11 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 					ctx.pinky.advanceAnimation();
 					if (ctx.inky.position().y() > ctx.middleY) {
 						ctx.inky.setPosition(ctx.inky.position().x(), ctx.middleY);
-						ctx.inky.setAcceleration(V2d.NULL);
+						ctx.inky.setAcceleration(V2d.ZERO);
 					}
 					if (ctx.pinky.position().y() > ctx.middleY) {
 						ctx.pinky.setPosition(ctx.pinky.position().x(), ctx.middleY);
-						ctx.pinky.setAcceleration(V2d.NULL);
+						ctx.pinky.setAcceleration(V2d.ZERO);
 					}
 				}
 			}

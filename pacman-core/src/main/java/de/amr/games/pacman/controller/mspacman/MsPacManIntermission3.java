@@ -136,7 +136,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 
 				ctx.bag.setPosition(ctx.stork.position().plus(-14, 3));
 				ctx.bag.setVelocity(ctx.stork.velocity());
-				ctx.bag.setAcceleration(V2d.NULL);
+				ctx.bag.setAcceleration(V2d.ZERO);
 				ctx.bag.show();
 				ctx.bagOpen = false;
 				ctx.numBagBounces = 0;
@@ -161,7 +161,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 						ctx.bag.setPosition(ctx.bag.position().x(), ctx.groundY);
 					} else {
 						ctx.bagOpen = true;
-						ctx.bag.setVelocity(V2d.NULL);
+						ctx.bag.setVelocity(V2d.ZERO);
 						intermission.changeState(IntermissionState.DONE);
 					}
 				}
