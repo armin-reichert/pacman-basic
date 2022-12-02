@@ -169,11 +169,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		private void enterAttractMode(GameModel game) {
 			game.resetGuys();
-			game.guys().forEach(Creature::show);
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
 			gc.attractModeSteering.init();
-//			game.isPacImmune = true;
 		}
 
 		@Override
