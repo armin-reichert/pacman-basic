@@ -66,6 +66,8 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		dead = false;
 		restingTicks = 0;
 		starvingTicks = 0;
+		selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+
 	}
 
 	public void rest(int ticks) {

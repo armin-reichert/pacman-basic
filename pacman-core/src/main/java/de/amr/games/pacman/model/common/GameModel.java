@@ -50,10 +50,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
-import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -356,16 +354,15 @@ public abstract class GameModel {
 		pac.setPosition(level.world().pacStartPosition());
 		pac.setMoveAndWishDir(Direction.LEFT);
 		pac.show();
-		pac.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
+			ghost.setPosition(ghostHomePosition[ghost.id]);
 			ghost.setMoveAndWishDir(switch (ghost.id) {
 			case Ghost.ID_RED_GHOST -> Direction.LEFT;
 			case Ghost.ID_PINK_GHOST -> Direction.DOWN;
 			case Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> Direction.UP;
 			default -> throw new IllegalArgumentException("Ghost ID: " + ghost.id);
 			});
-			ghost.setPosition(ghostHomePosition[ghost.id]);
 			ghost.show();
 			ghost.enterStateLocked();
 		});
