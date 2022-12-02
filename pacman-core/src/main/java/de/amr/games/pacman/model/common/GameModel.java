@@ -37,6 +37,7 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -262,6 +263,10 @@ public abstract class GameModel {
 		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
 
+	private static V2d halfTileRightOf(V2i tile) {
+		return tile.scaled(TS).toDoubleVec().plus(HTS, 0);
+	}
+
 	public int credit() {
 		return credit;
 	}
@@ -320,9 +325,7 @@ public abstract class GameModel {
 	}
 
 	protected void initGhosts() {
-		for (var ghost : theGhosts) {
-			ghostDotCounter[ghost.id] = 0;
-		}
+		Arrays.fill(ghostDotCounter, 0);
 		cruiseElroyState = 0;
 		if (level.world() instanceof ArcadeWorld) {
 			ghostHomePosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
@@ -343,17 +346,14 @@ public abstract class GameModel {
 		}
 	}
 
-	private static V2d halfTileRightOf(V2i tile) {
-		return tile.scaled(TS).toDoubleVec().plus(HTS, 0);
-	}
-
+	/**
+	 * Sets the game state to be ready for playing. Pac-Man and the ghosts are placed at their initial positions, made
+	 * visible and their state is initialzed. Als the power timer and energizers are reset.
+	 */
 	public void resetGuys() {
-		powerTimer.reset(0);
-		energizerPulse.reset();
 		pac.reset();
 		pac.setPosition(level.world().pacStartPosition());
 		pac.setMoveAndWishDir(Direction.LEFT);
-		pac.show();
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setPosition(ghostHomePosition[ghost.id]);
@@ -363,9 +363,11 @@ public abstract class GameModel {
 			case Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> Direction.UP;
 			default -> throw new IllegalArgumentException("Ghost ID: " + ghost.id);
 			});
-			ghost.show();
 			ghost.enterStateLocked();
 		});
+		guys().forEach(Creature::show);
+		powerTimer.reset(0);
+		energizerPulse.reset();
 	}
 
 	/**
