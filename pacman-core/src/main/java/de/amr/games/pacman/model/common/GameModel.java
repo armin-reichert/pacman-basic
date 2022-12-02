@@ -762,7 +762,6 @@ public abstract class GameModel {
 				memo.unlockedGhost = Optional.of(ghost);
 				memo.unlockReason = "Blinky is unlocked immediately";
 				unlockGhost(ghost, memo.unlockReason);
-				GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 				return;
 			}
 			// first check private dot counter
@@ -770,7 +769,6 @@ public abstract class GameModel {
 				memo.unlockedGhost = Optional.of(ghost);
 				memo.unlockReason = "Private dot counter at limit (%d)".formatted(privateDotLimits[ghost.id]);
 				unlockGhost(ghost, memo.unlockReason);
-				GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 				return;
 			}
 			// check global dot counter
@@ -779,33 +777,32 @@ public abstract class GameModel {
 				memo.unlockedGhost = Optional.of(ghost);
 				memo.unlockReason = "Global dot counter at limit (%d)".formatted(globalDotLimit);
 				unlockGhost(ghost, memo.unlockReason);
-				GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 			} else if (pac.starvingTime() >= pacStarvingTimeLimit) {
 				pac.endStarving();
 				memo.unlockedGhost = Optional.of(ghost);
 				memo.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name(), pacStarvingTimeLimit);
 				unlockGhost(ghost, memo.unlockReason);
-				GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		});
 	}
 
-	private void unlockGhost(Ghost ghostToUnlock, String reason) {
-		LOGGER.info("Unlock %s: %s", ghostToUnlock.name(), reason);
+	private void unlockGhost(Ghost ghost, String reason) {
+		LOGGER.info("Unlock %s: %s", ghost.name(), reason);
 		var redGhost = theGhosts[ID_RED_GHOST];
 		var orangeGhost = theGhosts[ID_ORANGE_GHOST];
-		if (ghostToUnlock == orangeGhost && cruiseElroyState < 0) {
+		if (ghost == orangeGhost && cruiseElroyState < 0) {
 			// Cruise Elroy state is resumed when orange ghost is unlocked
 			cruiseElroyState = (byte) -cruiseElroyState;
 			LOGGER.info("%s: Cruise Elroy mode %d resumed", redGhost.name(), cruiseElroyState);
 		}
 		// Red ghost is outside of house, so enter hunting state and go left
-		if (ghostToUnlock == redGhost) {
-			ghostToUnlock.setMoveAndWishDir(LEFT);
-			ghostToUnlock.enterStateHuntingPac(this);
+		if (ghost == redGhost) {
+			ghost.setMoveAndWishDir(LEFT);
+			ghost.enterStateHuntingPac(this);
 		} else {
-			ghostToUnlock.enterStateLeavingHouse(this);
+			ghost.enterStateLeavingHouse(this);
 		}
+		GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 	}
 
 	private void updateGhostDotCounters() {
