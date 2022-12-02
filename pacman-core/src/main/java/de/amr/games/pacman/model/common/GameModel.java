@@ -576,11 +576,7 @@ public abstract class GameModel {
 
 	public void update() {
 		pac.update(this);
-		checkGhostCanBeUnlocked(memo);
-		memo.unlockedGhost.ifPresent(ghost -> {
-			unlockGhost(ghost, memo.unlockReason);
-			GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
-		});
+		checkGhostCanBeUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus().update(this);
 		advanceHunting();
@@ -760,17 +756,21 @@ public abstract class GameModel {
 
 	// Ghost house rules, see Pac-Man dossier
 
-	private void checkGhostCanBeUnlocked(Memory memo) {
+	private void checkGhostCanBeUnlocked() {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == ID_RED_GHOST) {
 				memo.unlockedGhost = Optional.of(ghost);
 				memo.unlockReason = "Blinky is unlocked immediately";
+				unlockGhost(ghost, memo.unlockReason);
+				GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 				return;
 			}
 			// first check private dot counter
 			if (!globalDotCounterEnabled && ghostDotCounter[ghost.id] >= privateDotLimits[ghost.id]) {
 				memo.unlockedGhost = Optional.of(ghost);
 				memo.unlockReason = "Private dot counter at limit (%d)".formatted(privateDotLimits[ghost.id]);
+				unlockGhost(ghost, memo.unlockReason);
+				GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 				return;
 			}
 			// check global dot counter
@@ -778,10 +778,14 @@ public abstract class GameModel {
 			if (globalDotCounter >= globalDotLimit) {
 				memo.unlockedGhost = Optional.of(ghost);
 				memo.unlockReason = "Global dot counter at limit (%d)".formatted(globalDotLimit);
+				unlockGhost(ghost, memo.unlockReason);
+				GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 			} else if (pac.starvingTime() >= pacStarvingTimeLimit) {
+				pac.endStarving();
 				memo.unlockedGhost = Optional.of(ghost);
 				memo.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name(), pacStarvingTimeLimit);
-				pac.endStarving();
+				unlockGhost(ghost, memo.unlockReason);
+				GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		});
 	}
