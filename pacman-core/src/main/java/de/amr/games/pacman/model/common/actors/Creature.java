@@ -228,25 +228,15 @@ public class Creature extends Entity {
 	}
 
 	/**
-	 * Sets the fraction of the given base speed.
-	 * 
-	 * @param fraction  fraction of base speed
-	 * @param baseSpeed base speed (speed at fraction=1.0)
-	 */
-	protected void setRelSpeed(double fraction, double baseSpeed) {
-		if (fraction < 0) {
-			throw new IllegalArgumentException("Negative speed fraction: " + fraction);
-		}
-		setAbsSpeed(fraction * baseSpeed);
-	}
-
-	/**
 	 * Sets the speed as a fraction of the game base speed (1.25 pixels/sec).
 	 * 
 	 * @param fraction fraction of base speed
 	 */
 	public void setRelSpeed(double fraction) {
-		setRelSpeed(fraction, GameModel.BASE_SPEED);
+		if (fraction < 0) {
+			throw new IllegalArgumentException("Negative speed fraction: " + fraction);
+		}
+		setAbsSpeed(fraction * GameModel.BASE_SPEED);
 	}
 
 	/**
