@@ -141,10 +141,11 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			gc.sounds().stopAll();
-			if (game.hasCredit() && !game.isPlaying()) {
-				getReadyForNewGame(game);
-			} else if (game.hasCredit() && game.isPlaying()) {
-				continueGame(game);
+			game.resetGuys();
+			if (game.hasCredit()) {
+				if (!game.isPlaying()) {
+					getReadyForNewGame(game);
+				}
 			} else {
 				enterAttractMode(game);
 			}
@@ -158,17 +159,10 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.levelCounter().addSymbol(game.level().bonusIndex());
 			game.enableScores(true);
 			game.gameScore().setShowContent(true);
-			game.resetGuys();
 			game.guys().forEach(Creature::hide);
 		}
 
-		private void continueGame(GameModel game) {
-			game.resetGuys();
-			game.guys().forEach(Creature::show);
-		}
-
 		private void enterAttractMode(GameModel game) {
-			game.resetGuys();
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
 			gc.attractModeSteering.init();
