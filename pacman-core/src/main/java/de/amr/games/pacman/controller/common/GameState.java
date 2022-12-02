@@ -177,19 +177,18 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (game.hasCredit() && !game.isPlaying()) {
-				// about to start game
 				if (timer.tick() == 130) {
+					// get ready
 					game.guys().forEach(Entity::show);
-					game.setLivesOneLessShown(true); // TODO this cannot be the last word
+					game.setLivesOneLessShown(true);
 				} else if (timer.tick() == 250) {
-					// start game
+					// start playing
 					game.setPlaying(true);
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
-			} else {
-				// game continuing or attract mode
-				if (timer.tick() == 92) {
+			} else { // in attract mode or game already running
+				if (timer.tick() == 90) {
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
