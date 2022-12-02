@@ -576,7 +576,12 @@ public abstract class GameModel {
 
 	public void update() {
 		pac.update(this);
-		updateGhosts();
+		checkGhostCanBeUnlocked(memo);
+		memo.unlockedGhost.ifPresent(ghost -> {
+			unlockGhost(ghost, memo.unlockReason);
+			GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
+		});
+		ghosts().forEach(ghost -> ghost.update(this));
 		bonus().update(this);
 		advanceHunting();
 		energizerPulse.advance();
@@ -752,15 +757,6 @@ public abstract class GameModel {
 	}
 
 	// Ghosts
-
-	private void updateGhosts() {
-		checkGhostCanBeUnlocked(memo);
-		memo.unlockedGhost.ifPresent(ghost -> {
-			unlockGhost(ghost, memo.unlockReason);
-			GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
-		});
-		ghosts().forEach(ghost -> ghost.update(this));
-	}
 
 	// Ghost house rules, see Pac-Man dossier
 
