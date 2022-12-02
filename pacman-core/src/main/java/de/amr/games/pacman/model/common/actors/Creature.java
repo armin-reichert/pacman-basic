@@ -242,10 +242,13 @@ public class Creature extends Entity {
 	/**
 	 * Sets the absolute speed and updates the velocity vector.
 	 * 
-	 * @param pixelsPerTick speed in pixels per tick
+	 * @param speed speed in pixels per tick
 	 */
-	public void setAbsSpeed(double pixelsPerTick) {
-		velocity = pixelsPerTick == 0 ? V2d.ZERO : new V2d(moveDir.vec).scaled(pixelsPerTick);
+	public void setAbsSpeed(double speed) {
+		if (speed < 0) {
+			throw new IllegalArgumentException("Negative speed: " + speed);
+		}
+		velocity = speed == 0 ? V2d.ZERO : new V2d(moveDir.vec).scaled(speed);
 	}
 
 	/**
