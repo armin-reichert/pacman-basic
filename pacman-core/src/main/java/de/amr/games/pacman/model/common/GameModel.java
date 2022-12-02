@@ -576,7 +576,7 @@ public abstract class GameModel {
 
 	public void update() {
 		pac.update(this);
-		checkGhostCanBeUnlocked();
+		unlockPreferredGhost();
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus().update(this);
 		advanceHunting();
@@ -752,57 +752,50 @@ public abstract class GameModel {
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}
 
-	// Ghosts
-
 	// Ghost house rules, see Pac-Man dossier
 
-	private void checkGhostCanBeUnlocked() {
-		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
-			if (ghost.id == ID_RED_GHOST) {
-				memo.unlockedGhost = Optional.of(ghost);
-				memo.unlockReason = "Blinky is unlocked immediately";
-				unlockGhost(ghost, memo.unlockReason);
-				return;
-			}
-			// first check private dot counter
-			if (!globalDotCounterEnabled && ghostDotCounter[ghost.id] >= privateDotLimits[ghost.id]) {
-				memo.unlockedGhost = Optional.of(ghost);
-				memo.unlockReason = "Private dot counter at limit (%d)".formatted(privateDotLimits[ghost.id]);
-				unlockGhost(ghost, memo.unlockReason);
-				return;
-			}
-			// check global dot counter
-			var globalDotLimit = globalDotLimits[ghost.id] == -1 ? Integer.MAX_VALUE : globalDotLimits[ghost.id];
-			if (globalDotCounter >= globalDotLimit) {
-				memo.unlockedGhost = Optional.of(ghost);
-				memo.unlockReason = "Global dot counter at limit (%d)".formatted(globalDotLimit);
-				unlockGhost(ghost, memo.unlockReason);
-			} else if (pac.starvingTime() >= pacStarvingTimeLimit) {
-				pac.endStarving();
-				memo.unlockedGhost = Optional.of(ghost);
-				memo.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name(), pacStarvingTimeLimit);
-				unlockGhost(ghost, memo.unlockReason);
-			}
-		});
+	private boolean unlockPreferredGhost() {
+		var ghost = ghosts(LOCKED).findFirst().orElse(null);
+		if (ghost == null) {
+			return false;
+		}
+		if (ghost.id == ID_RED_GHOST) {
+			return unlockGhost(ghost, "Unlocked immediately");
+		}
+		// check private dot counter
+		if (!globalDotCounterEnabled && ghostDotCounter[ghost.id] >= privateDotLimits[ghost.id]) {
+			return unlockGhost(ghost, "Private dot counter at limit (%d)", privateDotLimits[ghost.id]);
+		}
+		// check global dot counter
+		var globalDotLimit = globalDotLimits[ghost.id] == -1 ? Integer.MAX_VALUE : globalDotLimits[ghost.id];
+		if (globalDotCounter >= globalDotLimit) {
+			return unlockGhost(ghost, "Global dot counter at limit (%d)", globalDotLimit);
+		}
+		if (pac.starvingTime() >= pacStarvingTimeLimit) {
+			pac.endStarving();
+			return unlockGhost(ghost, "%s reached starving limit (%d ticks)", pac.name(), pacStarvingTimeLimit);
+		}
+		return false;
 	}
 
-	private void unlockGhost(Ghost ghost, String reason) {
-		LOGGER.info("Unlock %s: %s", ghost.name(), reason);
-		var redGhost = theGhosts[ID_RED_GHOST];
-		var orangeGhost = theGhosts[ID_ORANGE_GHOST];
-		if (ghost == orangeGhost && cruiseElroyState < 0) {
-			// Cruise Elroy state is resumed when orange ghost is unlocked
-			cruiseElroyState = (byte) -cruiseElroyState;
-			LOGGER.info("%s: Cruise Elroy mode %d resumed", redGhost.name(), cruiseElroyState);
-		}
-		// Red ghost is outside of house, so enter hunting state and go left
-		if (ghost == redGhost) {
+	private boolean unlockGhost(Ghost ghost, String reason, Object... args) {
+		if (ghost.id == ID_RED_GHOST) {
+			// Red ghost is outside house when locked, enters "hunting" state and moves left
 			ghost.setMoveAndWishDir(LEFT);
 			ghost.enterStateHuntingPac(this);
 		} else {
+			// all other ghosts have to leave house first
 			ghost.enterStateLeavingHouse(this);
 		}
-		GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
+		if (ghost.id == ID_ORANGE_GHOST && cruiseElroyState < 0) {
+			// Disabled "Cruise Elroy" state is resumed when orange ghost is unlocked
+			cruiseElroyState = (byte) -cruiseElroyState;
+			LOGGER.info("Cruise Elroy mode %d resumed", cruiseElroyState);
+		}
+		memo.unlockedGhost = Optional.of(ghost);
+		memo.unlockReason = reason.formatted(args);
+		LOGGER.info("Unlocked ghost %s: %s", ghost.name(), memo.unlockReason);
+		return true;
 	}
 
 	private void updateGhostDotCounters() {
