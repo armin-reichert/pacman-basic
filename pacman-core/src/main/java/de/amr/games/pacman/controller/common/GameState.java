@@ -49,7 +49,7 @@ import de.amr.games.pacman.model.common.world.ArcadeWorld;
  */
 public enum GameState implements FsmState<GameModel>, GameCommands {
 
-	BOOT() {
+	BOOT() { // Boot steigt! Jawoll Herr KaLeu!
 		@Override
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
