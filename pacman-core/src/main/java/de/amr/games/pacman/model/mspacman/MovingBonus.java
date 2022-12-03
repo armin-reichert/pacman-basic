@@ -53,7 +53,7 @@ public class MovingBonus extends Creature implements Bonus {
 
 	private BonusState state;
 	private int symbol;
-	private int value;
+	private int points;
 	private long timer;
 	private final SingleEntityAnimation<Integer> jumpAnimation;
 	private final FollowRoute steering = new FollowRoute();
@@ -78,7 +78,7 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public String toString() {
-		return "[MovingBonus state=%s symbol=%d value=%d timer=%d creature=%s]".formatted(state, symbol, value, timer,
+		return "[MovingBonus state=%s symbol=%d value=%d timer=%d creature=%s]".formatted(state, symbol, points, timer,
 				super.toString());
 	}
 
@@ -93,8 +93,8 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public int value() {
-		return value;
+	public int points() {
+		return points;
 	}
 
 	@Override
@@ -107,9 +107,9 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void setEdible(int symbol, int value, long ticks) {
+	public void setEdible(int symbol, int points, long ticks) {
 		this.symbol = symbol;
-		this.value = value;
+		this.points = points;
 		state = BonusState.EDIBLE;
 		timer = ticks;
 		canTeleport = false;
@@ -134,7 +134,7 @@ public class MovingBonus extends Creature implements Bonus {
 				state = BonusState.EATEN;
 				timer = GameModel.BONUS_EATEN_DURATION;
 				jumpAnimation.stop();
-				game.scorePoints(value);
+				game.scorePoints(points);
 				LOGGER.info("Bonus eaten: %s", this);
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;

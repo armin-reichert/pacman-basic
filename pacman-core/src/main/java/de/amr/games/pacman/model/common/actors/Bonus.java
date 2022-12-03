@@ -44,7 +44,7 @@ public interface Bonus {
 	/**
 	 * @return points earned when eating this bonus
 	 */
-	int value();
+	int points();
 
 	/**
 	 * @return state of the bonus

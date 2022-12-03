@@ -42,7 +42,7 @@ public class StaticBonus implements Bonus {
 	private Entity entity;
 	private BonusState state;
 	private int bonusIndex;
-	private int value;
+	private int points;
 	private long timer;
 
 	public StaticBonus(V2d position) {
@@ -59,7 +59,7 @@ public class StaticBonus implements Bonus {
 
 	@Override
 	public String toString() {
-		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(bonusIndex, value, state,
+		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(bonusIndex, points, state,
 				entity.position(), timer);
 	}
 
@@ -74,8 +74,8 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
-	public int value() {
-		return value;
+	public int points() {
+		return points;
 	}
 
 	@Override
@@ -84,11 +84,11 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
-	public void setEdible(int bonusIndex, int value, long ticks) {
+	public void setEdible(int bonusIndex, int points, long ticks) {
 		state = BonusState.EDIBLE;
 		timer = ticks;
 		this.bonusIndex = bonusIndex;
-		this.value = value;
+		this.points = points;
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class StaticBonus implements Bonus {
 		}
 		case EDIBLE -> {
 			if (game.pac().tile().equals(tile)) {
-				game.scorePoints(value());
+				game.scorePoints(points());
 				state = BonusState.EATEN;
 				timer = GameModel.BONUS_EATEN_DURATION;
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile);
