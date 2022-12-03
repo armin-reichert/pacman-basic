@@ -23,9 +23,14 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
+import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.originOfTile;
+import static de.amr.games.pacman.model.common.world.World.tileAt;
+
 import java.util.Objects;
 
 import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.V2i;
 
 /**
  * Base class for all "entities" that are part of the game.
@@ -104,5 +109,25 @@ public class Entity {
 	public void move() {
 		position = position.plus(velocity);
 		velocity = velocity.plus(acceleration);
+	}
+
+	/** Tile containing the center of the "bounding box" */
+	public V2i tile() {
+		return tileAt(position.x() + HTS, position.y() + HTS);
+	}
+
+	public boolean sameTile(Entity other) {
+		Objects.requireNonNull(other, "Entity must not be null");
+		return tile().equals(other.tile());
+	}
+
+	/** Center of "bounding box" (position stores upper left corner of bounding box). */
+	public V2d center() {
+		return position.plus(HTS, HTS);
+	}
+
+	/** Offset: (0, 0) if centered, range: [-4, +4) */
+	public V2d offset() {
+		return position.minus(originOfTile(tile()));
 	}
 }

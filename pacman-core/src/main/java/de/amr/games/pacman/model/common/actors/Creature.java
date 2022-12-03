@@ -29,7 +29,6 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
-import static de.amr.games.pacman.model.common.world.World.originOfTile;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
 
 import java.util.Objects;
@@ -113,21 +112,6 @@ public class Creature extends Entity {
 		return name;
 	}
 
-	public V2d center() {
-		// center of bounding box (position stores upper left corner of bounding box)
-		return position.plus(HTS, HTS);
-	}
-
-	// tile containing the center of the bounding box
-	public V2i tile() {
-		return tileAt(position.x() + HTS, position.y() + HTS);
-	}
-
-	// offset: (0, 0) if centered, range: [-4, +4)
-	public V2d offset() {
-		return position.minus(originOfTile(tile()));
-	}
-
 	public boolean isNewTileEntered() {
 		return newTileEntered;
 	}
@@ -142,11 +126,6 @@ public class Creature extends Entity {
 
 	public Optional<V2i> targetTile() {
 		return Optional.ofNullable(targetTile);
-	}
-
-	public boolean sameTile(Creature other) {
-		Objects.requireNonNull(other, "Creature must not be null");
-		return tile().equals(other.tile());
 	}
 
 	public void placeAtTile(int tx, int ty, double ox, double oy) {

@@ -99,7 +99,7 @@ public class StaticBonus implements Bonus {
 			// nothing to do
 		}
 		case EDIBLE -> {
-			if (game.pac().tile().equals(tile)) {
+			if (entity.sameTile(game.pac())) {
 				game.scorePoints(points());
 				state = BonusState.EATEN;
 				timer = GameModel.BONUS_EATEN_DURATION;
@@ -117,7 +117,6 @@ public class StaticBonus implements Bonus {
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile);
 			}
 		}
-		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
 	}
 }
