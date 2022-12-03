@@ -795,12 +795,11 @@ public abstract class GameModel {
 
 	private void updateGhostDotCounters() {
 		if (globalDotCounterEnabled) {
-			var orangeGhost = theGhosts[ID_ORANGE_GHOST];
-			if (orangeGhost.is(LOCKED) && globalDotCounter == 32) {
+			if (theGhosts[ID_ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
-				LOGGER.info("Global dot counter disabled and reset, %s was in house when counter reached 32",
-						orangeGhost.name());
+				LOGGER.info("Global dot counter disabled and reset to 0, %s was in house when counter reached 32",
+						theGhosts[ID_ORANGE_GHOST].name());
 			} else {
 				globalDotCounter++;
 			}
