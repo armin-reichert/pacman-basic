@@ -628,23 +628,19 @@ public abstract class GameModel {
 
 	private void onPacMetKiller() {
 		pac.die();
-		var redGhost = theGhosts[ID_RED_GHOST];
-		if (cruiseElroyState > 0) {
-			LOGGER.info("Cruise Elroy mode %d for %s disabled", cruiseElroyState, redGhost.name());
-			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"
-		}
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
 		LOGGER.info("Global dot counter got reset and enabled because %s died", pac.name());
+		if (cruiseElroyState > 0) {
+			LOGGER.info("Disabled Cruise Elroy mode (%d) for red ghost", cruiseElroyState);
+			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"
+		}
 	}
 
 	private void checkEdibleGhosts() {
 		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
 	}
 
-	/**
-	 * Cheat.
-	 */
 	public void killAllPossibleGhosts() {
 		var prey = ghosts(GhostState.HUNTING_PAC, GhostState.FRIGHTENED).toArray(Ghost[]::new);
 		ghostsKilledByEnergizer = 0;
@@ -655,9 +651,9 @@ public abstract class GameModel {
 		Stream.of(prey).forEach(this::killGhost);
 		numGhostsKilledInLevel += prey.length;
 		if (numGhostsKilledInLevel == 16) {
-			LOGGER.info("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number(),
-					ALL_GHOSTS_KILLED_POINTS);
 			scorePoints(ALL_GHOSTS_KILLED_POINTS);
+			LOGGER.info("All ghosts killed at level %d, %s wins %d points", level.number(), pac.name(),
+					ALL_GHOSTS_KILLED_POINTS);
 		}
 	}
 
@@ -668,7 +664,7 @@ public abstract class GameModel {
 		ghost.enterStateEaten(this);
 		int value = ghostValue(ghost.killedIndex());
 		scorePoints(value);
-		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name(), ghost.tile(), value);
+		LOGGER.info("Ghost %s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), value);
 	}
 
 	private void startPowerTimer(double seconds) {
@@ -729,14 +725,13 @@ public abstract class GameModel {
 	}
 
 	private void checkIfRedGhostBecomesCruiseElroy() {
-		var redGhost = theGhosts[ID_RED_GHOST];
 		var foodRemaining = level.world().foodRemaining();
 		if (foodRemaining == level.elroy1DotsLeft()) {
 			cruiseElroyState = 1;
-			LOGGER.info("%s becomes Cruise Elroy 1", redGhost.name());
+			LOGGER.info("Red ghost becomes Cruise Elroy 1");
 		} else if (foodRemaining == level.elroy2DotsLeft()) {
 			cruiseElroyState = 2;
-			LOGGER.info("%s becomes Cruise Elroy 2", redGhost.name());
+			LOGGER.info("Red ghost becomes Cruise Elroy 2");
 		}
 	}
 
