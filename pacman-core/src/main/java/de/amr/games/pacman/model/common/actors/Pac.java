@@ -58,11 +58,11 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			if (restingTicks == 0) {
 				setRelSpeed(game.powerTimer().isRunning() ? game.level().playerSpeedPowered() : game.level().playerSpeed());
+				tryMoving(game);
 			} else {
-				setAbsSpeed(0);
 				--restingTicks;
+				setAbsSpeed(0);
 			}
-			tryMoving(game);
 			selectedAnimation().ifPresent(animation -> {
 				if (stuck) {
 					animation.stop();
