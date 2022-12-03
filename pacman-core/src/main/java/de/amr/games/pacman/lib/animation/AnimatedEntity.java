@@ -87,4 +87,8 @@ public interface AnimatedEntity<K> {
 	default void animate() {
 		selectedAnimation().ifPresent(EntityAnimation::animate);
 	}
+
+	default void stopAnimation() {
+		selectedAnimation().ifPresent(EntityAnimation::stop);
+	}
 }

@@ -378,7 +378,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(4);
 			timer.start();
-			game.pac().selectedAnimation().ifPresent(EntityAnimation::stop);
 			game.bonus().setInactive();
 			gc.sounds().stopAll();
 		}
@@ -389,13 +388,11 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.pac().update(game);
 			if (timer.betweenSeconds(0, 1)) {
 				game.ghosts().forEach(Ghost::animate);
-			}
-			if (timer.atSecond(0.25)) {
-				game.pac().selectAndResetAnimation(AnimKeys.PAC_DYING);
 			} else if (timer.atSecond(1)) {
+				game.pac().selectAndResetAnimation(AnimKeys.PAC_DYING);
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(1.4)) {
-				game.pac().selectedAnimation().ifPresent(EntityAnimation::restart);
+				game.pac().selectedAnimation().ifPresent(EntityAnimation::start);
 				gc.sounds().play(GameSound.PACMAN_DEATH);
 			} else if (timer.atSecond(3.0)) {
 				game.setLives(game.lives() - 1);

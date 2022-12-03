@@ -114,5 +114,6 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	public void die() {
 		dead = true;
 		setRelSpeed(0);
+		stopAnimation();
 	}
 }
