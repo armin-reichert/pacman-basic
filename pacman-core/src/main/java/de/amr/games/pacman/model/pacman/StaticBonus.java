@@ -37,28 +37,30 @@ import de.amr.games.pacman.model.common.world.World;
  * 
  * @author Armin Reichert
  */
-public class StaticBonus extends Entity implements Bonus {
+public class StaticBonus implements Bonus {
 
+	private Entity entity;
 	private BonusState state;
 	private int bonusIndex;
 	private int value;
 	private long timer;
 
 	public StaticBonus(V2d position) {
-		this.position = position;
-		visible = true;
+		entity = new Entity();
+		entity.setPosition(position);
+		entity.show();
 		state = BonusState.INACTIVE;
 	}
 
 	@Override
 	public Entity entity() {
-		return this;
+		return entity;
 	}
 
 	@Override
 	public String toString() {
 		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(bonusIndex, value, state,
-				position, timer);
+				entity.position(), timer);
 	}
 
 	@Override
@@ -91,7 +93,7 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public void update(GameModel game) {
-		var tile = World.tileAt(position);
+		var tile = World.tileAt(entity.position());
 		switch (state) {
 		case INACTIVE -> {
 			// nothing to do
