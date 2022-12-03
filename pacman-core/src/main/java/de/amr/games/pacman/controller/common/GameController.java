@@ -78,6 +78,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 	/* Visible for GameState: */
 	FollowRoute attractModeSteering = new FollowRoute();
 
+	public int intermissionTestNumber;
+
 	public GameController() {
 		super.states = GameState.values();
 		for (var state : states) {

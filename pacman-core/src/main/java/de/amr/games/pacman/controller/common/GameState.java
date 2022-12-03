@@ -106,7 +106,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void startCutscenesTest(GameModel game) {
-			INTERMISSION_TEST.intermissionTestNumber = 1;
+			gc.intermissionTestNumber = 1;
 			gc.changeState(INTERMISSION_TEST);
 		}
 	},
@@ -461,13 +461,13 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				if (intermissionTestNumber < 3) {
-					++intermissionTestNumber;
+				if (gc.intermissionTestNumber < 3) {
+					++gc.intermissionTestNumber;
 					timer.resetIndefinitely();
 					timer.start();
 					GameEvents.publish(new GameEvent(game, GameEventType.UI_FORCE_UPDATE, null, null));
 				} else {
-					intermissionTestNumber = 1;
+					gc.intermissionTestNumber = 1;
 					gc.changeState(INTRO);
 				}
 			}
@@ -476,7 +476,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 	/* package */ GameController gc;
 	/* package */ final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
-	public int intermissionTestNumber; // only used in state INTERMISSION_TEST
 
 	@Override
 	public TickTimer timer() {
