@@ -31,24 +31,47 @@ import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
- * Pac-Man or Ms. Pac-Man.
+ * (Ms.) Pac-Man.
  * 
  * @author Armin Reichert
  */
 public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
-	/** Number of clock ticks Pac has to rest and can not move. */
-	private int restingTicks = 0;
+	private boolean dead;
 
-	/** Number of clock ticks Pac has not eaten any pellet. */
-	private int starvingTicks = 0;
+	/* Number of ticks Pac is resting and not moving. */
+	private int restingTicks;
 
-	private boolean dead = false;
+	/* Number of ticks since Pac has has eaten a pellet or energizer. */
+	private int starvingTicks;
 
 	private EntityAnimationSet<AnimKeys> animationSet;
 
 	public Pac(String name) {
 		super(name);
+	}
+
+	public void update(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
+		if (dead) {
+			// nothing to do
+		} else {
+			if (restingTicks == 0) {
+				setRelSpeed(game.powerTimer().isRunning() ? game.level().playerSpeedPowered() : game.level().playerSpeed());
+			} else {
+				setAbsSpeed(0);
+				--restingTicks;
+			}
+			tryMoving(game);
+			selectedAnimation().ifPresent(animation -> {
+				if (stuck) {
+					animation.stop();
+				} else {
+					animation.start();
+				}
+			});
+		}
+		animate();
 	}
 
 	public void setAnimationSet(EntityAnimationSet<AnimKeys> animationSet) {
@@ -67,10 +90,12 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		restingTicks = 0;
 		starvingTicks = 0;
 		selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
-
 	}
 
 	public void rest(int ticks) {
+		if (ticks < 0) {
+			throw new IllegalArgumentException("Resting time cannot be negative, but is: %d".formatted(ticks));
+		}
 		restingTicks = ticks;
 	}
 
@@ -82,32 +107,12 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		starvingTicks = 0;
 	}
 
-	public int starvingTime() {
+	public int starvingTicks() {
 		return starvingTicks;
 	}
 
 	public void die() {
 		dead = true;
 		setRelSpeed(0);
-	}
-
-	public void update(GameModel game) {
-		Objects.requireNonNull(game, "Game must not be null");
-		if (dead) {
-			advanceAnimation();
-		} else if (restingTicks > 0) {
-			--restingTicks;
-		} else {
-			setRelSpeed(game.powerTimer().isRunning() ? game.level().playerSpeedPowered() : game.level().playerSpeed());
-			tryMoving(game);
-			selectedAnimation().ifPresent(animation -> {
-				if (stuck) {
-					animation.stop();
-				} else {
-					animation.run();
-				}
-				animation.advance();
-			});
-		}
 	}
 }

@@ -84,7 +84,7 @@ public interface AnimatedEntity<K> {
 	/**
 	 * Advances the currently selected animation by a single frame.
 	 */
-	default void advanceAnimation() {
-		selectedAnimation().ifPresent(EntityAnimation::advance);
+	default void animate() {
+		selectedAnimation().ifPresent(EntityAnimation::animate);
 	}
 }

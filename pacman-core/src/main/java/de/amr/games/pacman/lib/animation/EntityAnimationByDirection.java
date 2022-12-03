@@ -54,11 +54,6 @@ public class EntityAnimationByDirection implements EntityAnimation {
 	}
 
 	@Override
-	public void advance() {
-		currentAnimation().advance();
-	}
-
-	@Override
 	public Object animate() {
 		return currentAnimation().animate();
 	}
@@ -109,8 +104,8 @@ public class EntityAnimationByDirection implements EntityAnimation {
 	}
 
 	@Override
-	public void run() {
-		map.values().forEach(EntityAnimation::run);
+	public void start() {
+		map.values().forEach(EntityAnimation::start);
 	}
 
 	@Override

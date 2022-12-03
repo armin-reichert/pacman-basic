@@ -130,7 +130,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 				ctx.lightsTimer.advance();
 				Ghost ghost = ctx.game().ghost(ctx.ghostIndex);
 				ghost.move();
-				ghost.advanceAnimation();
+				ghost.animate();
 				if (ghost.position().x() <= ctx.turningPoint.x()) {
 					ghost.setMoveAndWishDir(UP);
 				}
@@ -157,7 +157,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 			public void onUpdate(IntroData ctx) {
 				ctx.lightsTimer.advance();
 				ctx.game().pac().move();
-				ctx.game().pac().advanceAnimation();
+				ctx.game().pac().animate();
 				if (ctx.game().pac().position().x() <= ctx.msPacManStopX) {
 					ctx.game().pac().setAbsSpeed(0);
 					ctx.game().pac().selectedAnimation().ifPresent(EntityAnimation::reset);
@@ -180,7 +180,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 					return;
 				}
 				ctx.lightsTimer.advance();
-				ctx.blinking.advance();
+				ctx.blinking.animate();
 			}
 		};
 

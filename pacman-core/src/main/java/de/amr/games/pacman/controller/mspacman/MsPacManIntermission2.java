@@ -160,9 +160,9 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 					return;
 				}
 				ctx.pacMan.move();
-				ctx.pacMan.advanceAnimation();
+				ctx.pacMan.animate();
 				ctx.msPacMan.move();
-				ctx.msPacMan.advanceAnimation();
+				ctx.msPacMan.animate();
 			}
 		};
 

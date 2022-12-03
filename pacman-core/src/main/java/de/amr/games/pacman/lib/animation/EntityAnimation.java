@@ -28,27 +28,25 @@ package de.amr.games.pacman.lib.animation;
  */
 public interface EntityAnimation {
 
+	boolean isRunning();
+
+	void ensureRunning();
+
+	Object animate();
+
+	void start();
+
+	void stop();
+
+	void reset();
+
 	/**
 	 * Resets and starts the animation.
 	 */
 	default void restart() {
 		reset();
-		run();
+		start();
 	}
-
-	void run();
-
-	boolean isRunning();
-
-	void ensureRunning();
-
-	void advance();
-
-	Object animate();
-
-	void stop();
-
-	void reset();
 
 	void setRepetitions(int n);
 

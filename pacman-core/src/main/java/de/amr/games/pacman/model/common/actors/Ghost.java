@@ -171,7 +171,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		}
 		selectedAnimation().ifPresent(selectedAnimation -> {
 			selectedAnimation.ensureRunning();
-			selectedAnimation.advance();
+			selectedAnimation.animate();
 		});
 	}
 
@@ -484,7 +484,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 				// this is dependent on the animation implementation: display white with red eyes
 				flashing.setFrameIndex(2);
 			} else {
-				flashing.run();
+				flashing.start();
 			}
 		});
 	}

@@ -243,7 +243,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (game.memo.foodFound) {
 				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
 			}
-			if (game.pac().starvingTime() >= 12) { // ???
+			if (game.pac().starvingTicks() >= 12) { // ???
 				snd.stop(GameSound.PACMAN_MUNCH);
 			}
 			if (game.ghosts(GhostState.RETURNING_TO_HOUSE).count() > 0) {
@@ -323,7 +323,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					mazeFlashing.restart();
 				});
 			}
-			world.levelCompleteAnimation().ifPresent(EntityAnimation::advance);
+			world.levelCompleteAnimation().ifPresent(EntityAnimation::animate);
 		}
 	},
 
@@ -361,7 +361,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			} else {
 				gc.getSteering().steer(game, game.pac());
 				game.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE).forEach(ghost -> ghost.update(game));
-				game.energizerPulse.advance();
+				game.energizerPulse.animate();
 			}
 		}
 
@@ -385,10 +385,10 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			game.energizerPulse.advance();
+			game.energizerPulse.animate();
 			game.pac().update(game);
 			if (timer.betweenSeconds(0, 1)) {
-				game.ghosts().forEach(Ghost::advanceAnimation);
+				game.ghosts().forEach(Ghost::animate);
 			}
 			if (timer.atSecond(0.25)) {
 				game.pac().selectAndResetAnimation(AnimKeys.PAC_DYING);

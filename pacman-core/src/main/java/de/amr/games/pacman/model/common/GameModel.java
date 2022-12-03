@@ -580,7 +580,7 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus().update(this);
 		advanceHunting();
-		energizerPulse.advance();
+		energizerPulse.animate();
 		powerTimer.advance();
 	}
 
@@ -771,7 +771,7 @@ public abstract class GameModel {
 		if (globalDotCounter >= globalDotLimit) {
 			return unlockGhost(ghost, "Global dot counter at limit (%d)", globalDotLimit);
 		}
-		if (pac.starvingTime() >= pacStarvingTimeLimit) {
+		if (pac.starvingTicks() >= pacStarvingTimeLimit) {
 			pac.endStarving();
 			return unlockGhost(ghost, "%s reached starving limit (%d ticks)", pac.name(), pacStarvingTimeLimit);
 		}

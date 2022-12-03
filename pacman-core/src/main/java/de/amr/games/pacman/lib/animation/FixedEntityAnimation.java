@@ -49,7 +49,7 @@ public class FixedEntityAnimation<T> implements EntityAnimation {
 	}
 
 	@Override
-	public void run() {
+	public void start() {
 		// nothing to run
 	}
 
@@ -61,11 +61,6 @@ public class FixedEntityAnimation<T> implements EntityAnimation {
 	@Override
 	public void ensureRunning() {
 		// nothing to run
-	}
-
-	@Override
-	public void advance() {
-		// nothing to advance
 	}
 
 	@Override

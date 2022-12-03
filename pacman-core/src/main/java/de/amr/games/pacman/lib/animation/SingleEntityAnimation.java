@@ -95,7 +95,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	}
 
 	@Override
-	public void run() {
+	public void start() {
 		running = true;
 	}
 
@@ -111,13 +111,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 		return currentThing;
 	}
 
-	@Override
-	public T frame() {
-		return things[frameIndex];
-	}
-
-	@Override
-	public void advance() {
+	private void advance() {
 		if (running) {
 			if (frameRunningTicks + 1 < frameDurationTicks) {
 				frameRunningTicks++;
@@ -140,6 +134,11 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 				frameRunningTicks = 0;
 			}
 		}
+	}
+
+	@Override
+	public T frame() {
+		return things[frameIndex];
 	}
 
 	@Override

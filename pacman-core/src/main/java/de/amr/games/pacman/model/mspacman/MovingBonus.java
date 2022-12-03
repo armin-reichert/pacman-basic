@@ -148,7 +148,7 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 			navigateTowardsTarget(game);
 			tryMoving(game);
-			jumpAnimation.advance();
+			jumpAnimation.animate();
 		}
 		case EATEN -> {
 			if (--timer == 0) {

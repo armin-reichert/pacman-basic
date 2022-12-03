@@ -82,7 +82,7 @@ public class EntityAnimationSet<K> {
 	}
 
 	public void run() {
-		all().forEach(EntityAnimation::run);
+		all().forEach(EntityAnimation::start);
 	}
 
 	public void ensureRunning() {

@@ -179,23 +179,23 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 						ghost.setMoveAndWishDir(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();
-						ghost.advanceAnimation();
+						ghost.animate();
 					}
 					ctx.pacMan.move();
-					ctx.pacMan.advanceAnimation();
+					ctx.pacMan.animate();
 				}
 				// keep moving
 				else {
 					// wait 1 sec before blinking
 					if (timer.atSecond(1)) {
-						ctx.blinking.run();
+						ctx.blinking.start();
 					}
-					ctx.blinking.advance();
+					ctx.blinking.animate();
 					ctx.pacMan.move();
-					ctx.pacMan.advanceAnimation();
+					ctx.pacMan.animate();
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.move();
-						ghost.advanceAnimation();
+						ghost.animate();
 					}
 				}
 			}
@@ -242,19 +242,19 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 						if (!ghost.is(GhostState.EATEN)) {
 							ghost.show();
 							ghost.setAbsSpeed(0.6);
-							ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(EntityAnimation::run);
+							ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(EntityAnimation::start);
 						} else {
 							ghost.hide();
 						}
 					}
 				}
 				ctx.pacMan.move();
-				ctx.pacMan.advanceAnimation();
+				ctx.pacMan.animate();
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.move();
-					ghost.advanceAnimation();
+					ghost.animate();
 				}
-				ctx.blinking.advance();
+				ctx.blinking.animate();
 			}
 		},
 
