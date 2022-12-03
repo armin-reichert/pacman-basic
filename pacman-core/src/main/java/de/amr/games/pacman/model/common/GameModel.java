@@ -348,7 +348,7 @@ public abstract class GameModel {
 
 	/**
 	 * Sets the game state to be ready for playing. Pac-Man and the ghosts are placed at their initial positions, made
-	 * visible and their state is initialzed. Als the power timer and energizers are reset.
+	 * visible and their state is initialized. Also the power timer and energizers are reset.
 	 */
 	public void resetGuys() {
 		pac.reset();
