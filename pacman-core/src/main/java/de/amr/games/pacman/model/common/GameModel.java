@@ -93,10 +93,8 @@ public abstract class GameModel {
 	public static final int INITIAL_LIVES = 3;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 	public static final int EXTRA_LIFE = 10_000;
-
-	// not sure exactly how long Pac-Man is losing power
-	public static final int PAC_POWER_FADING_TICKS = 2 * FPS;
-
+	public static final long BONUS_EATEN_DURATION = 2 * FPS; // unsure
+	public static final int PAC_POWER_FADING_TICKS = 2 * FPS; // unsure
 	public static final double GHOST_SPEED_HOUSE = 0.5; // unsure
 	public static final double GHOST_SPEED_RETURNING = 2.0; // unsure
 

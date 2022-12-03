@@ -31,8 +31,6 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public interface Bonus {
 
-	public static final long EATEN_DURATION = 2 * GameModel.FPS;
-
 	/**
 	 * @return Entity representing this bonus in the world.
 	 */
