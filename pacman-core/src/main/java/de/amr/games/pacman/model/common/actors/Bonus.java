@@ -37,9 +37,9 @@ public interface Bonus {
 	Entity entity();
 
 	/**
-	 * @return the index representing this bonus
+	 * @return the number identifying this bonus.
 	 */
-	int index();
+	int id();
 
 	/**
 	 * @return points earned when eating this bonus
@@ -66,9 +66,9 @@ public interface Bonus {
 	/**
 	 * Changes the bonus state to edible.
 	 * 
-	 * @param index  number representing this bonus
-	 * @param points earned when eating this bonus
-	 * @param ticks  time how long the bonus is edible
+	 * @param bonusID number representing this bonus
+	 * @param points  earned when eating this bonus
+	 * @param ticks   time how long the bonus is edible
 	 */
-	void setEdible(int index, int value, long ticks);
+	void setEdible(int bonusID, int value, long ticks);
 }

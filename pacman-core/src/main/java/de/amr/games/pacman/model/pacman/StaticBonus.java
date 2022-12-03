@@ -41,7 +41,7 @@ public class StaticBonus implements Bonus {
 
 	private Entity entity;
 	private BonusState state;
-	private int bonusIndex;
+	private int bonusID;
 	private int points;
 	private long timer;
 
@@ -59,7 +59,7 @@ public class StaticBonus implements Bonus {
 
 	@Override
 	public String toString() {
-		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(bonusIndex, points, state,
+		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(bonusID, points, state,
 				entity.position(), timer);
 	}
 
@@ -69,8 +69,8 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
-	public int index() {
-		return bonusIndex;
+	public int id() {
+		return bonusID;
 	}
 
 	@Override
@@ -84,10 +84,10 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
-	public void setEdible(int bonusIndex, int points, long ticks) {
+	public void setEdible(int bonusID, int points, long ticks) {
 		state = BonusState.EDIBLE;
 		timer = ticks;
-		this.bonusIndex = bonusIndex;
+		this.bonusID = bonusID;
 		this.points = points;
 	}
 
