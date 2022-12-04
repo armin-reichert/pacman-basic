@@ -246,9 +246,15 @@ public class Creature extends Entity {
 		if (game.level().world().belongsToPortal(tile())) {
 			return; // inside portal, no navigation happens
 		}
-		// for each neighbor tile, compute distance to target tile, select direction with smallest distance
-		V2i currentTile = tile();
+		computeTargetDirection(game).ifPresent(this::setWishDir);
+	}
+
+	/*
+	 * For each neighbor tile, compute distance to target tile, select direction with smallest distance.
+	 */
+	private Optional<Direction> computeTargetDirection(GameModel game) {
 		Direction targetDir = null;
+		V2i currentTile = tile();
 		double minDistance = Double.MAX_VALUE;
 		for (var dir : DIRECTION_PRIORITY) {
 			if (dir == moveDir.opposite()) {
@@ -263,9 +269,7 @@ public class Creature extends Entity {
 				}
 			}
 		}
-		if (targetDir != null) {
-			setWishDir(targetDir);
-		}
+		return Optional.ofNullable(targetDir);
 	}
 
 	private MoveResult tryTeleport(GameModel game) {
