@@ -71,18 +71,19 @@ public abstract class GameModel {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	/** Speed in pixels/tick at 100%. */
+	/** Pixels/tick at 100% relative speed. */
 	public static final double BASE_SPEED = 1.25;
 
 	/** Game loop speed in ticks/sec. */
 	public static final int FPS = 60;
 
-	protected static final long[][] HUNTING_TIMES = {
-	//@formatter:off
-	{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS,   20*FPS, 5*FPS, TickTimer.INDEFINITE },
-	{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS, 1033*FPS,     1, TickTimer.INDEFINITE },
-	{ 5*FPS, 20*FPS, 5*FPS, 20*FPS, 5*FPS, 1037*FPS,     1, TickTimer.INDEFINITE }
-	//@formatter:on
+	/** Chase/scatter phase times. See Pac-Man dossier. */
+	public static final long[][] HUNTING_TIMES = {
+		//@formatter:off
+		{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS,   20*FPS, 5*FPS, TickTimer.INDEFINITE },
+		{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS, 1033*FPS,     1, TickTimer.INDEFINITE },
+		{ 5*FPS, 20*FPS, 5*FPS, 20*FPS, 5*FPS, 1037*FPS,     1, TickTimer.INDEFINITE }
+		//@formatter:on
 	};
 
 	public static final int MAX_CREDIT = 99;
@@ -91,25 +92,24 @@ public abstract class GameModel {
 	public static final int ENERGIZER_VALUE = 50;
 	public static final int ENERGIZER_RESTING_TICKS = 3;
 	public static final int INITIAL_LIVES = 3;
+	public static final int[] GHOST_EATEN_POINTS = { 200, 400, 800, 1600 };
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
-	public static final int EXTRA_LIFE = 10_000;
-	public static final long BONUS_EATEN_DURATION = 2 * FPS; // unsure
+	public static final int EXTRA_LIFE_POINTS = 10_000;
+	public static final long BONUS_EATEN_TICKS = 2 * FPS; // unsure
 	public static final int PAC_POWER_FADING_TICKS = 2 * FPS; // unsure
-	public static final double GHOST_SPEED_HOUSE = 0.5; // unsure
+	public static final double GHOST_SPEED_INSIDE_HOUSE = 0.5; // unsure
 	public static final double GHOST_SPEED_RETURNING = 2.0; // unsure
 
-	protected static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
-
-	/** Credit for playing. */
+	/** Number of coins inserted. */
 	protected int credit;
 
-	/** Tells if the game play is active. */
+	/** Tells if the game play is running. */
 	protected boolean playing;
 
-	/** Pac-Man or Ms. Pac-Man. */
+	/** Pac-Man / Ms. Pac-Man. */
 	protected final Pac pac;
 
-	/** Tells if Pac-Man can be killed by ghosts. */
+	/** Tells if Pac-Man can be killed by ghosts. Not part of original game. */
 	protected boolean immune;
 
 	/** If Pac-Man is controlled by autopilot. */
@@ -118,7 +118,7 @@ public abstract class GameModel {
 	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
 	protected final Ghost[] theGhosts;
 
-	/** "Cruise Elroy" state. Values: <code>0, 1, 2, -1, -2 (0= "off", negative value = "disabled")</code>. */
+	/** Blinky's "cruise elroy" state. Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled). */
 	protected byte cruiseElroyState;
 
 	/** The position of the ghosts when the game starts. */
@@ -195,12 +195,12 @@ public abstract class GameModel {
 		var orangeGhost = new Ghost(ID_ORANGE_GHOST, orangeGhostName);
 		theGhosts = new Ghost[] { redGhost, pinkGhost, cyanGhost, orangeGhost };
 
-		// The "AI" which defines the different ghost characters
+		// The "AI": each ghost has a different way of computing its chasing target
 		redGhost.setChasingTarget(pac::tile);
 		pinkGhost.setChasingTarget(() -> tilesAhead(pac, 4));
 		cyanGhost.setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
-		orangeGhost.setChasingTarget(
-				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? ghostScatterTile[ID_ORANGE_GHOST] : pac.tile());
+		orangeGhost.setChasingTarget(() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? //
+				ghostScatterTile[ID_ORANGE_GHOST] : pac.tile());
 	}
 
 	public abstract GameVariant variant();
@@ -231,7 +231,6 @@ public abstract class GameModel {
 
 	public void setHiscoreFile(File file) {
 		this.highScoreFile = file;
-		ScoreManager.loadScore(highScore, file);
 	}
 
 	public void enableScores(boolean enabled) {
@@ -249,7 +248,7 @@ public abstract class GameModel {
 			highScore.setLevelNumber(level.number());
 			highScore.setDate(LocalDate.now());
 		}
-		if (scoreBefore < GameModel.EXTRA_LIFE && gameScore.points() >= GameModel.EXTRA_LIFE) {
+		if (scoreBefore < GameModel.EXTRA_LIFE_POINTS && gameScore.points() >= GameModel.EXTRA_LIFE_POINTS) {
 			lives++;
 			GameEvents.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, pac.tile()));
 		}
@@ -300,7 +299,6 @@ public abstract class GameModel {
 		lives = INITIAL_LIVES;
 		livesOneLessShown = false;
 		gameScore.reset();
-		ScoreManager.loadScore(highScore, highScoreFile);
 	}
 
 	public GameLevel level() {
@@ -483,7 +481,7 @@ public abstract class GameModel {
 	 * @return value of killed ghost (200, 400, 800, 1600)
 	 */
 	public int ghostValue(int ghostKillIndex) {
-		return GHOST_VALUES[ghostKillIndex];
+		return GHOST_EATEN_POINTS[ghostKillIndex];
 	}
 
 	/**

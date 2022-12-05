@@ -132,7 +132,7 @@ public class MovingBonus extends Creature implements Bonus {
 		case EDIBLE -> {
 			if (sameTile(game.pac())) {
 				state = BonusState.EATEN;
-				timer = GameModel.BONUS_EATEN_DURATION;
+				timer = GameModel.BONUS_EATEN_TICKS;
 				jumpAnimation.stop();
 				game.scorePoints(points);
 				LOGGER.info("Bonus eaten: %s", this);

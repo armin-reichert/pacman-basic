@@ -105,7 +105,7 @@ public class StaticBonus implements Bonus {
 			if (entity.sameTile(game.pac())) {
 				game.scorePoints(points());
 				state = BonusState.EATEN;
-				timer = GameModel.BONUS_EATEN_DURATION;
+				timer = GameModel.BONUS_EATEN_TICKS;
 				LOGGER.info("Bonus eaten: %s", this);
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, entity.tile());
 				return;

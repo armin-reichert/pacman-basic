@@ -49,12 +49,13 @@ import de.amr.games.pacman.model.common.world.ArcadeWorld;
  */
 public enum GameState implements FsmState<GameModel>, GameCommands {
 
-	BOOT() { // Boot steigt! Jawoll Herr KaLeu!
+	BOOT() { // Boot steigt! Jawoll Herr Kaleu!
 		@Override
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start();
 			game.levelCounter().clear();
+			ScoreManager.loadScore(game.highScore(), game.highScoreFile());
 		}
 
 		@Override
