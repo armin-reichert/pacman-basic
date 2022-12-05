@@ -44,25 +44,25 @@ public class GhostHouseRules {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	/** Counters used by ghost house logic. */
-	private final int[] ghostDotCounter = new int[4];
+	private final int[] ghostDotCounters = new int[4];
 
-	/** Counter used by ghost house logic. */
 	private int globalDotCounter;
 
 	/** Enabled state of the counter used by ghost house logic. */
 	private boolean globalDotCounterEnabled;
 
-	/** Max number of clock ticks Pac can be starving until ghost gets unlocked. */
+	/** Level-specific: Max number of clock ticks Pac can be starving until ghost gets unlocked. */
 	public int pacStarvingTimeLimit;
 
+	/** Level-specific: Limits for global dot counter, by ghost. */
 	public byte[] globalGhostDotLimits;
 
+	/** Level-specific: Limits for private dot counter, by ghost. */
 	public byte[] privateGhostDotLimits;
 
-	public void reset() {
+	public void resetAllDotCounters() {
 		resetGlobalDotCounter();
-		Arrays.fill(ghostDotCounter, 0);
+		Arrays.fill(ghostDotCounters, 0);
 	}
 
 	public void resetGlobalDotCounter() {
@@ -80,7 +80,7 @@ public class GhostHouseRules {
 			return unlockGhost(game, ghost, "Outside house");
 		}
 		// check private dot counter
-		if (!globalDotCounterEnabled && ghostDotCounter[ghost.id] >= privateGhostDotLimits[ghost.id]) {
+		if (!globalDotCounterEnabled && ghostDotCounters[ghost.id] >= privateGhostDotLimits[ghost.id]) {
 			return unlockGhost(game, ghost, "Private dot counter at limit (%d)", privateGhostDotLimits[ghost.id]);
 		}
 		// check global dot counter
@@ -127,7 +127,7 @@ public class GhostHouseRules {
 			}
 		} else {
 			game.ghosts(LOCKED).filter(ghost -> ghost.id != ID_RED_GHOST).findFirst()
-					.ifPresent(ghost -> ++ghostDotCounter[ghost.id]);
+					.ifPresent(ghost -> ++ghostDotCounters[ghost.id]);
 		}
 	}
 

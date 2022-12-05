@@ -275,7 +275,7 @@ public abstract class GameModel {
 	}
 
 	public void reset() {
-		ghostHouseRules.reset();
+		ghostHouseRules.resetAllDotCounters();
 		playing = false;
 		lives = INITIAL_LIVES;
 		livesOneLessShown = false;
@@ -302,7 +302,7 @@ public abstract class GameModel {
 	}
 
 	protected void initGhosts() {
-		ghostHouseRules.reset();
+		ghostHouseRules.resetAllDotCounters();
 		cruiseElroyState = 0;
 		if (level.world() instanceof ArcadeWorld) {
 			ghostHomePosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
