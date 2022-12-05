@@ -109,9 +109,6 @@ public abstract class GameModel {
 	/** Pac-Man or Ms. Pac-Man. */
 	protected final Pac pac;
 
-	/** Controls the time Pac has power. */
-	protected final TickTimer powerTimer = new TickTimer("Pac-power-timer", FPS);
-
 	/** Tells if Pac-Man can be killed by ghosts. */
 	protected boolean immune;
 
@@ -135,6 +132,9 @@ public abstract class GameModel {
 
 	/** Timer used to control hunting phases. */
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
+
+	/** Controls the time Pac has power. */
+	protected final TickTimer pacPowerTimer = new TickTimer("PacPower", FPS);
 
 	/** Current level. */
 	protected GameLevel level;
@@ -364,7 +364,7 @@ public abstract class GameModel {
 			ghost.enterStateLocked();
 		});
 		guys().forEach(Creature::show);
-		powerTimer.reset(0);
+		pacPowerTimer.reset(0);
 		energizerPulse.reset();
 	}
 
@@ -561,7 +561,7 @@ public abstract class GameModel {
 	}
 
 	public TickTimer powerTimer() {
-		return powerTimer;
+		return pacPowerTimer;
 	}
 
 	// Bonus stuff
@@ -579,7 +579,7 @@ public abstract class GameModel {
 		bonus().update(this);
 		advanceHunting();
 		energizerPulse.animate();
-		powerTimer.advance();
+		pacPowerTimer.advance();
 	}
 
 	public void whatHappenedWithFood() {
@@ -616,16 +616,17 @@ public abstract class GameModel {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
 		if (memo.pacPowerLost) {
-			onPacPowerLost();
+			onPacPowerEnds();
 		}
 	}
 
 	private boolean isPacMeetingKiller() {
-		return !immune && !powerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+		return !immune && !pacPowerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	private void onPacMetKiller() {
 		pac.die();
+		LOGGER.info("%s died: %s", pac.name(), pac);
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
 		LOGGER.info("Global dot counter got reset and enabled because %s died", pac.name());
@@ -665,25 +666,24 @@ public abstract class GameModel {
 		LOGGER.info("Ghost %s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), value);
 	}
 
-	private void startPowerTimer(double seconds) {
-		powerTimer.resetSeconds(seconds);
-		powerTimer.start();
-		LOGGER.info("Power timer started: %s", powerTimer);
+	private void startPacPowerTimer(double seconds) {
+		pacPowerTimer.resetSeconds(seconds);
+		pacPowerTimer.start();
+		LOGGER.info("Timer started: %s", pacPowerTimer);
 	}
 
 	private void checkPacPower() {
-		memo.pacPowerFading = powerTimer.remaining() == PAC_POWER_FADING_TICKS;
-		memo.pacPowerLost = powerTimer.hasExpired();
+		memo.pacPowerFading = pacPowerTimer.remaining() == PAC_POWER_FADING_TICKS;
+		memo.pacPowerLost = pacPowerTimer.hasExpired();
 	}
 
 	public boolean isPacPowerFading() {
-		return powerTimer.isRunning() && powerTimer.remaining() <= PAC_POWER_FADING_TICKS;
+		return pacPowerTimer.isRunning() && pacPowerTimer.remaining() <= PAC_POWER_FADING_TICKS;
 	}
 
-	private void onPacPowerLost() {
-		LOGGER.info("%s lost power, timer=%s", pac.name(), powerTimer);
-		// leave state EXPIRED to avoid repetitions:
-		powerTimer.resetIndefinitely();
+	private void onPacPowerEnds() {
+		LOGGER.info("%s power ends", pac.name());
+		pacPowerTimer.resetIndefinitely();
 		huntingTimer.start();
 		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac(this));
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
@@ -735,7 +735,7 @@ public abstract class GameModel {
 
 	private void onPacGetsPower() {
 		huntingTimer.stop();
-		startPowerTimer(level.ghostFrightenedSeconds());
+		startPacPowerTimer(level.ghostFrightenedSeconds());
 		ghosts(HUNTING_PAC, FRIGHTENED).forEach(ghost -> {
 			if (ghost.getState() != FRIGHTENED) {
 				ghost.enterStateFrightened(this);
@@ -753,7 +753,7 @@ public abstract class GameModel {
 			return false;
 		}
 		if (ghost.id == ID_RED_GHOST) {
-			return unlockGhost(ghost, "Unlocked immediately");
+			return unlockGhost(ghost, "Outside house");
 		}
 		// check private dot counter
 		if (!globalDotCounterEnabled && ghostDotCounter[ghost.id] >= privateDotLimits[ghost.id]) {
@@ -787,7 +787,7 @@ public abstract class GameModel {
 		}
 		memo.unlockedGhost = Optional.of(ghost);
 		memo.unlockReason = reason.formatted(args);
-		LOGGER.info("Unlocked ghost %s: %s", ghost.name(), memo.unlockReason);
+		LOGGER.info("Unlocked %s: %s", ghost.name(), memo.unlockReason);
 		return true;
 	}
 

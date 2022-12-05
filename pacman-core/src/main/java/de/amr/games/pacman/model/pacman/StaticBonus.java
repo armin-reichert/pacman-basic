@@ -23,6 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.V2d;
@@ -37,6 +40,8 @@ import de.amr.games.pacman.model.common.actors.Entity;
  * @author Armin Reichert
  */
 public class StaticBonus implements Bonus {
+
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private Entity entity;
 	private BonusState state;
@@ -101,6 +106,7 @@ public class StaticBonus implements Bonus {
 				game.scorePoints(points());
 				state = BonusState.EATEN;
 				timer = GameModel.BONUS_EATEN_DURATION;
+				LOGGER.info("Bonus eaten: %s", this);
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, entity.tile());
 				return;
 			}

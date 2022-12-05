@@ -60,7 +60,18 @@ public class HuntingTimer extends TickTimer {
 		this.phase = phase;
 		reset(duration);
 		start();
-		LOGGER.info("%s: started", this);
+	}
+
+	@Override
+	public void start() {
+		super.start();
+		LOGGER.info("Timer started: %s", this);
+	}
+
+	@Override
+	public void stop() {
+		super.stop();
+		LOGGER.info("Timer stopped: %s", this);
 	}
 
 	/**
