@@ -204,18 +204,22 @@ public class PacManGame extends GameModel {
 	public void setLevel(int levelNumber) {
 		int index = levelNumber <= LEVELS.length ? levelNumber - 1 : LEVELS.length - 1;
 		level = new GameLevel(levelNumber, 1, createWorld(), -1, LEVELS[index]);
-		pacStarvingTimeLimit = (levelNumber < 5 ? 4 : 3) * FPS;
-		globalDotLimits = new byte[] { -1, 7, 17, -1 };
-		privateDotLimits = switch (levelNumber) {
-		case 1 -> new byte[] { 0, 0, 30, 60 };
-		case 2 -> new byte[] { 0, 0, 0, 50 };
-		default -> new byte[] { 0, 0, 0, 0 };
-		};
 		numGhostsKilledInLevel = 0;
 		ghostsKilledByEnergizer = 0;
 		gameScore().setLevelNumber(levelNumber);
 		initGhosts();
+		setLevelGhostHouseRules(levelNumber);
 		bonus.setInactive();
+	}
+
+	private void setLevelGhostHouseRules(int levelNumber) {
+		ghostHouseRules.pacStarvingTimeLimit = levelNumber < 5 ? 4 * FPS : 3 * FPS;
+		ghostHouseRules.globalGhostDotLimits = new byte[] { -1, 7, 17, -1 };
+		ghostHouseRules.privateGhostDotLimits = switch (levelNumber) {
+		case 1 -> new byte[] { 0, 0, 30, 60 };
+		case 2 -> new byte[] { 0, 0, 0, 50 };
+		default -> new byte[] { 0, 0, 0, 0 };
+		};
 	}
 
 	@Override

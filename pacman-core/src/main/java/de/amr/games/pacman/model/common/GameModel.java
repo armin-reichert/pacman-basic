@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
@@ -31,14 +30,11 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.io.File;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -157,22 +153,6 @@ public abstract class GameModel {
 	/** Energizer animation. */
 	public final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
 
-	/** Counters used by ghost house logic. */
-	protected final int[] ghostDotCounter = new int[4];
-
-	/** Counter used by ghost house logic. */
-	protected int globalDotCounter;
-
-	/** Enabled state of the counter used by ghost house logic. */
-	protected boolean globalDotCounterEnabled;
-
-	/** Max number of clock ticks Pac can be starving until ghost gets unlocked. */
-	protected int pacStarvingTimeLimit;
-
-	protected byte[] globalDotLimits;
-
-	protected byte[] privateDotLimits;
-
 	private final Score gameScore = new Score("SCORE");
 
 	private final Score highScore = new Score("HIGH SCORE");
@@ -180,6 +160,8 @@ public abstract class GameModel {
 	protected File highScoreFile;
 
 	protected boolean scoresEnabled;
+
+	protected final GhostHouseRules ghostHouseRules = new GhostHouseRules();
 
 	/** Stores what happened during the last tick. */
 	public final Memory memo = new Memory();
@@ -293,8 +275,7 @@ public abstract class GameModel {
 	}
 
 	public void reset() {
-		globalDotCounter = 0;
-		globalDotCounterEnabled = false;
+		ghostHouseRules.reset();
 		playing = false;
 		lives = INITIAL_LIVES;
 		livesOneLessShown = false;
@@ -321,7 +302,7 @@ public abstract class GameModel {
 	}
 
 	protected void initGhosts() {
-		Arrays.fill(ghostDotCounter, 0);
+		ghostHouseRules.reset();
 		cruiseElroyState = 0;
 		if (level.world() instanceof ArcadeWorld) {
 			ghostHomePosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
@@ -571,8 +552,8 @@ public abstract class GameModel {
 	// Game logic
 
 	public void update() {
+		ghostHouseRules.checkIfGhostCanBeUnlocked(this);
 		pac.update(this);
-		unlockPreferredGhost();
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus().update(this);
 		advanceHunting();
@@ -625,9 +606,7 @@ public abstract class GameModel {
 	private void onPacMetKiller() {
 		pac.die();
 		LOGGER.info("%s died: %s", pac.name(), pac);
-		globalDotCounter = 0;
-		globalDotCounterEnabled = true;
-		LOGGER.info("Global dot counter got reset and enabled because %s died", pac.name());
+		ghostHouseRules.resetGlobalDotCounter();
 		if (cruiseElroyState > 0) {
 			LOGGER.info("Disabled Cruise Elroy mode (%d) for red ghost", cruiseElroyState);
 			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"
@@ -715,7 +694,7 @@ public abstract class GameModel {
 		pac.rest(restingTicks);
 		level.world().removeFood(pac.tile());
 		checkIfRedGhostBecomesCruiseElroy();
-		updateGhostDotCounters();
+		ghostHouseRules.updateGhostDotCounters(this);
 		scorePoints(value);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, pac.tile());
 	}
@@ -741,67 +720,5 @@ public abstract class GameModel {
 			ghost.reverseDirectionASAP();
 		});
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
-	}
-
-	// Ghost house rules, see Pac-Man dossier
-
-	private boolean unlockPreferredGhost() {
-		var ghost = ghosts(LOCKED).findFirst().orElse(null);
-		if (ghost == null) {
-			return false;
-		}
-		if (ghost.id == ID_RED_GHOST) {
-			return unlockGhost(ghost, "Outside house");
-		}
-		// check private dot counter
-		if (!globalDotCounterEnabled && ghostDotCounter[ghost.id] >= privateDotLimits[ghost.id]) {
-			return unlockGhost(ghost, "Private dot counter at limit (%d)", privateDotLimits[ghost.id]);
-		}
-		// check global dot counter
-		var globalDotLimit = globalDotLimits[ghost.id] == -1 ? Integer.MAX_VALUE : globalDotLimits[ghost.id];
-		if (globalDotCounter >= globalDotLimit) {
-			return unlockGhost(ghost, "Global dot counter at limit (%d)", globalDotLimit);
-		}
-		if (pac.starvingTicks() >= pacStarvingTimeLimit) {
-			pac.endStarving();
-			return unlockGhost(ghost, "%s reached starving limit (%d ticks)", pac.name(), pacStarvingTimeLimit);
-		}
-		return false;
-	}
-
-	private boolean unlockGhost(Ghost ghost, String reason, Object... args) {
-		if (ghost.id == ID_RED_GHOST) {
-			// Red ghost is outside house when locked, enters "hunting" state and moves left
-			ghost.setMoveAndWishDir(LEFT);
-			ghost.enterStateHuntingPac(this);
-		} else {
-			// all other ghosts have to leave house first
-			ghost.enterStateLeavingHouse(this);
-		}
-		if (ghost.id == ID_ORANGE_GHOST && cruiseElroyState < 0) {
-			// Disabled "Cruise Elroy" state is resumed when orange ghost is unlocked
-			cruiseElroyState = (byte) -cruiseElroyState;
-			LOGGER.info("Cruise Elroy mode %d resumed", cruiseElroyState);
-		}
-		memo.unlockedGhost = Optional.of(ghost);
-		memo.unlockReason = reason.formatted(args);
-		LOGGER.info("Unlocked %s: %s", ghost.name(), memo.unlockReason);
-		return true;
-	}
-
-	private void updateGhostDotCounters() {
-		if (globalDotCounterEnabled) {
-			if (theGhosts[ID_ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
-				globalDotCounterEnabled = false;
-				globalDotCounter = 0;
-				LOGGER.info("Global dot counter disabled and reset to 0, %s was in house when counter reached 32",
-						theGhosts[ID_ORANGE_GHOST].name());
-			} else {
-				globalDotCounter++;
-			}
-		} else {
-			ghosts(LOCKED).filter(ghost -> ghost.id != ID_RED_GHOST).findFirst()
-					.ifPresent(ghost -> ++ghostDotCounter[ghost.id]);
-		}
 	}
 }

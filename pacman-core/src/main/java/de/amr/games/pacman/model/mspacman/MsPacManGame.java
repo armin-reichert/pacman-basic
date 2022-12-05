@@ -325,14 +325,18 @@ public class MsPacManGame extends GameModel {
 		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(7) : -1; // -1 means: use value from level data
 		level = new GameLevel(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber), bonusSymbol,
 				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
-		pacStarvingTimeLimit = (levelNumber < 5 ? 4 : 3) * FPS;
-		globalDotLimits = new byte[] { -1, 7, 17, -1 };
-		privateDotLimits = switch (levelNumber) {
+		numGhostsKilledInLevel = 0;
+		setLevelGhostHouseRules(levelNumber);
+	}
+
+	private void setLevelGhostHouseRules(int levelNumber) {
+		ghostHouseRules.pacStarvingTimeLimit = levelNumber < 5 ? 4 * FPS : 3 * FPS;
+		ghostHouseRules.globalGhostDotLimits = new byte[] { -1, 7, 17, -1 };
+		ghostHouseRules.privateGhostDotLimits = switch (levelNumber) {
 		case 1 -> new byte[] { 0, 0, 30, 60 };
 		case 2 -> new byte[] { 0, 0, 0, 50 };
 		default -> new byte[] { 0, 0, 0, 0 };
 		};
-		numGhostsKilledInLevel = 0;
 	}
 
 	@Override
