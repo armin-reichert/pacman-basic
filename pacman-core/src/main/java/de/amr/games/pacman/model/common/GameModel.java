@@ -590,7 +590,7 @@ public abstract class GameModel {
 			memo.ghostsKilled = true;
 			return; // enter new game state
 		}
-		checkPacPower();
+		checkIfPacHasPower();
 		if (memo.pacPowerFading) {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
@@ -643,19 +643,25 @@ public abstract class GameModel {
 		LOGGER.info("Ghost %s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), value);
 	}
 
-	private void startPacPowerTimer(double seconds) {
-		pacPowerTimer.resetSeconds(seconds);
-		pacPowerTimer.start();
-		LOGGER.info("Timer started: %s", pacPowerTimer);
-	}
+	// Pac-Man power stuff
 
-	private void checkPacPower() {
+	private void checkIfPacHasPower() {
 		memo.pacPowerFading = pacPowerTimer.remaining() == PAC_POWER_FADING_TICKS;
 		memo.pacPowerLost = pacPowerTimer.hasExpired();
 	}
 
 	public boolean isPacPowerFading() {
 		return pacPowerTimer.isRunning() && pacPowerTimer.remaining() <= PAC_POWER_FADING_TICKS;
+	}
+
+	private void onPacGetsPower() {
+		huntingTimer.stop();
+		pacPowerTimer.resetSeconds(level.ghostFrightenedSeconds());
+		pacPowerTimer.start();
+		LOGGER.info("Timer started: %s", pacPowerTimer);
+		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened(this));
+		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
+		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}
 
 	private void onPacPowerEnds() {
@@ -708,17 +714,5 @@ public abstract class GameModel {
 			cruiseElroyState = 2;
 			LOGGER.info("Red ghost becomes Cruise Elroy 2");
 		}
-	}
-
-	private void onPacGetsPower() {
-		huntingTimer.stop();
-		startPacPowerTimer(level.ghostFrightenedSeconds());
-		ghosts(HUNTING_PAC, FRIGHTENED).forEach(ghost -> {
-			if (ghost.getState() != FRIGHTENED) {
-				ghost.enterStateFrightened(this);
-			}
-			ghost.reverseDirectionASAP();
-		});
-		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}
 }
