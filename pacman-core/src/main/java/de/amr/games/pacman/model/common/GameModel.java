@@ -561,21 +561,9 @@ public abstract class GameModel {
 		pacPowerTimer.advance();
 	}
 
-	public void whatHappenedWithFood() {
-		checkFoodFound();
-		if (memo.foodFound) {
-			onFoodFound();
-			if (memo.bonusReached) {
-				onBonusReached();
-			}
-		} else {
-			pac.starve();
-		}
-	}
-
 	public void whatHappenedWithTheGuys() {
 		if (memo.pacGotPower) {
-			onPacGetsPower();
+			onPacPowerBegin();
 		}
 
 		memo.pacMetKiller = isPacMeetingKiller();
@@ -595,21 +583,7 @@ public abstract class GameModel {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
 		if (memo.pacPowerLost) {
-			onPacPowerEnds();
-		}
-	}
-
-	private boolean isPacMeetingKiller() {
-		return !immune && !pacPowerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
-	}
-
-	private void onPacMetKiller() {
-		pac.die();
-		LOGGER.info("%s died: %s", pac.name(), pac);
-		ghostHouseRules.resetGlobalDotCounter();
-		if (cruiseElroyState > 0) {
-			LOGGER.info("Disabled Cruise Elroy mode (%d) for red ghost", cruiseElroyState);
-			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"
+			onPacPowerEnd();
 		}
 	}
 
@@ -643,7 +617,21 @@ public abstract class GameModel {
 		LOGGER.info("Ghost %s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), value);
 	}
 
-	// Pac-Man power stuff
+	// Pac-Man
+
+	private boolean isPacMeetingKiller() {
+		return !immune && !pacPowerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+	}
+
+	private void onPacMetKiller() {
+		pac.die();
+		LOGGER.info("%s died: %s", pac.name(), pac);
+		ghostHouseRules.resetGlobalDotCounter();
+		if (cruiseElroyState > 0) {
+			LOGGER.info("Disabled Cruise Elroy mode (%d) for red ghost", cruiseElroyState);
+			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"
+		}
+	}
 
 	private void checkIfPacHasPower() {
 		memo.pacPowerFading = pacPowerTimer.remaining() == PAC_POWER_FADING_TICKS;
@@ -654,7 +642,8 @@ public abstract class GameModel {
 		return pacPowerTimer.isRunning() && pacPowerTimer.remaining() <= PAC_POWER_FADING_TICKS;
 	}
 
-	private void onPacGetsPower() {
+	private void onPacPowerBegin() {
+		LOGGER.info("%s power begins", pac.name());
 		huntingTimer.stop();
 		pacPowerTimer.resetSeconds(level.ghostFrightenedSeconds());
 		pacPowerTimer.start();
@@ -664,12 +653,26 @@ public abstract class GameModel {
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}
 
-	private void onPacPowerEnds() {
+	private void onPacPowerEnd() {
 		LOGGER.info("%s power ends", pac.name());
 		pacPowerTimer.resetIndefinitely();
 		huntingTimer.start();
 		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac(this));
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
+	}
+
+	// Food
+
+	public void whatHappenedWithFood() {
+		checkFoodFound();
+		if (memo.foodFound) {
+			onFoodFound();
+			if (memo.bonusReached) {
+				onBonusReached();
+			}
+		} else {
+			pac.starve();
+		}
 	}
 
 	private void checkFoodFound() {
