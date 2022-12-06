@@ -329,16 +329,6 @@ public class MsPacManGame extends GameModel {
 		setLevelGhostHouseRules(levelNumber);
 	}
 
-	private void setLevelGhostHouseRules(int levelNumber) {
-		ghostHouseRules.setPacStarvingTimeLimit(levelNumber < 5 ? 240 : 180);
-		ghostHouseRules.setGlobalGhostDotLimits(-1, 7, 17, -1);
-		switch (levelNumber) {
-		case 1 -> ghostHouseRules.setPrivateGhostDotLimits(0, 0, 30, 60);
-		case 2 -> ghostHouseRules.setPrivateGhostDotLimits(0, 0, 0, 50);
-		default -> ghostHouseRules.setPrivateGhostDotLimits(0, 0, 0, 0);
-		}
-	}
-
 	@Override
 	public MovingBonus bonus() {
 		return movingBonus;

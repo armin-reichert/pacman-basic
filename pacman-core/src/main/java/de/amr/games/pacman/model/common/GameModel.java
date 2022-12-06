@@ -562,6 +562,16 @@ public abstract class GameModel {
 		pacPowerTimer.advance();
 	}
 
+	protected void setLevelGhostHouseRules(int levelNumber) {
+		ghostHouseRules.setPacStarvingTimeLimit(levelNumber < 5 ? 240 : 180);
+		ghostHouseRules.setGlobalGhostDotLimits(-1, 7, 17, -1);
+		switch (levelNumber) {
+		case 1 -> ghostHouseRules.setPrivateGhostDotLimits(0, 0, 30, 60);
+		case 2 -> ghostHouseRules.setPrivateGhostDotLimits(0, 0, 0, 50);
+		default -> ghostHouseRules.setPrivateGhostDotLimits(0, 0, 0, 0);
+		}
+	}
+
 	private void checkIfGhostCanGetUnlocked() {
 		ghostHouseRules.checkIfGhostCanBeUnlocked(this).ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
