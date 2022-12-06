@@ -176,7 +176,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					// get ready
 					game.guys().forEach(Entity::show);
 					game.setLivesOneLessShown(true);
-				} else if (timer.tick() == 250) {
+				} else if (timer.tick() == 270) {
 					// start playing
 					game.setPlaying(true);
 					game.startHuntingPhase(0);
