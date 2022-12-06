@@ -276,11 +276,11 @@ public abstract class GameModel {
 	}
 
 	public void reset() {
-		ghostHouseRules.resetAllDotCounters();
 		playing = false;
 		lives = INITIAL_LIVES;
 		livesOneLessShown = false;
 		gameScore.reset();
+		ghostHouseRules.resetAllDotCounters();
 	}
 
 	public GameLevel level() {
@@ -291,6 +291,7 @@ public abstract class GameModel {
 		resetGuys();
 		guys().forEach(Entity::hide);
 		levelCounter.addSymbol(level.bonusIndex());
+		ghostHouseRules.resetPrivateDotCounters();
 	}
 
 	public void endLevel() {
@@ -303,7 +304,6 @@ public abstract class GameModel {
 	}
 
 	protected void initGhosts() {
-		ghostHouseRules.resetAllDotCounters();
 		cruiseElroyState = 0;
 		if (level.world() instanceof ArcadeWorld) {
 			ghostHomePosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
@@ -640,7 +640,7 @@ public abstract class GameModel {
 	private void onPacMetKiller() {
 		pac.die();
 		LOGGER.info("%s died: %s", pac.name(), pac);
-		ghostHouseRules.resetGlobalDotCounter();
+		ghostHouseRules.resetGlobalDotCounterAndSetEnabled(true);
 		if (cruiseElroyState > 0) {
 			LOGGER.info("Disabled Cruise Elroy mode (%d) for red ghost", cruiseElroyState);
 			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"

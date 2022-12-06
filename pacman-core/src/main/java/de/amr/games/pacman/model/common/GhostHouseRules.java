@@ -81,14 +81,38 @@ public class GhostHouseRules {
 	}
 
 	public void resetAllDotCounters() {
-		resetGlobalDotCounter();
+		resetGlobalDotCounterAndSetEnabled(false);
+		resetPrivateDotCounters();
+	}
+
+	public void resetPrivateDotCounters() {
 		Arrays.fill(ghostDotCounters, 0);
 	}
 
-	public void resetGlobalDotCounter() {
+	public void resetGlobalDotCounterAndSetEnabled(boolean enable) {
 		globalDotCounter = 0;
-		globalDotCounterEnabled = false;
-		LOGGER.info("Global dot counter reset to 0 and disabled");
+		globalDotCounterEnabled = enable;
+		LOGGER.info("Global dot counter reset to 0 and %s", enable ? "enabled" : "disabled");
+	}
+
+	public void updateGhostDotCounters(GameModel game) {
+		if (globalDotCounterEnabled) {
+			if (game.theGhosts[ID_ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
+				LOGGER.info("%s inside house when counter reached 32", game.theGhosts[ID_ORANGE_GHOST].name());
+				resetGlobalDotCounterAndSetEnabled(false);
+			} else {
+				globalDotCounter++;
+			}
+		} else {
+			var house = game.level().world().ghostHouse();
+			game.ghosts(LOCKED).filter(ghost -> house.contains(ghost.tile())).findFirst()
+					.ifPresent(this::increaseGhostDotCounter);
+		}
+	}
+
+	private void increaseGhostDotCounter(Ghost ghost) {
+		ghostDotCounters[ghost.id]++;
+		LOGGER.info("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id]);
 	}
 
 	public Optional<UnlockResult> checkIfGhostCanBeUnlocked(GameModel game) {
@@ -128,18 +152,4 @@ public class GhostHouseRules {
 		return Optional.of(new UnlockResult(ghost, reason.formatted(args)));
 	}
 
-	public void updateGhostDotCounters(GameModel game) {
-		if (globalDotCounterEnabled) {
-			if (game.theGhosts[ID_ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
-				LOGGER.info("%s inside house when counter reached 32", game.theGhosts[ID_ORANGE_GHOST].name());
-				resetGlobalDotCounter();
-			} else {
-				globalDotCounter++;
-			}
-		} else {
-			var house = game.level().world().ghostHouse();
-			game.ghosts(LOCKED).filter(ghost -> house.contains(ghost.tile())).findFirst()
-					.ifPresent(ghost -> ++ghostDotCounters[ghost.id]);
-		}
-	}
 }
