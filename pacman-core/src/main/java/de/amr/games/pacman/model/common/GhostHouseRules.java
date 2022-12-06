@@ -133,6 +133,7 @@ public class GhostHouseRules {
 		if (globalDotCounter >= globalDotLimit) {
 			return unlockGhost(game, ghost, "Global dot counter at limit (%d)", globalDotLimit);
 		}
+		// check Pac-Man starving reaches limit
 		if (game.pac.starvingTicks() >= pacStarvingTimeLimit) {
 			game.pac.endStarving();
 			return unlockGhost(game, ghost, "%s reached starving limit (%d ticks)", game.pac.name(), pacStarvingTimeLimit);
