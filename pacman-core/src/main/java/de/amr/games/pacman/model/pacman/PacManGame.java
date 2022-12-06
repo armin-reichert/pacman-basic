@@ -213,7 +213,7 @@ public class PacManGame extends GameModel {
 	}
 
 	private void setLevelGhostHouseRules(int levelNumber) {
-		ghostHouseRules.setPacStarvingTimeLimit(levelNumber < 5 ? 4 * FPS : 3 * FPS);
+		ghostHouseRules.setPacStarvingTimeLimit(levelNumber < 5 ? 240 : 180);
 		ghostHouseRules.setGlobalGhostDotLimits(-1, 7, 17, -1);
 		switch (levelNumber) {
 		case 1 -> ghostHouseRules.setPrivateGhostDotLimits(0, 0, 30, 60);
