@@ -573,7 +573,7 @@ public abstract class GameModel {
 	}
 
 	private void checkIfGhostCanGetUnlocked() {
-		ghostHouseRules.checkIfGhostCanBeUnlocked(this).ifPresent(unlock -> {
+		ghostHouseRules.checkIfGhostCanBeGetUnlocked(this).ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
 			LOGGER.info("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());

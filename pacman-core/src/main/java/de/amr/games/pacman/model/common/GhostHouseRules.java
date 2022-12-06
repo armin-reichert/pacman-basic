@@ -115,7 +115,7 @@ public class GhostHouseRules {
 		LOGGER.info("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id]);
 	}
 
-	public Optional<UnlockResult> checkIfGhostCanBeUnlocked(GameModel game) {
+	public Optional<UnlockResult> checkIfGhostCanBeGetUnlocked(GameModel game) {
 		var ghost = game.ghosts(LOCKED).findFirst().orElse(null);
 		if (ghost == null) {
 			return Optional.empty();
