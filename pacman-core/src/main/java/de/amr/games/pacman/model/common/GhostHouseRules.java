@@ -26,7 +26,6 @@ package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
 import java.util.Arrays;
@@ -41,6 +40,9 @@ import de.amr.games.pacman.model.common.actors.Ghost;
  * @author Armin Reichert
  */
 public class GhostHouseRules {
+
+	public record UnlockResult(Ghost ghost, String reason) {
+	}
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
@@ -71,13 +73,13 @@ public class GhostHouseRules {
 		LOGGER.info("Global dot counter reset to 0 and disabled");
 	}
 
-	public boolean checkIfGhostCanBeUnlocked(GameModel game) {
+	public Optional<UnlockResult> checkIfGhostCanBeUnlocked(GameModel game) {
 		var ghost = game.ghosts(LOCKED).findFirst().orElse(null);
 		if (ghost == null) {
-			return false;
+			return Optional.empty();
 		}
-		var inside = game.level().world().ghostHouse().contains(ghost.tile());
-		if (!inside) {
+		var outside = !game.level().world().ghostHouse().contains(ghost.tile());
+		if (outside) {
 			return unlockGhost(game, ghost, "Outside house");
 		}
 		// check private dot counter
@@ -93,43 +95,33 @@ public class GhostHouseRules {
 			game.pac.endStarving();
 			return unlockGhost(game, ghost, "%s reached starving limit (%d ticks)", game.pac.name(), pacStarvingTimeLimit);
 		}
-		return false;
+		return Optional.empty();
 	}
 
-	private boolean unlockGhost(GameModel game, Ghost ghost, String reason, Object... args) {
-		if (ghost.id == ID_RED_GHOST) {
-			// Red ghost is outside house when locked, enters "hunting" state and moves left
+	private Optional<UnlockResult> unlockGhost(GameModel game, Ghost ghost, String reason, Object... args) {
+		var outside = !game.level().world().ghostHouse().contains(ghost.tile());
+		if (outside) {
 			ghost.setMoveAndWishDir(LEFT);
 			ghost.enterStateHuntingPac(game);
 		} else {
-			// all other ghosts have to leave house first
+			// ghost inside house has to leave house first
 			ghost.enterStateLeavingHouse(game);
 		}
-		if (ghost.id == ID_ORANGE_GHOST && game.cruiseElroyState < 0) {
-			// Disabled "Cruise Elroy" state is resumed when orange ghost is unlocked
-			game.cruiseElroyState = (byte) -game.cruiseElroyState;
-			LOGGER.info("Cruise Elroy mode %d resumed", game.cruiseElroyState);
-		}
-		game.memo.unlockedGhost = Optional.of(ghost);
-		game.memo.unlockReason = reason.formatted(args);
-		LOGGER.info("Unlocked %s: %s", ghost.name(), game.memo.unlockReason);
-		return true;
+		return Optional.of(new UnlockResult(ghost, reason.formatted(args)));
 	}
 
 	public void updateGhostDotCounters(GameModel game) {
 		if (globalDotCounterEnabled) {
 			if (game.theGhosts[ID_ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
-				globalDotCounterEnabled = false;
-				globalDotCounter = 0;
-				LOGGER.info("Global dot counter disabled and reset to 0, %s was in house when counter reached 32",
-						game.theGhosts[ID_ORANGE_GHOST].name());
+				LOGGER.info("%s inside house when counter reached 32", game.theGhosts[ID_ORANGE_GHOST].name());
+				resetGlobalDotCounter();
 			} else {
 				globalDotCounter++;
 			}
 		} else {
-			game.ghosts(LOCKED).filter(ghost -> ghost.id != ID_RED_GHOST).findFirst()
+			var house = game.level().world().ghostHouse();
+			game.ghosts(LOCKED).filter(ghost -> house.contains(ghost.tile())).findFirst()
 					.ifPresent(ghost -> ++ghostDotCounters[ghost.id]);
 		}
 	}
-
 }

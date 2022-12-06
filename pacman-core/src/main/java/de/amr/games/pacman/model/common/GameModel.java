@@ -35,6 +35,7 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -552,13 +553,26 @@ public abstract class GameModel {
 	// Game logic
 
 	public void update() {
-		ghostHouseRules.checkIfGhostCanBeUnlocked(this);
 		pac.update(this);
+		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus().update(this);
 		advanceHunting();
 		energizerPulse.animate();
 		pacPowerTimer.advance();
+	}
+
+	private void checkIfGhostCanGetUnlocked() {
+		ghostHouseRules.checkIfGhostCanBeUnlocked(this).ifPresent(unlock -> {
+			memo.unlockedGhost = Optional.of(unlock.ghost());
+			memo.unlockReason = unlock.reason();
+			LOGGER.info("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
+			if (unlock.ghost().id == ID_ORANGE_GHOST && cruiseElroyState < 0) {
+				// Blinky's "cruise elroy" state is resumed when orange ghost is unlocked
+				cruiseElroyState = (byte) -cruiseElroyState;
+				LOGGER.info("Cruise Elroy mode %d resumed", cruiseElroyState);
+			}
+		});
 	}
 
 	public void whatHappenedWithTheGuys() {
