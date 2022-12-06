@@ -54,13 +54,31 @@ public class GhostHouseRules {
 	private boolean globalDotCounterEnabled;
 
 	/** Level-specific: Max number of clock ticks Pac can be starving until ghost gets unlocked. */
-	public int pacStarvingTimeLimit;
+	private int pacStarvingTimeLimit;
 
 	/** Level-specific: Limits for global dot counter, by ghost. */
-	public byte[] globalGhostDotLimits;
+	private final byte[] globalGhostDotLimits = new byte[4];
 
 	/** Level-specific: Limits for private dot counter, by ghost. */
-	public byte[] privateGhostDotLimits;
+	private final byte[] privateGhostDotLimits = new byte[4];
+
+	public void setPacStarvingTimeLimit(int pacStarvingTimeLimit) {
+		this.pacStarvingTimeLimit = pacStarvingTimeLimit;
+	}
+
+	public void setGlobalGhostDotLimits(int v1, int v2, int v3, int v4) {
+		globalGhostDotLimits[Ghost.ID_RED_GHOST] = (byte) v1;
+		globalGhostDotLimits[Ghost.ID_PINK_GHOST] = (byte) v2;
+		globalGhostDotLimits[Ghost.ID_CYAN_GHOST] = (byte) v3;
+		globalGhostDotLimits[Ghost.ID_ORANGE_GHOST] = (byte) v4;
+	}
+
+	public void setPrivateGhostDotLimits(int v1, int v2, int v3, int v4) {
+		privateGhostDotLimits[Ghost.ID_RED_GHOST] = (byte) v1;
+		privateGhostDotLimits[Ghost.ID_PINK_GHOST] = (byte) v2;
+		privateGhostDotLimits[Ghost.ID_CYAN_GHOST] = (byte) v3;
+		privateGhostDotLimits[Ghost.ID_ORANGE_GHOST] = (byte) v4;
+	}
 
 	public void resetAllDotCounters() {
 		resetGlobalDotCounter();
