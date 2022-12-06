@@ -429,6 +429,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateEnteringHouse(GameModel game) {
+		setAbsSpeed(GameModel.GHOST_SPEED_RETURNING);
 		boolean atRevivalTile = game.level().world().ghostHouse().leadGuyInside(this, game.ghostRevivalPosition(id));
 		if (atRevivalTile) {
 			if (id == ID_RED_GHOST) {
