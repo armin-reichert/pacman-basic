@@ -68,7 +68,7 @@ public class GhostHouseRules {
 	public void resetGlobalDotCounter() {
 		globalDotCounter = 0;
 		globalDotCounterEnabled = false;
-		LOGGER.info("Global dot counter reset and enabled");
+		LOGGER.info("Global dot counter reset to 0 and disabled");
 	}
 
 	public boolean checkIfGhostCanBeUnlocked(GameModel game) {
@@ -76,7 +76,8 @@ public class GhostHouseRules {
 		if (ghost == null) {
 			return false;
 		}
-		if (ghost.id == ID_RED_GHOST) {
+		var inside = game.level().world().ghostHouse().contains(ghost.tile());
+		if (!inside) {
 			return unlockGhost(game, ghost, "Outside house");
 		}
 		// check private dot counter
