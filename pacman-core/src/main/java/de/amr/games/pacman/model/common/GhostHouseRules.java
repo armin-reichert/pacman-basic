@@ -136,6 +136,7 @@ public class GhostHouseRules {
 		// check Pac-Man starving reaches limit
 		if (game.pac.starvingTicks() >= pacStarvingTimeLimit) {
 			game.pac.endStarving();
+			LOGGER.info("Pac-Man starving timer reset to 0");
 			return unlockGhost(game, ghost, "%s reached starving limit (%d ticks)", game.pac.name(), pacStarvingTimeLimit);
 		}
 		return Optional.empty();
@@ -152,5 +153,4 @@ public class GhostHouseRules {
 		}
 		return Optional.of(new UnlockResult(ghost, reason.formatted(args)));
 	}
-
 }
