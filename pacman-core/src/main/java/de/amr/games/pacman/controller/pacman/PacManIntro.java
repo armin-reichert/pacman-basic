@@ -54,6 +54,21 @@ import de.amr.games.pacman.model.common.actors.Pac;
  */
 public class PacManIntro extends Fsm<IntroState, IntroData> {
 
+	private final IntroData ctx;
+
+	public PacManIntro(GameController gameController) {
+		states = IntroState.values();
+		for (var state : states) {
+			state.controller = this;
+		}
+		ctx = new IntroData(gameController);
+	}
+
+	@Override
+	public IntroData context() {
+		return ctx;
+	}
+
 	public static class IntroData {
 		public static final double CHASING_SPEED = 1.1;
 		public static final int LEFT_TILE = 4;
@@ -281,20 +296,5 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 		public TickTimer timer() {
 			return timer;
 		}
-	}
-
-	private final IntroData ctx;
-
-	public PacManIntro(GameController gameController) {
-		states = IntroState.values();
-		for (var state : states) {
-			state.controller = this;
-		}
-		ctx = new IntroData(gameController);
-	}
-
-	@Override
-	public IntroData context() {
-		return ctx;
 	}
 }
