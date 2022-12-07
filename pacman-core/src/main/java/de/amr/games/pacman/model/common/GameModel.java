@@ -231,7 +231,7 @@ public abstract class GameModel {
 			highScore.setLevelNumber(level.number());
 			highScore.setDate(LocalDate.now());
 		}
-		if (scoreBefore < GameModel.EXTRA_LIFE_POINTS && gameScore.points() >= GameModel.EXTRA_LIFE_POINTS) {
+		if (scoreBefore < EXTRA_LIFE_POINTS && gameScore.points() >= EXTRA_LIFE_POINTS) {
 			lives++;
 			GameEvents.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, pac.tile()));
 		}
