@@ -251,24 +251,20 @@ public abstract class GameModel {
 		return credit;
 	}
 
-	public void setCredit(int credit) {
+	public boolean setCredit(int credit) {
 		if (0 <= credit && credit <= MAX_CREDIT) {
 			this.credit = credit;
-		}
-	}
-
-	public boolean addCredit() {
-		if (credit < MAX_CREDIT) {
-			++credit;
 			return true;
 		}
 		return false;
 	}
 
-	public void consumeCredit() {
-		if (credit > 0) {
-			--credit;
-		}
+	public boolean addCredit() {
+		return setCredit(credit + 1);
+	}
+
+	public boolean consumeCredit() {
+		return setCredit(credit - 1);
 	}
 
 	public boolean hasCredit() {
