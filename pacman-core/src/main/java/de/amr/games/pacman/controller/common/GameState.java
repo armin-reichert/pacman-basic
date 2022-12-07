@@ -71,8 +71,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start();
-			game.reset();
-			game.setLevel(1);
+			game.init(1);
 		}
 
 		@Override
@@ -99,8 +98,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void requestGame(GameModel game) {
 			if (game.hasCredit()) {
-				game.reset();
-				game.setLevel(1);
+				game.init(1);
 				gc.changeState(READY);
 			}
 		}
@@ -142,28 +140,30 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			gc.sounds().stopAll();
-			game.resetGuys();
 			if (game.hasCredit()) {
-				if (!game.isPlaying()) {
-					getReadyForNewGame(game);
+				if (game.isPlaying()) {
+					game.resetActorsToStartPosition();
+				} else {
+					initNewGame(game);
+					gc.sounds().play(GameSound.GAME_READY);
 				}
 			} else {
 				enterAttractMode(game);
 			}
 		}
 
-		private void getReadyForNewGame(GameModel game) {
-			gc.sounds().play(GameSound.GAME_READY);
-			game.reset();
-			game.setLevel(1);
+		private void initNewGame(GameModel game) {
+			game.init(1);
 			game.levelCounter().clear();
 			game.levelCounter().addSymbol(game.level().bonusIndex());
 			game.enableScores(true);
 			game.gameScore().setShowContent(true);
+			game.resetActorsToStartPosition();
 			game.guys().forEach(Creature::hide);
 		}
 
 		private void enterAttractMode(GameModel game) {
+			game.resetActorsToStartPosition();
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
 			gc.attractModeSteering.init();
@@ -432,8 +432,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onExit(GameModel game) {
-			game.reset();
-			game.setLevel(1);
+			game.init(1);
 		}
 	},
 

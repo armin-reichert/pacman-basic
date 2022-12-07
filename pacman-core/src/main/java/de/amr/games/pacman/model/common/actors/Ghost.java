@@ -184,6 +184,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateLocked() {
 		state = LOCKED;
 		setAbsSpeed(0.0);
+		selectAndResetAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	/**

@@ -82,10 +82,10 @@ public class GhostHouseRules {
 
 	public void resetAllDotCounters() {
 		resetGlobalDotCounterAndSetEnabled(false);
-		resetPrivateDotCounters();
+		resetPrivateGhostDotCounters();
 	}
 
-	public void resetPrivateDotCounters() {
+	public void resetPrivateGhostDotCounters() {
 		Arrays.fill(ghostDotCounters, 0);
 	}
 

@@ -275,12 +275,16 @@ public abstract class GameModel {
 		return credit > 0;
 	}
 
-	public void reset() {
+	public void init(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Illegal level number: %d. Must be 1 or greater".formatted(levelNumber));
+		}
 		playing = false;
 		lives = INITIAL_LIVES;
 		livesOneLessShown = false;
 		gameScore.reset();
 		ghostHouseRules.resetAllDotCounters();
+		setLevel(levelNumber);
 	}
 
 	public GameLevel level() {
@@ -288,10 +292,10 @@ public abstract class GameModel {
 	}
 
 	public void startLevel() {
-		resetGuys();
+		resetActorsToStartPosition();
 		guys().forEach(Entity::hide);
 		levelCounter.addSymbol(level.bonusIndex());
-		ghostHouseRules.resetPrivateDotCounters();
+		ghostHouseRules.resetPrivateGhostDotCounters();
 	}
 
 	public void endLevel() {
@@ -328,24 +332,28 @@ public abstract class GameModel {
 	 * Sets the game state to be ready for playing. Pac-Man and the ghosts are placed at their initial positions, made
 	 * visible and their state is initialized. Also the power timer and energizers are reset.
 	 */
-	public void resetGuys() {
+	public void resetActorsToStartPosition() {
 		pac.reset();
 		pac.setPosition(level.world().pacStartPosition());
 		pac.setMoveAndWishDir(Direction.LEFT);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setPosition(ghostHomePosition[ghost.id()]);
-			ghost.setMoveAndWishDir(switch (ghost.id()) {
-			case Ghost.ID_RED_GHOST -> Direction.LEFT;
-			case Ghost.ID_PINK_GHOST -> Direction.DOWN;
-			case Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> Direction.UP;
-			default -> throw new IllegalArgumentException("Ghost ID: " + ghost.id());
-			});
+			ghost.setMoveAndWishDir(initialGhostDirection(ghost));
 			ghost.enterStateLocked();
 		});
 		guys().forEach(Creature::show);
 		pacPowerTimer.reset(0);
 		energizerPulse.reset();
+	}
+
+	private Direction initialGhostDirection(Ghost ghost) {
+		return switch (ghost.id()) {
+		case Ghost.ID_RED_GHOST -> Direction.LEFT;
+		case Ghost.ID_PINK_GHOST -> Direction.DOWN;
+		case Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> Direction.UP;
+		default -> throw new IllegalArgumentException("Ghost ID: " + ghost.id());
+		};
 	}
 
 	/**
