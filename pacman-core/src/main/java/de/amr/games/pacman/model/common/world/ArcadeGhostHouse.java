@@ -123,6 +123,11 @@ public class ArcadeGhostHouse implements GhostHouse {
 			}
 		}
 		guy.move();
-		return U.insideRange(guy.position().x(), targetPosition.x(), 1) && guy.position().y() >= targetPosition.y();
+		boolean reachedTarget = U.insideRange(guy.position().x(), targetPosition.x(), 1)
+				&& guy.position().y() >= targetPosition.y();
+		if (reachedTarget) {
+			guy.setPosition(targetPosition);
+		}
+		return reachedTarget;
 	}
 }
