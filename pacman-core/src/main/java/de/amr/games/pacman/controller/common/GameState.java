@@ -171,12 +171,13 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
+			final int tickShowGuys = 134;
 			if (game.hasCredit() && !game.isPlaying()) {
-				if (timer.tick() == 130) {
+				if (timer.tick() == tickShowGuys) {
 					// get ready
 					game.guys().forEach(Entity::show);
 					game.setLivesOneLessShown(true);
-				} else if (timer.tick() == 270) {
+				} else if (timer.tick() == tickShowGuys + 118) {
 					// start playing
 					game.setPlaying(true);
 					game.startHuntingPhase(0);
