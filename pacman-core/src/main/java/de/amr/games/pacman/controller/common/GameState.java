@@ -71,7 +71,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start();
-			game.init(1);
+			game.initAndSetLevel(1);
 		}
 
 		@Override
@@ -98,7 +98,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void requestGame(GameModel game) {
 			if (game.hasCredit()) {
-				game.init(1);
+				game.initAndSetLevel(1);
 				gc.changeState(READY);
 			}
 		}
@@ -153,7 +153,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 
 		private void initNewGame(GameModel game) {
-			game.init(1);
+			game.initAndSetLevel(1);
 			game.levelCounter().clear();
 			game.levelCounter().addSymbol(game.level().bonusIndex());
 			game.enableScores(true);
@@ -433,7 +433,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onExit(GameModel game) {
-			game.init(1);
+			game.initAndSetLevel(1);
 		}
 	},
 

@@ -271,7 +271,7 @@ public abstract class GameModel {
 		return credit > 0;
 	}
 
-	public void init(int levelNumber) {
+	public void initAndSetLevel(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Illegal level number: %d. Must be 1 or greater".formatted(levelNumber));
 		}
