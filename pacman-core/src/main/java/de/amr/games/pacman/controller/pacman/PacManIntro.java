@@ -157,7 +157,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 				ctx.pacMan.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterStateHuntingPac(ctx.gameController.game());
-					ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id + 1), 0));
+					ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id() + 1), 0));
 					ghost.setMoveAndWishDir(Direction.LEFT);
 					ghost.setAbsSpeed(IntroData.CHASING_SPEED);
 					ghost.show();
@@ -223,7 +223,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 						.filter(ghost -> ghost.is(GhostState.FRIGHTENED))//
 						.findFirst();
 				nextVictim.ifPresent(victim -> {
-					victim.setKilledIndex(victim.id);
+					victim.setKilledIndex(victim.id());
 					ctx.ghostKilledTime = timer.tick();
 					victim.enterStateEaten(ctx.gameController.game());
 					ctx.pacMan.hide();

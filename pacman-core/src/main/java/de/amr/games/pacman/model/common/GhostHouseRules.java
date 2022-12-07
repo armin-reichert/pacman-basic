@@ -111,8 +111,8 @@ public class GhostHouseRules {
 	}
 
 	private void increaseGhostDotCounter(Ghost ghost) {
-		ghostDotCounters[ghost.id]++;
-		LOGGER.info("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id]);
+		ghostDotCounters[ghost.id()]++;
+		LOGGER.info("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id()]);
 	}
 
 	public Optional<UnlockResult> checkIfGhostCanBeGetUnlocked(GameModel game) {
@@ -125,11 +125,11 @@ public class GhostHouseRules {
 			return unlockGhost(game, ghost, "Outside house");
 		}
 		// check private dot counter
-		if (!globalDotCounterEnabled && ghostDotCounters[ghost.id] >= privateGhostDotLimits[ghost.id]) {
-			return unlockGhost(game, ghost, "Private dot counter at limit (%d)", privateGhostDotLimits[ghost.id]);
+		if (!globalDotCounterEnabled && ghostDotCounters[ghost.id()] >= privateGhostDotLimits[ghost.id()]) {
+			return unlockGhost(game, ghost, "Private dot counter at limit (%d)", privateGhostDotLimits[ghost.id()]);
 		}
 		// check global dot counter
-		var globalDotLimit = globalGhostDotLimits[ghost.id] == -1 ? Integer.MAX_VALUE : globalGhostDotLimits[ghost.id];
+		var globalDotLimit = globalGhostDotLimits[ghost.id()] == -1 ? Integer.MAX_VALUE : globalGhostDotLimits[ghost.id()];
 		if (globalDotCounter >= globalDotLimit) {
 			return unlockGhost(game, ghost, "Global dot counter at limit (%d)", globalDotLimit);
 		}

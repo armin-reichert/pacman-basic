@@ -134,7 +134,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 				if (ghost.position().x() <= ctx.turningPoint.x()) {
 					ghost.setMoveAndWishDir(UP);
 				}
-				if (ghost.position().y() <= ctx.redGhostEndPosition.y() + ghost.id * 18) {
+				if (ghost.position().y() <= ctx.redGhostEndPosition.y() + ghost.id() * 18) {
 					ghost.setAbsSpeed(0);
 					ghost.selectedAnimation().ifPresent(EntityAnimation::stop);
 					if (++ctx.ghostIndex == 4) {

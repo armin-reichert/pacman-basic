@@ -334,12 +334,12 @@ public abstract class GameModel {
 		pac.setMoveAndWishDir(Direction.LEFT);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
-			ghost.setPosition(ghostHomePosition[ghost.id]);
-			ghost.setMoveAndWishDir(switch (ghost.id) {
+			ghost.setPosition(ghostHomePosition[ghost.id()]);
+			ghost.setMoveAndWishDir(switch (ghost.id()) {
 			case Ghost.ID_RED_GHOST -> Direction.LEFT;
 			case Ghost.ID_PINK_GHOST -> Direction.DOWN;
 			case Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> Direction.UP;
-			default -> throw new IllegalArgumentException("Ghost ID: " + ghost.id);
+			default -> throw new IllegalArgumentException("Ghost ID: " + ghost.id());
 			});
 			ghost.enterStateLocked();
 		});
@@ -577,7 +577,7 @@ public abstract class GameModel {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
 			LOGGER.info("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
-			if (unlock.ghost().id == ID_ORANGE_GHOST && cruiseElroyState < 0) {
+			if (unlock.ghost().id() == ID_ORANGE_GHOST && cruiseElroyState < 0) {
 				// Blinky's "cruise elroy" state is resumed when orange ghost is unlocked
 				cruiseElroyState = (byte) -cruiseElroyState;
 				LOGGER.info("Cruise Elroy mode %d resumed", cruiseElroyState);

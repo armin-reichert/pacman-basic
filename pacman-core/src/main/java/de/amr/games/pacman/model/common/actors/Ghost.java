@@ -69,7 +69,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final int ID_ORANGE_GHOST = 3;
 
 	/** The ID of the ghost, see {@link #ID_RED_GHOST} etc. */
-	public final int id;
+	private final int id;
 
 	/** The current state of this ghost. */
 	private GhostState state;
@@ -91,6 +91,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		}
 		this.id = id;
 		reset();
+	}
+
+	public int id() {
+		return id;
 	}
 
 	@Override
