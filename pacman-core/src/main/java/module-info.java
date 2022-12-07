@@ -18,6 +18,8 @@
  */
 module de.amr.games.pacman {
 
+	requires org.apache.logging.log4j;
+
 	exports de.amr.games.pacman.controller.common;
 	exports de.amr.games.pacman.controller.mspacman;
 	exports de.amr.games.pacman.controller.pacman;
@@ -30,5 +32,4 @@ module de.amr.games.pacman {
 	exports de.amr.games.pacman.model.common.world;
 	exports de.amr.games.pacman.model.mspacman;
 	exports de.amr.games.pacman.model.pacman;
-	requires org.apache.logging.log4j;
 }
