@@ -56,13 +56,13 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 
 	public static class IntroData {
 		public static final double CHASING_SPEED = 1.1;
-		public int left = 4;
-		public SingleEntityAnimation<Boolean> blinking = SingleEntityAnimation.pulse(10);
-		public String[] nicknames = { "Blinky", "Pinky", "Inky", "Clyde" };
-		public String[] characters = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
-		public boolean[] pictureVisible = { false, false, false, false };
-		public boolean[] nicknameVisible = { false, false, false, false };
-		public boolean[] characterVisible = { false, false, false, false };
+		public static final int LEFT_TILE = 4;
+		public static final SingleEntityAnimation<Boolean> BLINKING = SingleEntityAnimation.pulse(10);
+		public static final String[] NICKNAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
+		public static final String[] CHARACTERS = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
+		public final boolean[] pictureVisible = { false, false, false, false };
+		public final boolean[] nicknameVisible = { false, false, false, false };
+		public final boolean[] characterVisible = { false, false, false, false };
 		public boolean creditVisible = false;
 		public boolean titleVisible = false;
 		public Pac pacMan;
@@ -134,7 +134,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 		SHOWING_POINTS {
 			@Override
 			public void onEnter(IntroData ctx) {
-				ctx.blinking.stop();
+				IntroData.BLINKING.stop();
 			}
 
 			@Override
@@ -168,11 +168,11 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 			@Override
 			public void onUpdate(IntroData ctx) {
 				// Pac-Man reaches the energizer
-				if (ctx.pacMan.position().x() <= t(ctx.left)) {
+				if (ctx.pacMan.position().x() <= t(IntroData.LEFT_TILE)) {
 					controller.changeState(IntroState.CHASING_GHOSTS);
 				}
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
-				else if (ctx.pacMan.position().x() <= t(ctx.left) + 4) {
+				else if (ctx.pacMan.position().x() <= t(IntroData.LEFT_TILE) + 4) {
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.enterStateFrightened(ctx.gameController.game());
 						ghost.selectAndEnsureRunningAnimation(AnimKeys.GHOST_BLUE);
@@ -188,9 +188,9 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 				else {
 					// wait 1 sec before blinking
 					if (timer.atSecond(1)) {
-						ctx.blinking.start();
+						IntroData.BLINKING.start();
 					}
-					ctx.blinking.animate();
+					IntroData.BLINKING.animate();
 					ctx.pacMan.move();
 					ctx.pacMan.animate();
 					for (Ghost ghost : ctx.ghosts) {
@@ -254,7 +254,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 					ghost.move();
 					ghost.animate();
 				}
-				ctx.blinking.animate();
+				IntroData.BLINKING.animate();
 			}
 		},
 
