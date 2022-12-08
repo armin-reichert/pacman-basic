@@ -275,7 +275,7 @@ public class MsPacManGame extends GameModel {
 		};
 	}
 
-	private final MovingBonus movingBonus;
+	private MovingBonus movingBonus;
 
 	/**
 	 * The Ms. Pac-Man game.
@@ -302,8 +302,11 @@ public class MsPacManGame extends GameModel {
 	 */
 	public MsPacManGame() {
 		super("Ms. Pac-Man", "Blinky", "Pinky", "Inky", "Sue");
+	}
+
+	@Override
+	protected void createBonus() {
 		movingBonus = new MovingBonus();
-		setLevel(1);
 	}
 
 	@Override

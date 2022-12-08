@@ -178,11 +178,15 @@ public class PacManGame extends GameModel {
 		return new ArcadeWorld(MAP);
 	}
 
-	private final StaticBonus bonus = new StaticBonus(BONUS_POSITION);
+	private StaticBonus bonus;
 
 	public PacManGame() {
 		super("Pac-Man", "Blinky", "Pinky", "Inky", "Clyde");
-		setLevel(1);
+	}
+
+	@Override
+	protected void createBonus() {
+		bonus = new StaticBonus(BONUS_POSITION);
 	}
 
 	@Override

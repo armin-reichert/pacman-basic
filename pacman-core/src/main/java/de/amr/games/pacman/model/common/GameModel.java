@@ -181,7 +181,12 @@ public abstract class GameModel {
 		cyanGhost.setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
 		orangeGhost.setChasingTarget(() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? //
 				ghostScatterTile[ID_ORANGE_GHOST] : pac.tile());
+
+		createBonus();
+		setLevel(1);
 	}
+
+	protected abstract void createBonus();
 
 	public abstract GameVariant variant();
 
