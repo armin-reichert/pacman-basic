@@ -594,27 +594,25 @@ public abstract class GameModel {
 
 		memo.pacMetKiller = isPacMeetingKiller();
 		if (memo.pacMetKiller) {
-			onPacMetKiller();
+			onPacMeetsKiller();
 			return; // enter new game state
 		}
 
-		checkEdibleGhosts();
+		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
 		if (memo.edibleGhosts.length > 0) {
 			killGhosts(memo.edibleGhosts);
 			memo.ghostsKilled = true;
 			return; // enter new game state
 		}
-		checkIfPacPowerIsFading();
+
+		memo.pacPowerFading = pacPowerTimer.remaining() == PAC_POWER_FADING_TICKS;
+		memo.pacPowerLost = pacPowerTimer.hasExpired();
 		if (memo.pacPowerFading) {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
 		if (memo.pacPowerLost) {
-			onPacPowerEnd();
+			onPacPowerLost();
 		}
-	}
-
-	private void checkEdibleGhosts() {
-		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
 	}
 
 	public void killAllPossibleGhosts() {
@@ -649,7 +647,7 @@ public abstract class GameModel {
 		return !immune && !pacPowerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
-	private void onPacMetKiller() {
+	private void onPacMeetsKiller() {
 		pac.die();
 		LOGGER.info("%s died: %s", pac.name(), pac);
 		ghostHouseRules.resetGlobalDotCounterAndSetEnabled(true);
@@ -657,11 +655,6 @@ public abstract class GameModel {
 			LOGGER.info("Disabled Cruise Elroy mode (%d) for red ghost", cruiseElroyState);
 			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"
 		}
-	}
-
-	private void checkIfPacPowerIsFading() {
-		memo.pacPowerFading = pacPowerTimer.remaining() == PAC_POWER_FADING_TICKS;
-		memo.pacPowerLost = pacPowerTimer.hasExpired();
 	}
 
 	public boolean isPacPowerFading() {
@@ -679,7 +672,7 @@ public abstract class GameModel {
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}
 
-	private void onPacPowerEnd() {
+	private void onPacPowerLost() {
 		LOGGER.info("%s power ends", pac.name());
 		pacPowerTimer.resetIndefinitely();
 		huntingTimer.start();
