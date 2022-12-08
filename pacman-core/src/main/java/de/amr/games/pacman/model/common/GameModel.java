@@ -231,7 +231,7 @@ public abstract class GameModel {
 			highScore.setLevelNumber(level.number());
 			highScore.setDate(LocalDate.now());
 		}
-		if (scoreBefore < GameModel.EXTRA_LIFE_POINTS && gameScore.points() >= GameModel.EXTRA_LIFE_POINTS) {
+		if (scoreBefore < EXTRA_LIFE_POINTS && gameScore.points() >= EXTRA_LIFE_POINTS) {
 			lives++;
 			GameEvents.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, pac.tile()));
 		}
@@ -251,31 +251,27 @@ public abstract class GameModel {
 		return credit;
 	}
 
-	public void setCredit(int credit) {
+	public boolean setCredit(int credit) {
 		if (0 <= credit && credit <= MAX_CREDIT) {
 			this.credit = credit;
-		}
-	}
-
-	public boolean addCredit() {
-		if (credit < MAX_CREDIT) {
-			++credit;
 			return true;
 		}
 		return false;
 	}
 
-	public void consumeCredit() {
-		if (credit > 0) {
-			--credit;
-		}
+	public boolean addCredit() {
+		return setCredit(credit + 1);
+	}
+
+	public boolean consumeCredit() {
+		return setCredit(credit - 1);
 	}
 
 	public boolean hasCredit() {
 		return credit > 0;
 	}
 
-	public void init(int levelNumber) {
+	public void initAndSetLevel(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Illegal level number: %d. Must be 1 or greater".formatted(levelNumber));
 		}

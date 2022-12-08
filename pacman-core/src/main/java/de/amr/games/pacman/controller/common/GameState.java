@@ -71,7 +71,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start();
-			game.init(1);
+			game.initAndSetLevel(1);
 		}
 
 		@Override
@@ -98,7 +98,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void requestGame(GameModel game) {
 			if (game.hasCredit()) {
-				game.init(1);
+				game.initAndSetLevel(1);
 				gc.changeState(READY);
 			}
 		}
@@ -153,7 +153,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 
 		private void initNewGame(GameModel game) {
-			game.init(1);
+			game.initAndSetLevel(1);
 			game.levelCounter().clear();
 			game.levelCounter().addSymbol(game.level().bonusIndex());
 			game.enableScores(true);
@@ -171,12 +171,13 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
+			final int tickShowGuys = 134;
 			if (game.hasCredit() && !game.isPlaying()) {
-				if (timer.tick() == 130) {
+				if (timer.tick() == tickShowGuys) {
 					// get ready
 					game.guys().forEach(Entity::show);
 					game.setLivesOneLessShown(true);
-				} else if (timer.tick() == 270) {
+				} else if (timer.tick() == tickShowGuys + 118) {
 					// start playing
 					game.setPlaying(true);
 					game.startHuntingPhase(0);
@@ -432,7 +433,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onExit(GameModel game) {
-			game.init(1);
+			game.initAndSetLevel(1);
 		}
 	},
 
