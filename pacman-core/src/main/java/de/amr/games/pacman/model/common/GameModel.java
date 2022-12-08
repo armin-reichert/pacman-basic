@@ -33,7 +33,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -158,8 +157,6 @@ public abstract class GameModel {
 
 	private final Score highScore = new Score("HIGH SCORE");
 
-	protected File highScoreFile;
-
 	protected boolean scoresEnabled;
 
 	protected final GhostHouseRules ghostHouseRules = new GhostHouseRules();
@@ -206,14 +203,6 @@ public abstract class GameModel {
 
 	public Score highScore() {
 		return highScore;
-	}
-
-	public File highScoreFile() {
-		return highScoreFile;
-	}
-
-	public void setHiscoreFile(File file) {
-		this.highScoreFile = file;
 	}
 
 	public void enableScores(boolean enabled) {

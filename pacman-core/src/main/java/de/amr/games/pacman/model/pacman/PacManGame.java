@@ -28,7 +28,6 @@ import static de.amr.games.pacman.lib.V2i.v2i;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import java.io.File;
 import java.util.List;
 import java.util.Random;
 
@@ -183,7 +182,6 @@ public class PacManGame extends GameModel {
 
 	public PacManGame() {
 		super("Pac-Man", "Blinky", "Pinky", "Inky", "Clyde");
-		setHiscoreFile(new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
 	}
 

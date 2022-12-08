@@ -72,7 +72,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	private final Steering autopilot = new Autopilot();
 	private Steering normalSteering;
-	private GameVariant gameVariant;
+	private GameVariant gameVariant = null; // trigger initial change
 	private GameSoundController sounds = GameSoundController.NO_SOUND;
 
 	/* Visible for GameState: */
@@ -90,7 +90,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(context(), oldState, newState)));
 		GameEvents.publishEventsFor(this::game);
 		selectGame(GameVariant.PACMAN);
-		restartInState(BOOT);
 	}
 
 	@Override

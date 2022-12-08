@@ -25,7 +25,6 @@ package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.NavigationPoint.np;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -90,7 +89,7 @@ public class MsPacManGame extends GameModel {
 	/*@formatter:on*/
 	};
 
-	private static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
+	private static final short[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
 	private static final byte[][] MAP1 = {
 			//@formatter:off
@@ -304,7 +303,6 @@ public class MsPacManGame extends GameModel {
 	public MsPacManGame() {
 		super("Ms. Pac-Man", "Blinky", "Pinky", "Inky", "Sue");
 		movingBonus = new MovingBonus();
-		setHiscoreFile(new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
 		setLevel(1);
 	}
 
