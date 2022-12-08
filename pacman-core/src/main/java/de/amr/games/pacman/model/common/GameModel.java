@@ -604,7 +604,7 @@ public abstract class GameModel {
 			memo.ghostsKilled = true;
 			return; // enter new game state
 		}
-		checkIfPacHasPower();
+		checkIfPacPowerIsFading();
 		if (memo.pacPowerFading) {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
@@ -659,7 +659,7 @@ public abstract class GameModel {
 		}
 	}
 
-	private void checkIfPacHasPower() {
+	private void checkIfPacPowerIsFading() {
 		memo.pacPowerFading = pacPowerTimer.remaining() == PAC_POWER_FADING_TICKS;
 		memo.pacPowerLost = pacPowerTimer.hasExpired();
 	}
