@@ -68,20 +68,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final int ID_CYAN_GHOST = 2;
 	public static final int ID_ORANGE_GHOST = 3;
 
-	/** The ID of the ghost, see {@link #ID_RED_GHOST} etc. */
 	private final int id;
-
-	/** The current state of this ghost. */
 	private GhostState state;
-
-	/** Function computing the chasing target of this ghost. */
 	private Supplier<V2i> fnChasingTarget = () -> null;
-
 	private EntityAnimationSet<AnimKeys> animationSet;
-
 	private int killedIndex;
-
-	/** 0..3. Index when this ghost has been killed using the currently active energizer. */
 	private int attractRouteIndex;
 
 	public Ghost(int id, String name) {
@@ -93,6 +84,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		reset();
 	}
 
+	/**
+	 * The ghost ID. One of {@link #ID_RED_GHOST}, {@link #ID_PINK_GHOST}, {@link #ID_CYAN_GHOST},
+	 * {@link #ID_ORANGE_GHOST}.
+	 */
 	public int id() {
 		return id;
 	}
@@ -107,6 +102,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		this.fnChasingTarget = Objects.requireNonNull(fnTargetTile);
 	}
 
+	/** 0..3. Index when this ghost has been killed using the currently active energizer. */
 	public int killedIndex() {
 		return killedIndex;
 	}
@@ -143,7 +139,8 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	// Here begins the state machine part
 
-	public GhostState getState() {
+	/** The current state of this ghost. */
+	public GhostState state() {
 		return state;
 	}
 
