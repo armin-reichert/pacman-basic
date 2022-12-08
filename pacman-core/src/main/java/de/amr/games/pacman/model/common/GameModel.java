@@ -587,7 +587,7 @@ public abstract class GameModel {
 		});
 	}
 
-	public void whatHappenedWithTheGuys() {
+	public void checkHowTheGuysAreDoing() {
 		if (memo.pacGotPower) {
 			onPacPowerBegin();
 		}
@@ -689,40 +689,36 @@ public abstract class GameModel {
 
 	// Food
 
-	public void whatHappenedWithFood() {
-		checkFoodFound();
-		if (memo.foodFoundTile.isPresent()) {
+	public void checkIfPacFindsFood() {
+		var tile = pac.tile();
+		if (level.world().containsFood(tile)) {
+			memo.foodFoundTile = Optional.of(tile);
+			memo.energizerFound = level.world().isEnergizerTile(tile);
+			memo.bonusReached = level.world().eatenFoodCount() == 70 || level.world().eatenFoodCount() == 170;
 			onFoodFound();
-			if (memo.bonusReached) {
-				onBonusReached();
-			}
 		} else {
 			pac.starve();
 		}
 	}
 
-	private void checkFoodFound() {
-		if (level.world().containsFood(pac.tile())) {
-			memo.foodFoundTile = Optional.of(pac.tile());
-			memo.allFoodEaten = level.world().foodRemaining() == 1;
-			if (level.world().isEnergizerTile(pac.tile())) {
-				memo.energizerFound = true;
-				if (level.ghostFrightenedSeconds() > 0) {
-					memo.pacGotPower = true;
-				}
-			}
-			memo.bonusReached = level.world().eatenFoodCount() == 70 || level.world().eatenFoodCount() == 170;
-		}
-	}
-
 	private void onFoodFound() {
+		pac.endStarving();
+		level.world().removeFood(memo.foodFoundTile.get());
+		memo.lastFoodEaten = level.world().foodRemaining() == 0;
 		if (memo.energizerFound) {
 			numGhostsKilledByEnergizer = 0;
+			if (level.ghostFrightenedSeconds() > 0) {
+				memo.pacGotPower = true;
+			}
+			pac.rest(ENERGIZER_RESTING_TICKS);
+			scorePoints(ENERGIZER_VALUE);
+		} else {
+			pac.rest(PELLET_RESTING_TICKS);
+			scorePoints(PELLET_VALUE);
 		}
-		pac.endStarving();
-		pac.rest(memo.energizerFound ? ENERGIZER_RESTING_TICKS : PELLET_RESTING_TICKS);
-		scorePoints(memo.energizerFound ? ENERGIZER_VALUE : PELLET_VALUE);
-		level.world().removeFood(memo.foodFoundTile.get());
+		if (memo.bonusReached) {
+			onBonusReached();
+		}
 		checkIfRedGhostBecomesCruiseElroy();
 		ghostHouseRules.updateGhostDotCounters(this);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, memo.foodFoundTile.get());

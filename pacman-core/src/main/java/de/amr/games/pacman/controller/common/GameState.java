@@ -202,31 +202,29 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
+			renderSound(game);
+
 			game.memo.forgetEverything(); // ich scholze jetzt
 
-			game.whatHappenedWithFood();
-			if (game.memo.allFoodEaten) {
-				renderSound(game);
+			game.checkIfPacFindsFood();
+			if (game.memo.lastFoodEaten) {
 				gc.changeState(LEVEL_COMPLETE);
 				return;
 			}
 
-			game.whatHappenedWithTheGuys();
+			game.checkHowTheGuysAreDoing();
 			if (game.memo.pacMetKiller) {
-				renderSound(game);
 				gc.changeState(PACMAN_DYING);
 				return;
 			}
 
 			if (game.memo.ghostsKilled) {
-				renderSound(game);
 				gc.changeState(GHOST_DYING);
 				return;
 			}
 
 			gc.getSteering().steer(game, game.pac());
 			game.update();
-			renderSound(game);
 		}
 
 		private void renderSound(GameModel game) {
