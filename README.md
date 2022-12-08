@@ -9,7 +9,7 @@ The implementation follows the Model-View-Controller design pattern:
   -  INTRO, CREDIT, READY, HUNTING, LEVEL_STARTING, LEVEL_COMPLETE, PACMAN_DYING, GHOST_DYING, GAME_OVER and INTERMISSION. (See [GameState](pacman-core/src/main/java/de/amr/games/pacman/controller/common/GameState.java))
 - User interfaces can be attached to the model/controller layer using a [game event listener](pacman-core/src/main/java/de/amr/games/pacman/event/GameEventListener.java) interface.
 
-<img src="pacman-core/doc/PacManGame.vpd.png">
+<img src="doc/PacManGame.vpd.png">
 
 The MVC design allows to implement different user interfaces for Pac-Man and Ms. Pac-Man without having to recreate the details of the game logic. 
 
