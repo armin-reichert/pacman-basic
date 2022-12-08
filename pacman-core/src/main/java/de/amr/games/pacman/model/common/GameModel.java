@@ -296,11 +296,11 @@ public abstract class GameModel {
 
 	public void endLevel() {
 		huntingTimer.stop();
+		energizerPulse.reset();
 		bonus().setInactive();
 		pac.setAbsSpeed(0);
 		pac.animationSet().ifPresent(EntityAnimationSet::reset);
 		ghosts().forEach(Ghost::hide);
-		energizerPulse.reset();
 	}
 
 	protected void initGhosts() {
@@ -404,14 +404,14 @@ public abstract class GameModel {
 	 * @return the ghost with the given ID
 	 */
 	public Ghost ghost(int id) {
-		checkGhostID(id);
-		return theGhosts[id];
+		return theGhosts[validatedGhostID(id)];
 	}
 
-	private static void checkGhostID(int id) {
+	private static int validatedGhostID(int id) {
 		if (id < 0 || id > 3) {
 			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
 		}
+		return id;
 	}
 
 	/**
@@ -431,8 +431,7 @@ public abstract class GameModel {
 	 * @return home position of ghost
 	 */
 	public V2d ghostHomePosition(int id) {
-		checkGhostID(id);
-		return ghostHomePosition[id];
+		return ghostHomePosition[validatedGhostID(id)];
 	}
 
 	/**
@@ -440,8 +439,7 @@ public abstract class GameModel {
 	 * @return revival position of ghost
 	 */
 	public V2d ghostRevivalPosition(int id) {
-		checkGhostID(id);
-		return ghostRevivalPosition[id];
+		return ghostRevivalPosition[validatedGhostID(id)];
 	}
 
 	/**
@@ -449,8 +447,7 @@ public abstract class GameModel {
 	 * @return scatter tile of ghost
 	 */
 	public V2i ghostScatterTile(int id) {
-		checkGhostID(id);
-		return ghostScatterTile[id];
+		return ghostScatterTile[validatedGhostID(id)];
 	}
 
 	/**
