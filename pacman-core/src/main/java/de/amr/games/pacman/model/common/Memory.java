@@ -34,12 +34,12 @@ import de.amr.games.pacman.model.common.actors.Ghost;
  * @author Armin Reichert
  */
 public class Memory {
-	public boolean lastFoodEaten;
+	public boolean lastFoodFound;
 	public Optional<V2i> foodFoundTile;
 	public boolean energizerFound;
 	public boolean bonusReached;
 	public boolean pacMetKiller;
-	public boolean pacGotPower;
+	public boolean pacPowered;
 	public boolean pacPowerLost;
 	public boolean pacPowerFading;
 	public boolean ghostsKilled;
@@ -53,12 +53,12 @@ public class Memory {
 	}
 
 	public void forgetEverything() {
-		lastFoodEaten = false;
+		lastFoodFound = false;
 		foodFoundTile = Optional.empty();
 		energizerFound = false;
 		bonusReached = false;
 		pacMetKiller = false;
-		pacGotPower = false;
+		pacPowered = false;
 		pacPowerLost = false;
 		pacPowerFading = false;
 		ghostsKilled = false;

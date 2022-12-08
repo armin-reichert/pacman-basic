@@ -207,7 +207,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.memo.forgetEverything(); // ich scholze jetzt
 
 			game.checkIfPacFindsFood();
-			if (game.memo.lastFoodEaten) {
+			if (game.memo.lastFoodFound) {
 				gc.changeState(LEVEL_COMPLETE);
 				return;
 			}
@@ -232,7 +232,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (game.huntingTimer().tick() == 0) {
 				snd.ensureSirenStarted(game.huntingTimer().phase() / 2);
 			}
-			if (game.memo.pacGotPower) {
+			if (game.memo.pacPowered) {
 				snd.stopSirens();
 				snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.LOOP_FOREVER);
 			}

@@ -588,7 +588,7 @@ public abstract class GameModel {
 	}
 
 	public void checkHowTheGuysAreDoing() {
-		if (memo.pacGotPower) {
+		if (memo.pacPowered) {
 			onPacPowerBegin();
 		}
 
@@ -693,23 +693,21 @@ public abstract class GameModel {
 		var tile = pac.tile();
 		if (level.world().containsFood(tile)) {
 			memo.foodFoundTile = Optional.of(tile);
+			memo.lastFoodFound = level.world().foodRemaining() == 1;
 			memo.energizerFound = level.world().isEnergizerTile(tile);
+			memo.pacPowered = memo.energizerFound && level.ghostFrightenedSeconds() > 0;
 			memo.bonusReached = level.world().eatenFoodCount() == 70 || level.world().eatenFoodCount() == 170;
-			onFoodFound();
+			onFoodFound(tile);
 		} else {
 			pac.starve();
 		}
 	}
 
-	private void onFoodFound() {
+	private void onFoodFound(V2i tile) {
+		level.world().removeFood(tile);
 		pac.endStarving();
-		level.world().removeFood(memo.foodFoundTile.get());
-		memo.lastFoodEaten = level.world().foodRemaining() == 0;
 		if (memo.energizerFound) {
 			numGhostsKilledByEnergizer = 0;
-			if (level.ghostFrightenedSeconds() > 0) {
-				memo.pacGotPower = true;
-			}
 			pac.rest(ENERGIZER_RESTING_TICKS);
 			scorePoints(ENERGIZER_VALUE);
 		} else {
@@ -721,7 +719,7 @@ public abstract class GameModel {
 		}
 		checkIfRedGhostBecomesCruiseElroy();
 		ghostHouseRules.updateGhostDotCounters(this);
-		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, memo.foodFoundTile.get());
+		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
 	}
 
 	private void checkIfRedGhostBecomesCruiseElroy() {
