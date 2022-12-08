@@ -19,7 +19,7 @@ As proof of concept I implemented the following two UI variants:
 
 YouTube:
 
-[![YouTube video](pacman-core/doc/thumbnail.jpg)](https://www.youtube.com/watch?v=t529vDUtCT0&t=125s)
+[![YouTube video](doc/thumbnail.jpg)](https://www.youtube.com/watch?v=t529vDUtCT0&t=125s)
 
 ### Build
 
@@ -27,14 +27,14 @@ YouTube:
 
 ### Intro scene
 
-<img src="pacman-core/doc/intro.png">
+<img src="doc/intro.png">
 
 ### Pac-Man play scene
 
-<img src="pacman-core/doc/playing.png">
+<img src="doc/playing.png">
 
 ### Ms. Pac-Man play scene (2D vs. 3D)
 
-<img src="pacman-core/doc/mspacman_playing.png">
+<img src="doc/mspacman_playing.png">
 
-<img src="pacman-core/doc/playscene3D.png">
+<img src="doc/playscene3D.png">
