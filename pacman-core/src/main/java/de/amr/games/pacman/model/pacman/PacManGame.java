@@ -205,7 +205,7 @@ public class PacManGame extends GameModel {
 		int index = levelNumber <= LEVELS.length ? levelNumber - 1 : LEVELS.length - 1;
 		level = new GameLevel(levelNumber, 1, createWorld(), -1, LEVELS[index]);
 		numGhostsKilledInLevel = 0;
-		ghostsKilledByEnergizer = 0;
+		numGhostsKilledByEnergizer = 0;
 		gameScore().setLevelNumber(levelNumber);
 		initGhosts();
 		setLevelGhostHouseRules(levelNumber);

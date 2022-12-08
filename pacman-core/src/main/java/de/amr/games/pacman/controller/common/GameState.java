@@ -242,7 +242,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				snd.stop(GameSound.PACMAN_POWER);
 				snd.ensureSirenStarted(game.huntingTimer().phase() / 2);
 			}
-			if (game.memo.foodFound) {
+			if (game.memo.foodFoundTile.isPresent()) {
 				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
 			}
 			if (game.pac().starvingTicks() >= 12) { // ???

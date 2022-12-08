@@ -146,7 +146,7 @@ public abstract class GameModel {
 	protected int numGhostsKilledInLevel;
 
 	/** Number of ghosts killed by current energizer. */
-	protected int ghostsKilledByEnergizer;
+	protected int numGhostsKilledByEnergizer;
 
 	/** List of collected level symbols. */
 	protected final LevelCounter levelCounter = new LevelCounter();
@@ -619,7 +619,7 @@ public abstract class GameModel {
 
 	public void killAllPossibleGhosts() {
 		var prey = ghosts(GhostState.HUNTING_PAC, GhostState.FRIGHTENED).toArray(Ghost[]::new);
-		ghostsKilledByEnergizer = 0;
+		numGhostsKilledByEnergizer = 0;
 		killGhosts(prey);
 	}
 
@@ -635,8 +635,8 @@ public abstract class GameModel {
 
 	private void killGhost(Ghost ghost) {
 		memo.killedGhosts.add(ghost);
-		ghost.setKilledIndex(ghostsKilledByEnergizer);
-		ghostsKilledByEnergizer++;
+		ghost.setKilledIndex(numGhostsKilledByEnergizer);
+		numGhostsKilledByEnergizer++;
 		ghost.enterStateEaten(this);
 		int value = ghostValue(ghost.killedIndex());
 		scorePoints(value);
@@ -691,7 +691,7 @@ public abstract class GameModel {
 
 	public void whatHappenedWithFood() {
 		checkFoodFound();
-		if (memo.foodFound) {
+		if (memo.foodFoundTile.isPresent()) {
 			onFoodFound();
 			if (memo.bonusReached) {
 				onBonusReached();
@@ -703,7 +703,7 @@ public abstract class GameModel {
 
 	private void checkFoodFound() {
 		if (level.world().containsFood(pac.tile())) {
-			memo.foodFound = true;
+			memo.foodFoundTile = Optional.of(pac.tile());
 			memo.allFoodEaten = level.world().foodRemaining() == 1;
 			if (level.world().isEnergizerTile(pac.tile())) {
 				memo.energizerFound = true;
@@ -717,21 +717,15 @@ public abstract class GameModel {
 
 	private void onFoodFound() {
 		if (memo.energizerFound) {
-			ghostsKilledByEnergizer = 0;
-			eatFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
-		} else {
-			eatFood(PELLET_VALUE, PELLET_RESTING_TICKS);
+			numGhostsKilledByEnergizer = 0;
 		}
-	}
-
-	private void eatFood(int value, int restingTicks) {
 		pac.endStarving();
-		pac.rest(restingTicks);
-		level.world().removeFood(pac.tile());
+		pac.rest(memo.energizerFound ? ENERGIZER_RESTING_TICKS : PELLET_RESTING_TICKS);
+		scorePoints(memo.energizerFound ? ENERGIZER_VALUE : PELLET_VALUE);
+		level.world().removeFood(memo.foodFoundTile.get());
 		checkIfRedGhostBecomesCruiseElroy();
 		ghostHouseRules.updateGhostDotCounters(this);
-		scorePoints(value);
-		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, pac.tile());
+		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, memo.foodFoundTile.get());
 	}
 
 	private void checkIfRedGhostBecomesCruiseElroy() {

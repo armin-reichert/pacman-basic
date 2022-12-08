@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
@@ -34,7 +35,7 @@ import de.amr.games.pacman.model.common.actors.Ghost;
  */
 public class Memory {
 	public boolean allFoodEaten;
-	public boolean foodFound;
+	public Optional<V2i> foodFoundTile;
 	public boolean energizerFound;
 	public boolean bonusReached;
 	public boolean pacMetKiller;
@@ -53,7 +54,7 @@ public class Memory {
 
 	public void forgetEverything() {
 		allFoodEaten = false;
-		foodFound = false;
+		foodFoundTile = Optional.empty();
 		energizerFound = false;
 		bonusReached = false;
 		pacMetKiller = false;
