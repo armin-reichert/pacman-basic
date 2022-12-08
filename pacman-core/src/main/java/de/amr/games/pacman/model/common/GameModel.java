@@ -74,28 +74,28 @@ public abstract class GameModel {
 	/** Game loop speed in ticks/sec. */
 	public static final int FPS = 60;
 
-	/** Chase/scatter phase times. See Pac-Man dossier. */
-	public static final long[][] HUNTING_TIMES = {
+	/** Duration (in ticks) of chase and scatter phases. See Pac-Man dossier. */
+	public static final int[][] HUNTING_DURATION = {
 		//@formatter:off
-		{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS,   20*FPS, 5*FPS, TickTimer.INDEFINITE },
-		{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS, 1033*FPS,     1, TickTimer.INDEFINITE },
-		{ 5*FPS, 20*FPS, 5*FPS, 20*FPS, 5*FPS, 1037*FPS,     1, TickTimer.INDEFINITE }
+		{ 7 *FPS, 20 *FPS, 7 *FPS, 20 *FPS, 5 *FPS,   20 *FPS, 5 *FPS, -1 },
+		{ 7 *FPS, 20 *FPS, 7 *FPS, 20 *FPS, 5 *FPS, 1033 *FPS,      1, -1 },
+		{ 5 *FPS, 20 *FPS, 5 *FPS, 20 *FPS, 5 *FPS, 1037 *FPS,      1, -1 },
 		//@formatter:on
 	};
 
-	public static final int MAX_CREDIT = 99;
-	public static final int PELLET_VALUE = 10;
-	public static final int PELLET_RESTING_TICKS = 1;
-	public static final int ENERGIZER_VALUE = 50;
-	public static final int ENERGIZER_RESTING_TICKS = 3;
-	public static final int INITIAL_LIVES = 3;
-	public static final int[] GHOST_EATEN_POINTS = { 200, 400, 800, 1600 };
-	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
-	public static final int EXTRA_LIFE_POINTS = 10_000;
-	public static final long BONUS_EATEN_TICKS = 2 * FPS; // unsure
-	public static final int PAC_POWER_FADING_TICKS = 2 * FPS; // unsure
-	public static final double GHOST_SPEED_INSIDE_HOUSE = 0.5; // unsure
-	public static final double GHOST_SPEED_RETURNING = 2.0; // unsure
+	public static final short MAX_CREDIT = 99;
+	public static final short PELLET_VALUE = 10;
+	public static final short PELLET_RESTING_TICKS = 1;
+	public static final short ENERGIZER_VALUE = 50;
+	public static final short ENERGIZER_RESTING_TICKS = 3;
+	public static final short INITIAL_LIVES = 3;
+	public static final short[] GHOST_EATEN_POINTS = { 200, 400, 800, 1600 };
+	public static final short ALL_GHOSTS_KILLED_POINTS = 12_000;
+	public static final short EXTRA_LIFE_POINTS = 10_000;
+	public static final short BONUS_EATEN_TICKS = 2 * FPS; // unsure
+	public static final short PAC_POWER_FADING_TICKS = 2 * FPS; // unsure
+	public static final float GHOST_SPEED_INSIDE_HOUSE = 0.5f; // unsure
+	public static final float GHOST_SPEED_RETURNING = 2.0f; // unsure
 
 	/** Number of coins inserted. */
 	protected int credit;
@@ -527,11 +527,12 @@ public abstract class GameModel {
 		if (phase < 0 || phase > 7) {
 			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
 		}
-		return switch (level.number()) {
-		case 1 -> HUNTING_TIMES[0][phase];
-		case 2, 3, 4 -> HUNTING_TIMES[1][phase];
-		default -> HUNTING_TIMES[2][phase];
+		var ticks = switch (level.number()) {
+		case 1 -> HUNTING_DURATION[0][phase];
+		case 2, 3, 4 -> HUNTING_DURATION[1][phase];
+		default -> HUNTING_DURATION[2][phase];
 		};
+		return ticks == -1 ? TickTimer.INDEFINITE : ticks;
 	}
 
 	/**
