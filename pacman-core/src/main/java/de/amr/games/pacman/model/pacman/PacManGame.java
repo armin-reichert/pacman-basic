@@ -29,7 +29,6 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.util.List;
-import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,8 +55,6 @@ import de.amr.games.pacman.model.common.world.World;
 public class PacManGame extends GameModel {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
-
-	private static final Random RND = new Random();
 
 	//@formatter:off
 	private static final byte[][] LEVELS = {

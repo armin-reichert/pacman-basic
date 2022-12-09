@@ -35,6 +35,7 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -72,6 +73,8 @@ public abstract class GameModel {
 
 	/** Game loop speed in ticks/sec. */
 	public static final int FPS = 60;
+
+	public static final Random RND = new Random();
 
 	/** Duration (in ticks) of chase and scatter phases. See Pac-Man dossier. */
 	public static final int[][] HUNTING_DURATION = {

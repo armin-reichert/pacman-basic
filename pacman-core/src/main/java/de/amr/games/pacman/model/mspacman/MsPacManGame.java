@@ -27,7 +27,6 @@ import static de.amr.games.pacman.lib.NavigationPoint.np;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,8 +74,6 @@ import de.amr.games.pacman.model.common.world.HorizontalPortal;
 public class MsPacManGame extends GameModel {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
-
-	private static final Random RND = new Random();
 
 	private static final byte[][] LEVELS = {
 	/*@formatter:off*/
