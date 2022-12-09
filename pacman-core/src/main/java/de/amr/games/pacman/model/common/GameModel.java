@@ -109,7 +109,7 @@ public abstract class GameModel {
 	protected final Pac pac;
 
 	/** Tells if Pac-Man can be killed by ghosts. Not part of original game. */
-	protected boolean immune;
+	protected boolean pacImmune;
 
 	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
 	protected final Ghost[] theGhosts;
@@ -361,12 +361,12 @@ public abstract class GameModel {
 		return pac;
 	}
 
-	public boolean isImmune() {
-		return immune;
+	public boolean isPacImmune() {
+		return pacImmune;
 	}
 
-	public void setImmune(boolean immune) {
-		this.immune = immune;
+	public void setPacImmune(boolean immune) {
+		this.pacImmune = immune;
 	}
 
 	public int lives() {
@@ -630,7 +630,7 @@ public abstract class GameModel {
 	// Pac-Man
 
 	private boolean isPacMeetingKiller() {
-		return !immune && !pacPowerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+		return !pacImmune && !pacPowerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	private void onPacMeetsKiller() {
