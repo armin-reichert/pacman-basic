@@ -50,6 +50,11 @@ public class WorldTests {
 		assertEquals(1, world.portals().size());
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testIllegalMapNumber() {
+		MsPacManGame.createWorld(42);
+	}
+
 	@Test
 	public void testMsPacManWorld1() {
 		World world = MsPacManGame.createWorld(1);

@@ -273,13 +273,15 @@ public class MsPacManGame extends GameModel {
 	};
 
 	public static ArcadeWorld createWorld(int number) {
-		return switch (number) {
-		case 1 -> new ArcadeWorld(MAP1);
-		case 2 -> new ArcadeWorld(MAP2);
-		case 3 -> new ArcadeWorld(MAP3);
-		case 4 -> new ArcadeWorld(MAP4);
-		default -> throw new IllegalArgumentException();
+		var map = switch (number) {
+		case 1 -> MAP1;
+		case 2 -> MAP2;
+		case 3 -> MAP3;
+		case 4 -> MAP4;
+		default -> throw new IllegalArgumentException(
+				"Illegal map number: %d. Allowed values: 1, 2, 3, 4.".formatted(number));
 		};
+		return new ArcadeWorld(map);
 	}
 
 	public static int mazeNumber(int levelNumber) {
