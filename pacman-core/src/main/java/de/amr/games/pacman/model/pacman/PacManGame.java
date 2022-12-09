@@ -28,9 +28,6 @@ import static de.amr.games.pacman.lib.V2i.v2i;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
@@ -51,8 +48,6 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public class PacManGame extends GameModel {
-
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	//@formatter:off
 	private static final byte[][] LEVELS = {

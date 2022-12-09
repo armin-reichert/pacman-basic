@@ -66,7 +66,7 @@ import de.amr.games.pacman.model.common.world.ArcadeWorld;
  */
 public abstract class GameModel {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	protected static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	/** Pixels/tick at 100% relative speed. */
 	public static final double BASE_SPEED = 1.25;
