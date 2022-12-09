@@ -29,70 +29,68 @@ import de.amr.games.pacman.model.common.world.World;
 /**
  * @author Armin Reichert
  */
-public record GameLevel(
 //@formatter:off
-
-	/** Number of this level, starts with 1. */
+public record GameLevel(
+	/** Number of level, starts with 1. */
 	int number,
-	
 	/** Maze number of this level, starts with 1. */
 	int mazeNumber,
-
 	/** World used in this level. */
 	World world,
-
 	/** Bonus (index) for current level. */
 	int bonusIndex,
-
 	/** Relative player speed at current level. */
 	float playerSpeed,
-
 	/** Relative ghost speed at current level. */
 	float ghostSpeed,
-
 	/** Relative ghost speed when inside tunnel at current level. */
 	float ghostSpeedTunnel,
-
 	/** Number of pellets left before player becomes "Cruise Elroy" at severity 1. */
 	int elroy1DotsLeft,
-
 	/** Relative speed of player being "Cruise Elroy" at severity 1. */
 	float elroy1Speed,
-
 	/** Number of pellets left before player becomes "Cruise Elroy" at severity 2. */
 	int elroy2DotsLeft,
-
 	/** Relative speed of player being "Cruise Elroy" at severity 2. */
 	float elroy2Speed,
-
 	/** Relative speed of player in power mode. */
 	float playerSpeedPowered,
-
 	/** Relative speed of frightened ghost. */
 	float ghostSpeedFrightened,
-
 	/** Number of seconds ghost are frightened at current level. */
 	int ghostFrightenedSeconds,
-
 	/** Number of maze flashes at end of current level. */
-	int numFlashes
-//@formatter:on
-) {
-
-	private static float percent(byte bytePercentValue) {
-		return bytePercentValue / 100.0f;
+	int numFlashes)
+{
+	//@formatter:on
+	/**
+	 * @param levelNumber level number (1, 2, ...)
+	 * @param mazeNumber  maze number (1, 2, ...)
+	 * @param world       world used in this level
+	 * @param bonusValue  if value <code>!= -1</code>, overrides the value in the data array
+	 * @param data        array with level data
+	 */
+	public static GameLevel of(int levelNumber, int mazeNumber, World world, int bonusValue, byte[] data) {
+		int bonusIndex = bonusValue == NO_BONUS_OVERRIDE ? (int) data[0] : bonusValue;
+		float playerSpeed = percentage(data[1]);
+		float ghostSpeed = percentage(data[2]);
+		float ghostSpeedTunnel = percentage(data[3]);
+		int elroy1DotsLeft = data[4];
+		float elroy1Speed = percentage(data[5]);
+		int elroy2DotsLeft = data[6];
+		float elroy2Speed = percentage(data[7]);
+		float playerSpeedPowered = percentage(data[8]);
+		float ghostSpeedFrightened = percentage(data[9]);
+		int ghostFrightenedSeconds = data[10];
+		int numFlashes = data[11];
+		return new GameLevel(levelNumber, mazeNumber, world, bonusIndex, playerSpeed, ghostSpeed, ghostSpeedTunnel,
+				elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered, ghostSpeedFrightened,
+				ghostFrightenedSeconds, numFlashes);
 	}
 
-	/**
-	 * @param levelNumber         level number (1, 2, ...)
-	 * @param mazeNumber          maze number (1, 2, ...)
-	 * @param world               world used in this level
-	 * @param bonusSymbolOverride if <code>-1</code>, the value from the data array is used, otherwise the specified value
-	 * @param data                array with level data
-	 */
-	public GameLevel(int levelNumber, int mazeNumber, World world, int bonusSymbolOverride, byte[] data) {
-		this(levelNumber, mazeNumber, world, bonusSymbolOverride == -1 ? (int) data[0] : bonusSymbolOverride,
-				percent(data[1]), percent(data[2]), percent(data[3]), data[4], percent(data[5]), data[6], percent(data[7]),
-				percent(data[8]), percent(data[9]), data[10], data[11]);
+	public static final int NO_BONUS_OVERRIDE = -1;
+
+	private static float percentage(int value) {
+		return value / 100f;
 	}
 }

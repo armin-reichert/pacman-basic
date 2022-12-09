@@ -314,8 +314,8 @@ public class MsPacManGame extends GameModel {
 		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
 		};
 		int numLevels = LEVELS.length;
-		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(7) : -1; // -1 means: use value from level data
-		level = new GameLevel(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber), bonusSymbol,
+		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(7) : GameLevel.NO_BONUS_OVERRIDE;
+		level = GameLevel.of(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber), bonusSymbol,
 				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
 		numGhostsKilledInLevel = 0;
 		setLevelGhostHouseRules(levelNumber);
