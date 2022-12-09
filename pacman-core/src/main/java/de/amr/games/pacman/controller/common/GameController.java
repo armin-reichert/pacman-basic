@@ -66,29 +66,28 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	private final Map<GameVariant, GameModel> games = Map.of(//
-			GameVariant.MS_PACMAN, new MsPacManGame(), //
-			GameVariant.PACMAN, new PacManGame());
-
-	private final Steering autopilot = new Autopilot();
+	private Map<GameVariant, GameModel> games;
+	private GameVariant gameVariant;
+	private Steering autopilot;
 	private Steering normalSteering;
-	private GameVariant gameVariant = null; // trigger initial change
-	private GameSoundController sounds = GameSoundController.NO_SOUND;
+	private GameSoundController sounds;
 
-	/* Visible for GameState: */
-	FollowRoute attractModeSteering = new FollowRoute();
-
-	public int intermissionTestNumber;
+	public int intermissionTestNumber; // test mode
+	public FollowRoute attractModeSteering = new FollowRoute(); // experimental
 
 	public GameController() {
-		super.states = GameState.values();
+		states = GameState.values();
 		for (var state : states) {
 			state.gc = this;
 		}
-		// map state change events to game state change events including the "context" (game model)
+		// map "state change" events to "game state change" events
 		addStateChangeListener(
 				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(context(), oldState, newState)));
-		GameEvents.publishEventsFor(this::game);
+		GameEvents.setGame(this::game);
+
+		autopilot = new Autopilot();
+		sounds = GameSoundController.NO_SOUND;
+		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
 		selectGame(GameVariant.PACMAN);
 	}
 

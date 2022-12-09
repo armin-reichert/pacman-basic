@@ -38,9 +38,8 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class GameEvents {
 
-	private static final GameEvents theOne = new GameEvents();
-
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final GameEvents IT = new GameEvents();
 
 	private Supplier<GameModel> fnGame;
 	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
@@ -48,26 +47,24 @@ public class GameEvents {
 	private GameEvents() {
 	}
 
-	public static void publishEventsFor(Supplier<GameModel> fnGame) {
-		theOne.fnGame = fnGame;
+	public static void setGame(Supplier<GameModel> fnGame) {
+		IT.fnGame = fnGame;
 	}
 
-	public static void addEventListener(GameEventListener subscriber) {
-		theOne.subscribers.add(subscriber);
+	public static void addListener(GameEventListener subscriber) {
+		IT.subscribers.add(subscriber);
 	}
 
-	public static void removeEventListener(GameEventListener subscriber) {
-		theOne.subscribers.remove(subscriber);
+	public static void removeListener(GameEventListener subscriber) {
+		IT.subscribers.remove(subscriber);
 	}
 
-	public static void publish(GameEvent gameEvent) {
-		if (gameEvent.type != GameEventType.PAC_FINDS_FOOD) {
-			LOGGER.trace("%s", gameEvent);
-		}
-		theOne.subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
+	public static void publish(GameEvent event) {
+		LOGGER.trace("%s", event);
+		IT.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 
 	public static void publish(GameEventType info, V2i tile) {
-		publish(new GameEvent(theOne.fnGame.get(), info, null, tile));
+		publish(new GameEvent(IT.fnGame.get(), info, null, tile));
 	}
 }
