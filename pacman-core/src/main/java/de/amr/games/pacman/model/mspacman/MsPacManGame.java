@@ -44,7 +44,27 @@ import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.HorizontalPortal;
 
 /**
- * Model of the Ms. Pac-Man game.
+ * The Ms. Pac-Man game.
+ * <p>
+ * Clyde, the orange ghost, has become a transvestite and calls himself "Sue" now (pronouns: what/thefuck). Pac-Man too
+ * wears women's dresses and calls himself "Ms. Pac-Man" (pronouns: mad/world). The bonus guy couldn't stand all this
+ * madness anymore, became an alcoholic and tumbles through the maze, starting on a random portal, walking around the
+ * ghost house and leaving the maze at a portal on the opposite side.
+ * <p>
+ * What a freak show!
+ * <p>
+ * There are 4 different maps used by the 6 different mazes. Up to level 13, the used mazes are:
+ * <ul>
+ * <li>Maze #1: pink maze, white dots (level 1-2)
+ * <li>Maze #2: light blue maze, yellow dots (level 3-5)
+ * <li>Maze #3: orange maze, red dots (level 6-9)
+ * <li>Maze #4: dark blue maze, white dots (level 10-13)
+ * </ul>
+ * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
+ * <ul>
+ * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
+ * <li>Maze #6: orange maze, white dots (same map as maze #4)
+ * </ul>
  * <p>
  * TODO: are the level data except for the bonus symbols the same as in Pac-Man?
  * <p>
@@ -277,29 +297,6 @@ public class MsPacManGame extends GameModel {
 
 	private MovingBonus movingBonus;
 
-	/**
-	 * The Ms. Pac-Man game.
-	 * <p>
-	 * Clyde, the orange ghost has become a transvestite and calls himself "Sue" now. Pac-Man wears woman's clothes and
-	 * calls himself "Ms. Pac-Man" (pronoun she/her). The bonus probably couldn't stand all this madness anymore, became
-	 * an alcoholic and tumbles through the maze, starting on a random portal, walking around the ghost house and leaving
-	 * the maze at a portal on the opposite side.
-	 * <p>
-	 * What a freak show!
-	 * <p>
-	 * There are 4 different maps used by the 6 different mazes. Up to level 13, the used mazes are:
-	 * <ul>
-	 * <li>Maze #1: pink maze, white dots (level 1-2)
-	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
-	 * <li>Maze #3: orange maze, red dots (level 6-9)
-	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
-	 * </ul>
-	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
-	 * <ul>
-	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
-	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
-	 * </ul>
-	 */
 	public MsPacManGame() {
 		super("Ms. Pac-Man", "Blinky", "Pinky", "Inky", "Sue");
 	}
