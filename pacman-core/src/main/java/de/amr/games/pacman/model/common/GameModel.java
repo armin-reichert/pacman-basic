@@ -237,7 +237,7 @@ public abstract class GameModel {
 		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
 
-	private static V2d halfTileRightOf(V2i tile) {
+	public static V2d halfTileRightOf(V2i tile) {
 		return tile.scaled(TS).toDoubleVec().plus(HTS, 0);
 	}
 
