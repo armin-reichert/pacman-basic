@@ -111,9 +111,6 @@ public abstract class GameModel {
 	/** Tells if Pac-Man can be killed by ghosts. Not part of original game. */
 	protected boolean immune;
 
-	/** If Pac-Man is controlled by autopilot. */
-	protected boolean autoControlled;
-
 	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
 	protected final Ghost[] theGhosts;
 
@@ -340,7 +337,7 @@ public abstract class GameModel {
 		energizerPulse.reset();
 	}
 
-	private Direction initialGhostDirection(Ghost ghost) {
+	public Direction initialGhostDirection(Ghost ghost) {
 		return switch (ghost.id()) {
 		case Ghost.ID_RED_GHOST -> Direction.LEFT;
 		case Ghost.ID_PINK_GHOST -> Direction.DOWN;
@@ -362,14 +359,6 @@ public abstract class GameModel {
 	 */
 	public Pac pac() {
 		return pac;
-	}
-
-	public boolean isAutoControlled() {
-		return autoControlled;
-	}
-
-	public void setAutoControlled(boolean autoControlled) {
-		this.autoControlled = autoControlled;
 	}
 
 	public boolean isImmune() {

@@ -119,7 +119,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			}
 			return autopilot;
 		}
-		if (game().isAutoControlled()) {
+		if (game().pac().isAutoControlled()) {
 			return autopilot;
 		}
 		return normalSteering;

@@ -37,6 +37,8 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
+	private boolean autoControlled;
+
 	private boolean dead;
 
 	/* Number of ticks Pac is resting and not moving. */
@@ -90,6 +92,14 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		restingTicks = 0;
 		starvingTicks = 0;
 		selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+	}
+
+	public boolean isAutoControlled() {
+		return autoControlled;
+	}
+
+	public void setAutoControlled(boolean autoControlled) {
+		this.autoControlled = autoControlled;
 	}
 
 	public void rest(int ticks) {
