@@ -263,8 +263,9 @@ public abstract class GameModel {
 	}
 
 	public void startLevel() {
-		resetActorsToStartPosition();
+		getReadyToRumble();
 		guys().forEach(Entity::hide);
+		bonus().setInactive();
 		levelCounter.addSymbol(level.bonusIndex());
 		ghostHouseRules.resetPrivateGhostDotCounters();
 	}
@@ -302,7 +303,7 @@ public abstract class GameModel {
 	 * Sets the game state to be ready for playing. Pac-Man and the ghosts are placed at their initial positions, made
 	 * visible and their state is initialized. Also the power timer and energizers are reset.
 	 */
-	public void resetActorsToStartPosition() {
+	public void getReadyToRumble() {
 		pac.reset();
 		pac.setPosition(level.world().pacStartPosition());
 		pac.setMoveAndWishDir(Direction.LEFT);

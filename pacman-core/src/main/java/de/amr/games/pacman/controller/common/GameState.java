@@ -142,7 +142,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			gc.sounds().stopAll();
 			if (game.hasCredit()) {
 				if (game.isPlaying()) {
-					game.resetActorsToStartPosition();
+					game.getReadyToRumble();
 				} else {
 					initNewGame(game);
 					gc.sounds().play(GameSound.GAME_READY);
@@ -158,12 +158,12 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.levelCounter().addSymbol(game.level().bonusIndex());
 			game.enableScores(true);
 			game.gameScore().setShowContent(true);
-			game.resetActorsToStartPosition();
+			game.getReadyToRumble();
 			game.guys().forEach(Creature::hide);
 		}
 
 		private void enterAttractMode(GameModel game) {
-			game.resetActorsToStartPosition();
+			game.getReadyToRumble();
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
 			gc.attractModeSteering.init();
