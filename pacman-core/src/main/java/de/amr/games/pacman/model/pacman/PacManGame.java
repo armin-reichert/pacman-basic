@@ -80,7 +80,7 @@ public class PacManGame extends GameModel {
 	};
 	/*@formatter:on*/
 
-	private static final V2d BONUS_POSITION = halfTileRightOf(new V2i(13, 20));
+	private static final V2d BONUS_POSITION = World.halfTileRightOf(new V2i(13, 20));
 
 	private static final short[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 

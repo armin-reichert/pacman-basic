@@ -30,8 +30,7 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.TS;
+import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -46,7 +45,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -222,10 +220,6 @@ public abstract class GameModel {
 	private static V2i tilesAhead(Creature guy, int n) {
 		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
 		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
-	}
-
-	public static V2d halfTileRightOf(V2i tile) {
-		return tile.scaled(TS).toDoubleVec().plus(HTS, 0);
 	}
 
 	public int credit() {

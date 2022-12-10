@@ -76,6 +76,10 @@ public interface World {
 		return new V2d(tile.scaled(TS));
 	}
 
+	public static V2d halfTileRightOf(V2i tile) {
+		return tile.scaled(TS).toDoubleVec().plus(HTS, 0);
+	}
+
 	/**
 	 * @return Number of tiles in horizontal direction.
 	 */
