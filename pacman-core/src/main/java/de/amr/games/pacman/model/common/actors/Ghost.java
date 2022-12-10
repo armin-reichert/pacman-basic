@@ -47,6 +47,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.U;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.AnimatedEntity;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
@@ -69,6 +70,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final int ID_ORANGE_GHOST = 3;
 
 	private final int id;
+	private V2d homePosition;
+	private V2d revivalPosition;
+	private V2i scatterTile;
 	private GhostState state;
 	private Supplier<V2i> fnChasingTarget = () -> null;
 	private EntityAnimationSet<AnimKeys> animationSet;
@@ -96,6 +100,30 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void reset() {
 		super.reset();
 		killedIndex = -1;
+	}
+
+	public V2d homePosition() {
+		return homePosition;
+	}
+
+	public void setHomePosition(V2d homePosition) {
+		this.homePosition = homePosition;
+	}
+
+	public V2d revivalPosition() {
+		return revivalPosition;
+	}
+
+	public void setRevivalPosition(V2d revivalPosition) {
+		this.revivalPosition = revivalPosition;
+	}
+
+	public V2i scatterTile() {
+		return scatterTile;
+	}
+
+	public void setScatterTile(V2i scatterTile) {
+		this.scatterTile = scatterTile;
 	}
 
 	public void setChasingTarget(Supplier<V2i> fnTargetTile) {
@@ -192,9 +220,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	private void updateStateLocked(GameModel game) {
 		if (game.level().world().ghostHouse().contains(tile())) {
-			if (position.y() <= game.ghostHomePosition(id).y() - World.HTS) {
+			if (position.y() <= homePosition.y() - World.HTS) {
 				setMoveAndWishDir(DOWN);
-			} else if (position.y() >= game.ghostHomePosition(id).y() + World.HTS) {
+			} else if (position.y() >= homePosition.y() + World.HTS) {
 				setMoveAndWishDir(UP);
 			}
 			setAbsSpeed(GameModel.GHOST_SPEED_INSIDE_HOUSE);
@@ -277,7 +305,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			navigateTowardsTarget(game);
 			tryMoving(game);
 		} else {
-			setTargetTile(game.ghostScatterTile(id));
+			setTargetTile(scatterTile);
 			navigateTowardsTarget(game);
 			tryMoving(game);
 		}
@@ -417,7 +445,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateEnteringHouse(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		state = ENTERING_HOUSE;
-		setTargetTile(tileAt(game.ghostRevivalPosition(id)));
+		setTargetTile(tileAt(revivalPosition));
 		if (animationSet != null) {
 			animationSet.select(AnimKeys.GHOST_EYES);
 		}
@@ -432,7 +460,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	private void updateStateEnteringHouse(GameModel game) {
 		setAbsSpeed(GameModel.GHOST_SPEED_RETURNING);
-		boolean atRevivalTile = game.level().world().ghostHouse().leadGuyInside(this, game.ghostRevivalPosition(id));
+		boolean atRevivalTile = game.level().world().ghostHouse().leadGuyInside(this, revivalPosition);
 		if (atRevivalTile) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();

@@ -116,15 +116,6 @@ public abstract class GameModel {
 	/** Blinky's "cruise elroy" state. Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled). */
 	protected byte cruiseElroyState;
 
-	/** The position of the ghosts when the game starts. */
-	protected final V2d[] ghostHomePosition = new V2d[4];
-
-	/** The tiles inside the house where the ghosts get revived. Amen. */
-	protected final V2d[] ghostRevivalPosition = new V2d[4];
-
-	/** The (unreachable) tiles in the corners targeted during the scatter phase. */
-	protected final V2i[] ghostScatterTile = new V2i[4];
-
 	/** Timer used to control hunting phases. */
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
 
@@ -176,7 +167,7 @@ public abstract class GameModel {
 		pinkGhost.setChasingTarget(() -> tilesAhead(pac, 4));
 		cyanGhost.setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
 		orangeGhost.setChasingTarget(() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? //
-				ghostScatterTile[ID_ORANGE_GHOST] : pac.tile());
+				orangeGhost.scatterTile() : pac.tile());
 
 		createBonus();
 		setLevel(1);
@@ -298,21 +289,21 @@ public abstract class GameModel {
 	protected void initGhosts() {
 		cruiseElroyState = 0;
 		if (level.world() instanceof ArcadeWorld) {
-			ghostHomePosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
-			ghostRevivalPosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			ghostScatterTile[ID_RED_GHOST] = ArcadeWorld.SCATTER_TILE_NE;
+			theGhosts[ID_RED_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE));
+			theGhosts[ID_RED_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+			theGhosts[ID_RED_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NE);
 
-			ghostHomePosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			ghostRevivalPosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			ghostScatterTile[ID_PINK_GHOST] = ArcadeWorld.SCATTER_TILE_NW;
+			theGhosts[ID_PINK_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+			theGhosts[ID_PINK_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+			theGhosts[ID_PINK_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NW);
 
-			ghostHomePosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
-			ghostRevivalPosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
-			ghostScatterTile[ID_CYAN_GHOST] = ArcadeWorld.SCATTER_TILE_SE;
+			theGhosts[ID_CYAN_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
+			theGhosts[ID_CYAN_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
+			theGhosts[ID_CYAN_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SE);
 
-			ghostHomePosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-			ghostRevivalPosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-			ghostScatterTile[ID_ORANGE_GHOST] = ArcadeWorld.SCATTER_TILE_SW;
+			theGhosts[ID_ORANGE_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
+			theGhosts[ID_ORANGE_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
+			theGhosts[ID_ORANGE_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SW);
 		}
 	}
 
@@ -326,7 +317,7 @@ public abstract class GameModel {
 		pac.setMoveAndWishDir(Direction.LEFT);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
-			ghost.setPosition(ghostHomePosition[ghost.id()]);
+			ghost.setPosition(ghost.homePosition());
 			ghost.setMoveAndWishDir(initialGhostDirection(ghost));
 			ghost.enterStateLocked();
 		});
@@ -410,30 +401,6 @@ public abstract class GameModel {
 			return Stream.of(theGhosts).filter(ghost -> ghost.is(states));
 		}
 		return Stream.of(theGhosts);
-	}
-
-	/**
-	 * @param id ghost ID (0, 1, 2, 3)
-	 * @return home position of ghost
-	 */
-	public V2d ghostHomePosition(int id) {
-		return ghostHomePosition[validatedGhostID(id)];
-	}
-
-	/**
-	 * @param id ghost ID (0, 1, 2, 3)
-	 * @return revival position of ghost
-	 */
-	public V2d ghostRevivalPosition(int id) {
-		return ghostRevivalPosition[validatedGhostID(id)];
-	}
-
-	/**
-	 * @param id ghost ID (0, 1, 2, 3)
-	 * @return scatter tile of ghost
-	 */
-	public V2i ghostScatterTile(int id) {
-		return ghostScatterTile[validatedGhostID(id)];
 	}
 
 	/**
