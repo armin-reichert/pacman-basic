@@ -280,25 +280,22 @@ public abstract class GameModel {
 		}
 	}
 
-	protected void initGhosts() {
-		cruiseElroyState = 0;
-		if (level.world() instanceof ArcadeWorld) {
-			theGhosts[ID_RED_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE));
-			theGhosts[ID_RED_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
-			theGhosts[ID_RED_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NE);
+	protected void arrangeGhostsInArcadeWorld() {
+		theGhosts[ID_RED_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE));
+		theGhosts[ID_RED_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+		theGhosts[ID_RED_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NE);
 
-			theGhosts[ID_PINK_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
-			theGhosts[ID_PINK_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
-			theGhosts[ID_PINK_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NW);
+		theGhosts[ID_PINK_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+		theGhosts[ID_PINK_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+		theGhosts[ID_PINK_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NW);
 
-			theGhosts[ID_CYAN_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
-			theGhosts[ID_CYAN_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
-			theGhosts[ID_CYAN_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SE);
+		theGhosts[ID_CYAN_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
+		theGhosts[ID_CYAN_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
+		theGhosts[ID_CYAN_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SE);
 
-			theGhosts[ID_ORANGE_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
-			theGhosts[ID_ORANGE_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
-			theGhosts[ID_ORANGE_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SW);
-		}
+		theGhosts[ID_ORANGE_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
+		theGhosts[ID_ORANGE_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
+		theGhosts[ID_ORANGE_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SW);
 	}
 
 	/**

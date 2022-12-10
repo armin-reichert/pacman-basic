@@ -193,14 +193,24 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public void setLevel(int levelNumber) {
-		int index = levelNumber <= LEVELS.length ? levelNumber - 1 : LEVELS.length - 1;
-		level = GameLevel.of(levelNumber, 1, createWorld(), GameLevel.NO_BONUS_OVERRIDE, LEVELS[index]);
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
+		}
+		level = createLevel(levelNumber);
+		arrangeGhostsInArcadeWorld();
 		numGhostsKilledInLevel = 0;
 		numGhostsKilledByEnergizer = 0;
+		cruiseElroyState = 0;
 		gameScore().setLevelNumber(levelNumber);
-		initGhosts();
 		setLevelGhostHouseRules(levelNumber);
-		bonus.setInactive();
+		bonus().setInactive();
+	}
+
+	private GameLevel createLevel(int levelNumber) {
+		int mazeNumber = 1;
+		var world = createWorld();
+		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+		return GameLevel.of(levelNumber, mazeNumber, world, GameLevel.USE_BONUS_FROM_DATA, data);
 	}
 
 	@Override

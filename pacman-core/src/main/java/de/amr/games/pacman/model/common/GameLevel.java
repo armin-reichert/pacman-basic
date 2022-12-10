@@ -71,7 +71,7 @@ public record GameLevel(
 	 * @param data        array with level data
 	 */
 	public static GameLevel of(int levelNumber, int mazeNumber, World world, int bonusValue, byte[] data) {
-		int bonusIndex = bonusValue == NO_BONUS_OVERRIDE ? (int) data[0] : bonusValue;
+		int bonusIndex = bonusValue == USE_BONUS_FROM_DATA ? (int) data[0] : bonusValue;
 		float playerSpeed = percentage(data[1]);
 		float ghostSpeed = percentage(data[2]);
 		float ghostSpeedTunnel = percentage(data[3]);
@@ -88,7 +88,7 @@ public record GameLevel(
 				ghostFrightenedSeconds, numFlashes);
 	}
 
-	public static final int NO_BONUS_OVERRIDE = -1;
+	public static final int USE_BONUS_FROM_DATA = -1;
 
 	private static float percentage(int value) {
 		return value / 100f;

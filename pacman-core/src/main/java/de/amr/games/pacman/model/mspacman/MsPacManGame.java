@@ -305,22 +305,6 @@ public class MsPacManGame extends GameModel {
 		return GameVariant.MS_PACMAN;
 	}
 
-	private void createLevel(int levelNumber) {
-		int mapNumber = switch (levelNumber) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
-		};
-		int numLevels = LEVELS.length;
-		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(7) : GameLevel.NO_BONUS_OVERRIDE;
-		level = GameLevel.of(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber), bonusSymbol,
-				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
-		numGhostsKilledInLevel = 0;
-		setLevelGhostHouseRules(levelNumber);
-	}
-
 	@Override
 	public MovingBonus bonus() {
 		return movingBonus;
@@ -331,10 +315,33 @@ public class MsPacManGame extends GameModel {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
-		createLevel(levelNumber);
-		initGhosts();
+		level = createLevel(levelNumber);
+		arrangeGhostsInArcadeWorld();
+		numGhostsKilledInLevel = 0;
 		numGhostsKilledByEnergizer = 0;
+		cruiseElroyState = 0;
 		gameScore().setLevelNumber(levelNumber);
+		setLevelGhostHouseRules(levelNumber);
+		bonus().setInactive();
+	}
+
+	private GameLevel createLevel(int levelNumber) {
+		int mapNumber = mapNumber(levelNumber);
+		int mazeNumber = mazeNumber(levelNumber);
+		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(7) : GameLevel.USE_BONUS_FROM_DATA;
+		var world = createWorld(mapNumber);
+		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+		return GameLevel.of(levelNumber, mazeNumber, world, bonusSymbol, data);
+	}
+
+	private int mapNumber(int levelNumber) {
+		return switch (levelNumber) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
+		};
 	}
 
 	@Override
