@@ -183,7 +183,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
-			} else { // in attract mode or game already running
+			} else { // in attract mode or
+								// game already running
 				if (timer.tick() == 90) {
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
@@ -205,8 +206,14 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 
-			if (gc.levelTestMode && gc.state().timer().atSecond(1)) {
-				gc.changeState(LEVEL_COMPLETE);
+			if (gc.levelTestMode) {
+				if (game.level().number() <= 21) {
+					if (gc.state().timer().atSecond(1)) {
+						gc.changeState(LEVEL_COMPLETE);
+					}
+				} else {
+					gc.reboot();
+				}
 				return;
 			}
 
