@@ -166,6 +166,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void reboot() {
+		levelTestMode = false;
 		sounds().stopAll();
 		restartInState(BOOT);
 		GameEvents.publish(new TriggerUIChangeEvent(game()));
