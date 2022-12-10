@@ -204,6 +204,12 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
+
+			if (gc.levelTestMode && gc.state().timer().atSecond(1)) {
+				gc.changeState(LEVEL_COMPLETE);
+				return;
+			}
+
 			renderSound(game);
 
 			game.memo.forgetEverything(); // ich scholze jetzt

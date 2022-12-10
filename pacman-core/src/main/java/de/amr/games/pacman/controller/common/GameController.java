@@ -73,6 +73,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private GameSoundController sounds;
 
 	public int intermissionTestNumber; // test mode
+	public boolean levelTestMode = false; // test mode
 	public FollowRoute attractModeSteering = new FollowRoute(); // experimental
 
 	public GameController() {
