@@ -289,6 +289,16 @@ public class MsPacManGame extends GameModel {
 		};
 	}
 
+	private static int mapNumber(int levelNumber) {
+		return switch (levelNumber) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
+		};
+	}
+
 	private MovingBonus movingBonus;
 
 	public MsPacManGame() {
@@ -332,16 +342,6 @@ public class MsPacManGame extends GameModel {
 		var world = createWorld(mapNumber);
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		return GameLevel.of(levelNumber, mazeNumber, world, bonusSymbol, data);
-	}
-
-	private int mapNumber(int levelNumber) {
-		return switch (levelNumber) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
-		};
 	}
 
 	@Override
