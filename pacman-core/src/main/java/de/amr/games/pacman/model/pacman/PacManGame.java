@@ -174,6 +174,14 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
+	protected GameLevel createLevel(int levelNumber) {
+		int mazeNumber = 1;
+		var world = createWorld();
+		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+		return GameLevel.of(levelNumber, mazeNumber, world, GameLevel.USE_BONUS_FROM_DATA, data);
+	}
+
+	@Override
 	protected void createBonus() {
 		bonus = new StaticBonus(BONUS_POSITION);
 	}
@@ -189,28 +197,6 @@ public class PacManGame extends GameModel {
 			return false;
 		}
 		return super.isGhostAllowedMoving(ghost, dir);
-	}
-
-	@Override
-	public void setLevel(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
-		}
-		level = createLevel(levelNumber);
-		arrangeGhostsInArcadeWorld();
-		numGhostsKilledInLevel = 0;
-		numGhostsKilledByEnergizer = 0;
-		cruiseElroyState = 0;
-		gameScore().setLevelNumber(levelNumber);
-		setLevelGhostHouseRules(levelNumber);
-		bonus().setInactive();
-	}
-
-	private GameLevel createLevel(int levelNumber) {
-		int mazeNumber = 1;
-		var world = createWorld();
-		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-		return GameLevel.of(levelNumber, mazeNumber, world, GameLevel.USE_BONUS_FROM_DATA, data);
 	}
 
 	@Override

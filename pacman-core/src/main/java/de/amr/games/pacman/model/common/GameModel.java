@@ -246,7 +246,7 @@ public abstract class GameModel {
 		return credit > 0;
 	}
 
-	public void initAndSetLevel(int levelNumber) {
+	public void init(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Illegal level number: %d. Must be 1 or greater".formatted(levelNumber));
 		}
@@ -257,6 +257,27 @@ public abstract class GameModel {
 		ghostHouseRules.resetAllDotCounters();
 		setLevel(levelNumber);
 	}
+
+	/**
+	 * Initializes the model for given game level.
+	 * 
+	 * @param levelNumber 1-based level number
+	 */
+	public void setLevel(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
+		}
+		level = createLevel(levelNumber);
+		arrangeGhostsInArcadeWorld();
+		numGhostsKilledInLevel = 0;
+		numGhostsKilledByEnergizer = 0;
+		cruiseElroyState = 0;
+		gameScore().setLevelNumber(levelNumber);
+		setLevelGhostHouseRules(levelNumber);
+		bonus().setInactive();
+	}
+
+	protected abstract GameLevel createLevel(int levelNumber);
 
 	public GameLevel level() {
 		return level;
@@ -419,13 +440,6 @@ public abstract class GameModel {
 	public int blinkyCruiseElroyState() {
 		return cruiseElroyState;
 	}
-
-	/**
-	 * Initializes the model for given game level.
-	 * 
-	 * @param levelNumber 1-based level number
-	 */
-	public abstract void setLevel(int levelNumber);
 
 	// Hunting
 
