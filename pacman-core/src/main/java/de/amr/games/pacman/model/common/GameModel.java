@@ -49,7 +49,6 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
-import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -149,9 +148,6 @@ public abstract class GameModel {
 
 	/** List of collected level symbols. */
 	protected final LevelCounter levelCounter = new LevelCounter();
-
-	/** Energizer animation. */
-	public final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
 
 	private final Score gameScore = new Score("SCORE");
 
@@ -290,11 +286,13 @@ public abstract class GameModel {
 
 	public void endLevel() {
 		huntingTimer.stop();
-		energizerPulse.reset();
 		bonus().setInactive();
 		pac.setAbsSpeed(0);
 		pac.animationSet().ifPresent(EntityAnimationSet::reset);
 		ghosts().forEach(Ghost::hide);
+		if (level.world() instanceof ArcadeWorld arcadeWorld) {
+			arcadeWorld.energizerPulse.reset();
+		}
 	}
 
 	protected void initGhosts() {
@@ -334,7 +332,9 @@ public abstract class GameModel {
 		});
 		guys().forEach(Creature::show);
 		pacPowerTimer.reset(0);
-		energizerPulse.reset();
+		if (level.world() instanceof ArcadeWorld arcadeWorld) {
+			arcadeWorld.energizerPulse.reset();
+		}
 	}
 
 	public Direction initialGhostDirection(Ghost ghost) {
@@ -546,8 +546,10 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus().update(this);
 		advanceHunting();
-		energizerPulse.animate();
 		pacPowerTimer.advance();
+		if (level.world() instanceof ArcadeWorld arcadeWorld) {
+			arcadeWorld.energizerPulse.animate();
+		}
 	}
 
 	protected void setLevelGhostHouseRules(int levelNumber) {

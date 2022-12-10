@@ -196,8 +196,10 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			game.pac().selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
-			game.energizerPulse.restart();
 			gc.sounds().ensureSirenStarted(game.huntingTimer().phase() / 2);
+			if (game.level().world() instanceof ArcadeWorld arcadeWorld) {
+				arcadeWorld.energizerPulse.restart();
+			}
 		}
 
 		@Override
@@ -361,7 +363,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			} else {
 				gc.getSteering().steer(game, game.pac());
 				game.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE).forEach(ghost -> ghost.update(game));
-				game.energizerPulse.animate();
+				if (game.level().world() instanceof ArcadeWorld arcadeWorld) {
+					arcadeWorld.energizerPulse.animate();
+				}
 			}
 		}
 
@@ -384,7 +388,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			game.energizerPulse.animate();
+			if (game.level().world() instanceof ArcadeWorld arcadeWorld) {
+				arcadeWorld.energizerPulse.animate();
+			}
 			game.pac().update(game);
 			if (timer.betweenSeconds(0, 1)) {
 				game.ghosts().forEach(Ghost::animate);
@@ -397,7 +403,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			} else if (timer.atSecond(3.0)) {
 				game.setLives(game.lives() - 1);
 				if (game.lives() == 0) {
-					game.energizerPulse.stop();
+					if (game.level().world() instanceof ArcadeWorld arcadeWorld) {
+						arcadeWorld.energizerPulse.stop();
+					}
 					game.setLivesOneLessShown(false);
 				}
 				game.pac().hide();
