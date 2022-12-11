@@ -275,7 +275,7 @@ public abstract class GameModel {
 		numGhostsKilledByEnergizer = 0;
 		cruiseElroyState = 0;
 		gameScore().setLevelNumber(levelNumber);
-		setLevelGhostHouseRules(levelNumber);
+		defineGhostHouseRulesForLevel(levelNumber);
 		bonus().setInactive();
 	}
 
@@ -527,7 +527,7 @@ public abstract class GameModel {
 		}
 	}
 
-	protected void setLevelGhostHouseRules(int levelNumber) {
+	protected void defineGhostHouseRulesForLevel(int levelNumber) {
 		ghostHouseRules.setPacStarvingTimeLimit(levelNumber < 5 ? 240 : 180);
 		ghostHouseRules.setGlobalGhostDotLimits(-1, 7, 17, -1);
 		switch (levelNumber) {
