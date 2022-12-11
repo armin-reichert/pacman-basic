@@ -99,6 +99,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	@Override
 	public void reset() {
 		super.reset();
+		attractRouteIndex = 0;
 		killedIndex = -1;
 	}
 
