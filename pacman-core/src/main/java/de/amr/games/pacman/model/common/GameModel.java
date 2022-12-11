@@ -173,8 +173,22 @@ public abstract class GameModel {
 		setLevel(1);
 	}
 
+	/**
+	 * Creates and returns the specified level.
+	 * 
+	 * @param levelNumber Level number (starting at 1)
+	 * @return the level
+	 */
+	protected abstract GameLevel createLevel(int levelNumber);
+
+	/**
+	 * Creates the bonus for this game variant.
+	 */
 	protected abstract void createBonus();
 
+	/**
+	 * @return the game variant realized by this model
+	 */
 	public abstract GameVariant variant();
 
 	public boolean isPlaying() {
@@ -278,8 +292,6 @@ public abstract class GameModel {
 		defineGhostHouseRulesForLevel(levelNumber);
 		bonus().setInactive();
 	}
-
-	protected abstract GameLevel createLevel(int levelNumber);
 
 	public GameLevel level() {
 		return level;
