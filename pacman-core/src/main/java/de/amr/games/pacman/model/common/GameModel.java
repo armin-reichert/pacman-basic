@@ -33,6 +33,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -341,7 +342,7 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setPosition(ghost.homePosition());
-			ghost.setMoveAndWishDir(initialGhostDirection(ghost));
+			ghost.setMoveAndWishDir(List.of(Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP).get(ghost.id()));
 			ghost.enterStateLocked();
 		});
 		guys().forEach(Creature::show);
@@ -349,15 +350,6 @@ public abstract class GameModel {
 		if (level.world() instanceof ArcadeWorld arcadeWorld) {
 			arcadeWorld.energizerPulse.reset();
 		}
-	}
-
-	public Direction initialGhostDirection(Ghost ghost) {
-		return switch (ghost.id()) {
-		case Ghost.ID_RED_GHOST -> Direction.LEFT;
-		case Ghost.ID_PINK_GHOST -> Direction.DOWN;
-		case Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> Direction.UP;
-		default -> throw new IllegalArgumentException("Ghost ID: " + ghost.id());
-		};
 	}
 
 	/**
