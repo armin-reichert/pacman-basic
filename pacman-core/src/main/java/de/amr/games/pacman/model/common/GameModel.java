@@ -91,6 +91,8 @@ public abstract class GameModel {
 	public static final short[] GHOST_EATEN_POINTS = { 200, 400, 800, 1600 };
 	public static final short ALL_GHOSTS_KILLED_POINTS = 12_000;
 	public static final short EXTRA_LIFE_POINTS = 10_000;
+	public static final short BONUS1_PELLETS_EATEN = 70;
+	public static final short BONUS2_PELLETS_EATEN = 170;
 	public static final short BONUS_EATEN_TICKS = 2 * FPS; // unsure
 	public static final short PAC_POWER_FADING_TICKS = 2 * FPS; // unsure
 	public static final float GHOST_SPEED_INSIDE_HOUSE = 0.5f; // unsure
@@ -650,7 +652,8 @@ public abstract class GameModel {
 			memo.lastFoodFound = level.world().foodRemaining() == 1;
 			memo.energizerFound = level.world().isEnergizerTile(tile);
 			memo.pacPowered = memo.energizerFound && level.ghostFrightenedSeconds() > 0;
-			memo.bonusReached = level.world().eatenFoodCount() == 70 || level.world().eatenFoodCount() == 170;
+			memo.bonusReached = level.world().eatenFoodCount() == BONUS1_PELLETS_EATEN
+					|| level.world().eatenFoodCount() == BONUS2_PELLETS_EATEN;
 			onFoodFound(tile);
 		} else {
 			pac.starve();
