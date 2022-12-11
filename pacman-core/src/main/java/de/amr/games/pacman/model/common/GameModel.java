@@ -250,12 +250,8 @@ public abstract class GameModel {
 		return false;
 	}
 
-	public boolean addCredit() {
+	public boolean changeCredit(int delta) {
 		return setCredit(credit + 1);
-	}
-
-	public boolean consumeCredit() {
-		return setCredit(credit - 1);
 	}
 
 	public boolean hasCredit() {

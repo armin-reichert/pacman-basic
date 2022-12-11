@@ -88,7 +88,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void addCredit(GameModel game) {
-			boolean added = game.addCredit();
+			boolean added = game.changeCredit(1);
 			if (added) {
 				gc.sounds().play(GameSound.CREDIT);
 			}
@@ -124,7 +124,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void addCredit(GameModel game) {
-			boolean added = game.addCredit();
+			boolean added = game.changeCredit(1);
 			if (added) {
 				gc.sounds().play(GameSound.CREDIT);
 			}
@@ -273,7 +273,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void addCredit(GameModel game) {
 			if (!game.isPlaying()) {
-				boolean added = game.addCredit();
+				boolean added = game.changeCredit(1);
 				if (added) {
 					gc.sounds().play(GameSound.CREDIT);
 				}
@@ -438,7 +438,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.resetSeconds(1.5);
 			timer.start();
 			gc.sounds().stopAll();
-			game.consumeCredit();
+			game.changeCredit(-1);
 			ScoreManager.saveHiscore(game.highScore(), game.variant());
 		}
 
