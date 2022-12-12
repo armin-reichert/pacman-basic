@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -49,11 +50,27 @@ public class GameModelTest {
 	}
 
 	@Test
-	public void testPacInitialized() {
+	public void testPacCreatedAndInitialized() {
 		assertTrue(game.pac() instanceof Pac);
 		assertFalse(game.pac().isDead());
 		assertEquals(0, game.pac().restingTicks());
 		assertEquals(0, game.pac().starvingTicks());
+	}
+
+	@Test
+	public void testGhostsCreatedAndInitialized() {
+		var redGhost = game.ghost(Ghost.ID_RED_GHOST);
+		assertTrue(redGhost instanceof Ghost);
+		assertEquals(-1, redGhost.killedIndex());
+		var pinkGhost = game.ghost(Ghost.ID_PINK_GHOST);
+		assertTrue(pinkGhost instanceof Ghost);
+		assertEquals(-1, pinkGhost.killedIndex());
+		var cyanGhost = game.ghost(Ghost.ID_CYAN_GHOST);
+		assertTrue(cyanGhost instanceof Ghost);
+		assertEquals(-1, cyanGhost.killedIndex());
+		var orangeGhost = game.ghost(Ghost.ID_ORANGE_GHOST);
+		assertTrue(orangeGhost instanceof Ghost);
+		assertEquals(-1, orangeGhost.killedIndex());
 	}
 
 	@Test
