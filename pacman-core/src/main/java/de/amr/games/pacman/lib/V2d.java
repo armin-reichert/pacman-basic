@@ -32,7 +32,7 @@ public record V2d(double x, double y) {
 
 	public static final V2d ZERO = new V2d(0, 0);
 
-	private static final double EPSILON = 1e-6;
+	public static final double EPSILON = 1e-6;
 
 	@Override
 	public boolean equals(Object other) {

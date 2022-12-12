@@ -94,6 +94,10 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 	}
 
+	public boolean isDead() {
+		return dead;
+	}
+
 	public boolean isAutoControlled() {
 		return autoControlled;
 	}
@@ -107,6 +111,10 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 			throw new IllegalArgumentException("Resting time cannot be negative, but is: %d".formatted(ticks));
 		}
 		restingTicks = ticks;
+	}
+
+	public int restingTicks() {
+		return restingTicks;
 	}
 
 	public void starve() {

@@ -25,16 +25,19 @@ SOFTWARE.
 package de.amr.games.pacman.model.world;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
 /**
  * @author Armin Reichert
- *
  */
 public class GameModelTests {
 
@@ -43,6 +46,43 @@ public class GameModelTests {
 	@Before
 	public void setUp() {
 		game = new PacManGame();
+	}
+
+	@Test
+	public void testPacInitialized() {
+		assertTrue(game.pac() instanceof Pac);
+		assertFalse(game.pac().isDead());
+		assertEquals(0, game.pac().restingTicks());
+		assertEquals(0, game.pac().starvingTicks());
+	}
+
+	@Test
+	public void testPacResting() {
+		game.pac().rest(3);
+		assertEquals(3, game.pac().restingTicks());
+	}
+
+	@Test
+	public void testPacStarving() {
+		game.pac().starve();
+		assertEquals(1, game.pac().starvingTicks());
+		game.pac().starve();
+		assertEquals(2, game.pac().starvingTicks());
+	}
+
+	@Test
+	public void testPacDying() {
+		assertFalse(game.pac().isDead());
+		game.pac().die();
+		assertTrue(game.pac().isDead());
+	}
+
+	@Test
+	public void testDeadPacHasZeroSpeed() {
+		game.pac().setAbsSpeed(42);
+		assertEquals(42.0, game.pac().velocity().length(), V2d.EPSILON);
+		game.pac().die();
+		assertEquals(0.0, game.pac().velocity().length(), V2d.EPSILON);
 	}
 
 	@Test
@@ -68,5 +108,4 @@ public class GameModelTests {
 	public void testScoreNegativePoints() {
 		game.scorePoints(-42);
 	}
-
 }
