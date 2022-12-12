@@ -217,17 +217,21 @@ public abstract class GameModel {
 	}
 
 	public void scorePoints(int points) {
+		if (points < 0) {
+			throw new IllegalArgumentException("Scored points must not be negative but is: " + points);
+		}
 		if (!scoresEnabled) {
 			return;
 		}
-		int scoreBefore = gameScore.points();
-		gameScore.setPoints(scoreBefore + points);
-		if (gameScore.points() > highScore.points()) {
-			highScore.setPoints(gameScore.points());
+		final int oldScore = gameScore.points();
+		final int newScore = oldScore + points;
+		gameScore.setPoints(newScore);
+		if (newScore > highScore.points()) {
+			highScore.setPoints(newScore);
 			highScore.setLevelNumber(level.number());
 			highScore.setDate(LocalDate.now());
 		}
-		if (scoreBefore < EXTRA_LIFE_POINTS && gameScore.points() >= EXTRA_LIFE_POINTS) {
+		if (oldScore < EXTRA_LIFE_POINTS && newScore >= EXTRA_LIFE_POINTS) {
 			lives++;
 			GameEvents.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, pac.tile()));
 		}
