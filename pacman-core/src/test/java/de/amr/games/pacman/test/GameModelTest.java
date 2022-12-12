@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.model.world;
+package de.amr.games.pacman.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,7 +39,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 /**
  * @author Armin Reichert
  */
-public class GameModelTests {
+public class GameModelTest {
 
 	private GameModel game;
 

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.world;
+package de.amr.games.pacman.test;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  * 
  * @author Armin Reichert
  */
-public class FloorPlanGenerator {
+public class FloorPlanGeneratorTest {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 

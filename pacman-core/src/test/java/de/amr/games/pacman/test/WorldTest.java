@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.world;
+package de.amr.games.pacman.test;
 
 import static java.util.function.Predicate.not;
 import static org.junit.Assert.assertEquals;
@@ -13,7 +13,7 @@ import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
-public class WorldTests {
+public class WorldTest {
 
 	@Test
 	public void testTileCoordinates() {
