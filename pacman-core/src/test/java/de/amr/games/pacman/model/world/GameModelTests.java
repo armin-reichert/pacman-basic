@@ -108,4 +108,16 @@ public class GameModelTests {
 	public void testScoreNegativePoints() {
 		game.scorePoints(-42);
 	}
+
+	@Test
+	public void testHighScore() {
+		game.enableScores(true);
+		assertEquals(0, game.highScore().points());
+		game.scorePoints(42);
+		assertEquals(42, game.highScore().points());
+		game.scorePoints(0);
+		assertEquals(42, game.highScore().points());
+		game.scorePoints(1);
+		assertEquals(43, game.highScore().points());
+	}
 }
