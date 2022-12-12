@@ -36,7 +36,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -155,26 +154,29 @@ public abstract class GameModel {
 
 	protected GameModel(String pacName, String redGhostName, String pinkGhostName, String cyanGhostName,
 			String orangeGhostName) {
-		pac = new Pac(pacName);
 
+		pac = new Pac(pacName);
 		final var redGhost = new Ghost(ID_RED_GHOST, redGhostName);
 		final var pinkGhost = new Ghost(ID_PINK_GHOST, pinkGhostName);
 		final var cyanGhost = new Ghost(ID_CYAN_GHOST, cyanGhostName);
 		final var orangeGhost = new Ghost(ID_ORANGE_GHOST, orangeGhostName);
+		theGhosts = new Ghost[] { redGhost, pinkGhost, cyanGhost, orangeGhost };
 
 		// The "AI": each ghost has a different way of computing its chasing target
-		final Supplier<V2i> follow = pac::tile;
-		final Supplier<V2i> ambush = () -> tilesAhead(pac, 4);
-		final Supplier<V2i> surround = () -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile());
-		final Supplier<V2i> followAndRetreat = () -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? //
-				orangeGhost.scatterTile() : pac.tile();
 
-		redGhost.setChasingBehavior(follow);
-		pinkGhost.setChasingBehavior(ambush);
-		cyanGhost.setChasingBehavior(surround);
-		orangeGhost.setChasingBehavior(followAndRetreat);
+		// Red ghost targets Pac-Man directly
+		redGhost.setChasingBehavior(pac::tile);
 
-		theGhosts = new Ghost[] { redGhost, pinkGhost, cyanGhost, orangeGhost };
+		// Pink ghost ambushes Pac-Man
+		pinkGhost.setChasingBehavior(() -> tilesAhead(pac, 4));
+
+		// Cyan ghost attacks from opposite side as red ghost
+		cyanGhost.setChasingBehavior(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
+
+		// Orange ghost attacks and retreats if too near
+		orangeGhost.setChasingBehavior(
+				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? orangeGhost.scatterTile() : pac.tile());
+
 		createBonus();
 		setLevel(1);
 	}
