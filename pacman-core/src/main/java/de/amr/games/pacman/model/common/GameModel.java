@@ -170,7 +170,7 @@ public abstract class GameModel {
 		// Pink ghost ambushes Pac-Man
 		pinkGhost.setChasingBehavior(() -> tilesAhead(pac, 4));
 
-		// Cyan ghost attacks from opposite side as red ghost
+		// Cyan ghost attacks from opposite side than red ghost
 		cyanGhost.setChasingBehavior(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
 
 		// Orange ghost attacks and retreats if too near
