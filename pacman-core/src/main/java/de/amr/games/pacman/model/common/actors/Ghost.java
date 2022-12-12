@@ -127,7 +127,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		this.scatterTile = scatterTile;
 	}
 
-	public void setChasingTarget(Supplier<V2i> fnTargetTile) {
+	public void setChasingBehavior(Supplier<V2i> fnTargetTile) {
 		this.fnChasingTarget = Objects.requireNonNull(fnTargetTile);
 	}
 
