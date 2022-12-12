@@ -120,4 +120,13 @@ public class GameModelTests {
 		game.scorePoints(1);
 		assertEquals(43, game.highScore().points());
 	}
+
+	@Test
+	public void testChangeCredit() {
+		assertEquals(0, game.credit());
+		game.changeCredit(2);
+		assertEquals(2, game.credit());
+		game.changeCredit(-2);
+		assertEquals(0, game.credit());
+	}
 }
