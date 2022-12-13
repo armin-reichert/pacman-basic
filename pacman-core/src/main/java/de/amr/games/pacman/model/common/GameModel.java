@@ -290,7 +290,7 @@ public abstract class GameModel {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
 		level = createLevel(levelNumber);
-		level.world().arrangeGhosts(theGhosts);
+		level.world().assignGhostPositions(theGhosts);
 		numGhostsKilledInLevel = 0;
 		numGhostsKilledByEnergizer = 0;
 		cruiseElroyState = 0;

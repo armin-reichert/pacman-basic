@@ -236,7 +236,7 @@ public interface World {
 	 * 
 	 * @param ghosts ghosts in order RED, PINK, CYAN, ORANGE
 	 */
-	void arrangeGhosts(Ghost[] ghosts);
+	void assignGhostPositions(Ghost[] ghosts);
 
 	/**
 	 * @return (optional) animation played when level ends

@@ -79,7 +79,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public void arrangeGhosts(Ghost[] ghosts) {
+	public void assignGhostPositions(Ghost[] ghosts) {
 		ghosts[ID_RED_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE));
 		ghosts[ID_RED_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
 		ghosts[ID_RED_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NE);
