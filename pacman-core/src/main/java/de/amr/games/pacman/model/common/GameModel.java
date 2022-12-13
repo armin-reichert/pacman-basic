@@ -298,7 +298,6 @@ public abstract class GameModel {
 		cruiseElroyState = 0;
 		gameScore().setLevelNumber(levelNumber);
 		defineGhostHouseRulesForLevel(levelNumber);
-		bonus().setInactive();
 	}
 
 	public GameLevel level() {
@@ -308,7 +307,6 @@ public abstract class GameModel {
 	public void startLevel() {
 		getReadyToRumble();
 		guys().forEach(Entity::hide);
-		bonus().setInactive();
 		levelCounter.addSymbol(level.bonusIndex());
 		ghostHouseRules.resetPrivateGhostDotCounters();
 	}

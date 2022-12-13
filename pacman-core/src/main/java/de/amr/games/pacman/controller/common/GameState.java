@@ -315,7 +315,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.start();
 			gc.sounds().stopAll();
 			game.endLevel();
-			// force UI update to ensure maze flashing animation is up to date
 			GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
 		}
 
