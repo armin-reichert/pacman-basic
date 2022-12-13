@@ -32,7 +32,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.pacman.PacManGame;
@@ -47,6 +50,18 @@ public class GameModelTest {
 	@Before
 	public void setUp() {
 		game = new PacManGame();
+	}
+
+	@Test
+	public void testLevelInitialized() {
+		assertTrue(game.level() instanceof GameLevel);
+		assertEquals(1, game.level().number());
+		assertEquals(1, game.gameScore().levelNumber());
+		assertTrue(game.bonus() instanceof Bonus);
+		assertEquals(BonusState.INACTIVE, game.bonus().state());
+		assertEquals(0, game.numGhostsKilledInLevel());
+		assertEquals(0, game.numGhostsKilledByEnergizer());
+		assertEquals(0, game.cruiseElroyState());
 	}
 
 	@Test

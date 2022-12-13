@@ -386,6 +386,18 @@ public abstract class GameModel {
 		this.pacImmune = immune;
 	}
 
+	public byte cruiseElroyState() {
+		return cruiseElroyState;
+	}
+
+	public int numGhostsKilledInLevel() {
+		return numGhostsKilledInLevel;
+	}
+
+	public int numGhostsKilledByEnergizer() {
+		return numGhostsKilledByEnergizer;
+	}
+
 	public int lives() {
 		return lives;
 	}
