@@ -232,7 +232,7 @@ public interface World {
 	void resetFood();
 
 	/**
-	 * Sets home position, revival position and scatter tile for the ghosts.
+	 * Assigns to each ghost its home position, revival position and scatter tile.
 	 * 
 	 * @param ghosts ghosts in order RED, PINK, CYAN, ORANGE
 	 */
