@@ -183,8 +183,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
-			} else { // in attract mode or
-								// game already running
+			} else { // in attract mode or game already running
 				if (timer.tick() == 90) {
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
@@ -338,6 +337,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					animation.animate();
 				}
 			});
+			game.pac().update(game);
 		}
 	},
 

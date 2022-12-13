@@ -56,24 +56,23 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	public void update(GameModel game) {
 		Objects.requireNonNull(game, "Game must not be null");
 		if (dead) {
-			// nothing to do
-		} else {
-			if (restingTicks == 0) {
-				setRelSpeed(game.powerTimer().isRunning() ? game.level().playerSpeedPowered() : game.level().playerSpeed());
-				tryMoving(game);
-			} else {
-				--restingTicks;
-				setAbsSpeed(0);
-			}
-			selectedAnimation().ifPresent(animation -> {
-				if (stuck) {
-					animation.stop();
-				} else {
-					animation.start();
-				}
-			});
+			animate();
+			return;
 		}
-		animate();
+		switch (restingTicks) {
+		case 0 -> {
+			var speed = game.powerTimer().isRunning() ? game.level().playerSpeedPowered() : game.level().playerSpeed();
+			setRelSpeed(speed);
+			tryMoving(game);
+			if (!stuck) {
+				animate();
+			}
+		}
+		case Integer.MAX_VALUE -> {
+			// rest in peace
+		}
+		default -> --restingTicks;
+		}
 	}
 
 	public void setAnimationSet(EntityAnimationSet<AnimKeys> animationSet) {

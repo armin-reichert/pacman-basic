@@ -46,6 +46,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -311,7 +312,8 @@ public abstract class GameModel {
 	public void endLevel() {
 		huntingTimer.stop();
 		bonus().setInactive();
-		pac.setAbsSpeed(0);
+		pac.rest(Integer.MAX_VALUE);
+		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		if (level.world() instanceof ArcadeWorld arcadeWorld) {
 			arcadeWorld.energizerPulse.reset();
