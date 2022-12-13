@@ -30,7 +30,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -54,7 +53,6 @@ import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.world.ArcadeGhostHouse;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
@@ -292,7 +290,7 @@ public abstract class GameModel {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
 		level = createLevel(levelNumber);
-		arrangeGhostsInArcadeWorld();
+		level.world().arrangeGhosts(theGhosts);
 		numGhostsKilledInLevel = 0;
 		numGhostsKilledByEnergizer = 0;
 		cruiseElroyState = 0;
@@ -320,24 +318,6 @@ public abstract class GameModel {
 		if (level.world() instanceof ArcadeWorld arcadeWorld) {
 			arcadeWorld.energizerPulse.reset();
 		}
-	}
-
-	protected void arrangeGhostsInArcadeWorld() {
-		theGhosts[ID_RED_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE));
-		theGhosts[ID_RED_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
-		theGhosts[ID_RED_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NE);
-
-		theGhosts[ID_PINK_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
-		theGhosts[ID_PINK_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
-		theGhosts[ID_PINK_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NW);
-
-		theGhosts[ID_CYAN_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
-		theGhosts[ID_CYAN_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
-		theGhosts[ID_CYAN_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SE);
-
-		theGhosts[ID_ORANGE_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
-		theGhosts[ID_ORANGE_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
-		theGhosts[ID_ORANGE_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SW);
 	}
 
 	/**

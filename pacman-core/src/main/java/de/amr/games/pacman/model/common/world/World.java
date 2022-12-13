@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * Interface for accessing the game world.
@@ -227,4 +228,11 @@ public interface World {
 	 * Resets the food in this world.
 	 */
 	void resetFood();
+
+	/**
+	 * Sets home position, revival position and scatter tile for the ghosts.
+	 * 
+	 * @param ghosts ghosts in order RED, PINK, CYAN, ORANGE
+	 */
+	void arrangeGhosts(Ghost[] ghosts);
 }

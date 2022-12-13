@@ -24,6 +24,11 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.V2i.v2i;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
+import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.Optional;
 
@@ -31,6 +36,7 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
+import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * Implements all stuff that is common to the original Arcade worlds like ghost house position, ghost and player start
@@ -70,6 +76,25 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
+	}
+
+	@Override
+	public void arrangeGhosts(Ghost[] ghosts) {
+		ghosts[ID_RED_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE));
+		ghosts[ID_RED_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+		ghosts[ID_RED_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NE);
+
+		ghosts[ID_PINK_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+		ghosts[ID_PINK_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+		ghosts[ID_PINK_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NW);
+
+		ghosts[ID_CYAN_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
+		ghosts[ID_CYAN_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
+		ghosts[ID_CYAN_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SE);
+
+		ghosts[ID_ORANGE_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
+		ghosts[ID_ORANGE_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
+		ghosts[ID_ORANGE_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SW);
 	}
 
 	@Override
