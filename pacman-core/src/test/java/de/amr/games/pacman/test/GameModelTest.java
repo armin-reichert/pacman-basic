@@ -26,6 +26,7 @@ package de.amr.games.pacman.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -77,15 +78,30 @@ public class GameModelTest {
 		var redGhost = game.ghost(Ghost.ID_RED_GHOST);
 		assertTrue(redGhost instanceof Ghost);
 		assertEquals(-1, redGhost.killedIndex());
+		assertNotNull(redGhost.homePosition());
+		assertNotNull(redGhost.revivalPosition());
+		assertNotNull(redGhost.scatterTile());
+
 		var pinkGhost = game.ghost(Ghost.ID_PINK_GHOST);
 		assertTrue(pinkGhost instanceof Ghost);
 		assertEquals(-1, pinkGhost.killedIndex());
+		assertNotNull(pinkGhost.homePosition());
+		assertNotNull(pinkGhost.revivalPosition());
+		assertNotNull(pinkGhost.scatterTile());
+
 		var cyanGhost = game.ghost(Ghost.ID_CYAN_GHOST);
 		assertTrue(cyanGhost instanceof Ghost);
 		assertEquals(-1, cyanGhost.killedIndex());
+		assertNotNull(cyanGhost.homePosition());
+		assertNotNull(cyanGhost.revivalPosition());
+		assertNotNull(cyanGhost.scatterTile());
+
 		var orangeGhost = game.ghost(Ghost.ID_ORANGE_GHOST);
 		assertTrue(orangeGhost instanceof Ghost);
 		assertEquals(-1, orangeGhost.killedIndex());
+		assertNotNull(orangeGhost.homePosition());
+		assertNotNull(orangeGhost.revivalPosition());
+		assertNotNull(orangeGhost.scatterTile());
 	}
 
 	@Test
