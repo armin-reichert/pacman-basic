@@ -24,11 +24,13 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
@@ -235,4 +237,9 @@ public interface World {
 	 * @param ghosts ghosts in order RED, PINK, CYAN, ORANGE
 	 */
 	void arrangeGhosts(Ghost[] ghosts);
+
+	/**
+	 * @return (optional) animation played when level ends
+	 */
+	public Optional<EntityAnimation> levelCompleteAnimation();
 }

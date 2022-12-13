@@ -111,6 +111,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	/**
 	 * @return (optional) animation played when level has been completed
 	 */
+	@Override
 	public Optional<EntityAnimation> levelCompleteAnimation() {
 		return Optional.ofNullable(levelCompleteAnimation);
 	}
