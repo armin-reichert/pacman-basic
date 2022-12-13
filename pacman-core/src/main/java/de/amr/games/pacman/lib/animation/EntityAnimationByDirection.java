@@ -84,6 +84,11 @@ public class EntityAnimationByDirection implements EntityAnimation {
 	}
 
 	@Override
+	public int frameIndex() {
+		return currentAnimation().frameIndex();
+	}
+
+	@Override
 	public boolean isRunning() {
 		return currentAnimation().isRunning();
 	}

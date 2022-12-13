@@ -146,6 +146,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 		return things[i];
 	}
 
+	@Override
 	public int frameIndex() {
 		return frameIndex;
 	}

@@ -103,6 +103,11 @@ public class FixedEntityAnimation<T> implements EntityAnimation {
 	}
 
 	@Override
+	public int frameIndex() {
+		return frameIndex;
+	}
+
+	@Override
 	public void setFrameIndex(int i) {
 		frameIndex = i;
 	}

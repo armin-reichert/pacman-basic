@@ -54,6 +54,8 @@ public interface EntityAnimation {
 
 	Object frame();
 
+	int frameIndex();
+
 	void setFrameIndex(int i);
 
 	int numFrames();
