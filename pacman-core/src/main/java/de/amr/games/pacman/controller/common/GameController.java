@@ -39,6 +39,7 @@ import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
+import de.amr.games.pacman.model.pacman.PacManGameAttractModeRoutes;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
 /**
@@ -142,7 +143,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		LOGGER.info("New game: %s", game);
 		// experimental
 		if (variant == GameVariant.PACMAN) {
-			attractModeSteering.setRoute(PacManGame.ATTRACT_ROUTE_PACMAN);
+			attractModeSteering.setRoute(PacManGameAttractModeRoutes.PACMAN);
 		}
 		// transfer settings to new game
 		if (oldGame != null) {

@@ -55,7 +55,7 @@ import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.world.World;
-import de.amr.games.pacman.model.pacman.PacManGame;
+import de.amr.games.pacman.model.pacman.PacManGameAttractModeRoutes;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -357,10 +357,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private List<NavigationPoint> getAttractRoute(GameVariant variant) {
 		return switch (variant) {
 		case PACMAN -> switch (id) {
-		case ID_RED_GHOST -> PacManGame.ATTRACT_FRIGHTENED_RED_GHOST;
-		case ID_PINK_GHOST -> PacManGame.ATTRACT_FRIGHTENED_PINK_GHOST;
-		case ID_CYAN_GHOST -> PacManGame.ATTRACT_FRIGHTENED_CYAN_GHOST;
-		case ID_ORANGE_GHOST -> PacManGame.ATTRACT_FRIGHTENED_ORANGE_GHOST;
+		case ID_RED_GHOST -> PacManGameAttractModeRoutes.RED_GHOST;
+		case ID_PINK_GHOST -> PacManGameAttractModeRoutes.PINK_GHOST;
+		case ID_CYAN_GHOST -> PacManGameAttractModeRoutes.CYAN_GHOST;
+		case ID_ORANGE_GHOST -> PacManGameAttractModeRoutes.ORANGE_GHOST;
 		default -> throw new IllegalArgumentException();
 		};
 		case MS_PACMAN -> List.of();
