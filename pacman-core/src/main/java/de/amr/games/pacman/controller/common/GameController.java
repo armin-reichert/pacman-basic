@@ -70,7 +70,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private GameModel game;
-	private GameVariant gameVariant;
 	private Steering autopilot;
 	private Steering normalSteering;
 	private GameSoundController sounds;
@@ -134,9 +133,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void selectGame(GameVariant newVariant) {
 		Objects.requireNonNull(newVariant, "Game variant must not be null");
-		if (newVariant == gameVariant) {
-			return;
-		}
 		var oldGame = game;
 		game = switch (newVariant) {
 		case MS_PACMAN -> new MsPacManGame();
@@ -154,7 +150,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 			oldGame.setCredit(0);
 			game.setPacImmune(oldGame.isPacImmune());
 		}
-		gameVariant = newVariant;
 		restartInState(BOOT);
 	}
 
