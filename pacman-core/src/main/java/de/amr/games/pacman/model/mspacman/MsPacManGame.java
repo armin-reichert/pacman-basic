@@ -279,7 +279,7 @@ public class MsPacManGame extends GameModel {
 		return new ArcadeWorld(map);
 	}
 
-	public static int mazeNumber(int levelNumber) {
+	private static int mazeNumber(int levelNumber) {
 		return switch (levelNumber) {
 		case 1, 2 -> 1;
 		case 3, 4, 5 -> 2;
@@ -290,13 +290,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	private static int mapNumber(int levelNumber) {
-		return switch (levelNumber) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
-		};
+		return levelNumber < 14 ? mazeNumber(levelNumber) : mazeNumber(levelNumber) - 2;
 	}
 
 	private MovingBonus movingBonus;
