@@ -90,7 +90,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 		autopilot = new Autopilot();
 		sounds = GameSoundController.NO_SOUND;
-		selectGame(GameVariant.PACMAN);
+		createGame(GameVariant.PACMAN);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game().hasCredit() || state() == GameState.INTERMISSION_TEST ? sounds : GameSoundController.NO_SOUND;
 	}
 
-	public void selectGame(GameVariant newVariant) {
+	public void createGame(GameVariant newVariant) {
 		Objects.requireNonNull(newVariant, "Game variant must not be null");
 		var oldGame = game;
 		game = switch (newVariant) {
