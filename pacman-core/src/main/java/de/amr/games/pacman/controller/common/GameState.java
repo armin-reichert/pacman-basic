@@ -239,7 +239,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				return;
 			}
 
-			gc.getSteering().steer(game, game.pac());
+			gc.steering().steer(game, game.pac());
 			game.update();
 		}
 
@@ -375,7 +375,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (timer.hasExpired()) {
 				gc.resumePreviousState();
 			} else {
-				gc.getSteering().steer(game, game.pac());
+				gc.steering().steer(game, game.pac());
 				game.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE).forEach(ghost -> ghost.update(game));
 				if (game.level().world() instanceof ArcadeWorld arcadeWorld) {
 					arcadeWorld.energizerPulse.animate();

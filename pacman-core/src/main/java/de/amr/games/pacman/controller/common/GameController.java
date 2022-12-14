@@ -97,15 +97,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game();
 	}
 
-	public void terminateCurrentState() {
-		state().timer().expire();
-	}
-
 	public GameModel game() {
 		return game;
 	}
 
-	public Steering getSteering() {
+	public Steering steering() {
 		if (!game().hasCredit()) {
 			if (game().variant() == GameVariant.PACMAN) {
 				return attractModeSteering;
@@ -130,6 +126,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game().hasCredit() || state() == GameState.INTERMISSION_TEST ? sounds : GameSoundController.NO_SOUND;
 	}
 
+	/**
+	 * Creates a new game model for the given variant and restarts in boot state.
+	 * 
+	 * @param variant game variant
+	 */
 	public void createGame(GameVariant variant) {
 		Objects.requireNonNull(variant, "Game variant must not be null");
 		var oldGame = game;
@@ -151,6 +152,17 @@ public class GameController extends Fsm<GameState, GameModel> {
 		boot();
 	}
 
+	/**
+	 * Lets the timer of the current game state expire. Used to give the UI a possibility to control when the game is
+	 * continued, for example after playing some animation.
+	 */
+	public void terminateCurrentState() {
+		state().timer().expire();
+	}
+
+	/**
+	 * (Re)starts the game in the intro state.
+	 */
 	public void startIntro() {
 		sounds().stopAll();
 		if (state() != CREDIT && state() != INTRO) {
@@ -159,6 +171,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 		restart(INTRO);
 	}
 
+	/**
+	 * (Re)starts the game from the boot state.
+	 */
 	public void boot() {
 		sounds().stopAll();
 		restart(BOOT);
