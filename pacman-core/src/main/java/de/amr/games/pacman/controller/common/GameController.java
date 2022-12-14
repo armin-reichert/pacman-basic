@@ -131,17 +131,17 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game().hasCredit() || state() == GameState.INTERMISSION_TEST ? sounds : GameSoundController.NO_SOUND;
 	}
 
-	public void createGame(GameVariant newVariant) {
-		Objects.requireNonNull(newVariant, "Game variant must not be null");
+	public void createGame(GameVariant variant) {
+		Objects.requireNonNull(variant, "Game variant must not be null");
 		var oldGame = game;
-		game = switch (newVariant) {
+		game = switch (variant) {
 		case MS_PACMAN -> new MsPacManGame();
 		case PACMAN -> new PacManGame();
-		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(newVariant));
+		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(variant));
 		};
 		LOGGER.info("New game: %s", game);
 		// experimental
-		if (newVariant == GameVariant.PACMAN) {
+		if (variant == GameVariant.PACMAN) {
 			attractModeSteering.setRoute(PacManGame.ATTRACT_ROUTE_PACMAN);
 		}
 		// transfer settings to new game
