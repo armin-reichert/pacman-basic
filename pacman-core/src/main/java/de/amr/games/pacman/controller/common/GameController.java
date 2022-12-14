@@ -149,22 +149,22 @@ public class GameController extends Fsm<GameState, GameModel> {
 			game.setCredit(oldGame.credit());
 			game.setPacImmune(oldGame.isPacImmune());
 		}
-		restartInState(BOOT);
+		boot();
 	}
 
-	public void restartIntro() {
+	public void startIntro() {
 		sounds().stopAll();
 		if (state() != CREDIT && state() != INTRO) {
 			game().changeCredit(-1);
 		}
-		restartInState(INTRO);
+		restart(INTRO);
 		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
 
-	public void reboot() {
+	public void boot() {
 		levelTestMode = false;
 		sounds().stopAll();
-		restartInState(BOOT);
+		restart(BOOT);
 		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
 }

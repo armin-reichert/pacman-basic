@@ -119,7 +119,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	 * 
 	 * @param state the state to enter
 	 */
-	public void restartInState(S state) {
+	public void restart(S state) {
 		resetTimers();
 		currentState = null; // no exit hook
 		changeState(state);

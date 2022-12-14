@@ -175,7 +175,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 					return;
 				}
 				if (timer.atSecond(5)) {
-					ctx.gameController().restartIntro();
+					ctx.gameController().startIntro();
 					// repeat intro, key press starts game
 					return;
 				}

@@ -284,7 +284,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 					}
 				}
 				if (timer.atSecond(5)) {
-					ctx.gameController.restartIntro();
+					ctx.gameController.startIntro();
 				}
 			}
 		};

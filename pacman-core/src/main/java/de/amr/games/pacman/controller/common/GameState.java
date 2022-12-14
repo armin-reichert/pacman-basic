@@ -211,7 +211,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 						gc.changeState(LEVEL_COMPLETE);
 					}
 				} else {
-					gc.reboot();
+					gc.boot();
 				}
 				return;
 			}
