@@ -147,7 +147,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		// transfer settings to new game
 		if (oldGame != null) {
 			game.setCredit(oldGame.credit());
-			oldGame.setCredit(0);
 			game.setPacImmune(oldGame.isPacImmune());
 		}
 		restartInState(BOOT);
