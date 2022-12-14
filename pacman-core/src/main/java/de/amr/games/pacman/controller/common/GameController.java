@@ -34,7 +34,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
-import de.amr.games.pacman.event.TriggerUIChangeEvent;
 import de.amr.games.pacman.lib.FollowRoute;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
@@ -158,12 +157,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 			game().changeCredit(-1);
 		}
 		restart(INTRO);
-		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
 
 	public void boot() {
 		sounds().stopAll();
 		restart(BOOT);
-		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
 }

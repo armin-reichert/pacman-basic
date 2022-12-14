@@ -60,7 +60,7 @@ public class GameEvents {
 	}
 
 	public static void publish(GameEvent event) {
-		LOGGER.trace("%s", event);
+		LOGGER.trace("Game event: %s", event);
 		IT.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 
