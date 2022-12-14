@@ -39,8 +39,8 @@ import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
-import de.amr.games.pacman.model.pacman.PacManGameAttractModeRoutes;
 import de.amr.games.pacman.model.pacman.PacManGame;
+import de.amr.games.pacman.model.pacman.PacManGameAttractModeRoutes;
 
 /**
  * Controller (in the sense of MVC) for both (Pac-Man, Ms. Pac-Man) game variants.
@@ -78,7 +78,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public boolean levelTestMode = false; // test mode
 	public FollowRoute attractModeSteering = new FollowRoute(); // experimental
 
-	public GameController() {
+	public GameController(GameVariant variant) {
 		states = GameState.values();
 		for (var state : states) {
 			state.gc = this;
@@ -90,7 +90,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 		autopilot = new Autopilot();
 		sounds = GameSoundController.NO_SOUND;
-		createGame(GameVariant.PACMAN);
+		createGame(variant);
 	}
 
 	@Override
