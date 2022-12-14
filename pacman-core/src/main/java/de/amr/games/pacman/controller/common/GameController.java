@@ -27,9 +27,10 @@ import static de.amr.games.pacman.controller.common.GameState.BOOT;
 import static de.amr.games.pacman.controller.common.GameState.CREDIT;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
@@ -66,7 +67,9 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	private Map<GameVariant, GameModel> games;
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
+
+	private GameModel game;
 	private GameVariant gameVariant;
 	private Steering autopilot;
 	private Steering normalSteering;
@@ -88,7 +91,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 		autopilot = new Autopilot();
 		sounds = GameSoundController.NO_SOUND;
-		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
 		selectGame(GameVariant.PACMAN);
 	}
 
@@ -101,16 +103,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		state().timer().expire();
 	}
 
-	public Stream<GameModel> games() {
-		return games.values().stream();
-	}
-
-	public GameModel game(GameVariant variant) {
-		return games.get(Objects.requireNonNull(variant));
-	}
-
 	public GameModel game() {
-		return game(gameVariant);
+		return game;
 	}
 
 	public Steering getSteering() {
@@ -140,20 +134,28 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void selectGame(GameVariant newVariant) {
 		Objects.requireNonNull(newVariant, "Game variant must not be null");
-		if (newVariant != gameVariant) {
-			var newGame = game(newVariant);
-			// transfer credit
-			if (gameVariant != null) { // initially it is null
-				var oldGame = game(gameVariant);
-				newGame.setCredit(oldGame.credit());
-				oldGame.setCredit(0);
-			}
-			if (newVariant == GameVariant.PACMAN) {
-				attractModeSteering.setRoute(PacManGame.ATTRACT_ROUTE_PACMAN);
-			}
-			gameVariant = newVariant;
-			restartInState(BOOT);
+		if (newVariant == gameVariant) {
+			return;
 		}
+		var oldGame = game;
+		game = switch (newVariant) {
+		case MS_PACMAN -> new MsPacManGame();
+		case PACMAN -> new PacManGame();
+		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(newVariant));
+		};
+		LOGGER.info("New game: %s", game);
+		// experimental
+		if (newVariant == GameVariant.PACMAN) {
+			attractModeSteering.setRoute(PacManGame.ATTRACT_ROUTE_PACMAN);
+		}
+		// transfer settings to new game
+		if (oldGame != null) {
+			game.setCredit(oldGame.credit());
+			oldGame.setCredit(0);
+			game.setPacImmune(oldGame.isPacImmune());
+		}
+		gameVariant = newVariant;
+		restartInState(BOOT);
 	}
 
 	public void restartIntro() {
