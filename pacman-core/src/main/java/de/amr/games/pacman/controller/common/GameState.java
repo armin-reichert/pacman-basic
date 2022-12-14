@@ -196,7 +196,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			game.pac().selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
-			gc.sounds().ensureSirenStarted(game.huntingTimer().phase() / 2);
+			if (!gc.levelTestMode) {
+				gc.sounds().ensureSirenStarted(game.huntingTimer().phase() / 2);
+			}
 			if (game.level().world() instanceof ArcadeWorld arcadeWorld) {
 				arcadeWorld.energizerPulse.restart();
 			}
