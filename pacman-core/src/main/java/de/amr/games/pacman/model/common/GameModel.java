@@ -618,7 +618,7 @@ public abstract class GameModel {
 
 	private void onPacMeetsKiller() {
 		pac.die();
-		LOGGER.info("%s died: %s", pac.name(), pac);
+		LOGGER.info("%s died at tile %s", pac.name(), pac.tile());
 		ghostHouseRules.resetGlobalDotCounterAndSetEnabled(true);
 		if (cruiseElroyState > 0) {
 			LOGGER.info("Disabled Cruise Elroy mode (%d) for red ghost", cruiseElroyState);
