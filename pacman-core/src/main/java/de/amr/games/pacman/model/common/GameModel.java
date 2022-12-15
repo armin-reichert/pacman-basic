@@ -46,6 +46,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -53,7 +54,6 @@ import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -120,6 +120,9 @@ public abstract class GameModel {
 
 	/** Controls the time Pac has power. */
 	protected final TickTimer pacPowerTimer = new TickTimer("PacPower", FPS);
+
+	/** Energizer animation. */
+	public final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
 
 	/** Current level. */
 	protected GameLevel level;
@@ -320,9 +323,7 @@ public abstract class GameModel {
 		pac.rest(Integer.MAX_VALUE);
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
-		if (level.world() instanceof ArcadeWorld arcadeWorld) {
-			arcadeWorld.energizerPulse.reset();
-		}
+		energizerPulse.reset();
 	}
 
 	/**
@@ -341,9 +342,7 @@ public abstract class GameModel {
 		});
 		guys().forEach(Creature::show);
 		pacPowerTimer.reset(0);
-		if (level.world() instanceof ArcadeWorld arcadeWorld) {
-			arcadeWorld.energizerPulse.reset();
-		}
+		energizerPulse.reset();
 	}
 
 	/**
@@ -528,9 +527,7 @@ public abstract class GameModel {
 		bonus().update(this);
 		advanceHunting();
 		pacPowerTimer.advance();
-		if (level.world() instanceof ArcadeWorld arcadeWorld) {
-			arcadeWorld.energizerPulse.animate();
-		}
+		energizerPulse.animate();
 	}
 
 	protected void defineGhostHouseRulesForLevel(int levelNumber) {

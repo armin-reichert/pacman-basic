@@ -35,7 +35,6 @@ import java.util.Optional;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
@@ -68,9 +67,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	public static final V2i SCATTER_TILE_SW = new V2i(0, 34);
 
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
-
-	/** Energizer animation. */
-	public final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
 
 	private EntityAnimation levelCompleteAnimation;
 

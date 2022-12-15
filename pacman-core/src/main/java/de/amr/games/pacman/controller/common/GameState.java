@@ -40,7 +40,6 @@ import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
  * Rule of thumb: here, specify the "what" and "when", not the "how" (which should be implemented in the model).
@@ -193,9 +192,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (!gc.levelTestMode) {
 				gc.sounds().ensureSirenStarted(game.huntingTimer().phase() / 2);
 			}
-			if (game.level().world() instanceof ArcadeWorld arcadeWorld) {
-				arcadeWorld.energizerPulse.restart();
-			}
+			game.energizerPulse.restart();
 		}
 
 		@Override
@@ -371,9 +368,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			} else {
 				gc.steering().steer(game, game.pac());
 				game.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE).forEach(ghost -> ghost.update(game));
-				if (game.level().world() instanceof ArcadeWorld arcadeWorld) {
-					arcadeWorld.energizerPulse.animate();
-				}
+				game.energizerPulse.animate();
 			}
 		}
 
@@ -396,9 +391,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			if (game.level().world() instanceof ArcadeWorld arcadeWorld) {
-				arcadeWorld.energizerPulse.animate();
-			}
+			game.energizerPulse.animate();
 			game.pac().update(game);
 			if (timer.betweenSeconds(0, 1)) {
 				game.ghosts().forEach(Ghost::animate);
@@ -411,9 +404,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			} else if (timer.atSecond(3.0)) {
 				game.setLives(game.lives() - 1);
 				if (game.lives() == 0) {
-					if (game.level().world() instanceof ArcadeWorld arcadeWorld) {
-						arcadeWorld.energizerPulse.stop();
-					}
+					game.energizerPulse.stop();
 					game.setLivesOneLessShown(false);
 				}
 				game.pac().hide();
