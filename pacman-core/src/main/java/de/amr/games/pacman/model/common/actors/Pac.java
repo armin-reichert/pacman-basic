@@ -53,6 +53,13 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		super(name);
 	}
 
+	@Override
+	public String toString() {
+		return "[Pac: name='%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
+				.formatted(name, position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
+						restingTicks, starvingTicks);
+	}
+
 	public void update(GameModel game) {
 		Objects.requireNonNull(game, "Game must not be null");
 		if (dead) {
