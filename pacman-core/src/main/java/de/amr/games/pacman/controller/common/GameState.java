@@ -98,7 +98,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void requestGame(GameModel game) {
 			if (game.hasCredit()) {
-				game.resetGameAndInitLevel(1);
+//				game.resetGameAndInitLevel(1);
 				gc.changeState(READY);
 			}
 		}
@@ -140,11 +140,12 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			gc.sounds().stopAll();
-			game.getReadyToRumble();
 			if (!game.hasCredit()) {
 				enterAttractMode(game);
 			} else if (!game.isPlaying()) {
 				startPlaying(game);
+			} else {
+				game.getReadyToRumble();
 			}
 		}
 
@@ -152,23 +153,25 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
 			gc.attractModeSteering.init();
+			game.getReadyToRumble();
 		}
 
 		private void startPlaying(GameModel game) {
 			game.resetGameAndInitLevel(1);
+			game.getReadyToRumble();
 			game.guys().forEach(Creature::hide);
 			gc.sounds().play(GameSound.GAME_READY);
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
-			final int tickShowGuys = 134;
+			final int showGuysTick = 134;
 			if (game.hasCredit() && !game.isPlaying()) {
-				if (timer.tick() == tickShowGuys) {
-					// get ready
+				// starting new game
+				if (timer.tick() == showGuysTick) {
 					game.guys().forEach(Entity::show);
 					game.setLivesOneLessShown(true);
-				} else if (timer.tick() == tickShowGuys + 118) {
+				} else if (timer.tick() == showGuysTick + 118) {
 					// start playing
 					game.setPlaying(true);
 					game.startHuntingPhase(0);
