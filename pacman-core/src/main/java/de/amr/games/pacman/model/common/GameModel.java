@@ -652,14 +652,15 @@ public abstract class GameModel {
 	// Food
 
 	public void checkIfPacFindsFood() {
+		var world = level.world();
 		var tile = pac.tile();
-		if (level.world().containsFood(tile)) {
+		if (world.containsFood(tile)) {
 			memo.foodFoundTile = Optional.of(tile);
-			memo.lastFoodFound = level.world().foodRemaining() == 1;
-			memo.energizerFound = level.world().isEnergizerTile(tile);
+			memo.lastFoodFound = world.foodRemaining() == 1;
+			memo.energizerFound = world.isEnergizerTile(tile);
 			memo.pacPowered = memo.energizerFound && level.ghostFrightenedSeconds() > 0;
-			memo.bonusReached = level.world().eatenFoodCount() == BONUS1_PELLETS_EATEN
-					|| level.world().eatenFoodCount() == BONUS2_PELLETS_EATEN;
+			memo.bonusReached = world.eatenFoodCount() == BONUS1_PELLETS_EATEN
+					|| world.eatenFoodCount() == BONUS2_PELLETS_EATEN;
 			onFoodFound(tile);
 		} else {
 			pac.starve();
