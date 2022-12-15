@@ -43,48 +43,31 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
- * Base class for creatures which can move through the world.
+ * Base class for all creatures which can move through the world.
  * 
  * @author Armin Reichert
  */
 public class Creature extends Entity {
 
-	// common logger for creature and subclasses
 	protected static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	// make lint happy
 	protected static final String MSG_GAME_NULL = "Game must not be null";
 	protected static final String MSG_TILE_NULL = "Tile must not be null";
 	protected static final String MSG_DIR_NULL = "Direction must not be null";
 
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
-	/** Readable name, for display and logging purposes. */
-	protected final String name;
-
-	/** The current move direction. */
+	private final String name;
 	private Direction moveDir;
-
-	/** The wish direction. Will be taken as soon as possible. */
 	private Direction wishDir;
-
-	/** The target tile. Can be inaccessible or outside of the world. */
 	private V2i targetTile;
-
-	/** Tells if the creature entered a new tile with its last move or placement. */
-	protected boolean newTileEntered;
-
-	/** Triggers reversing the move direction at next possible point in time. */
+	private boolean newTileEntered;
+	private boolean stuck;
 	protected boolean shouldReverse;
-
-	/** Tells if the creature got stuck. */
-	protected boolean stuck;
-
-	/** Tells if the creature can get teleported. */
 	protected boolean canTeleport;
 
 	protected Creature(String name) {
-		this.name = name != null ? name : "Creature@%d".formatted(hashCode());
+		this.name = (name != null) ? name : "Creature@%d".formatted(hashCode());
 		reset();
 	}
 
@@ -108,14 +91,21 @@ public class Creature extends Entity {
 				velocity, velocity.length(), moveDir(), wishDir());
 	}
 
+	/** Readable name, for display and logging purposes. */
 	public String name() {
 		return name;
 	}
 
+	/** Tells if the creature entered a new tile with its last move or placement. */
 	public boolean isNewTileEntered() {
 		return newTileEntered;
 	}
 
+	public void setNewTileEntered(boolean newTileEntered) {
+		this.newTileEntered = newTileEntered;
+	}
+
+	/** Tells if the creature got stuck. */
 	public boolean isStuck() {
 		return stuck;
 	}
@@ -124,6 +114,7 @@ public class Creature extends Entity {
 		targetTile = tile;
 	}
 
+	/** (Optional) target tile. Can be inaccessible or outside of the world. */
 	public Optional<V2i> targetTile() {
 		return Optional.ofNullable(targetTile);
 	}
@@ -172,6 +163,7 @@ public class Creature extends Entity {
 		}
 	}
 
+	/** The current move direction. */
 	public Direction moveDir() {
 		return moveDir;
 	}
@@ -184,6 +176,7 @@ public class Creature extends Entity {
 		}
 	}
 
+	/** The wish direction. Will be taken as soon as possible. */
 	public Direction wishDir() {
 		return wishDir;
 	}

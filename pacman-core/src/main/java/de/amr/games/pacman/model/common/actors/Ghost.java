@@ -146,7 +146,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		var currentTile = tile();
 		if (tile.equals(currentTile.plus(UP.vec)) && !game.isGhostAllowedMoving(this, UP)) {
-			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name, tile, currentTile);
+			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
 			return false;
 		}
 		if (game.level().world().ghostHouse().isDoorTile(tile)) {
@@ -157,13 +157,13 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	@Override
 	protected boolean canReverse(GameModel game) {
-		return newTileEntered && is(HUNTING_PAC, FRIGHTENED);
+		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 
 	@Override
 	public String toString() {
-		return "Ghost[%-6s %s tile=%s pos=%s offset=%s velocity=%s dir=%s wishDir=%s stuck=%s reverse=%s]".formatted(name,
-				state, tile(), position, offset(), velocity, moveDir(), wishDir(), stuck, shouldReverse);
+		return "Ghost[%-6s %s tile=%s pos=%s offset=%s velocity=%s dir=%s wishDir=%s stuck=%s reverse=%s]".formatted(name(),
+				state, tile(), position, offset(), velocity, moveDir(), wishDir(), isStuck(), shouldReverse);
 	}
 
 	// Here begins the state machine part
@@ -255,7 +255,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		updateColorOrBlueOrFlashingAnimation(game);
 		var outOfHouse = game.level().world().ghostHouse().leadGuyOutOfHouse(this);
 		if (outOfHouse) {
-			newTileEntered = false;
+			setNewTileEntered(false);
 			setMoveAndWishDir(LEFT);
 			if (game.powerTimer().isRunning() && killedIndex == -1) {
 				enterStateFrightened(game);
@@ -386,7 +386,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	private void moveRandomly(GameModel game) {
-		if (newTileEntered || stuck) {
+		if (isNewTileEntered() || isStuck()) {
 			Direction.shuffled().stream()//
 					.filter(dir -> dir != moveDir().opposite())//
 					.filter(dir -> canAccessTile(tile().plus(dir.vec), game))//

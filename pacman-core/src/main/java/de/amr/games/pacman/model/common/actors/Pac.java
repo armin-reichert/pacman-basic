@@ -56,7 +56,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	@Override
 	public String toString() {
 		return "[Pac: name='%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
-				.formatted(name, position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
+				.formatted(name(), position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
 						restingTicks, starvingTicks);
 	}
 
@@ -71,7 +71,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 			var speed = game.powerTimer().isRunning() ? game.level().playerSpeedPowered() : game.level().playerSpeed();
 			setRelSpeed(speed);
 			tryMoving(game);
-			if (!stuck) {
+			if (!isStuck()) {
 				animate();
 			}
 		}
