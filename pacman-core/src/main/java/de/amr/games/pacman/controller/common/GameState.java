@@ -140,33 +140,24 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			gc.sounds().stopAll();
-			if (game.hasCredit()) {
-				if (game.isPlaying()) {
-					game.getReadyToRumble();
-				} else {
-					initNewGame(game);
-					gc.sounds().play(GameSound.GAME_READY);
-				}
-			} else {
+			game.getReadyToRumble();
+			if (!game.hasCredit()) {
 				enterAttractMode(game);
+			} else if (!game.isPlaying()) {
+				startPlaying(game);
 			}
 		}
 
-		private void initNewGame(GameModel game) {
-			game.resetGameAndInitLevel(1);
-			game.levelCounter().clear();
-			game.levelCounter().addSymbol(game.level().bonusIndex());
-			game.enableScores(true);
-			game.gameScore().setShowContent(true);
-			game.getReadyToRumble();
-			game.guys().forEach(Creature::hide);
-		}
-
 		private void enterAttractMode(GameModel game) {
-			game.getReadyToRumble();
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
 			gc.attractModeSteering.init();
+		}
+
+		private void startPlaying(GameModel game) {
+			game.resetGameAndInitLevel(1);
+			game.guys().forEach(Creature::hide);
+			gc.sounds().play(GameSound.GAME_READY);
 		}
 
 		@Override

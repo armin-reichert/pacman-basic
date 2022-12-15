@@ -276,6 +276,7 @@ public abstract class GameModel {
 		lives = INITIAL_LIVES;
 		livesOneLessShown = false;
 		gameScore.reset();
+		enableScores(true);
 		ghostHouseRules.resetAllDotCounters();
 		setLevel(levelNumber);
 	}
@@ -296,6 +297,10 @@ public abstract class GameModel {
 		cruiseElroyState = 0;
 		gameScore().setLevelNumber(levelNumber);
 		defineGhostHouseRulesForLevel(levelNumber);
+		if (levelNumber == 1) {
+			levelCounter().clear();
+			levelCounter().addSymbol(level().bonusIndex());
+		}
 	}
 
 	public GameLevel level() {
