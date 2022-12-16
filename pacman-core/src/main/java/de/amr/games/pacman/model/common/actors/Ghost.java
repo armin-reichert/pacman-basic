@@ -159,6 +159,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	public void setKilledIndex(int killedIndex) {
+		if (killedIndex < -1 || killedIndex > 3) {
+			throw new IllegalArgumentException("Killed index must be one of -1, 0, 1, 2, 3, but is: " + killedIndex);
+		}
 		this.killedIndex = killedIndex;
 	}
 

@@ -177,4 +177,23 @@ public class GameModelTest {
 		game.changeCredit(-2);
 		assertEquals(0, game.credit());
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testIllegalKilledIndex() {
+		game.ghost(Ghost.ID_RED_GHOST).setKilledIndex(42);
+	}
+
+	@Test
+	public void testLegalCruiseElroyState() {
+		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(-2);
+		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(-1);
+		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(0);
+		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(1);
+		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(2);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testIllegalCruiseElroyState() {
+		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(42);
+	}
 }
