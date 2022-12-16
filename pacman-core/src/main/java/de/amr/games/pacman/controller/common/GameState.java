@@ -25,7 +25,6 @@ package de.amr.games.pacman.controller.common;
 
 import static java.util.function.Predicate.not;
 
-import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.TickTimer;
@@ -470,7 +469,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					++gc.intermissionTestNumber;
 					timer.resetIndefinitely();
 					timer.start();
-					GameEvents.publish(new GameEvent(game, GameEventType.UI_FORCE_UPDATE, null, null));
+					GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
 				} else {
 					gc.intermissionTestNumber = 1;
 					gc.changeState(INTRO);
