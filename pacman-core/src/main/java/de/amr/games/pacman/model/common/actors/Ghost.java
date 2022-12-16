@@ -407,7 +407,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateEaten(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		state = EATEN;
-		selectAndEnsureRunningAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
+		runAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
 	}
 
 	private void updateStateEaten() {

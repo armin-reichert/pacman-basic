@@ -59,7 +59,7 @@ public interface AnimatedEntity<K> {
 	 * @param key key identifying animation in set
 	 * @return (optional) selected animation
 	 */
-	default Optional<EntityAnimation> selectAndEnsureRunningAnimation(K key) {
+	default Optional<EntityAnimation> runAnimation(K key) {
 		animationSet().ifPresent(animSet -> {
 			animSet.select(key);
 			animSet.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);

@@ -122,7 +122,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		GHOSTS {
 			@Override
 			public void onEnter(IntroData ctx) {
-				ctx.game().ghosts().forEach(ghost -> ghost.selectAndEnsureRunningAnimation(AnimKeys.GHOST_COLOR));
+				ctx.game().ghosts().forEach(ghost -> ghost.runAnimation(AnimKeys.GHOST_COLOR));
 			}
 
 			@Override
@@ -149,7 +149,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 			public void onEnter(IntroData ctx) {
 				ctx.game().pac().setMoveDir(LEFT);
 				ctx.game().pac().setAbsSpeed(ctx.actorSpeed);
-				ctx.game().pac().selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.game().pac().runAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.game().pac().show();
 			}
 

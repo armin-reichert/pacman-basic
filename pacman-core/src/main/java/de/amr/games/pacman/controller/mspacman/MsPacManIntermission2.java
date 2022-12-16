@@ -90,10 +90,10 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 				ctx.clapperboard.show();
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.runAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
-				ctx.msPacMan.selectAndEnsureRunningAnimation(AnimKeys.GHOST_COLOR);
+				ctx.msPacMan.runAnimation(AnimKeys.GHOST_COLOR);
 			}
 
 			@Override

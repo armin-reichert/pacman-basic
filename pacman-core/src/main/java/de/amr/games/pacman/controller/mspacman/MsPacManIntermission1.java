@@ -104,25 +104,25 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(-t(2), ctx.upperY);
-				ctx.pacMan.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.runAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.inky = new Ghost(Ghost.ID_CYAN_GHOST, "Inky");
 				ctx.inky.setMoveAndWishDir(Direction.RIGHT);
 				ctx.inky.setPosition(ctx.pacMan.position().minus(t(6), 0));
-				ctx.inky.selectAndEnsureRunningAnimation(AnimKeys.GHOST_COLOR);
+				ctx.inky.runAnimation(AnimKeys.GHOST_COLOR);
 				ctx.inky.show();
 
 				ctx.msPac = new Pac("Ms. Pac-Man");
 				ctx.msPac.setMoveDir(Direction.LEFT);
 				ctx.msPac.setPosition(t(30), ctx.lowerY);
-				ctx.msPac.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.msPac.runAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPac.show();
 
 				ctx.pinky = new Ghost(ID_PINK_GHOST, "Pinky");
 				ctx.pinky.setMoveAndWishDir(Direction.LEFT);
 				ctx.pinky.setPosition(ctx.msPac.position().plus(t(6), 0));
-				ctx.pinky.selectAndEnsureRunningAnimation(AnimKeys.GHOST_COLOR);
+				ctx.pinky.runAnimation(AnimKeys.GHOST_COLOR);
 				ctx.pinky.show();
 
 				ctx.heart = new Entity();
