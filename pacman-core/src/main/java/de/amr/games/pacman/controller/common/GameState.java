@@ -70,7 +70,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start();
-			game.resetGameAndInitLevel(1);
 		}
 
 		@Override
@@ -97,7 +96,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void requestGame(GameModel game) {
 			if (game.hasCredit()) {
-//				game.resetGameAndInitLevel(1);
 				gc.changeState(READY);
 			}
 		}
@@ -149,10 +147,11 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 
 		private void enterAttractMode(GameModel game) {
+			game.resetGameAndInitLevel(1);
+			game.getReadyToRumble();
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
 			gc.pacSteeringInAttractMode.init();
-			game.getReadyToRumble();
 		}
 
 		private void startPlaying(GameModel game) {
