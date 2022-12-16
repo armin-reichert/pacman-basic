@@ -188,7 +188,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	HUNTING {
 		@Override
 		public void onEnter(GameModel game) {
-			game.pac().selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
+//			game.pac().selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
 			if (!gc.levelTestMode) {
 				gc.sounds().ensureSirenStarted(game.huntingTimer().phase() / 2);
 			}
