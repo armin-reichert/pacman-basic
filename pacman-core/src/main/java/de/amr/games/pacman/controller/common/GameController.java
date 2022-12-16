@@ -74,9 +74,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private Steering normalSteering;
 	private GameSoundController sounds;
 
-	public int intermissionTestNumber; // test mode
-	public boolean levelTestMode = false; // test mode
-	public FollowRoute attractModeSteering = new FollowRoute(); // experimental
+	public int intermissionTestNumber; // intermission test mode
+	public boolean levelTestMode = false; // level test mode
+	public int levelTestLastLevelNumber = 21; // level test mode
+	public FollowRoute pacSteeringInAttractMode = new FollowRoute(); // experimental
 
 	public GameController(GameVariant variant) {
 		states = GameState.values();
@@ -105,7 +106,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public Steering steering() {
 		if (!game().hasCredit()) {
 			if (game().variant() == GameVariant.PACMAN) {
-				return attractModeSteering;
+				return pacSteeringInAttractMode;
 			}
 			return autopilot;
 		}
@@ -143,7 +144,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		LOGGER.info("New game: %s", game);
 		// experimental
 		if (variant == GameVariant.PACMAN) {
-			attractModeSteering.setRoute(PacManGameAttractModeRoutes.PACMAN);
+			pacSteeringInAttractMode.setRoute(PacManGameAttractModeRoutes.PACMAN);
 		}
 		// transfer settings to new game
 		if (oldGame != null) {

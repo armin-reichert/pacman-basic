@@ -151,7 +151,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		private void enterAttractMode(GameModel game) {
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
-			gc.attractModeSteering.init();
+			gc.pacSteeringInAttractMode.init();
 			game.getReadyToRumble();
 		}
 
@@ -189,21 +189,21 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			if (!gc.levelTestMode) {
-				gc.sounds().ensureSirenStarted(game.huntingTimer().phase() / 2);
+				int sirenIndex = game.huntingTimer().phase() / 2;
+				gc.sounds().ensureSirenStarted(sirenIndex);
 			}
 			game.energizerPulse.restart();
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
-
 			if (gc.levelTestMode) {
-				if (game.level().number() <= 21) {
+				if (game.level().number() <= gc.levelTestLastLevelNumber) {
 					if (gc.state().timer().atSecond(1)) {
 						gc.changeState(LEVEL_COMPLETE);
 					}
 				} else {
-					gc.boot();
+					gc.boot(); // end level test
 				}
 				return;
 			}
@@ -235,8 +235,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		private void renderSound(GameModel game) {
 			var snd = gc.sounds();
-			if (game.huntingTimer().tick() == 0) {
-				snd.ensureSirenStarted(game.huntingTimer().phase() / 2);
+			if (game.huntingTimer().tick() == 1) {
+				var sirenIndex = game.huntingTimer().phase() / 2;
+				snd.ensureSirenStarted(sirenIndex);
 			}
 			if (game.memo.pacPowered) {
 				snd.stopSirens();
@@ -325,7 +326,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				if (timer.atSecond(1)) {
 					animation.setRepetitions(game.level().numFlashes());
 					animation.restart();
-				} else if (animation.isRunning()) {
+				} else {
 					animation.animate();
 				}
 			});
