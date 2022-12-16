@@ -112,9 +112,6 @@ public abstract class GameModel {
 	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
 	protected final Ghost[] theGhosts;
 
-	/** Blinky's "cruise elroy" state. Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled). */
-	protected byte cruiseElroyState;
-
 	/** Timer used to control hunting phases. */
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
 
@@ -297,7 +294,7 @@ public abstract class GameModel {
 		level.world().assignGhostPositions(theGhosts);
 		numGhostsKilledInLevel = 0;
 		numGhostsKilledByEnergizer = 0;
-		cruiseElroyState = 0;
+		ghost(ID_RED_GHOST).setCruiseElroyState(0);
 		gameScore().setLevelNumber(levelNumber);
 		defineGhostHouseRulesForLevel(levelNumber);
 		if (levelNumber == 1) {
@@ -368,10 +365,6 @@ public abstract class GameModel {
 		this.pacImmune = immune;
 	}
 
-	public byte cruiseElroyState() {
-		return cruiseElroyState;
-	}
-
 	public int numGhostsKilledInLevel() {
 		return numGhostsKilledInLevel;
 	}
@@ -438,14 +431,6 @@ public abstract class GameModel {
 	 */
 	public int ghostValue(int ghostKillIndex) {
 		return GHOST_EATEN_POINTS[ghostKillIndex];
-	}
-
-	/**
-	 * @return Blinky's current "cruise elroy" state. Values are 0 (no cruise elroy), 1, 2, -1, -2, wherer negative values
-	 *         mean "disabled".
-	 */
-	public int blinkyCruiseElroyState() {
-		return cruiseElroyState;
 	}
 
 	// Hunting
@@ -545,10 +530,9 @@ public abstract class GameModel {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
 			LOGGER.info("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
-			if (unlock.ghost().id() == ID_ORANGE_GHOST && cruiseElroyState < 0) {
-				// Blinky's "cruise elroy" state is resumed when orange ghost is unlocked
-				cruiseElroyState = (byte) -cruiseElroyState;
-				LOGGER.info("Cruise Elroy mode %d resumed", cruiseElroyState);
+			if (unlock.ghost().id() == ID_ORANGE_GHOST && ghost(ID_RED_GHOST).cruiseElroyState() < 0) {
+				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
+				ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(true);
 			}
 		});
 	}
@@ -617,10 +601,7 @@ public abstract class GameModel {
 		pac.die();
 		LOGGER.info("%s died at tile %s", pac.name(), pac.tile());
 		ghostHouseRules.resetGlobalDotCounterAndSetEnabled(true);
-		if (cruiseElroyState > 0) {
-			LOGGER.info("Disabled Cruise Elroy mode (%d) for red ghost", cruiseElroyState);
-			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"
-		}
+		ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
 	}
 
 	public boolean isPacPowerFading() {
@@ -686,11 +667,9 @@ public abstract class GameModel {
 	private void checkIfRedGhostBecomesCruiseElroy() {
 		var foodRemaining = level.world().foodRemaining();
 		if (foodRemaining == level.elroy1DotsLeft()) {
-			cruiseElroyState = 1;
-			LOGGER.info("Red ghost becomes Cruise Elroy 1");
+			ghost(ID_RED_GHOST).setCruiseElroyState(1);
 		} else if (foodRemaining == level.elroy2DotsLeft()) {
-			cruiseElroyState = 2;
-			LOGGER.info("Red ghost becomes Cruise Elroy 2");
+			ghost(ID_RED_GHOST).setCruiseElroyState(2);
 		}
 	}
 }

@@ -62,7 +62,7 @@ public class GameModelTest {
 		assertEquals(BonusState.INACTIVE, game.bonus().state());
 		assertEquals(0, game.numGhostsKilledInLevel());
 		assertEquals(0, game.numGhostsKilledByEnergizer());
-		assertEquals(0, game.cruiseElroyState());
+		assertEquals(0, game.ghost(Ghost.ID_RED_GHOST).cruiseElroyState());
 	}
 
 	@Test
