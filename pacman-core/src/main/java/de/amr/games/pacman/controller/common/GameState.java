@@ -314,23 +314,23 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				if (!game.hasCredit()) {
-					gc.changeState(INTRO);
+					gc.changeState(INTRO); // attract mode -> back to intro scene
 				} else if (game.intermissionNumber(game.level().number()) != 0) {
-					gc.changeState(INTERMISSION);
+					gc.changeState(INTERMISSION); // play intermission scene
 				} else {
-					gc.changeState(LEVEL_STARTING);
+					gc.changeState(LEVEL_STARTING); // next level
 				}
-				return;
+			} else {
+				game.level().world().levelCompleteAnimation().ifPresent(animation -> {
+					if (timer.atSecond(1)) {
+						animation.setRepetitions(game.level().numFlashes());
+						animation.restart();
+					} else {
+						animation.animate();
+					}
+				});
+				game.pac().update(game);
 			}
-			game.level().world().levelCompleteAnimation().ifPresent(animation -> {
-				if (timer.atSecond(1)) {
-					animation.setRepetitions(game.level().numFlashes());
-					animation.restart();
-				} else {
-					animation.animate();
-				}
-			});
-			game.pac().update(game);
 		}
 	},
 
