@@ -91,8 +91,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 			public void onEnter(IntroData ctx) {
 				ctx.game().gameScore().setShowContent(false);
 				ctx.game().highScore().setShowContent(true);
-				ctx.lightsTimer.resetIndefinitely();
-				ctx.lightsTimer.start();
+				ctx.lightsTimer.restartIndefinitely();
 				ctx.game().pac().setPosition(t(34), ctx.turningPoint.y());
 				ctx.game().pac().setAbsSpeed(0);
 				ctx.game().ghosts().forEach(ghost -> {

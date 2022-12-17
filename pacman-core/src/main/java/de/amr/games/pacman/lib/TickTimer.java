@@ -162,6 +162,14 @@ public class TickTimer {
 	}
 
 	/**
+	 * Convenience method to reset the timer to {@link TickTimer#INDEFINITE} and start it.
+	 */
+	public void restartIndefinitely() {
+		resetIndefinitely();
+		start();
+	}
+
+	/**
 	 * Stops the timer. If the timer is not running, does nothing.
 	 */
 	public void stop() {

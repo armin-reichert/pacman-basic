@@ -50,8 +50,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	BOOT() { // Boot steigt! Jawoll Herr Kaleu!
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetIndefinitely();
-			timer.start();
+			timer.restartIndefinitely();
 			game.levelCounter().clear();
 			ScoreManager.loadScore(game.highScore(), game.variant());
 		}
@@ -67,8 +66,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	INTRO() {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetIndefinitely();
-			timer.start();
+			timer.restartIndefinitely();
 		}
 
 		@Override
@@ -443,8 +441,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	INTERMISSION {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetIndefinitely();
-			timer.start(); // UI triggers state timeout
+			timer.restartIndefinitely();
 		}
 
 		@Override
@@ -458,8 +455,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	INTERMISSION_TEST {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetIndefinitely();
-			timer.start();
+			timer.restartIndefinitely();
 		}
 
 		@Override
@@ -467,8 +463,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (timer.hasExpired()) {
 				if (gc.intermissionTestNumber < 3) {
 					++gc.intermissionTestNumber;
-					timer.resetIndefinitely();
-					timer.start();
+					timer.restartIndefinitely();
 					GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
 				} else {
 					gc.intermissionTestNumber = 1;

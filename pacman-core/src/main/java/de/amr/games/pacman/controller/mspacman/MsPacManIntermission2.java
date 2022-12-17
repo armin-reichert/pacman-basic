@@ -83,8 +83,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 		FLAP {
 			@Override
 			public void onEnter(IntermissionData ctx) {
-				timer.resetIndefinitely();
-				timer.start();
+				timer.restartIndefinitely();
 				ctx.clapperboard = new Clapperboard(2, "THE CHASE");
 				ctx.clapperboard.setPosition(t(3), t(10));
 				ctx.clapperboard.show();
@@ -112,8 +111,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 		CHASING {
 			@Override
 			public void onEnter(IntermissionData ctx) {
-				timer.resetIndefinitely();
-				timer.start();
+				timer.restartIndefinitely();
 			}
 
 			@Override

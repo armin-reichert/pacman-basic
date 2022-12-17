@@ -163,8 +163,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 		CHASING_PAC {
 			@Override
 			public void onEnter(IntroData ctx) {
-				timer.resetIndefinitely();
-				timer.start();
+				timer.restartIndefinitely();
 				ctx.pacMan.setPosition(t(36), t(20));
 				ctx.pacMan.setMoveDir(Direction.LEFT);
 				ctx.pacMan.setAbsSpeed(IntroData.CHASING_SPEED);
@@ -219,8 +218,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 		CHASING_GHOSTS {
 			@Override
 			public void onEnter(IntroData ctx) {
-				timer.resetIndefinitely();
-				timer.start();
+				timer.restartIndefinitely();
 				ctx.ghostKilledTime = timer.tick();
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setAbsSpeed(IntroData.CHASING_SPEED);
