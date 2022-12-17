@@ -338,6 +338,7 @@ public abstract class GameModel {
 			ghost.enterStateLocked();
 		});
 		guys().forEach(Creature::show);
+		bonus().setInactive();
 		pacPowerTimer.reset(0);
 		energizerPulse.reset();
 	}
