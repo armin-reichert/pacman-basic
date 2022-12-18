@@ -331,10 +331,11 @@ public abstract class GameModel {
 		pac.reset();
 		pac.setPosition(level.world().pacStartPosition());
 		pac.setMoveAndWishDir(Direction.LEFT);
+		var initialDirs = List.of(Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setPosition(ghost.homePosition());
-			ghost.setMoveAndWishDir(List.of(Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP).get(ghost.id()));
+			ghost.setMoveAndWishDir(initialDirs.get(ghost.id()));
 			ghost.enterStateLocked();
 		});
 		guys().forEach(Creature::show);
