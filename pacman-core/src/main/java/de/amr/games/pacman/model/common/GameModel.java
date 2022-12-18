@@ -124,6 +124,9 @@ public abstract class GameModel {
 	/** Current level. */
 	protected GameLevel level;
 
+	/** List of collected level symbols. */
+	protected final LevelCounter levelCounter = new LevelCounter();
+
 	/** Number of lives remaining. */
 	protected int lives;
 
@@ -136,19 +139,29 @@ public abstract class GameModel {
 	/** Number of ghosts killed by current energizer. */
 	protected int numGhostsKilledByEnergizer;
 
-	/** List of collected level symbols. */
-	protected final LevelCounter levelCounter = new LevelCounter();
+	protected final Score gameScore = new Score("SCORE");
 
-	private final Score gameScore = new Score("SCORE");
-
-	private final Score highScore = new Score("HIGH SCORE");
+	protected final Score highScore = new Score("HIGH SCORE");
 
 	protected boolean scoresEnabled;
 
 	protected final GhostHouseRules ghostHouseRules = new GhostHouseRules();
 
-	/** Stores what happened during the last tick. */
+	/** Remembers what happens during a tick. */
 	public final Memory memo = new Memory();
+
+	private static int validatedGhostID(int id) {
+		if (id < 0 || id > 3) {
+			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
+		}
+		return id;
+	}
+
+	// simulates the overflow bug from the original Arcade version
+	private static V2i tilesAhead(Creature guy, int n) {
+		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
+		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
+	}
 
 	protected GameModel(String pacName, String redGhostName, String pinkGhostName, String cyanGhostName,
 			String orangeGhostName) {
@@ -242,12 +255,6 @@ public abstract class GameModel {
 		}
 	}
 
-	// simulates the overflow bug from the original Arcade version
-	private static V2i tilesAhead(Creature guy, int n) {
-		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
-		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
-	}
-
 	public int credit() {
 		return credit;
 	}
@@ -270,7 +277,7 @@ public abstract class GameModel {
 
 	public void resetGameAndInitLevel(int levelNumber) {
 		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Illegal level number: %d. Must be 1 or greater".formatted(levelNumber));
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
 		playing = false;
 		lives = INITIAL_LIVES;
@@ -387,8 +394,8 @@ public abstract class GameModel {
 		return livesOneLessShown;
 	}
 
-	public void setLivesOneLessShown(boolean livesOneLessShown) {
-		this.livesOneLessShown = livesOneLessShown;
+	public void setLivesOneLessShown(boolean value) {
+		this.livesOneLessShown = value;
 	}
 
 	/**
@@ -399,22 +406,15 @@ public abstract class GameModel {
 		return theGhosts[validatedGhostID(id)];
 	}
 
-	private static int validatedGhostID(int id) {
-		if (id < 0 || id > 3) {
-			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
-		}
-		return id;
-	}
-
 	/**
 	 * @param states states specifying which ghosts are returned
 	 * @return all ghosts which are in any of the given states or all ghosts, if no states are specified
 	 */
 	public Stream<Ghost> ghosts(GhostState... states) {
-		// when no state is given, return all ghosts (Ghost.is() would return no ghosts!)
 		if (states.length > 0) {
 			return Stream.of(theGhosts).filter(ghost -> ghost.is(states));
 		}
+		// when no states are given, return *all* ghosts (ghost.is() would return *no* ghosts!)
 		return Stream.of(theGhosts);
 	}
 
@@ -425,14 +425,6 @@ public abstract class GameModel {
 	 */
 	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
 		return true;
-	}
-
-	/**
-	 * @param ghostKillIndex index telling when a ghost was killed using the same energizer (0..3)
-	 * @return value of killed ghost (200, 400, 800, 1600)
-	 */
-	public int ghostValue(int ghostKillIndex) {
-		return GHOST_EATEN_POINTS[ghostKillIndex];
 	}
 
 	// Hunting
@@ -586,10 +578,10 @@ public abstract class GameModel {
 	private void killGhost(Ghost ghost) {
 		ghost.setKilledIndex(numGhostsKilledByEnergizer++);
 		ghost.enterStateEaten(this);
-		int value = ghostValue(ghost.killedIndex());
-		scorePoints(value);
 		memo.killedGhosts.add(ghost);
-		LOGGER.info("Ghost %s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), value);
+		int points = GHOST_EATEN_POINTS[ghost.killedIndex()];
+		scorePoints(points);
+		LOGGER.info("%s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), points);
 	}
 
 	// Pac-Man
