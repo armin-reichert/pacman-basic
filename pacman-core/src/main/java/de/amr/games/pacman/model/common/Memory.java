@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class Memory {
 	public boolean pacPowerLost;
 	public boolean pacPowerFading;
 	public boolean ghostsKilled;
-	public Ghost[] edibleGhosts;
+	public List<Ghost> edibleGhosts;
 	public final List<Ghost> killedGhosts = new ArrayList<>(4);
 	public Optional<Ghost> unlockedGhost;
 	public String unlockReason;
@@ -62,7 +63,7 @@ public class Memory {
 		pacPowerLost = false;
 		pacPowerFading = false;
 		ghostsKilled = false;
-		edibleGhosts = new Ghost[0];
+		edibleGhosts = Collections.emptyList();
 		killedGhosts.clear();
 		unlockedGhost = Optional.empty();
 		unlockReason = null;

@@ -550,8 +550,8 @@ public abstract class GameModel {
 			return; // enter new game state
 		}
 
-		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
-		if (memo.edibleGhosts.length > 0) {
+		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
+		if (!memo.edibleGhosts.isEmpty()) {
 			killGhosts(memo.edibleGhosts);
 			memo.ghostsKilled = true;
 			return; // enter new game state
@@ -568,14 +568,14 @@ public abstract class GameModel {
 	}
 
 	public void killAllPossibleGhosts() {
-		var prey = ghosts(GhostState.HUNTING_PAC, GhostState.FRIGHTENED).toArray(Ghost[]::new);
+		var prey = ghosts(GhostState.HUNTING_PAC, GhostState.FRIGHTENED).toList();
 		numGhostsKilledByEnergizer = 0;
 		killGhosts(prey);
 	}
 
-	private void killGhosts(Ghost[] prey) {
-		Stream.of(prey).forEach(this::killGhost);
-		numGhostsKilledInLevel += prey.length;
+	private void killGhosts(List<Ghost> prey) {
+		prey.forEach(this::killGhost);
+		numGhostsKilledInLevel += prey.size();
 		if (numGhostsKilledInLevel == 16) {
 			scorePoints(ALL_GHOSTS_KILLED_POINTS);
 			LOGGER.info("All ghosts killed at level %d, %s wins %d points", level.number(), pac.name(),
@@ -584,12 +584,11 @@ public abstract class GameModel {
 	}
 
 	private void killGhost(Ghost ghost) {
-		memo.killedGhosts.add(ghost);
-		ghost.setKilledIndex(numGhostsKilledByEnergizer);
-		numGhostsKilledByEnergizer++;
+		ghost.setKilledIndex(numGhostsKilledByEnergizer++);
 		ghost.enterStateEaten(this);
 		int value = ghostValue(ghost.killedIndex());
 		scorePoints(value);
+		memo.killedGhosts.add(ghost);
 		LOGGER.info("Ghost %s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), value);
 	}
 
