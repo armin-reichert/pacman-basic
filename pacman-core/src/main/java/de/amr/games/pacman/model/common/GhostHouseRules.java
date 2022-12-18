@@ -46,6 +46,8 @@ public class GhostHouseRules {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
+	public static final int NO_LIMIT = -1;
+
 	private final int[] ghostDotCounters = new int[4];
 
 	private int globalDotCounter;
@@ -66,18 +68,19 @@ public class GhostHouseRules {
 		this.pacStarvingTimeLimit = pacStarvingTimeLimit;
 	}
 
-	public void setGlobalGhostDotLimits(int v1, int v2, int v3, int v4) {
-		globalGhostDotLimits[Ghost.ID_RED_GHOST] = (byte) v1;
-		globalGhostDotLimits[Ghost.ID_PINK_GHOST] = (byte) v2;
-		globalGhostDotLimits[Ghost.ID_CYAN_GHOST] = (byte) v3;
-		globalGhostDotLimits[Ghost.ID_ORANGE_GHOST] = (byte) v4;
+	public void setGlobalGhostDotLimits(int redGhostLimit, int pinkGhostLimit, int cyanGhostLimit, int orangeGhostLimit) {
+		globalGhostDotLimits[Ghost.ID_RED_GHOST] = (byte) redGhostLimit;
+		globalGhostDotLimits[Ghost.ID_PINK_GHOST] = (byte) pinkGhostLimit;
+		globalGhostDotLimits[Ghost.ID_CYAN_GHOST] = (byte) cyanGhostLimit;
+		globalGhostDotLimits[Ghost.ID_ORANGE_GHOST] = (byte) orangeGhostLimit;
 	}
 
-	public void setPrivateGhostDotLimits(int v1, int v2, int v3, int v4) {
-		privateGhostDotLimits[Ghost.ID_RED_GHOST] = (byte) v1;
-		privateGhostDotLimits[Ghost.ID_PINK_GHOST] = (byte) v2;
-		privateGhostDotLimits[Ghost.ID_CYAN_GHOST] = (byte) v3;
-		privateGhostDotLimits[Ghost.ID_ORANGE_GHOST] = (byte) v4;
+	public void setPrivateGhostDotLimits(int redGhostLimit, int pinkGhostLimit, int cyanGhostLimit,
+			int orangeGhostLimit) {
+		privateGhostDotLimits[Ghost.ID_RED_GHOST] = (byte) redGhostLimit;
+		privateGhostDotLimits[Ghost.ID_PINK_GHOST] = (byte) pinkGhostLimit;
+		privateGhostDotLimits[Ghost.ID_CYAN_GHOST] = (byte) cyanGhostLimit;
+		privateGhostDotLimits[Ghost.ID_ORANGE_GHOST] = (byte) orangeGhostLimit;
 	}
 
 	public void resetAllDotCounters() {
@@ -129,7 +132,8 @@ public class GhostHouseRules {
 			return unlockGhost(game, ghost, "Private dot counter at limit (%d)", privateGhostDotLimits[ghost.id()]);
 		}
 		// check global dot counter
-		var globalDotLimit = globalGhostDotLimits[ghost.id()] == -1 ? Integer.MAX_VALUE : globalGhostDotLimits[ghost.id()];
+		var globalDotLimit = globalGhostDotLimits[ghost.id()] == NO_LIMIT ? Integer.MAX_VALUE
+				: globalGhostDotLimits[ghost.id()];
 		if (globalDotCounter >= globalDotLimit) {
 			return unlockGhost(game, ghost, "Global dot counter at limit (%d)", globalDotLimit);
 		}

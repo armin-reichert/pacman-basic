@@ -118,15 +118,21 @@ public abstract class GameModel {
 	/** Remembers what happens during a tick. */
 	public final Memory memo = new Memory();
 
-	private static int validatedGhostID(int id) {
+	protected static int checkGhostID(int id) {
 		if (id < 0 || id > 3) {
 			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
 		}
 		return id;
 	}
 
+	protected static void checkLevelNumber(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
+		}
+	}
+
 	// simulates the overflow bug from the original Arcade version
-	private static V2i tilesAhead(Creature guy, int n) {
+	protected static V2i tilesAhead(Creature guy, int n) {
 		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
 		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
@@ -161,6 +167,11 @@ public abstract class GameModel {
 	}
 
 	/**
+	 * @return the game variant realized by this model
+	 */
+	public abstract GameVariant variant();
+
+	/**
 	 * Creates and returns the specified level.
 	 * 
 	 * @param levelNumber Level number (starting at 1)
@@ -169,14 +180,77 @@ public abstract class GameModel {
 	protected abstract GameLevel createLevel(int levelNumber);
 
 	/**
+	 * @param levelNumber Level number (starting at 1)
+	 * @return ghost house rules used in this level
+	 */
+	protected GhostHouseRules createHouseRules(int levelNumber) {
+		checkLevelNumber(levelNumber);
+		var rules = new GhostHouseRules();
+		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 240 : 180);
+		rules.setGlobalGhostDotLimits(GhostHouseRules.NO_LIMIT, 7, 17, GhostHouseRules.NO_LIMIT);
+		switch (levelNumber) {
+		case 1 -> rules.setPrivateGhostDotLimits(0, 0, 30, 60);
+		case 2 -> rules.setPrivateGhostDotLimits(0, 0, 0, 50);
+		default -> rules.setPrivateGhostDotLimits(0, 0, 0, 0);
+		}
+		return rules;
+	}
+
+	/**
 	 * Creates the bonus for this game variant.
 	 */
 	protected abstract void createBonus();
 
+	public void resetGameAndInitLevel(int levelNumber) {
+		checkLevelNumber(levelNumber);
+		playing = false;
+		lives = INITIAL_LIVES;
+		oneLessLifeDisplayed = false;
+		gameScore.reset();
+		enableScores(true);
+		level.houseRules().resetAllDotCounters();
+		setLevel(levelNumber);
+	}
+
+	/** Current level. */
+	public GameLevel level() {
+		return level;
+	}
+
 	/**
-	 * @return the game variant realized by this model
+	 * Initializes the model for given game level.
+	 * 
+	 * @param levelNumber 1-based level number
 	 */
-	public abstract GameVariant variant();
+	public void setLevel(int levelNumber) {
+		checkLevelNumber(levelNumber);
+		level = createLevel(levelNumber);
+		level.world().assignGhostPositions(theGhosts);
+		numGhostsKilledInLevel = 0;
+		numGhostsKilledByEnergizer = 0;
+		ghost(ID_RED_GHOST).setCruiseElroyState(0);
+		gameScore().setLevelNumber(levelNumber);
+		if (levelNumber == 1) {
+			levelCounter().clear();
+			levelCounter().addSymbol(level().bonusIndex());
+		}
+	}
+
+	public void startLevel() {
+		getReadyToRumble();
+		guys().forEach(Entity::hide);
+		levelCounter.addSymbol(level.bonusIndex());
+		level.houseRules().resetPrivateGhostDotCounters();
+	}
+
+	public void endLevel() {
+		huntingTimer.stop();
+		bonus().setInactive();
+		pac.rest(Integer.MAX_VALUE);
+		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+		ghosts().forEach(Ghost::hide);
+		energizerPulse.reset();
+	}
 
 	/** Tells if the game play is running. */
 	public boolean isPlaying() {
@@ -244,61 +318,6 @@ public abstract class GameModel {
 
 	public boolean hasCredit() {
 		return credit > 0;
-	}
-
-	public void resetGameAndInitLevel(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
-		}
-		playing = false;
-		lives = INITIAL_LIVES;
-		oneLessLifeDisplayed = false;
-		gameScore.reset();
-		enableScores(true);
-		level.houseRules().resetAllDotCounters();
-		setLevel(levelNumber);
-	}
-
-	/**
-	 * Initializes the model for given game level.
-	 * 
-	 * @param levelNumber 1-based level number
-	 */
-	public void setLevel(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
-		}
-		level = createLevel(levelNumber);
-		level.world().assignGhostPositions(theGhosts);
-		numGhostsKilledInLevel = 0;
-		numGhostsKilledByEnergizer = 0;
-		ghost(ID_RED_GHOST).setCruiseElroyState(0);
-		gameScore().setLevelNumber(levelNumber);
-		if (levelNumber == 1) {
-			levelCounter().clear();
-			levelCounter().addSymbol(level().bonusIndex());
-		}
-	}
-
-	/** Current level. */
-	public GameLevel level() {
-		return level;
-	}
-
-	public void startLevel() {
-		getReadyToRumble();
-		guys().forEach(Entity::hide);
-		levelCounter.addSymbol(level.bonusIndex());
-		level.houseRules().resetPrivateGhostDotCounters();
-	}
-
-	public void endLevel() {
-		huntingTimer.stop();
-		bonus().setInactive();
-		pac.rest(Integer.MAX_VALUE);
-		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
-		ghosts().forEach(Ghost::hide);
-		energizerPulse.reset();
 	}
 
 	/**
@@ -383,7 +402,7 @@ public abstract class GameModel {
 	 * @return the ghost with the given ID
 	 */
 	public Ghost ghost(int id) {
-		return theGhosts[validatedGhostID(id)];
+		return theGhosts[checkGhostID(id)];
 	}
 
 	/**
@@ -460,6 +479,7 @@ public abstract class GameModel {
 	 *         intermission is played after given level.
 	 */
 	public int intermissionNumber(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		return switch (levelNumber) {
 		case 2 -> 1;
 		case 5 -> 2;
@@ -489,18 +509,6 @@ public abstract class GameModel {
 		advanceHunting();
 		pacPowerTimer.advance();
 		energizerPulse.animate();
-	}
-
-	protected GhostHouseRules createHouseRules(int levelNumber) {
-		var rules = new GhostHouseRules();
-		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 240 : 180);
-		rules.setGlobalGhostDotLimits(-1, 7, 17, -1);
-		switch (levelNumber) {
-		case 1 -> rules.setPrivateGhostDotLimits(0, 0, 30, 60);
-		case 2 -> rules.setPrivateGhostDotLimits(0, 0, 0, 50);
-		default -> rules.setPrivateGhostDotLimits(0, 0, 0, 0);
-		}
-		return rules;
 	}
 
 	private void checkIfGhostCanGetUnlocked() {

@@ -301,6 +301,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	protected GameLevel createLevel(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		int mapNumber = mapNumber(levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
 		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(7) : GameLevel.USE_BONUS_FROM_DATA;
