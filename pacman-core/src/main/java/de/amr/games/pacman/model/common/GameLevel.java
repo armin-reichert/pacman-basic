@@ -37,6 +37,8 @@ public record GameLevel(
 	int mazeNumber,
 	/** World used in this level. */
 	World world,
+	/** Ghost house rules for this level */
+	GhostHouseRules houseRules,
 	/** Bonus (index) for current level. */
 	int bonusIndex,
 	/** Relative player speed at current level. */
@@ -70,7 +72,8 @@ public record GameLevel(
 	 * @param bonusValue  if value <code>!= -1</code>, overrides the value in the data array
 	 * @param data        array with level data
 	 */
-	public static GameLevel of(int levelNumber, int mazeNumber, World world, int bonusValue, byte[] data) {
+	public static GameLevel of(int levelNumber, int mazeNumber, World world, GhostHouseRules houseRules, int bonusValue,
+			byte[] data) {
 		int bonusIndex = bonusValue == USE_BONUS_FROM_DATA ? (int) data[0] : bonusValue;
 		float playerSpeed = percentage(data[1]);
 		float ghostSpeed = percentage(data[2]);
@@ -83,9 +86,9 @@ public record GameLevel(
 		float ghostSpeedFrightened = percentage(data[9]);
 		int ghostFrightenedSeconds = data[10];
 		int numFlashes = data[11];
-		return new GameLevel(levelNumber, mazeNumber, world, bonusIndex, playerSpeed, ghostSpeed, ghostSpeedTunnel,
-				elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered, ghostSpeedFrightened,
-				ghostFrightenedSeconds, numFlashes);
+		return new GameLevel(levelNumber, mazeNumber, world, houseRules, bonusIndex, playerSpeed, ghostSpeed,
+				ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered,
+				ghostSpeedFrightened, ghostFrightenedSeconds, numFlashes);
 	}
 
 	public static final int USE_BONUS_FROM_DATA = -1;

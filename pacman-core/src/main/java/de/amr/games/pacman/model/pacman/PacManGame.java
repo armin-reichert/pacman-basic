@@ -141,7 +141,8 @@ public class PacManGame extends GameModel {
 		int mazeNumber = 1;
 		var world = createWorld();
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-		return GameLevel.of(levelNumber, mazeNumber, world, GameLevel.USE_BONUS_FROM_DATA, data);
+		var houseRules = createHouseRules(levelNumber);
+		return GameLevel.of(levelNumber, mazeNumber, world, houseRules, GameLevel.USE_BONUS_FROM_DATA, data);
 	}
 
 	@Override

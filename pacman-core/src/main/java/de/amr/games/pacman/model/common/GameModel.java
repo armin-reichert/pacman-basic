@@ -98,7 +98,6 @@ public abstract class GameModel {
 	public static final float GHOST_SPEED_RETURNING = 2.0f; // unsure
 
 	protected GameLevel level;
-	protected final GhostHouseRules ghostHouseRules = new GhostHouseRules();
 	protected final Pac pac;
 	protected final Ghost[] theGhosts;
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
@@ -256,7 +255,7 @@ public abstract class GameModel {
 		oneLessLifeDisplayed = false;
 		gameScore.reset();
 		enableScores(true);
-		ghostHouseRules.resetAllDotCounters();
+		level.houseRules().resetAllDotCounters();
 		setLevel(levelNumber);
 	}
 
@@ -275,7 +274,6 @@ public abstract class GameModel {
 		numGhostsKilledByEnergizer = 0;
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);
 		gameScore().setLevelNumber(levelNumber);
-		defineGhostHouseRulesForLevel(levelNumber);
 		if (levelNumber == 1) {
 			levelCounter().clear();
 			levelCounter().addSymbol(level().bonusIndex());
@@ -291,7 +289,7 @@ public abstract class GameModel {
 		getReadyToRumble();
 		guys().forEach(Entity::hide);
 		levelCounter.addSymbol(level.bonusIndex());
-		ghostHouseRules.resetPrivateGhostDotCounters();
+		level.houseRules().resetPrivateGhostDotCounters();
 	}
 
 	public void endLevel() {
@@ -493,18 +491,20 @@ public abstract class GameModel {
 		energizerPulse.animate();
 	}
 
-	protected void defineGhostHouseRulesForLevel(int levelNumber) {
-		ghostHouseRules.setPacStarvingTimeLimit(levelNumber < 5 ? 240 : 180);
-		ghostHouseRules.setGlobalGhostDotLimits(-1, 7, 17, -1);
+	protected GhostHouseRules createHouseRules(int levelNumber) {
+		var rules = new GhostHouseRules();
+		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 240 : 180);
+		rules.setGlobalGhostDotLimits(-1, 7, 17, -1);
 		switch (levelNumber) {
-		case 1 -> ghostHouseRules.setPrivateGhostDotLimits(0, 0, 30, 60);
-		case 2 -> ghostHouseRules.setPrivateGhostDotLimits(0, 0, 0, 50);
-		default -> ghostHouseRules.setPrivateGhostDotLimits(0, 0, 0, 0);
+		case 1 -> rules.setPrivateGhostDotLimits(0, 0, 30, 60);
+		case 2 -> rules.setPrivateGhostDotLimits(0, 0, 0, 50);
+		default -> rules.setPrivateGhostDotLimits(0, 0, 0, 0);
 		}
+		return rules;
 	}
 
 	private void checkIfGhostCanGetUnlocked() {
-		ghostHouseRules.checkIfGhostCanBeGetUnlocked(this).ifPresent(unlock -> {
+		level.houseRules().checkIfGhostCanBeGetUnlocked(this).ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
 			LOGGER.info("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
@@ -580,7 +580,7 @@ public abstract class GameModel {
 
 	private void onPacMeetsKiller() {
 		pac.die();
-		ghostHouseRules.resetGlobalDotCounterAndSetEnabled(true);
+		level.houseRules().resetGlobalDotCounterAndSetEnabled(true);
 		ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
 		LOGGER.info("%s died at tile %s", pac.name(), pac.tile());
 	}
@@ -638,7 +638,7 @@ public abstract class GameModel {
 			onBonusReached();
 		}
 		checkIfRedGhostBecomesCruiseElroy();
-		ghostHouseRules.updateGhostDotCounters(this);
+		level.houseRules().updateGhostDotCounters(this);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
 	}
 
