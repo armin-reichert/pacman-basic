@@ -97,24 +97,24 @@ public abstract class GameModel {
 	public static final float GHOST_SPEED_INSIDE_HOUSE = 0.5f; // unsure
 	public static final float GHOST_SPEED_RETURNING = 2.0f; // unsure
 
-	protected int credit;
-	protected boolean playing;
+	protected GameLevel level;
+	protected final GhostHouseRules ghostHouseRules = new GhostHouseRules();
 	protected final Pac pac;
-	protected boolean pacImmune;
 	protected final Ghost[] theGhosts;
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
 	protected final TickTimer pacPowerTimer = new TickTimer("PacPower", FPS);
 	protected final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
-	protected GameLevel level;
-	protected final LevelCounter levelCounter = new LevelCounter();
+	protected int credit;
 	protected int lives;
-	protected boolean oneLessLifeDisplayed;
 	protected int numGhostsKilledInLevel;
 	protected int numGhostsKilledByEnergizer;
+	protected boolean playing;
+	protected boolean pacImmune;
+	protected boolean oneLessLifeDisplayed;
+	protected final LevelCounter levelCounter = new LevelCounter();
 	protected final Score gameScore = new Score("SCORE");
 	protected final Score highScore = new Score("HIGH SCORE");
 	protected boolean scoresEnabled;
-	protected final GhostHouseRules ghostHouseRules = new GhostHouseRules();
 
 	/** Remembers what happens during a tick. */
 	public final Memory memo = new Memory();
