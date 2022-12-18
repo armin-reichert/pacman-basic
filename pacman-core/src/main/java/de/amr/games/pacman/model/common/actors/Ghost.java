@@ -282,7 +282,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (outOfHouse) {
 			setNewTileEntered(false);
 			setMoveAndWishDir(LEFT);
-			if (game.powerTimer().isRunning() && killedIndex == -1) {
+			if (game.pacPowerTimer().isRunning() && killedIndex == -1) {
 				enterStateFrightened(game);
 			} else {
 				killedIndex = -1;
@@ -508,11 +508,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (animationSet == null) {
 			return;
 		}
-		if (!game.powerTimer().isRunning()) {
+		if (!game.pacPowerTimer().isRunning()) {
 			animationSet.select(AnimKeys.GHOST_COLOR);
 			return;
 		}
-		if (game.powerTimer().remaining() > GameModel.PAC_POWER_FADING_TICKS) {
+		if (game.pacPowerTimer().remaining() > GameModel.PAC_POWER_FADING_TICKS) {
 			animationSet.select(AnimKeys.GHOST_BLUE);
 		} else {
 			if (!animationSet.isSelected(AnimKeys.GHOST_FLASHING)) {

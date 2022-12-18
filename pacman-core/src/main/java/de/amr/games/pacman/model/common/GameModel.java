@@ -97,54 +97,23 @@ public abstract class GameModel {
 	public static final float GHOST_SPEED_INSIDE_HOUSE = 0.5f; // unsure
 	public static final float GHOST_SPEED_RETURNING = 2.0f; // unsure
 
-	/** Number of coins inserted. */
 	protected int credit;
-
-	/** Tells if the game play is running. */
 	protected boolean playing;
-
-	/** Pac-Man / Ms. Pac-Man. */
 	protected final Pac pac;
-
-	/** Tells if Pac-Man can be killed by ghosts. Not part of original game. */
 	protected boolean pacImmune;
-
-	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
 	protected final Ghost[] theGhosts;
-
-	/** Timer used to control hunting phases. */
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
-
-	/** Controls the time Pac has power. */
 	protected final TickTimer pacPowerTimer = new TickTimer("PacPower", FPS);
-
-	/** Energizer animation. */
-	public final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
-
-	/** Current level. */
+	protected final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
 	protected GameLevel level;
-
-	/** List of collected level symbols. */
 	protected final LevelCounter levelCounter = new LevelCounter();
-
-	/** Number of lives remaining. */
 	protected int lives;
-
-	/** If lives or one less is displayed in lives counter. */
-	protected boolean livesOneLessShown;
-
-	/** Number of ghosts killed at the current level. */
+	protected boolean oneLessLifeDisplayed;
 	protected int numGhostsKilledInLevel;
-
-	/** Number of ghosts killed by current energizer. */
 	protected int numGhostsKilledByEnergizer;
-
 	protected final Score gameScore = new Score("SCORE");
-
 	protected final Score highScore = new Score("HIGH SCORE");
-
 	protected boolean scoresEnabled;
-
 	protected final GhostHouseRules ghostHouseRules = new GhostHouseRules();
 
 	/** Remembers what happens during a tick. */
@@ -210,6 +179,7 @@ public abstract class GameModel {
 	 */
 	public abstract GameVariant variant();
 
+	/** Tells if the game play is running. */
 	public boolean isPlaying() {
 		return playing;
 	}
@@ -218,6 +188,7 @@ public abstract class GameModel {
 		this.playing = playing;
 	}
 
+	/** List of collected level symbols. */
 	public LevelCounter levelCounter() {
 		return levelCounter;
 	}
@@ -255,6 +226,7 @@ public abstract class GameModel {
 		}
 	}
 
+	/** Number of coins inserted. */
 	public int credit() {
 		return credit;
 	}
@@ -281,7 +253,7 @@ public abstract class GameModel {
 		}
 		playing = false;
 		lives = INITIAL_LIVES;
-		livesOneLessShown = false;
+		oneLessLifeDisplayed = false;
 		gameScore.reset();
 		enableScores(true);
 		ghostHouseRules.resetAllDotCounters();
@@ -310,6 +282,7 @@ public abstract class GameModel {
 		}
 	}
 
+	/** Current level. */
 	public GameLevel level() {
 		return level;
 	}
@@ -366,6 +339,7 @@ public abstract class GameModel {
 		return pac;
 	}
 
+	/** Tells if Pac-Man can be killed by ghosts. Not part of original game. */
 	public boolean isPacImmune() {
 		return pacImmune;
 	}
@@ -374,14 +348,17 @@ public abstract class GameModel {
 		this.pacImmune = immune;
 	}
 
+	/** Number of ghosts killed at the current level. */
 	public int numGhostsKilledInLevel() {
 		return numGhostsKilledInLevel;
 	}
 
+	/** Number of ghosts killed by current energizer. */
 	public int numGhostsKilledByEnergizer() {
 		return numGhostsKilledByEnergizer;
 	}
 
+	/** Number of lives remaining. */
 	public int lives() {
 		return lives;
 	}
@@ -390,12 +367,17 @@ public abstract class GameModel {
 		this.lives = lives;
 	}
 
-	public boolean isLivesOneLessShown() {
-		return livesOneLessShown;
+	/** If one less life is displayed in the lives counter. */
+	public boolean isOneLessLifeDisplayed() {
+		return oneLessLifeDisplayed;
 	}
 
-	public void setLivesOneLessShown(boolean value) {
-		this.livesOneLessShown = value;
+	public void setOneLessLifeDisplayed(boolean value) {
+		this.oneLessLifeDisplayed = value;
+	}
+
+	public SingleEntityAnimation<Boolean> energizerPulse() {
+		return energizerPulse;
 	}
 
 	/**
@@ -429,6 +411,7 @@ public abstract class GameModel {
 
 	// Hunting
 
+	/** Timer used to control hunting phases. */
 	public HuntingTimer huntingTimer() {
 		return huntingTimer;
 	}
@@ -487,7 +470,8 @@ public abstract class GameModel {
 		};
 	}
 
-	public TickTimer powerTimer() {
+	/** Controls the time Pac has power. */
+	public TickTimer pacPowerTimer() {
 		return pacPowerTimer;
 	}
 
