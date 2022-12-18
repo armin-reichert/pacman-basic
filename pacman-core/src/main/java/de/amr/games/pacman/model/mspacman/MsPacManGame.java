@@ -24,6 +24,10 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.NavigationPoint.np;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +40,8 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.HorizontalPortal;
 
@@ -295,8 +301,19 @@ public class MsPacManGame extends GameModel {
 
 	private MovingBonus movingBonus;
 
-	public MsPacManGame() {
-		super("Ms. Pac-Man", "Blinky", "Pinky", "Inky", "Sue");
+	@Override
+	protected Pac createPac() {
+		return new Pac("Ms. Pac-Man");
+	}
+
+	@Override
+	protected Ghost[] createGhosts() {
+		return new Ghost[] { //
+				new Ghost(ID_RED_GHOST, "Blinky"), //
+				new Ghost(ID_PINK_GHOST, "Pinky"), //
+				new Ghost(ID_CYAN_GHOST, "Inky"), //
+				new Ghost(ID_ORANGE_GHOST, "Sue") //
+		};
 	}
 
 	@Override

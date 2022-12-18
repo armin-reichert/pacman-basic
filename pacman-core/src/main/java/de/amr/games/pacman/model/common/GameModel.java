@@ -99,7 +99,7 @@ public abstract class GameModel {
 
 	protected GameLevel level;
 	protected final Pac pac;
-	protected final Ghost[] theGhosts;
+	protected Ghost[] theGhosts;
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
 	protected final TickTimer pacPowerTimer = new TickTimer("PacPower", FPS);
 	protected final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
@@ -137,33 +137,47 @@ public abstract class GameModel {
 		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
 
-	protected GameModel(String pacName, String redGhostName, String pinkGhostName, String cyanGhostName,
-			String orangeGhostName) {
+	/**
+	 * Creates the common part of game model.
+	 * 
+	 * @param pacName         "Pac-Man" or "Ms. Pac-Man"
+	 * @param redGhostName    "Blinky"
+	 * @param pinkGhostName   "Pinky"
+	 * @param cyanGhostName   "Inky"
+	 * @param orangeGhostName "Clyde or Sue"
+	 */
+	protected GameModel() {
+		pac = createPac();
+		theGhosts = createGhosts();
+		setGhostBehavior();
+		createBonus();
+		setLevel(1);
+	}
 
-		pac = new Pac(pacName);
-		final var redGhost = new Ghost(ID_RED_GHOST, redGhostName);
-		final var pinkGhost = new Ghost(ID_PINK_GHOST, pinkGhostName);
-		final var cyanGhost = new Ghost(ID_CYAN_GHOST, cyanGhostName);
-		final var orangeGhost = new Ghost(ID_ORANGE_GHOST, orangeGhostName);
-		theGhosts = new Ghost[] { redGhost, pinkGhost, cyanGhost, orangeGhost };
+	protected abstract Pac createPac();
 
-		// The "AI": each ghost has a different way of computing its chasing target
+	/**
+	 * Creates the ghosts and defines their "AI": each ghost has a different way of computing the target tile when chasing
+	 * Pac-Man.
+	 * 
+	 * @return the ghosts in order RED, PINK, CYAN, ORANGE
+	 */
+	protected abstract Ghost[] createGhosts();
 
-		// Red ghost targets Pac-Man directly
+	protected void setGhostBehavior() {
+		var redGhost = ghost(ID_RED_GHOST);
+		var pinkGhost = ghost(ID_PINK_GHOST);
+		var cyanGhost = ghost(ID_CYAN_GHOST);
+		var orangeGhost = ghost(ID_ORANGE_GHOST);
+		// Red ghost attacks Pac-Man directly
 		redGhost.setChasingBehavior(pac::tile);
-
 		// Pink ghost ambushes Pac-Man
 		pinkGhost.setChasingBehavior(() -> tilesAhead(pac, 4));
-
 		// Cyan ghost attacks from opposite side than red ghost
 		cyanGhost.setChasingBehavior(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
-
 		// Orange ghost attacks and retreats if too near
 		orangeGhost.setChasingBehavior(
 				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? orangeGhost.scatterTile() : pac.tile());
-
-		createBonus();
-		setLevel(1);
 	}
 
 	/**
@@ -175,7 +189,7 @@ public abstract class GameModel {
 	 * Creates and returns the specified level.
 	 * 
 	 * @param levelNumber Level number (starting at 1)
-	 * @return the level
+	 * @return the game level
 	 */
 	protected abstract GameLevel createLevel(int levelNumber);
 
