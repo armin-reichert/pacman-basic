@@ -555,7 +555,7 @@ public abstract class GameModel {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
 		if (memo.pacPowerLost) {
-			onPacPowerLost();
+			onPacPowerEnd();
 		}
 	}
 
@@ -586,19 +586,19 @@ public abstract class GameModel {
 
 	// Pac-Man
 
+	public boolean isPacPowerFading() {
+		return pacPowerTimer.isRunning() && pacPowerTimer.remaining() <= PAC_POWER_FADING_TICKS;
+	}
+
 	private boolean isPacMeetingKiller() {
 		return !pacImmune && !pacPowerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	private void onPacMeetsKiller() {
 		pac.die();
-		LOGGER.info("%s died at tile %s", pac.name(), pac.tile());
 		ghostHouseRules.resetGlobalDotCounterAndSetEnabled(true);
 		ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
-	}
-
-	public boolean isPacPowerFading() {
-		return pacPowerTimer.isRunning() && pacPowerTimer.remaining() <= PAC_POWER_FADING_TICKS;
+		LOGGER.info("%s died at tile %s", pac.name(), pac.tile());
 	}
 
 	private void onPacPowerBegin() {
@@ -612,10 +612,11 @@ public abstract class GameModel {
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}
 
-	private void onPacPowerLost() {
+	private void onPacPowerEnd() {
 		LOGGER.info("%s power ends", pac.name());
-		pacPowerTimer.resetIndefinitely();
 		huntingTimer.start();
+		pacPowerTimer.stop();
+		pacPowerTimer.resetIndefinitely();
 		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac(this));
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
