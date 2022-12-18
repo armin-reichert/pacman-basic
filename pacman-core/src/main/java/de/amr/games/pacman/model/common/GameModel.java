@@ -154,13 +154,15 @@ public abstract class GameModel {
 	protected abstract Pac createPac();
 
 	/**
-	 * Creates the ghosts and defines their "AI": each ghost has a different way of computing the target tile when chasing
-	 * Pac-Man.
+	 * Creates the ghosts.
 	 * 
 	 * @return the ghosts in order RED, PINK, CYAN, ORANGE
 	 */
 	protected abstract Ghost[] createGhosts();
 
+	/**
+	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
+	 */
 	protected void setGhostBehavior() {
 		var redGhost = ghost(ID_RED_GHOST);
 		var pinkGhost = ghost(ID_PINK_GHOST);
