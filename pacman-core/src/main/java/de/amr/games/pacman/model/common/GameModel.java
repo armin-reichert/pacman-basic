@@ -138,13 +138,7 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Creates the common part of game model.
-	 * 
-	 * @param pacName         "Pac-Man" or "Ms. Pac-Man"
-	 * @param redGhostName    "Blinky"
-	 * @param pinkGhostName   "Pinky"
-	 * @param cyanGhostName   "Inky"
-	 * @param orangeGhostName "Clyde or Sue"
+	 * Creates the game model.
 	 */
 	protected GameModel() {
 		pac = createPac();
@@ -154,6 +148,9 @@ public abstract class GameModel {
 		setLevel(1);
 	}
 
+	/**
+	 * @return the Pac-person of this game
+	 */
 	protected abstract Pac createPac();
 
 	/**
