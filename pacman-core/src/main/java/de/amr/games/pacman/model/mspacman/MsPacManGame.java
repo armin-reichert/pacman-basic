@@ -329,17 +329,15 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected void createBonus() {
-		movingBonus = new MovingBonus();
-	}
-
-	@Override
 	public GameVariant variant() {
 		return GameVariant.MS_PACMAN;
 	}
 
 	@Override
 	public MovingBonus bonus() {
+		if (movingBonus == null) {
+			movingBonus = new MovingBonus();
+		}
 		return movingBonus;
 	}
 

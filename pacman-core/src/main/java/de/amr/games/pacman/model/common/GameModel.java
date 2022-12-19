@@ -144,7 +144,6 @@ public abstract class GameModel {
 		pac = createPac();
 		theGhosts = createGhosts();
 		setGhostBehavior();
-		createBonus();
 		setLevel(1);
 	}
 
@@ -208,11 +207,6 @@ public abstract class GameModel {
 		}
 		return rules;
 	}
-
-	/**
-	 * Creates the bonus for this game variant.
-	 */
-	protected abstract void createBonus();
 
 	public void resetGameAndInitLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);

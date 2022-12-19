@@ -163,11 +163,6 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	protected void createBonus() {
-		bonus = new StaticBonus(BONUS_POSITION);
-	}
-
-	@Override
 	public GameVariant variant() {
 		return GameVariant.PACMAN;
 	}
@@ -182,6 +177,9 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public StaticBonus bonus() {
+		if (bonus == null) {
+			bonus = new StaticBonus(BONUS_POSITION);
+		}
 		return bonus;
 	}
 
