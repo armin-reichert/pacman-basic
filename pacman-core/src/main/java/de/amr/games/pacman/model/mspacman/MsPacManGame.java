@@ -320,7 +320,7 @@ public class MsPacManGame extends GameModel {
 		int mazeNumber = mazeNumber(levelNumber);
 		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(BONUS_VALUES.length) : data[0];
 		var world = createWorld(mapNumber);
-		var bonus = new MovingBonus(bonusSymbol);
+		var bonus = new MovingBonus(bonusSymbol, BONUS_VALUES[bonusSymbol]);
 		var houseRules = createHouseRules(levelNumber);
 		level = createLevelFromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
 	}
@@ -350,7 +350,7 @@ public class MsPacManGame extends GameModel {
 			movingBonus.setRoute(route);
 			movingBonus.placeAtTile(start.tile(), 0, 0);
 			movingBonus.setMoveAndWishDir(orientation);
-			movingBonus.setEdible(BONUS_VALUES[level.bonus().symbol()], TickTimer.INDEFINITE);
+			movingBonus.setEdible(TickTimer.INDEFINITE);
 			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 		}
 	}

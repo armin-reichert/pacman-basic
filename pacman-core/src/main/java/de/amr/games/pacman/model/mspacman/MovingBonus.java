@@ -52,15 +52,16 @@ public class MovingBonus extends Creature implements Bonus {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private final int symbol;
-	private int points;
+	private final int points;
 	private long timer;
 	private BonusState state;
 	private final SingleEntityAnimation<Integer> jumpAnimation;
 	private final FollowRoute steering = new FollowRoute();
 
-	public MovingBonus(int symbol) {
+	public MovingBonus(int symbol, int points) {
 		super("MovingBonus");
 		this.symbol = symbol;
+		this.points = points;
 		canTeleport = false;
 		jumpAnimation = new SingleEntityAnimation<>(2, -2);
 		jumpAnimation.setFrameDuration(10);
@@ -80,8 +81,7 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public String toString() {
-		return "[MovingBonus state=%s symbol=%d value=%d timer=%d creature=%s]".formatted(state, symbol, points, timer,
-				super.toString());
+		return "[MovingBonus state=%s symbol=%d value=%d timer=%d tile=%s]".formatted(state, symbol, points, timer, tile());
 	}
 
 	@Override
@@ -109,15 +109,14 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void setEdible(int points, long ticks) {
-		this.points = points;
+	public void setEdible(long ticks) {
 		state = BonusState.EDIBLE;
 		timer = ticks;
 		visible = true;
 		jumpAnimation.restart();
 		setAbsSpeed(0.5); // how fast in the original game?
 		setTargetTile(null);
-		LOGGER.info("%s gets edible", this);
+		LOGGER.info("Bonus gets edible: %s", this);
 	}
 
 	public int dy() {
@@ -141,7 +140,7 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 			steering.steer(game, this);
 			if (steering.isComplete()) {
-				LOGGER.info("%s reached target", this);
+				LOGGER.info("Bonus reached target: %s", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
@@ -153,7 +152,7 @@ public class MovingBonus extends Creature implements Bonus {
 		case EATEN -> {
 			if (--timer == 0) {
 				setInactive();
-				LOGGER.info("%s expired", this);
+				LOGGER.info("Bonus expired: %s", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}

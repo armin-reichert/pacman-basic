@@ -156,7 +156,7 @@ public class PacManGame extends GameModel {
 		int mazeNumber = 1;
 		var world = createWorld();
 		int bonusSymbol = data[0];
-		var bonus = new StaticBonus(BONUS_POSITION, bonusSymbol);
+		var bonus = new StaticBonus(BONUS_POSITION, bonusSymbol, BONUS_VALUES[bonusSymbol]);
 		var houseRules = createHouseRules(levelNumber);
 		level = createLevelFromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
 	}
@@ -177,7 +177,7 @@ public class PacManGame extends GameModel {
 	@Override
 	protected void onBonusReached() {
 		int ticks = 10 * FPS - RND.nextInt(FPS); // between 9 and 10 seconds
-		level.bonus().setEdible(BONUS_VALUES[level.bonus().symbol()], ticks);
+		level.bonus().setEdible(ticks);
 		LOGGER.info("Bonus activated for %d ticks (%.2f seconds). %s", ticks, (double) ticks / FPS, level.bonus());
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tileAt(level.bonus().entity().position()));
 	}

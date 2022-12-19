@@ -69,5 +69,5 @@ public interface Bonus {
 	 * @param points earned when eating this bonus
 	 * @param ticks  time how long the bonus is edible
 	 */
-	void setEdible(int value, long ticks);
+	void setEdible(long ticks);
 }

@@ -44,13 +44,14 @@ public class StaticBonus implements Bonus {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private final int symbol;
+	private final int points;
 	private Entity entity;
 	private BonusState state;
-	private int points;
 	private long timer;
 
-	public StaticBonus(Vector2d position, int symbol) {
+	public StaticBonus(Vector2d position, int symbol, int points) {
 		this.symbol = symbol;
+		this.points = points;
 		entity = new Entity();
 		entity.setPosition(position);
 		entity.show();
@@ -89,10 +90,9 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
-	public void setEdible(int points, long ticks) {
+	public void setEdible(long ticks) {
 		state = BonusState.EDIBLE;
 		timer = ticks;
-		this.points = points;
 	}
 
 	@Override
@@ -112,12 +112,14 @@ public class StaticBonus implements Bonus {
 			}
 			if (--timer == 0) {
 				state = BonusState.INACTIVE;
+				LOGGER.info("Bonus expired: %s", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, entity.tile());
 			}
 		}
 		case EATEN -> {
 			if (--timer == 0) {
 				setInactive();
+				LOGGER.info("Bonus expired: %s", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, entity.tile());
 			}
 		}
