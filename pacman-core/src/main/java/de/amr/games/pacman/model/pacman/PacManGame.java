@@ -36,7 +36,6 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -83,7 +82,7 @@ public class PacManGame extends GameModel {
 	};
 	/*@formatter:on*/
 
-	private static final V2d BONUS_POSITION = World.halfTileRightOf(new V2i(13, 20));
+	private static final V2d BONUS_POSITION = World.halfTileRightOf(v2i(13, 20));
 
 	private static final short[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
@@ -159,7 +158,7 @@ public class PacManGame extends GameModel {
 		var world = createWorld();
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		var houseRules = createHouseRules(levelNumber);
-		level = GameLevel.of(levelNumber, mazeNumber, world, houseRules, GameLevel.BONUS_SYMBOL_FROM_DATA, data);
+		level = createLevelFromData(levelNumber, mazeNumber, world, houseRules, BONUS_SYMBOL_FROM_DATA, data);
 		bonus = new StaticBonus(BONUS_POSITION);
 	}
 

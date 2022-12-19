@@ -37,7 +37,6 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -87,23 +86,23 @@ public class MsPacManGame extends GameModel {
 	/* Intermission scene 2: "The Chase" */
 	/* 6*/ {5 /* PEAR */,       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
 	/* 7*/ {6 /* BANANA */,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 8*/ {6 /* RANDOM */,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 9*/ {6 /* RANDOM */,     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
+	/* 8*/ {7 /* RANDOM */,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 9*/ {7 /* RANDOM */,     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
 	/* Intermission scene 3: "Junior" */
-	/*10*/ {6 /* RANDOM */,     100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
-	/*11*/ {6 /* RANDOM */,     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
-	/*12*/ {6 /* RANDOM */,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/*13*/ {6 /* RANDOM */,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*10*/ {7 /* RANDOM */,     100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
+	/*11*/ {7 /* RANDOM */,     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
+	/*12*/ {7 /* RANDOM */,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*13*/ {7 /* RANDOM */,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
 	/* Intermission scene 3: "Junior" */
-	/*14*/ {6 /* RANDOM */,     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
-	/*15*/ {6 /* RANDOM */,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*16*/ {6 /* RANDOM */,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*17*/ {6 /* RANDOM */,     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
+	/*14*/ {7 /* RANDOM */,     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
+	/*15*/ {7 /* RANDOM */,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*16*/ {7 /* RANDOM */,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*17*/ {7 /* RANDOM */,     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
 	/* Intermission scene 3: "Junior" */
-	/*18*/ {6 /* RANDOM */,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*19*/ {6 /* RANDOM */,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*20*/ {6 /* RANDOM */,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*21*/ {6 /* RANDOM */,      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*18*/ {7 /* RANDOM */,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*19*/ {7 /* RANDOM */,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*20*/ {7 /* RANDOM */,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*21*/ {7 /* RANDOM */,      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	/*@formatter:on*/
 	};
 
@@ -321,11 +320,11 @@ public class MsPacManGame extends GameModel {
 		checkLevelNumber(levelNumber);
 		int mapNumber = mapNumber(levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
-		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(7) : GameLevel.BONUS_SYMBOL_FROM_DATA;
+		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(BONUS_VALUES.length) : BONUS_SYMBOL_FROM_DATA;
 		var world = createWorld(mapNumber);
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		var houseRules = createHouseRules(levelNumber);
-		level = GameLevel.of(levelNumber, mazeNumber, world, houseRules, bonusSymbol, data);
+		level = createLevelFromData(levelNumber, mazeNumber, world, houseRules, bonusSymbol, data);
 		bonus = new MovingBonus();
 	}
 

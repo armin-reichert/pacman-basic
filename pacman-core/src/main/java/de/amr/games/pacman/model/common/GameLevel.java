@@ -63,37 +63,6 @@ public record GameLevel(
 	int ghostFrightenedSeconds,
 	/** Number of maze flashes at end of current level. */
 	int numFlashes)
+//@formatter:on
 {
-	//@formatter:on
-	/**
-	 * @param levelNumber level number (1, 2, ...)
-	 * @param mazeNumber  maze number (1, 2, ...)
-	 * @param world       world used in this level
-	 * @param symbol      if value <code>!= -1</code>, overrides the value in the data array
-	 * @param data        array with level data
-	 */
-	public static GameLevel of(int levelNumber, int mazeNumber, World world, GhostHouseRules houseRules, int symbol,
-			byte[] data) {
-		int bonusSymbol = symbol == BONUS_SYMBOL_FROM_DATA ? (int) data[0] : symbol;
-		float playerSpeed = percentage(data[1]);
-		float ghostSpeed = percentage(data[2]);
-		float ghostSpeedTunnel = percentage(data[3]);
-		int elroy1DotsLeft = data[4];
-		float elroy1Speed = percentage(data[5]);
-		int elroy2DotsLeft = data[6];
-		float elroy2Speed = percentage(data[7]);
-		float playerSpeedPowered = percentage(data[8]);
-		float ghostSpeedFrightened = percentage(data[9]);
-		int ghostFrightenedSeconds = data[10];
-		int numFlashes = data[11];
-		return new GameLevel(levelNumber, mazeNumber, world, houseRules, bonusSymbol, playerSpeed, ghostSpeed,
-				ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered,
-				ghostSpeedFrightened, ghostFrightenedSeconds, numFlashes);
-	}
-
-	public static final int BONUS_SYMBOL_FROM_DATA = -1;
-
-	private static float percentage(int value) {
-		return value / 100f;
-	}
 }

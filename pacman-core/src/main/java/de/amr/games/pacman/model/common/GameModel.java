@@ -54,6 +54,7 @@ import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -96,6 +97,37 @@ public abstract class GameModel {
 	public static final short PAC_POWER_FADING_TICKS = 2 * FPS; // unsure
 	public static final float GHOST_SPEED_INSIDE_HOUSE = 0.5f; // unsure
 	public static final float GHOST_SPEED_RETURNING = 2.0f; // unsure
+	public static final int BONUS_SYMBOL_FROM_DATA = -1;
+
+	/**
+	 * @param levelNumber level number (1, 2, ...)
+	 * @param mazeNumber  maze number (1, 2, ...)
+	 * @param world       world used in this level
+	 * @param symbol      if value <code>!= -1</code>, overrides the value in the data array
+	 * @param data        array with level data
+	 */
+	public static GameLevel createLevelFromData(int levelNumber, int mazeNumber, World world, GhostHouseRules houseRules,
+			int symbol, byte[] data) {
+		int bonusSymbol = symbol == BONUS_SYMBOL_FROM_DATA ? (int) data[0] : symbol;
+		float playerSpeed = percentage(data[1]);
+		float ghostSpeed = percentage(data[2]);
+		float ghostSpeedTunnel = percentage(data[3]);
+		int elroy1DotsLeft = data[4];
+		float elroy1Speed = percentage(data[5]);
+		int elroy2DotsLeft = data[6];
+		float elroy2Speed = percentage(data[7]);
+		float playerSpeedPowered = percentage(data[8]);
+		float ghostSpeedFrightened = percentage(data[9]);
+		int ghostFrightenedSeconds = data[10];
+		int numFlashes = data[11];
+		return new GameLevel(levelNumber, mazeNumber, world, houseRules, bonusSymbol, playerSpeed, ghostSpeed,
+				ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered,
+				ghostSpeedFrightened, ghostFrightenedSeconds, numFlashes);
+	}
+
+	private static float percentage(int value) {
+		return value / 100f;
+	}
 
 	protected GameLevel level;
 	protected final Pac pac;
