@@ -97,7 +97,6 @@ public abstract class GameModel {
 	public static final short PAC_POWER_FADING_TICKS = 2 * FPS; // unsure
 	public static final float GHOST_SPEED_INSIDE_HOUSE = 0.5f; // unsure
 	public static final float GHOST_SPEED_RETURNING = 2.0f; // unsure
-	public static final int BONUS_SYMBOL_FROM_DATA = -1;
 
 	/**
 	 * @param levelNumber level number (1, 2, ...)
@@ -106,9 +105,8 @@ public abstract class GameModel {
 	 * @param symbol      if value <code>!= -1</code>, overrides the value in the data array
 	 * @param data        array with level data
 	 */
-	public static GameLevel createLevelFromData(int levelNumber, int mazeNumber, World world, GhostHouseRules houseRules,
-			int symbol, byte[] data) {
-		int bonusSymbol = symbol == BONUS_SYMBOL_FROM_DATA ? (int) data[0] : symbol;
+	public static GameLevel createLevelFromData(int levelNumber, int mazeNumber, World world, Bonus bonus,
+			GhostHouseRules houseRules, byte[] data) {
 		float playerSpeed = percentage(data[1]);
 		float ghostSpeed = percentage(data[2]);
 		float ghostSpeedTunnel = percentage(data[3]);
@@ -120,9 +118,9 @@ public abstract class GameModel {
 		float ghostSpeedFrightened = percentage(data[9]);
 		int ghostFrightenedSeconds = data[10];
 		int numFlashes = data[11];
-		return new GameLevel(levelNumber, mazeNumber, world, houseRules, bonusSymbol, playerSpeed, ghostSpeed,
-				ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered,
-				ghostSpeedFrightened, ghostFrightenedSeconds, numFlashes);
+		return new GameLevel(levelNumber, mazeNumber, world, bonus, houseRules, playerSpeed, ghostSpeed, ghostSpeedTunnel,
+				elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered, ghostSpeedFrightened,
+				ghostFrightenedSeconds, numFlashes);
 	}
 
 	private static float percentage(int value) {
@@ -270,7 +268,7 @@ public abstract class GameModel {
 		gameScore().setLevelNumber(levelNumber);
 		if (levelNumber == 1) {
 			levelCounter().clear();
-			levelCounter().addSymbol(level().bonusSymbol());
+			levelCounter().addSymbol(level().bonus().symbol());
 		}
 	}
 
@@ -278,13 +276,13 @@ public abstract class GameModel {
 		setLevel(levelNumber);
 		getReadyToRumble();
 		guys().forEach(Entity::hide);
-		levelCounter.addSymbol(level.bonusSymbol());
+		levelCounter.addSymbol(level.bonus().symbol());
 		level.houseRules().resetPrivateGhostDotCounters();
 	}
 
 	public void endLevel() {
 		huntingTimer.stop();
-		bonus().setInactive();
+		level.bonus().setInactive();
 		pac.rest(Integer.MAX_VALUE);
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
@@ -375,7 +373,7 @@ public abstract class GameModel {
 			ghost.enterStateLocked();
 		});
 		guys().forEach(Creature::show);
-		bonus().setInactive();
+		level.bonus().setInactive();
 		pacPowerTimer.reset(0);
 		energizerPulse.reset();
 	}
@@ -534,8 +532,6 @@ public abstract class GameModel {
 
 	// Bonus stuff
 
-	public abstract Bonus bonus();
-
 	protected abstract void onBonusReached();
 
 	// Game logic
@@ -544,7 +540,7 @@ public abstract class GameModel {
 		pac.update(this);
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
-		bonus().update(this);
+		level.bonus().update(this);
 		advanceHunting();
 		pacPowerTimer.advance();
 		energizerPulse.animate();

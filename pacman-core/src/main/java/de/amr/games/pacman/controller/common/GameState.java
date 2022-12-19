@@ -380,7 +380,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(4);
 			timer.start();
-			game.bonus().setInactive();
+			game.level().bonus().setInactive();
 			gc.sounds().stopAll();
 		}
 

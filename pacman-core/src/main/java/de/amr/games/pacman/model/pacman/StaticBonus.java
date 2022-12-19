@@ -43,13 +43,14 @@ public class StaticBonus implements Bonus {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
+	private final int symbol;
 	private Entity entity;
 	private BonusState state;
-	private int symbol;
 	private int points;
 	private long timer;
 
-	public StaticBonus(V2d position) {
+	public StaticBonus(V2d position, int symbol) {
+		this.symbol = symbol;
 		entity = new Entity();
 		entity.setPosition(position);
 		entity.show();
@@ -88,10 +89,9 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
-	public void setEdible(int symbol, int points, long ticks) {
+	public void setEdible(int points, long ticks) {
 		state = BonusState.EDIBLE;
 		timer = ticks;
-		this.symbol = symbol;
 		this.points = points;
 	}
 

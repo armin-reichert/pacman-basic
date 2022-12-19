@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -37,10 +38,10 @@ public record GameLevel(
 	int mazeNumber,
 	/** World used in this level. */
 	World world,
+	/** Bonus used in this lebvel */
+	Bonus bonus,
 	/** Ghost house rules for this level */
 	GhostHouseRules houseRules,
-	/** Bonus symbol (index) for current level. */
-	int bonusSymbol,
 	/** Relative player speed at current level. */
 	float playerSpeed,
 	/** Relative ghost speed at current level. */

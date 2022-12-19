@@ -51,15 +51,17 @@ public class MovingBonus extends Creature implements Bonus {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private BonusState state;
-	private int symbol;
+	private final int symbol;
 	private int points;
 	private long timer;
+	private BonusState state;
 	private final SingleEntityAnimation<Integer> jumpAnimation;
 	private final FollowRoute steering = new FollowRoute();
 
-	public MovingBonus() {
+	public MovingBonus(int symbol) {
 		super("MovingBonus");
+		this.symbol = symbol;
+		canTeleport = false;
 		jumpAnimation = new SingleEntityAnimation<>(2, -2);
 		jumpAnimation.setFrameDuration(10);
 		jumpAnimation.repeatForever();
@@ -107,12 +109,10 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void setEdible(int symbol, int points, long ticks) {
-		this.symbol = symbol;
+	public void setEdible(int points, long ticks) {
 		this.points = points;
 		state = BonusState.EDIBLE;
 		timer = ticks;
-		canTeleport = false;
 		visible = true;
 		jumpAnimation.restart();
 		setAbsSpeed(0.5); // how fast in the original game?

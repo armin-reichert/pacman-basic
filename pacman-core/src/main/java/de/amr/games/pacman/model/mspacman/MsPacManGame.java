@@ -298,8 +298,6 @@ public class MsPacManGame extends GameModel {
 		return levelNumber < 14 ? mazeNumber(levelNumber) : mazeNumber(levelNumber) - 2;
 	}
 
-	private MovingBonus bonus;
-
 	@Override
 	protected Pac createPac() {
 		return new Pac("Ms. Pac-Man");
@@ -318,24 +316,19 @@ public class MsPacManGame extends GameModel {
 	@Override
 	protected void createLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
+		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		int mapNumber = mapNumber(levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
-		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(BONUS_VALUES.length) : BONUS_SYMBOL_FROM_DATA;
+		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(BONUS_VALUES.length) : data[0];
 		var world = createWorld(mapNumber);
-		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+		var bonus = new MovingBonus(bonusSymbol);
 		var houseRules = createHouseRules(levelNumber);
-		level = createLevelFromData(levelNumber, mazeNumber, world, houseRules, bonusSymbol, data);
-		bonus = new MovingBonus();
+		level = createLevelFromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
 	}
 
 	@Override
 	public GameVariant variant() {
 		return GameVariant.MS_PACMAN;
-	}
-
-	@Override
-	public MovingBonus bonus() {
-		return bonus;
 	}
 
 	@Override
@@ -354,11 +347,12 @@ public class MsPacManGame extends GameModel {
 			route.add(np(houseEntry));
 			route.add(orientation == Direction.RIGHT ? np(exitPortal.rightTunnelEnd()) : np(exitPortal.leftTunnelEnd()));
 			LOGGER.trace("Bonus route: %s, orientation: %s", route, orientation);
-			bonus.setRoute(route);
-			bonus.placeAtTile(start.tile(), 0, 0);
-			bonus.setMoveAndWishDir(orientation);
-			bonus.setEdible(level.bonusSymbol(), BONUS_VALUES[level.bonusSymbol()], TickTimer.INDEFINITE);
-			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.tile());
+			MovingBonus movingBonus = (MovingBonus) level.bonus();
+			movingBonus.setRoute(route);
+			movingBonus.placeAtTile(start.tile(), 0, 0);
+			movingBonus.setMoveAndWishDir(orientation);
+			movingBonus.setEdible(BONUS_VALUES[level.bonus().symbol()], TickTimer.INDEFINITE);
+			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 		}
 	}
 }

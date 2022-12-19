@@ -134,8 +134,6 @@ public class PacManGame extends GameModel {
 		return new ArcadeWorld(MAP);
 	}
 
-	private StaticBonus bonus;
-
 	@Override
 	protected Pac createPac() {
 		return new Pac("Pac-Man");
@@ -154,12 +152,12 @@ public class PacManGame extends GameModel {
 	@Override
 	protected void createLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
+		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		int mazeNumber = 1;
 		var world = createWorld();
-		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+		var bonus = new StaticBonus(BONUS_POSITION, data[0]);
 		var houseRules = createHouseRules(levelNumber);
-		level = createLevelFromData(levelNumber, mazeNumber, world, houseRules, BONUS_SYMBOL_FROM_DATA, data);
-		bonus = new StaticBonus(BONUS_POSITION);
+		level = createLevelFromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
 	}
 
 	@Override
@@ -176,15 +174,10 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public StaticBonus bonus() {
-		return bonus;
-	}
-
-	@Override
 	protected void onBonusReached() {
 		int ticks = 10 * FPS - RND.nextInt(FPS); // between 9 and 10 seconds
-		bonus.setEdible(level.bonusSymbol(), BONUS_VALUES[level.bonusSymbol()], ticks);
-		LOGGER.info("Bonus activated for %d ticks (%.2f seconds). %s", ticks, (double) ticks / FPS, bonus);
-		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tileAt(bonus.entity().position()));
+		level.bonus().setEdible(BONUS_VALUES[level.bonus().symbol()], ticks);
+		LOGGER.info("Bonus activated for %d ticks (%.2f seconds). %s", ticks, (double) ticks / FPS, level.bonus());
+		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tileAt(level.bonus().entity().position()));
 	}
 }
