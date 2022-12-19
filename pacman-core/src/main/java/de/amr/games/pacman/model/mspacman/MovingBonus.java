@@ -52,7 +52,7 @@ public class MovingBonus extends Creature implements Bonus {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private BonusState state;
-	private int bonusID;
+	private int symbol;
 	private int points;
 	private long timer;
 	private final SingleEntityAnimation<Integer> jumpAnimation;
@@ -78,7 +78,7 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public String toString() {
-		return "[MovingBonus state=%s symbol=%d value=%d timer=%d creature=%s]".formatted(state, bonusID, points, timer,
+		return "[MovingBonus state=%s symbol=%d value=%d timer=%d creature=%s]".formatted(state, symbol, points, timer,
 				super.toString());
 	}
 
@@ -88,8 +88,8 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public int id() {
-		return bonusID;
+	public int symbol() {
+		return symbol;
 	}
 
 	@Override
@@ -107,8 +107,8 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void setEdible(int bonusID, int points, long ticks) {
-		this.bonusID = bonusID;
+	public void setEdible(int symbol, int points, long ticks) {
+		this.symbol = symbol;
 		this.points = points;
 		state = BonusState.EDIBLE;
 		timer = ticks;

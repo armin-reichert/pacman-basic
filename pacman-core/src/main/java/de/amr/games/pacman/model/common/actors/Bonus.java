@@ -37,9 +37,9 @@ public interface Bonus {
 	Entity entity();
 
 	/**
-	 * @return the number identifying this bonus.
+	 * @return the symbol of this bonus.
 	 */
-	int id();
+	int symbol();
 
 	/**
 	 * @return points earned when eating this bonus
