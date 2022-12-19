@@ -242,7 +242,8 @@ public abstract class GameModel {
 		}
 	}
 
-	public void startLevel() {
+	public void startLevel(int levelNumber) {
+		setLevel(levelNumber);
 		getReadyToRumble();
 		guys().forEach(Entity::hide);
 		levelCounter.addSymbol(level.bonusSymbol());
