@@ -24,7 +24,8 @@ SOFTWARE.
 package de.amr.games.pacman.lib;
 
 /**
- * Immutable 2D vector with double precision. Component values are treated as equal if they differ less than 1e-6.
+ * Immutable 2D vector with double precision. Component values are treated as equal if they differ less than
+ * {@link #EPSILON}.
  * 
  * @author Armin Reichert
  */
@@ -33,10 +34,6 @@ public record Vector2d(double x, double y) {
 	public static final Vector2d ZERO = new Vector2d(0, 0);
 
 	public static final double EPSILON = 1e-6;
-
-	public Vector2d(Vector2i v) {
-		this(v.x(), v.y());
-	}
 
 	public Vector2d plus(Vector2d v) {
 		return new Vector2d(x + v.x, y + v.y);

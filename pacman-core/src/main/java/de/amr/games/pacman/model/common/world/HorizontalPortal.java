@@ -25,7 +25,6 @@ package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.MoveResult;
@@ -75,8 +74,8 @@ public record HorizontalPortal(Vector2i leftTunnelEnd, Vector2i rightTunnelEnd) 
 
 	@Override
 	public double distance(Creature guy) {
-		var leftEndPosition = new Vector2d(leftTunnelEnd.minus(DEPTH, 0)).scaled(World.TS);
-		var rightEndPosition = new Vector2d(rightTunnelEnd.plus(DEPTH, 0)).scaled(World.TS);
+		var leftEndPosition = leftTunnelEnd.minus(DEPTH, 0).scaled(TS).toDoubleVec();
+		var rightEndPosition = rightTunnelEnd.plus(DEPTH, 0).scaled(TS).toDoubleVec();
 		var guyPos = guy.position();
 		return Math.abs(Math.min(guyPos.euclideanDistance(leftEndPosition), guyPos.euclideanDistance(rightEndPosition)));
 	}

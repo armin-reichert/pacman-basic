@@ -76,6 +76,6 @@ public record Vector2i(int x, int y) {
 	}
 
 	public Vector2d toDoubleVec() {
-		return new Vector2d(this);
+		return new Vector2d(x, y);
 	}
 }

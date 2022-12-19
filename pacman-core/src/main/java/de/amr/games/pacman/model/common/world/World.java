@@ -76,11 +76,11 @@ public interface World {
 	 * @return Position of the left-upper corner of given tile.
 	 */
 	public static Vector2d originOfTile(Vector2i tile) {
-		return new Vector2d(tile.scaled(TS));
+		return tile.scaled(TS).toDoubleVec();
 	}
 
 	public static Vector2d halfTileRightOf(Vector2i tile) {
-		return tile.scaled(TS).toDoubleVec().plus(HTS, 0);
+		return tile.scaled(TS).plus(HTS, 0).toDoubleVec();
 	}
 
 	/**

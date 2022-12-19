@@ -159,7 +159,7 @@ public class Creature extends Entity {
 		if (moveDir != dir) {
 			moveDir = dir;
 			LOGGER.trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
-			velocity = new Vector2d(moveDir.vec).scaled(velocity.length());
+			velocity = moveDir.vec.toDoubleVec().scaled(velocity.length());
 		}
 	}
 
@@ -220,7 +220,7 @@ public class Creature extends Entity {
 		if (speed < 0) {
 			throw new IllegalArgumentException("Negative speed: " + speed);
 		}
-		velocity = speed == 0 ? Vector2d.ZERO : new Vector2d(moveDir.vec).scaled(speed);
+		velocity = speed == 0 ? Vector2d.ZERO : moveDir.vec.toDoubleVec().scaled(speed);
 	}
 
 	/**
