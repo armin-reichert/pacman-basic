@@ -315,7 +315,6 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	protected void createLevel(int levelNumber) {
-		checkLevelNumber(levelNumber);
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		int mapNumber = mapNumber(levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);

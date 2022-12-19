@@ -144,7 +144,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 
 		private void enterAttractMode(GameModel game) {
-			game.resetGameAndInitLevel(1);
+			game.reset();
 			game.getReadyToRumble();
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
@@ -152,7 +152,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 
 		private void startPlaying(GameModel game) {
-			game.resetGameAndInitLevel(1);
+			game.reset();
 			game.getReadyToRumble();
 			game.guys().forEach(Creature::hide);
 			gc.sounds().play(GameSound.GAME_READY);
@@ -433,7 +433,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onExit(GameModel game) {
-			game.resetGameAndInitLevel(1);
+			game.reset();
 		}
 	},
 

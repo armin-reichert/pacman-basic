@@ -225,7 +225,6 @@ public abstract class GameModel {
 	 * @return ghost house rules used in this level
 	 */
 	protected GhostHouseRules createHouseRules(int levelNumber) {
-		checkLevelNumber(levelNumber);
 		var rules = new GhostHouseRules();
 		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 240 : 180);
 		rules.setGlobalGhostDotLimits(GhostHouseRules.NO_LIMIT, 7, 17, GhostHouseRules.NO_LIMIT);
@@ -237,15 +236,16 @@ public abstract class GameModel {
 		return rules;
 	}
 
-	public void resetGameAndInitLevel(int levelNumber) {
-		checkLevelNumber(levelNumber);
+	/**
+	 * Resets the game to the initial state and first level.
+	 */
+	public void reset() {
 		playing = false;
 		lives = INITIAL_LIVES;
 		oneLessLifeDisplayed = false;
 		gameScore.reset();
 		enableScores(true);
-		level.houseRules().resetAllDotCounters();
-		setLevel(levelNumber);
+		setLevel(1);
 	}
 
 	/** Current level. */
@@ -261,9 +261,9 @@ public abstract class GameModel {
 	public void setLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		createLevel(levelNumber);
-		level.world().assignGhostPositions(theGhosts);
 		numGhostsKilledInLevel = 0;
 		numGhostsKilledByEnergizer = 0;
+		level.world().assignGhostPositions(theGhosts);
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);
 		gameScore().setLevelNumber(levelNumber);
 		if (levelNumber == 1) {
