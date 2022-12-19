@@ -26,15 +26,15 @@ package de.amr.games.pacman.model.common.world;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.V2i.v2i;
+import static de.amr.games.pacman.lib.Vector2i.v2i;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.U;
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2d;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
@@ -44,42 +44,42 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class ArcadeGhostHouse implements GhostHouse {
 
-	public static final V2i SIZE_TILES = v2i(7, 4);
-	public static final V2i TOP_LEFT_TILE = v2i(10, 15);
-	public static final V2i DOOR_TILE_LEFT = v2i(13, 15);
-	public static final V2i DOOR_TILE_RIGHT = v2i(14, 15);
-	public static final V2d DOOR_CENTER = World.halfTileRightOf(DOOR_TILE_LEFT).plus(0, HTS);
-	public static final V2i ENTRY_TILE = v2i(13, 14);
-	public static final V2i SEAT_TILE_LEFT = v2i(11, 17);
-	public static final V2i SEAT_TILE_CENTER = v2i(13, 17);
-	public static final V2i SEAT_TILE_RIGHT = v2i(15, 17);
+	public static final Vector2i SIZE_TILES = v2i(7, 4);
+	public static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
+	public static final Vector2i DOOR_TILE_LEFT = v2i(13, 15);
+	public static final Vector2i DOOR_TILE_RIGHT = v2i(14, 15);
+	public static final Vector2d DOOR_CENTER = World.halfTileRightOf(DOOR_TILE_LEFT).plus(0, HTS);
+	public static final Vector2i ENTRY_TILE = v2i(13, 14);
+	public static final Vector2i SEAT_TILE_LEFT = v2i(11, 17);
+	public static final Vector2i SEAT_TILE_CENTER = v2i(13, 17);
+	public static final Vector2i SEAT_TILE_RIGHT = v2i(15, 17);
 
 	@Override
-	public V2i size() {
+	public Vector2i size() {
 		return SIZE_TILES;
 	}
 
 	@Override
-	public V2i topLeftTile() {
+	public Vector2i topLeftTile() {
 		return TOP_LEFT_TILE;
 	}
 
 	@Override
-	public Stream<V2i> doorTiles() {
+	public Stream<Vector2i> doorTiles() {
 		return Stream.of(DOOR_TILE_LEFT, DOOR_TILE_RIGHT);
 	}
 
 	@Override
-	public boolean isDoorTile(V2i tile) {
+	public boolean isDoorTile(Vector2i tile) {
 		return tile.equals(DOOR_TILE_LEFT) || tile.equals(DOOR_TILE_RIGHT);
 	}
 
 	@Override
-	public V2i entryTile() {
+	public Vector2i entryTile() {
 		return ENTRY_TILE;
 	}
 
-	public V2d middleSeatCenterPosition() {
+	public Vector2d middleSeatCenterPosition() {
 		return World.halfTileRightOf(SEAT_TILE_CENTER).plus(0, HTS);
 	}
 
@@ -109,7 +109,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public boolean leadGuyInside(Creature guy, V2d targetPosition) {
+	public boolean leadGuyInside(Creature guy, Vector2d targetPosition) {
 		if (atHouseEntry(guy)) {
 			guy.setMoveAndWishDir(Direction.DOWN);
 		}

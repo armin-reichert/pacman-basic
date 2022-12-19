@@ -29,8 +29,8 @@ import static de.amr.games.pacman.model.common.world.World.tileAt;
 
 import java.util.Objects;
 
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2d;
+import de.amr.games.pacman.lib.Vector2i;
 
 /**
  * Base class for all "entities" that are part of the game.
@@ -40,15 +40,15 @@ import de.amr.games.pacman.lib.V2i;
 public class Entity {
 
 	protected boolean visible;
-	protected V2d position;
-	protected V2d velocity;
-	protected V2d acceleration;
+	protected Vector2d position;
+	protected Vector2d velocity;
+	protected Vector2d acceleration;
 
 	public Entity() {
 		visible = false;
-		position = V2d.ZERO;
-		velocity = V2d.ZERO;
-		acceleration = V2d.ZERO;
+		position = Vector2d.ZERO;
+		velocity = Vector2d.ZERO;
+		acceleration = Vector2d.ZERO;
 	}
 
 	public boolean isVisible() {
@@ -67,40 +67,40 @@ public class Entity {
 		visible = false;
 	}
 
-	public V2d position() {
+	public Vector2d position() {
 		return position;
 	}
 
 	public void setPosition(double x, double y) {
-		position = new V2d(x, y);
+		position = new Vector2d(x, y);
 	}
 
-	public void setPosition(V2d position) {
+	public void setPosition(Vector2d position) {
 		this.position = Objects.requireNonNull(position, "Position of entity must not be null");
 	}
 
-	public V2d velocity() {
+	public Vector2d velocity() {
 		return velocity;
 	}
 
-	public void setVelocity(V2d velocity) {
+	public void setVelocity(Vector2d velocity) {
 		this.velocity = Objects.requireNonNull(velocity, "Velocity of entity must not be null");
 	}
 
 	public void setVelocity(double vx, double vy) {
-		velocity = new V2d(vx, vy);
+		velocity = new Vector2d(vx, vy);
 	}
 
-	public V2d acceleration() {
+	public Vector2d acceleration() {
 		return acceleration;
 	}
 
-	public void setAcceleration(V2d acceleration) {
+	public void setAcceleration(Vector2d acceleration) {
 		this.acceleration = Objects.requireNonNull(acceleration, "Acceleration of entity must not be null");
 	}
 
 	public void setAcceleration(double ax, double ay) {
-		acceleration = new V2d(ax, ay);
+		acceleration = new Vector2d(ax, ay);
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class Entity {
 	}
 
 	/** Tile containing the center of the "bounding box" */
-	public V2i tile() {
+	public Vector2i tile() {
 		return tileAt(position.x() + HTS, position.y() + HTS);
 	}
 
@@ -122,12 +122,12 @@ public class Entity {
 	}
 
 	/** Center of "bounding box" (position stores upper left corner of bounding box). */
-	public V2d center() {
+	public Vector2d center() {
 		return position.plus(HTS, HTS);
 	}
 
 	/** Offset: (0, 0) if centered, range: [-4, +4) */
-	public V2d offset() {
+	public Vector2d offset() {
 		return position.minus(originOfTile(tile()));
 	}
 }

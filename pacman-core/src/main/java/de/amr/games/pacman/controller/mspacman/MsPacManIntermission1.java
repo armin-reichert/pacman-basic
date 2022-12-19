@@ -32,7 +32,7 @@ import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.Intermissio
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -219,11 +219,11 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 					ctx.pinky.animate();
 					if (ctx.inky.position().y() > ctx.middleY) {
 						ctx.inky.setPosition(ctx.inky.position().x(), ctx.middleY);
-						ctx.inky.setAcceleration(V2d.ZERO);
+						ctx.inky.setAcceleration(Vector2d.ZERO);
 					}
 					if (ctx.pinky.position().y() > ctx.middleY) {
 						ctx.pinky.setPosition(ctx.pinky.position().x(), ctx.middleY);
-						ctx.pinky.setAcceleration(V2d.ZERO);
+						ctx.pinky.setAcceleration(Vector2d.ZERO);
 					}
 				}
 			}

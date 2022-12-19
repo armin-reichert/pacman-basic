@@ -24,7 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.MoveResult;
 
@@ -35,7 +35,7 @@ import de.amr.games.pacman.model.common.actors.MoveResult;
  */
 public interface Portal {
 
-	boolean contains(V2i tile);
+	boolean contains(Vector2i tile);
 
 	MoveResult teleport(Creature guy);
 

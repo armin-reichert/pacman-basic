@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
-import static de.amr.games.pacman.lib.V2i.v2i;
+import static de.amr.games.pacman.lib.Vector2i.v2i;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
@@ -34,8 +34,8 @@ import java.util.List;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2d;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -82,7 +82,7 @@ public class PacManGame extends GameModel {
 	};
 	/*@formatter:on*/
 
-	private static final V2d BONUS_POSITION = World.halfTileRightOf(v2i(13, 20));
+	private static final Vector2d BONUS_POSITION = World.halfTileRightOf(v2i(13, 20));
 
 	private static final short[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
@@ -128,7 +128,7 @@ public class PacManGame extends GameModel {
 	};
 
 	// Tiles where chasing ghosts cannot move upwards
-	public static final List<V2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
+	public static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
 	public static ArcadeWorld createWorld() {
 		return new ArcadeWorld(MAP);

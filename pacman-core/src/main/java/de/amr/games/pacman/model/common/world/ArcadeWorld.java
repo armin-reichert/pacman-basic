@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.lib.V2i.v2i;
+import static de.amr.games.pacman.lib.Vector2i.v2i;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
@@ -32,8 +32,8 @@ import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2d;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
@@ -52,19 +52,19 @@ public class ArcadeWorld extends MapBasedWorld {
 	public static final int TILES_Y = 36;
 
 	/** Size of Arcade game world in pixels (28x8=224, 36x8=288). */
-	public static final V2i SIZE_PX = v2i(TILES_X * TS, TILES_Y * TS);
+	public static final Vector2i SIZE_PX = v2i(TILES_X * TS, TILES_Y * TS);
 
 	/** Scatter target north-west corner. */
-	public static final V2i SCATTER_TILE_NW = new V2i(2, 0);
+	public static final Vector2i SCATTER_TILE_NW = new Vector2i(2, 0);
 
 	/** Scatter target north-east corner. */
-	public static final V2i SCATTER_TILE_NE = new V2i(25, 0);
+	public static final Vector2i SCATTER_TILE_NE = new Vector2i(25, 0);
 
 	/** Scatter target south-east corner. */
-	public static final V2i SCATTER_TILE_SE = new V2i(27, 34);
+	public static final Vector2i SCATTER_TILE_SE = new Vector2i(27, 34);
 
 	/** Scatter target south-west corner. */
-	public static final V2i SCATTER_TILE_SW = new V2i(0, 34);
+	public static final Vector2i SCATTER_TILE_SW = new Vector2i(0, 34);
 
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
@@ -94,8 +94,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public V2d pacStartPosition() {
-		return new V2d(13 * TS + HTS, 26 * TS);
+	public Vector2d pacStartPosition() {
+		return new Vector2d(13 * TS + HTS, 26 * TS);
 	}
 
 	@Override

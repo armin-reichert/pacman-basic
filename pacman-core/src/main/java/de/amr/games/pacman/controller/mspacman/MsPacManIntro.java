@@ -25,7 +25,7 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.V2i.v2i;
+import static de.amr.games.pacman.lib.Vector2i.v2i;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.t;
 
@@ -35,7 +35,7 @@ import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntro.IntroData;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntro.IntroState;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
@@ -69,10 +69,10 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 	}
 
 	public static class IntroData extends SceneControllerContext {
-		public final V2i redGhostEndPosition = v2i(t(8), t(11));
-		public final V2i turningPoint = v2i(t(6), t(20)).plus(0, HTS);
+		public final Vector2i redGhostEndPosition = v2i(t(8), t(11));
+		public final Vector2i turningPoint = v2i(t(6), t(20)).plus(0, HTS);
 		public final int msPacManStopX = t(15);
-		public final V2i titlePosition = v2i(t(10), t(8));
+		public final Vector2i titlePosition = v2i(t(10), t(8));
 		public final EntityAnimation blinking = SingleEntityAnimation.pulse(30);
 		public final TickTimer lightsTimer = new TickTimer("lights-timer", GameModel.FPS);
 		public final double actorSpeed = 1.1f;

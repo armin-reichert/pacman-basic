@@ -25,8 +25,8 @@ package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2d;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.MoveResult;
 
@@ -38,7 +38,7 @@ import de.amr.games.pacman.model.common.actors.MoveResult;
  * 
  * @author Armin Reichert
  */
-public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements Portal {
+public record HorizontalPortal(Vector2i leftTunnelEnd, Vector2i rightTunnelEnd) implements Portal {
 
 	private static final int DEPTH = 2;
 
@@ -61,7 +61,7 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 	}
 
 	@Override
-	public boolean contains(V2i tile) {
+	public boolean contains(Vector2i tile) {
 		for (int i = 1; i <= DEPTH; ++i) {
 			if (tile.equals(leftTunnelEnd.minus(i, 0))) {
 				return true;
@@ -75,8 +75,8 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 
 	@Override
 	public double distance(Creature guy) {
-		var leftEndPosition = new V2d(leftTunnelEnd.minus(DEPTH, 0)).scaled(World.TS);
-		var rightEndPosition = new V2d(rightTunnelEnd.plus(DEPTH, 0)).scaled(World.TS);
+		var leftEndPosition = new Vector2d(leftTunnelEnd.minus(DEPTH, 0)).scaled(World.TS);
+		var rightEndPosition = new Vector2d(rightTunnelEnd.plus(DEPTH, 0)).scaled(World.TS);
 		var guyPos = guy.position();
 		return Math.abs(Math.min(guyPos.euclideanDistance(leftEndPosition), guyPos.euclideanDistance(rightEndPosition)));
 	}

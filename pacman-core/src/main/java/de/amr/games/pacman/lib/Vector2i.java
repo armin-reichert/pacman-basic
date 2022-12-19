@@ -30,43 +30,43 @@ import java.util.stream.Stream;
  * 
  * @author Armin Reichert
  */
-public record V2i(int x, int y) {
+public record Vector2i(int x, int y) {
 
-	public static final V2i ZERO = new V2i(0, 0);
+	public static final Vector2i ZERO = new Vector2i(0, 0);
 
-	public static V2i v2i(int x, int y) {
-		return new V2i(x, y);
+	public static Vector2i v2i(int x, int y) {
+		return new Vector2i(x, y);
 	}
 
-	public V2i scaled(int s) {
-		return new V2i(s * x, s * y);
+	public Vector2i scaled(int s) {
+		return new Vector2i(s * x, s * y);
 	}
 
-	public V2i plus(V2i v) {
-		return new V2i(x + v.x, y + v.y);
+	public Vector2i plus(Vector2i v) {
+		return new Vector2i(x + v.x, y + v.y);
 	}
 
-	public V2i plus(int dx, int dy) {
-		return new V2i(x + dx, y + dy);
+	public Vector2i plus(int dx, int dy) {
+		return new Vector2i(x + dx, y + dy);
 	}
 
-	public V2i minus(V2i v) {
-		return new V2i(x - v.x, y - v.y);
+	public Vector2i minus(Vector2i v) {
+		return new Vector2i(x - v.x, y - v.y);
 	}
 
-	public V2i minus(int dx, int dy) {
-		return new V2i(x - dx, y - dy);
+	public Vector2i minus(int dx, int dy) {
+		return new Vector2i(x - dx, y - dy);
 	}
 
-	public double euclideanDistance(V2i v) {
+	public double euclideanDistance(Vector2i v) {
 		return Math.hypot(x - v.x, y - v.y);
 	}
 
-	public double manhattanDistance(V2i v) {
+	public double manhattanDistance(Vector2i v) {
 		return Math.abs(x - v.x) + Math.abs(y - v.y);
 	}
 
-	public Stream<V2i> neighbors() {
+	public Stream<Vector2i> neighbors() {
 		return Stream.of(Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT).map(dir -> this.plus(dir.vec));
 	}
 
@@ -75,7 +75,7 @@ public record V2i(int x, int y) {
 		return String.format("(%2d,%2d)", x, y);
 	}
 
-	public V2d toDoubleVec() {
-		return new V2d(this);
+	public Vector2d toDoubleVec() {
+		return new Vector2d(this);
 	}
 }

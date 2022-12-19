@@ -28,11 +28,52 @@ package de.amr.games.pacman.lib;
  * 
  * @author Armin Reichert
  */
-public record V2d(double x, double y) {
+public record Vector2d(double x, double y) {
 
-	public static final V2d ZERO = new V2d(0, 0);
+	public static final Vector2d ZERO = new Vector2d(0, 0);
 
 	public static final double EPSILON = 1e-6;
+
+	public Vector2d(Vector2i v) {
+		this(v.x(), v.y());
+	}
+
+	public Vector2d plus(Vector2d v) {
+		return new Vector2d(x + v.x, y + v.y);
+	}
+
+	public Vector2d plus(double vx, double vy) {
+		return new Vector2d(x + vx, y + vy);
+	}
+
+	public Vector2d minus(Vector2d v) {
+		return new Vector2d(x - v.x, y - v.y);
+	}
+
+	public Vector2d minus(double vx, double vy) {
+		return new Vector2d(x - vx, y - vy);
+	}
+
+	public Vector2d scaled(double s) {
+		return new Vector2d(s * x, s * y);
+	}
+
+	public Vector2d inverse() {
+		return new Vector2d(-x, -y);
+	}
+
+	public double length() {
+		return Math.hypot(x, y);
+	}
+
+	public Vector2d normalized() {
+		double len = length();
+		return new Vector2d(x / len, y / len);
+	}
+
+	public double euclideanDistance(Vector2d v) {
+		return this.minus(v).length();
+	}
 
 	@Override
 	public boolean equals(Object other) {
@@ -42,7 +83,7 @@ public record V2d(double x, double y) {
 			return false;
 		if (getClass() != other.getClass())
 			return false;
-		V2d v = (V2d) other;
+		Vector2d v = (Vector2d) other;
 		return Math.abs(v.x - x) <= EPSILON && Math.abs(v.y - y) <= EPSILON;
 	}
 
@@ -51,44 +92,4 @@ public record V2d(double x, double y) {
 		return String.format("(%.2f,%.2f)", x, y);
 	}
 
-	public V2d(V2i v) {
-		this(v.x(), v.y());
-	}
-
-	public V2d plus(V2d v) {
-		return new V2d(x + v.x, y + v.y);
-	}
-
-	public V2d plus(double vx, double vy) {
-		return new V2d(x + vx, y + vy);
-	}
-
-	public V2d minus(V2d v) {
-		return new V2d(x - v.x, y - v.y);
-	}
-
-	public V2d minus(double vx, double vy) {
-		return new V2d(x - vx, y - vy);
-	}
-
-	public V2d scaled(double s) {
-		return new V2d(s * x, s * y);
-	}
-
-	public V2d inverse() {
-		return new V2d(-x, -y);
-	}
-
-	public double length() {
-		return Math.hypot(x, y);
-	}
-
-	public V2d normalized() {
-		double len = length();
-		return new V2d(x / len, y / len);
-	}
-
-	public double euclideanDistance(V2d v) {
-		return this.minus(v).length();
-	}
 }

@@ -31,7 +31,7 @@ import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.Intermissio
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -134,7 +134,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 
 				ctx.bag.setPosition(ctx.stork.position().plus(-14, 3));
 				ctx.bag.setVelocity(ctx.stork.velocity());
-				ctx.bag.setAcceleration(V2d.ZERO);
+				ctx.bag.setAcceleration(Vector2d.ZERO);
 				ctx.bag.show();
 				ctx.bagOpen = false;
 				ctx.numBagBounces = 0;
@@ -159,7 +159,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 						ctx.bag.setPosition(ctx.bag.position().x(), ctx.groundY);
 					} else {
 						ctx.bagOpen = true;
-						ctx.bag.setVelocity(V2d.ZERO);
+						ctx.bag.setVelocity(Vector2d.ZERO);
 						intermission.changeState(IntermissionState.DONE);
 					}
 				}

@@ -49,10 +49,10 @@ public enum Direction {
 		return dirs;
 	}
 
-	public final V2i vec;
+	public final Vector2i vec;
 
 	private Direction(int x, int y) {
-		vec = new V2i(x, y);
+		vec = new Vector2i(x, y);
 	}
 
 	public Direction opposite() {

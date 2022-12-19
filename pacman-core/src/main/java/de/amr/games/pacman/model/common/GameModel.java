@@ -45,7 +45,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -162,7 +162,7 @@ public abstract class GameModel {
 	}
 
 	// simulates the overflow bug from the original Arcade version
-	protected static V2i tilesAhead(Creature guy, int n) {
+	protected static Vector2i tilesAhead(Creature guy, int n) {
 		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
 		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
@@ -666,7 +666,7 @@ public abstract class GameModel {
 		}
 	}
 
-	private void onFoodFound(V2i tile) {
+	private void onFoodFound(Vector2i tile) {
 		level.world().removeFood(tile);
 		pac.endStarving();
 		if (memo.energizerFound) {

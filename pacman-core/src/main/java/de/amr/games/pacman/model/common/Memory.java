@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
@@ -36,7 +36,7 @@ import de.amr.games.pacman.model.common.actors.Ghost;
  */
 public class Memory {
 	public boolean lastFoodFound;
-	public Optional<V2i> foodFoundTile;
+	public Optional<Vector2i> foodFoundTile;
 	public boolean energizerFound;
 	public boolean bonusReached;
 	public boolean pacMetKiller;

@@ -47,8 +47,8 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.U;
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2d;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.lib.animation.AnimatedEntity;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
@@ -70,11 +70,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final int ID_ORANGE_GHOST = 3;
 
 	private final int id;
-	private V2d homePosition;
-	private V2d revivalPosition;
-	private V2i scatterTile;
+	private Vector2d homePosition;
+	private Vector2d revivalPosition;
+	private Vector2i scatterTile;
 	private GhostState state;
-	private Supplier<V2i> fnChasingTarget = () -> null;
+	private Supplier<Vector2i> fnChasingTarget = () -> null;
 	private EntityAnimationSet<AnimKeys> animationSet;
 	private int killedIndex;
 	private byte cruiseElroyState;
@@ -104,31 +104,31 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		killedIndex = -1;
 	}
 
-	public V2d homePosition() {
+	public Vector2d homePosition() {
 		return homePosition;
 	}
 
-	public void setHomePosition(V2d homePosition) {
+	public void setHomePosition(Vector2d homePosition) {
 		this.homePosition = homePosition;
 	}
 
-	public V2d revivalPosition() {
+	public Vector2d revivalPosition() {
 		return revivalPosition;
 	}
 
-	public void setRevivalPosition(V2d revivalPosition) {
+	public void setRevivalPosition(Vector2d revivalPosition) {
 		this.revivalPosition = revivalPosition;
 	}
 
-	public V2i scatterTile() {
+	public Vector2i scatterTile() {
 		return scatterTile;
 	}
 
-	public void setScatterTile(V2i scatterTile) {
+	public void setScatterTile(Vector2i scatterTile) {
 		this.scatterTile = scatterTile;
 	}
 
-	public void setChasingBehavior(Supplier<V2i> fnTargetTile) {
+	public void setChasingBehavior(Supplier<Vector2i> fnTargetTile) {
 		this.fnChasingTarget = Objects.requireNonNull(fnTargetTile);
 	}
 
@@ -166,7 +166,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	@Override
-	public boolean canAccessTile(V2i tile, GameModel game) {
+	public boolean canAccessTile(Vector2i tile, GameModel game) {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		var currentTile = tile();

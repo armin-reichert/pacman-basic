@@ -26,7 +26,7 @@ package de.amr.games.pacman.event;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
@@ -40,10 +40,10 @@ public class GameEvent {
 
 	public final GameModel game;
 	public final GameEventType type;
-	public final Optional<V2i> tile; // the optional tile where this event occurred
+	public final Optional<Vector2i> tile; // the optional tile where this event occurred
 	public final Optional<Ghost> ghost; // the optional ghost this event relates to
 
-	public GameEvent(GameModel game, GameEventType type, Ghost ghost, V2i tile) {
+	public GameEvent(GameModel game, GameEventType type, Ghost ghost, Vector2i tile) {
 		this.game = Objects.requireNonNull(game);
 		this.type = Objects.requireNonNull(type);
 		this.ghost = Optional.ofNullable(ghost);

@@ -26,8 +26,8 @@ package de.amr.games.pacman.model.common.world;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2d;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
@@ -35,19 +35,19 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public interface GhostHouse {
 
-	V2i topLeftTile();
+	Vector2i topLeftTile();
 
-	V2i size();
+	Vector2i size();
 
-	V2i entryTile();
+	Vector2i entryTile();
 
-	Stream<V2i> doorTiles();
+	Stream<Vector2i> doorTiles();
 
-	boolean isDoorTile(V2i tile);
+	boolean isDoorTile(Vector2i tile);
 
-	default boolean contains(V2i tile) {
-		V2i topLeft = topLeftTile();
-		V2i bottomRight = topLeft.plus(size());
+	default boolean contains(Vector2i tile) {
+		Vector2i topLeft = topLeftTile();
+		Vector2i bottomRight = topLeft.plus(size());
 		return tile.x() >= topLeft.x() && tile.x() <= bottomRight.x() && tile.y() >= topLeft.y()
 				&& tile.y() <= bottomRight.y();
 	}
@@ -56,5 +56,5 @@ public interface GhostHouse {
 
 	boolean leadGuyOutOfHouse(Creature guest);
 
-	boolean leadGuyInside(Creature guest, V2d targetPosition);
+	boolean leadGuyInside(Creature guest, Vector2d targetPosition);
 }

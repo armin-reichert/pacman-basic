@@ -24,14 +24,14 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.lib.V2i.v2i;
+import static de.amr.games.pacman.lib.Vector2i.v2i;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2i;
 
 /**
  * @author Armin Reichert
@@ -52,10 +52,10 @@ public abstract class MapBasedWorld implements World {
 		return Arrays.stream(arr).map(byte[]::clone).toArray(byte[][]::new);
 	}
 
-	protected final V2i size;
+	protected final Vector2i size;
 	protected final byte[][] map;
 	protected final List<Portal> portals;
-	protected final List<V2i> energizerTiles;
+	protected final List<Vector2i> energizerTiles;
 	protected final int totalFoodCount;
 	protected int foodRemaining;
 
@@ -79,7 +79,7 @@ public abstract class MapBasedWorld implements World {
 		return portalList;
 	}
 
-	protected byte content(V2i tile) {
+	protected byte content(Vector2i tile) {
 		return insideMap(tile) ? map[tile.y()][tile.x()] : SPACE;
 	}
 
@@ -99,39 +99,39 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	@Override
-	public boolean belongsToPortal(V2i tile) {
+	public boolean belongsToPortal(Vector2i tile) {
 		return portals.stream().anyMatch(portal -> portal.contains(tile));
 	}
 
 	@Override
-	public boolean isWall(V2i tile) {
+	public boolean isWall(Vector2i tile) {
 		return content(tile) == WALL;
 	}
 
 	@Override
-	public boolean isTunnel(V2i tile) {
+	public boolean isTunnel(Vector2i tile) {
 		return content(tile) == TUNNEL;
 	}
 
 	@Override
-	public boolean isFoodTile(V2i tile) {
+	public boolean isFoodTile(Vector2i tile) {
 		byte data = content(tile);
 		return data == PELLET || data == PELLET_EATEN || data == ENERGIZER || data == ENERGIZER_EATEN;
 	}
 
 	@Override
-	public boolean isEnergizerTile(V2i tile) {
+	public boolean isEnergizerTile(Vector2i tile) {
 		byte data = content(tile);
 		return data == ENERGIZER || data == ENERGIZER_EATEN;
 	}
 
 	@Override
-	public Stream<V2i> energizerTiles() {
+	public Stream<Vector2i> energizerTiles() {
 		return energizerTiles.stream();
 	}
 
 	@Override
-	public void removeFood(V2i tile) {
+	public void removeFood(Vector2i tile) {
 		byte data = content(tile);
 		if (data == ENERGIZER) {
 			map[tile.y()][tile.x()] = ENERGIZER_EATEN;
@@ -143,13 +143,13 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	@Override
-	public boolean containsFood(V2i tile) {
+	public boolean containsFood(Vector2i tile) {
 		byte data = content(tile);
 		return data == PELLET || data == ENERGIZER;
 	}
 
 	@Override
-	public boolean containsEatenFood(V2i tile) {
+	public boolean containsEatenFood(Vector2i tile) {
 		byte data = content(tile);
 		return data == PELLET_EATEN || data == ENERGIZER_EATEN;
 	}

@@ -32,7 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -157,25 +157,25 @@ public class Autopilot implements Steering {
 			LOGGER.trace("Detected active bonus");
 			game.pac().setTargetTile(World.tileAt(game.level().bonus().entity().position()));
 		} else {
-			V2i foodTile = findTileFarestFromGhosts(game, findNearestFoodTiles(game));
+			Vector2i foodTile = findTileFarestFromGhosts(game, findNearestFoodTiles(game));
 			game.pac().setTargetTile(foodTile);
 		}
 		game.pac().navigateTowardsTarget(game);
 	}
 
 	private Ghost findHuntingGhostAhead(GameModel game) {
-		V2i pacManTile = game.pac().tile();
+		Vector2i pacManTile = game.pac().tile();
 		boolean energizerFound = false;
 		for (int i = 1; i <= AutopilotData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
-			V2i ahead = pacManTile.plus(game.pac().moveDir().vec.scaled(i));
+			Vector2i ahead = pacManTile.plus(game.pac().moveDir().vec.scaled(i));
 			if (!game.pac().canAccessTile(ahead, game)) {
 				break;
 			}
 			if (game.level().world().isEnergizerTile(ahead) && !game.level().world().containsEatenFood(ahead)) {
 				energizerFound = true;
 			}
-			V2i aheadLeft = ahead.plus(game.pac().moveDir().succAntiClockwise().vec);
-			V2i aheadRight = ahead.plus(game.pac().moveDir().succClockwise().vec);
+			Vector2i aheadLeft = ahead.plus(game.pac().moveDir().succAntiClockwise().vec);
+			Vector2i aheadRight = ahead.plus(game.pac().moveDir().succClockwise().vec);
 			for (Ghost ghost : game.ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
 					if (energizerFound) {
@@ -190,9 +190,9 @@ public class Autopilot implements Steering {
 	}
 
 	private Ghost findHuntingGhostBehind(GameModel game) {
-		V2i pacManTile = game.pac().tile();
+		Vector2i pacManTile = game.pac().tile();
 		for (int i = 1; i <= AutopilotData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
-			V2i behind = pacManTile.plus(game.pac().moveDir().opposite().vec.scaled(i));
+			Vector2i behind = pacManTile.plus(game.pac().moveDir().opposite().vec.scaled(i));
 			if (!game.pac().canAccessTile(behind, game)) {
 				break;
 			}
@@ -206,19 +206,19 @@ public class Autopilot implements Steering {
 	}
 
 	private Direction findEscapeDirectionExcluding(GameModel game, Collection<Direction> forbidden) {
-		V2i pacManTile = game.pac().tile();
+		Vector2i pacManTile = game.pac().tile();
 		List<Direction> escapes = new ArrayList<>(4);
 		for (Direction dir : Direction.shuffled()) {
 			if (forbidden.contains(dir)) {
 				continue;
 			}
-			V2i neighbor = pacManTile.plus(dir.vec);
+			Vector2i neighbor = pacManTile.plus(dir.vec);
 			if (game.pac().canAccessTile(neighbor, game)) {
 				escapes.add(dir);
 			}
 		}
 		for (Direction escape : escapes) {
-			V2i escapeTile = pacManTile.plus(escape.vec);
+			Vector2i escapeTile = pacManTile.plus(escape.vec);
 			if (game.level().world().isTunnel(escapeTile)) {
 				return escape;
 			}
@@ -226,14 +226,14 @@ public class Autopilot implements Steering {
 		return escapes.isEmpty() ? null : escapes.get(0);
 	}
 
-	private List<V2i> findNearestFoodTiles(GameModel game) {
+	private List<Vector2i> findNearestFoodTiles(GameModel game) {
 		long time = System.nanoTime();
-		List<V2i> foodTiles = new ArrayList<>();
-		V2i pacManTile = game.pac().tile();
+		List<Vector2i> foodTiles = new ArrayList<>();
+		Vector2i pacManTile = game.pac().tile();
 		double minDist = Double.MAX_VALUE;
 		for (int x = 0; x < game.level().world().numCols(); ++x) {
 			for (int y = 0; y < game.level().world().numRows(); ++y) {
-				V2i tile = new V2i(x, y);
+				Vector2i tile = new Vector2i(x, y);
 				if (!game.level().world().isFoodTile(tile) || game.level().world().containsEatenFood(tile)) {
 					continue;
 				}
@@ -253,17 +253,17 @@ public class Autopilot implements Steering {
 		}
 		time = System.nanoTime() - time;
 		LOGGER.trace("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
-		for (V2i t : foodTiles) {
+		for (Vector2i t : foodTiles) {
 			LOGGER.trace("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t,
 					t.manhattanDistance(pacManTile), minDistanceFromGhosts(game));
 		}
 		return foodTiles;
 	}
 
-	private V2i findTileFarestFromGhosts(GameModel game, List<V2i> tiles) {
-		V2i farestTile = null;
+	private Vector2i findTileFarestFromGhosts(GameModel game, List<Vector2i> tiles) {
+		Vector2i farestTile = null;
 		double maxDist = -1;
-		for (V2i tile : tiles) {
+		for (Vector2i tile : tiles) {
 			double dist = minDistanceFromGhosts(game);
 			if (dist > maxDist) {
 				maxDist = dist;

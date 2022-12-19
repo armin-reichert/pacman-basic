@@ -28,11 +28,11 @@ package de.amr.games.pacman.lib;
  */
 public record NavigationPoint(int x, int y, Direction dir) {
 
-	public static NavigationPoint np(V2i tile, Direction dir) {
+	public static NavigationPoint np(Vector2i tile, Direction dir) {
 		return new NavigationPoint(tile.x(), tile.y(), dir);
 	}
 
-	public static NavigationPoint np(V2i tile) {
+	public static NavigationPoint np(Vector2i tile) {
 		return new NavigationPoint(tile.x(), tile.y(), null);
 	}
 
@@ -44,7 +44,7 @@ public record NavigationPoint(int x, int y, Direction dir) {
 		return new NavigationPoint(x, y, null);
 	}
 
-	public V2i tile() {
-		return new V2i(x, y);
+	public Vector2i tile() {
+		return new Vector2i(x, y);
 	}
 }

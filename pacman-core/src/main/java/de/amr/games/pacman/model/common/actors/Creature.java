@@ -38,8 +38,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2d;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -60,7 +60,7 @@ public class Creature extends Entity {
 	private final String name;
 	private Direction moveDir;
 	private Direction wishDir;
-	private V2i targetTile;
+	private Vector2i targetTile;
 	private boolean newTileEntered;
 	private boolean stuck;
 	protected boolean shouldReverse;
@@ -73,9 +73,9 @@ public class Creature extends Entity {
 
 	public void reset() {
 		visible = false;
-		position = V2d.ZERO;
-		velocity = V2d.ZERO;
-		acceleration = V2d.ZERO;
+		position = Vector2d.ZERO;
+		velocity = Vector2d.ZERO;
+		acceleration = Vector2d.ZERO;
 		moveDir = RIGHT;
 		wishDir = RIGHT;
 		targetTile = null;
@@ -110,12 +110,12 @@ public class Creature extends Entity {
 		return stuck;
 	}
 
-	public void setTargetTile(V2i tile) {
+	public void setTargetTile(Vector2i tile) {
 		targetTile = tile;
 	}
 
 	/** (Optional) target tile. Can be inaccessible or outside of the world. */
-	public Optional<V2i> targetTile() {
+	public Optional<Vector2i> targetTile() {
 		return Optional.ofNullable(targetTile);
 	}
 
@@ -125,12 +125,12 @@ public class Creature extends Entity {
 		newTileEntered = !tile().equals(prevTile);
 	}
 
-	public void placeAtTile(V2i tile, double ox, double oy) {
+	public void placeAtTile(Vector2i tile, double ox, double oy) {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		placeAtTile(tile.x(), tile.y(), ox, oy);
 	}
 
-	public void placeAtTile(V2i tile) {
+	public void placeAtTile(Vector2i tile) {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		placeAtTile(tile.x(), tile.y(), 0, 0);
 	}
@@ -139,7 +139,7 @@ public class Creature extends Entity {
 	 * @param tile some tile inside or outside of the world
 	 * @return if this creature can access the given tile
 	 */
-	public boolean canAccessTile(V2i tile, GameModel game) {
+	public boolean canAccessTile(Vector2i tile, GameModel game) {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		var world = game.level().world();
@@ -159,7 +159,7 @@ public class Creature extends Entity {
 		if (moveDir != dir) {
 			moveDir = dir;
 			LOGGER.trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
-			velocity = new V2d(moveDir.vec).scaled(velocity.length());
+			velocity = new Vector2d(moveDir.vec).scaled(velocity.length());
 		}
 	}
 
@@ -220,7 +220,7 @@ public class Creature extends Entity {
 		if (speed < 0) {
 			throw new IllegalArgumentException("Negative speed: " + speed);
 		}
-		velocity = speed == 0 ? V2d.ZERO : new V2d(moveDir.vec).scaled(speed);
+		velocity = speed == 0 ? Vector2d.ZERO : new Vector2d(moveDir.vec).scaled(speed);
 	}
 
 	/**
@@ -247,7 +247,7 @@ public class Creature extends Entity {
 	 */
 	private Optional<Direction> computeTargetDirection(GameModel game) {
 		Direction targetDir = null;
-		V2i currentTile = tile();
+		Vector2i currentTile = tile();
 		double minDistance = Double.MAX_VALUE;
 		for (var dir : DIRECTION_PRIORITY) {
 			if (dir == moveDir.opposite()) {
@@ -287,7 +287,7 @@ public class Creature extends Entity {
 	 */
 	public void tryMoving(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
-		V2i tileBeforeMove = tile();
+		Vector2i tileBeforeMove = tile();
 		MoveResult m = tryTeleport(game);
 		if (m.teleported()) {
 			return;
@@ -311,7 +311,7 @@ public class Creature extends Entity {
 
 	private MoveResult tryMoving(Direction dir, GameModel game) {
 		double speed = velocity.length();
-		V2d dirVector = dir.vec.toDoubleVec();
+		Vector2d dirVector = dir.vec.toDoubleVec();
 		if (speed <= 1.0) {
 			return trySmallMove(dir, game, dirVector, speed);
 		}
@@ -323,7 +323,7 @@ public class Creature extends Entity {
 		return trySmallMove(dir, game, dirVector, 0.5 * speed);
 	}
 
-	private MoveResult trySmallMove(Direction dir, GameModel game, V2d dirVector, double speed) {
+	private MoveResult trySmallMove(Direction dir, GameModel game, Vector2d dirVector, double speed) {
 		var turn = !dir.sameOrientation(moveDir);
 		var newVelocity = dirVector.scaled(speed);
 		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);

@@ -28,8 +28,8 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2d;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
@@ -58,7 +58,7 @@ public interface World {
 	 * @param position a position
 	 * @return Tile containing given position.
 	 */
-	public static V2i tileAt(V2d position) {
+	public static Vector2i tileAt(Vector2d position) {
 		return tileAt(position.x(), position.y());
 	}
 
@@ -67,19 +67,19 @@ public interface World {
 	 * @param y y position
 	 * @return Tile containing given position.
 	 */
-	public static V2i tileAt(double x, double y) {
-		return new V2i((int) x / TS, (int) y / TS);
+	public static Vector2i tileAt(double x, double y) {
+		return new Vector2i((int) x / TS, (int) y / TS);
 	}
 
 	/**
 	 * @param tile a tile
 	 * @return Position of the left-upper corner of given tile.
 	 */
-	public static V2d originOfTile(V2i tile) {
-		return new V2d(tile.scaled(TS));
+	public static Vector2d originOfTile(Vector2i tile) {
+		return new Vector2d(tile.scaled(TS));
 	}
 
-	public static V2d halfTileRightOf(V2i tile) {
+	public static Vector2d halfTileRightOf(Vector2i tile) {
 		return tile.scaled(TS).toDoubleVec().plus(HTS, 0);
 	}
 
@@ -96,7 +96,7 @@ public interface World {
 	/**
 	 * @return All tiles in the world in order top-to-bottom, left-to-right.
 	 */
-	default Stream<V2i> tiles() {
+	default Stream<Vector2i> tiles() {
 		return IntStream.range(0, numCols() * numRows()).mapToObj(this::tile);
 	}
 
@@ -104,7 +104,7 @@ public interface World {
 	 * @param tile a tile
 	 * @return Tile index in order top-to-bottom, left-to-right.
 	 */
-	default int index(V2i tile) {
+	default int index(Vector2i tile) {
 		return numCols() * tile.y() + tile.x();
 	}
 
@@ -112,15 +112,15 @@ public interface World {
 	 * @param index tile index in order top-to-bottom, left-to-right
 	 * @return tile as vector
 	 */
-	default V2i tile(int index) {
-		return new V2i(index % numCols(), index / numCols());
+	default Vector2i tile(int index) {
+		return new Vector2i(index % numCols(), index / numCols());
 	}
 
 	/**
 	 * @param tile a tile
 	 * @return tells if this tile is located inside the world bounds
 	 */
-	default boolean insideMap(V2i tile) {
+	default boolean insideMap(Vector2i tile) {
 		return 0 <= tile.x() && tile.x() < numCols() && 0 <= tile.y() && tile.y() < numRows();
 	}
 
@@ -140,13 +140,13 @@ public interface World {
 	 * @param tile a tile
 	 * @return Tells if the tile is part of a portal.
 	 */
-	boolean belongsToPortal(V2i tile);
+	boolean belongsToPortal(Vector2i tile);
 
 	/**
 	 * @param tile a tile
 	 * @return Tells if the tile is an intersection (waypoint).
 	 */
-	default boolean isIntersection(V2i tile) {
+	default boolean isIntersection(Vector2i tile) {
 		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
 			return false; // exclude portal entries and tiles outside of the map
 		}
@@ -162,18 +162,18 @@ public interface World {
 	 * @param tile a tile
 	 * @return Tells if the tile is a wall.
 	 */
-	boolean isWall(V2i tile);
+	boolean isWall(Vector2i tile);
 
 	/**
 	 * @param tile a tile
 	 * @return Tells if the tile is part of a tunnel.
 	 */
-	boolean isTunnel(V2i tile);
+	boolean isTunnel(Vector2i tile);
 
 	/**
 	 * @return start position of Pac-Man in this world
 	 */
-	V2d pacStartPosition();
+	Vector2d pacStartPosition();
 
 	/**
 	 * @return the ghost house in this world
@@ -184,37 +184,37 @@ public interface World {
 	 * @param tile a tile
 	 * @return Tells if the tile contains food initially.
 	 */
-	boolean isFoodTile(V2i tile);
+	boolean isFoodTile(Vector2i tile);
 
 	/**
 	 * @param tile a tile
 	 * @return Tells if the tile contains an energizer initially.
 	 */
-	boolean isEnergizerTile(V2i tile);
+	boolean isEnergizerTile(Vector2i tile);
 
 	/**
 	 * @return All tiles containing an energizer initially.
 	 */
-	Stream<V2i> energizerTiles();
+	Stream<Vector2i> energizerTiles();
 
 	/**
 	 * Removes food at given tile.
 	 * 
 	 * @param tile some tile
 	 */
-	void removeFood(V2i tile);
+	void removeFood(Vector2i tile);
 
 	/**
 	 * @param tile some tile
 	 * @return Return {@code true} if there is food at the given tile.
 	 */
-	boolean containsFood(V2i tile);
+	boolean containsFood(Vector2i tile);
 
 	/**
 	 * @param tile some tile
 	 * @return Returns {@code true} if there is eaten food at the given tile.
 	 */
-	boolean containsEatenFood(V2i tile);
+	boolean containsEatenFood(Vector2i tile);
 
 	/**
 	 * @return Number of uneaten pellets remaining

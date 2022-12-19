@@ -26,7 +26,7 @@ package de.amr.games.pacman.model.common.world;
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2i;
 
 /**
  * Provides information about rooms, walls, doors etc.
@@ -93,24 +93,24 @@ public class FloorPlan {
 		}
 	}
 
-	private V2i northOf(int tileX, int tileY, int i) {
+	private Vector2i northOf(int tileX, int tileY, int i) {
 		int dy = i / resolution == 0 ? -1 : 0;
-		return new V2i(tileX, tileY + dy);
+		return new Vector2i(tileX, tileY + dy);
 	}
 
-	private V2i southOf(int tileX, int tileY, int i) {
+	private Vector2i southOf(int tileX, int tileY, int i) {
 		int dy = i / resolution == resolution - 1 ? 1 : 0;
-		return new V2i(tileX, tileY + dy);
+		return new Vector2i(tileX, tileY + dy);
 	}
 
-	private V2i westOf(int tileX, int tileY, int i) {
+	private Vector2i westOf(int tileX, int tileY, int i) {
 		int dx = i % resolution == 0 ? -1 : 0;
-		return new V2i(tileX + dx, tileY);
+		return new Vector2i(tileX + dx, tileY);
 	}
 
-	private V2i eastOf(int tileX, int tileY, int i) {
+	private Vector2i eastOf(int tileX, int tileY, int i) {
 		int dx = i % resolution == resolution - 1 ? 1 : 0;
-		return new V2i(tileX + dx, tileY);
+		return new Vector2i(tileX + dx, tileY);
 	}
 
 	private void separateWallsAndCorners(int numBlocksX, int numBlocksY) {
@@ -173,7 +173,7 @@ public class FloorPlan {
 	private void scanForWalls(int numBlocksX, int numBlocksY) {
 		for (int y = 0; y < numBlocksY; ++y) {
 			for (int x = 0; x < numBlocksX; ++x) {
-				V2i tile = new V2i(x / resolution, y / resolution);
+				Vector2i tile = new Vector2i(x / resolution, y / resolution);
 				info[y][x] = world.isWall(tile) ? CORNER : EMPTY;
 			}
 		}
@@ -185,15 +185,15 @@ public class FloorPlan {
 			for (int x = 0; x < numBlocksX; ++x) {
 				int tileX = x / resolution;
 				int i = (y % resolution) * resolution + (x % resolution);
-				V2i n = northOf(tileX, tileY, i);
-				V2i e = eastOf(tileX, tileY, i);
-				V2i s = southOf(tileX, tileY, i);
-				V2i w = westOf(tileX, tileY, i);
+				Vector2i n = northOf(tileX, tileY, i);
+				Vector2i e = eastOf(tileX, tileY, i);
+				Vector2i s = southOf(tileX, tileY, i);
+				Vector2i w = westOf(tileX, tileY, i);
 				if (world.isWall(n) && world.isWall(e) && world.isWall(s) && world.isWall(w)) {
-					V2i se = southOf(e.x(), e.y(), i);
-					V2i sw = southOf(w.x(), w.y(), i);
-					V2i ne = northOf(e.x(), e.y(), i);
-					V2i nw = northOf(w.x(), w.y(), i);
+					Vector2i se = southOf(e.x(), e.y(), i);
+					Vector2i sw = southOf(w.x(), w.y(), i);
+					Vector2i ne = northOf(e.x(), e.y(), i);
+					Vector2i nw = northOf(w.x(), w.y(), i);
 					if (world.isWall(se) && !world.isWall(nw) || !world.isWall(se) && world.isWall(nw)
 							|| world.isWall(sw) && !world.isWall(ne) || !world.isWall(sw) && world.isWall(ne)) {
 						// keep corner of wall region

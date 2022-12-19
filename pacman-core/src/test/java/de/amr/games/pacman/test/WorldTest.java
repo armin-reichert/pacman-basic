@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2d;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
@@ -17,26 +17,26 @@ public class WorldTest {
 
 	@Test
 	public void testTileCoordinates() {
-		V2d pos = new V2d(0.0, 0.0);
-		assertEquals(V2i.ZERO, World.tileAt(pos));
-		pos = new V2d(7.9, 7.9);
-		assertEquals(new V2i(0, 0), World.tileAt(pos));
-		pos = new V2d(8.0, 7.9);
-		assertEquals(new V2i(1, 0), World.tileAt(pos));
-		pos = new V2d(8.0, 0.0);
-		assertEquals(new V2i(1, 0), World.tileAt(pos));
-		pos = new V2d(0.0, 8.0);
-		assertEquals(new V2i(0, 1), World.tileAt(pos));
+		Vector2d pos = new Vector2d(0.0, 0.0);
+		assertEquals(Vector2i.ZERO, World.tileAt(pos));
+		pos = new Vector2d(7.9, 7.9);
+		assertEquals(new Vector2i(0, 0), World.tileAt(pos));
+		pos = new Vector2d(8.0, 7.9);
+		assertEquals(new Vector2i(1, 0), World.tileAt(pos));
+		pos = new Vector2d(8.0, 0.0);
+		assertEquals(new Vector2i(1, 0), World.tileAt(pos));
+		pos = new Vector2d(0.0, 8.0);
+		assertEquals(new Vector2i(0, 1), World.tileAt(pos));
 
 		var guy = new Ghost(Ghost.ID_RED_GHOST, "Guy");
 
 		guy.setPosition(3.99, 0);
-		assertEquals(new V2i(0, 0), guy.tile());
-		assertEquals(new V2d(3.99, 0.0), guy.offset());
+		assertEquals(new Vector2i(0, 0), guy.tile());
+		assertEquals(new Vector2d(3.99, 0.0), guy.offset());
 
 		guy.setPosition(4.0, 0);
-		assertEquals(new V2i(1, 0), guy.tile());
-		assertEquals(new V2d(-4.0, 0.0), guy.offset());
+		assertEquals(new Vector2i(1, 0), guy.tile());
+		assertEquals(new Vector2d(-4.0, 0.0), guy.offset());
 	}
 
 	@Test

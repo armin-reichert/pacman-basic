@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -64,7 +64,7 @@ public class GameEvents {
 		IT.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 
-	public static void publish(GameEventType info, V2i tile) {
+	public static void publish(GameEventType info, Vector2i tile) {
 		publish(new GameEvent(IT.fnGame.get(), info, null, tile));
 	}
 }

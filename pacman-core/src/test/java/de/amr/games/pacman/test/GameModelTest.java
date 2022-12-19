@@ -32,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -128,9 +128,9 @@ public class GameModelTest {
 	@Test
 	public void testDeadPacHasZeroSpeed() {
 		game.pac().setAbsSpeed(42);
-		assertEquals(42.0, game.pac().velocity().length(), V2d.EPSILON);
+		assertEquals(42.0, game.pac().velocity().length(), Vector2d.EPSILON);
 		game.pac().die();
-		assertEquals(0.0, game.pac().velocity().length(), V2d.EPSILON);
+		assertEquals(0.0, game.pac().velocity().length(), Vector2d.EPSILON);
 	}
 
 	@Test
