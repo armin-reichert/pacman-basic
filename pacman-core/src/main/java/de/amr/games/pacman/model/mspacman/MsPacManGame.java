@@ -321,7 +321,7 @@ public class MsPacManGame extends GameModel {
 		checkLevelNumber(levelNumber);
 		int mapNumber = mapNumber(levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
-		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(7) : GameLevel.USE_BONUS_FROM_DATA;
+		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(7) : GameLevel.BONUS_SYMBOL_FROM_DATA;
 		var world = createWorld(mapNumber);
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		var houseRules = createHouseRules(levelNumber);

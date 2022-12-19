@@ -39,7 +39,7 @@ public record GameLevel(
 	World world,
 	/** Ghost house rules for this level */
 	GhostHouseRules houseRules,
-	/** Bonus (index) for current level. */
+	/** Bonus symbol (index) for current level. */
 	int bonusSymbol,
 	/** Relative player speed at current level. */
 	float playerSpeed,
@@ -69,12 +69,12 @@ public record GameLevel(
 	 * @param levelNumber level number (1, 2, ...)
 	 * @param mazeNumber  maze number (1, 2, ...)
 	 * @param world       world used in this level
-	 * @param bonusValue  if value <code>!= -1</code>, overrides the value in the data array
+	 * @param symbol      if value <code>!= -1</code>, overrides the value in the data array
 	 * @param data        array with level data
 	 */
-	public static GameLevel of(int levelNumber, int mazeNumber, World world, GhostHouseRules houseRules, int bonusValue,
+	public static GameLevel of(int levelNumber, int mazeNumber, World world, GhostHouseRules houseRules, int symbol,
 			byte[] data) {
-		int bonusIndex = bonusValue == USE_BONUS_FROM_DATA ? (int) data[0] : bonusValue;
+		int bonusSymbol = symbol == BONUS_SYMBOL_FROM_DATA ? (int) data[0] : symbol;
 		float playerSpeed = percentage(data[1]);
 		float ghostSpeed = percentage(data[2]);
 		float ghostSpeedTunnel = percentage(data[3]);
@@ -86,12 +86,12 @@ public record GameLevel(
 		float ghostSpeedFrightened = percentage(data[9]);
 		int ghostFrightenedSeconds = data[10];
 		int numFlashes = data[11];
-		return new GameLevel(levelNumber, mazeNumber, world, houseRules, bonusIndex, playerSpeed, ghostSpeed,
+		return new GameLevel(levelNumber, mazeNumber, world, houseRules, bonusSymbol, playerSpeed, ghostSpeed,
 				ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered,
 				ghostSpeedFrightened, ghostFrightenedSeconds, numFlashes);
 	}
 
-	public static final int USE_BONUS_FROM_DATA = -1;
+	public static final int BONUS_SYMBOL_FROM_DATA = -1;
 
 	private static float percentage(int value) {
 		return value / 100f;
