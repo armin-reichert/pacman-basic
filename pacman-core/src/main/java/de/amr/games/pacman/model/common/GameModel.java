@@ -98,14 +98,7 @@ public abstract class GameModel {
 	public static final float GHOST_SPEED_INSIDE_HOUSE = 0.5f; // unsure
 	public static final float GHOST_SPEED_RETURNING = 2.0f; // unsure
 
-	/**
-	 * @param levelNumber level number (1, 2, ...)
-	 * @param mazeNumber  maze number (1, 2, ...)
-	 * @param world       world used in this level
-	 * @param symbol      if value <code>!= -1</code>, overrides the value in the data array
-	 * @param data        array with level data
-	 */
-	public static GameLevel createLevelFromData(int levelNumber, int mazeNumber, World world, Bonus bonus,
+	protected static GameLevel createLevelFromData(int levelNumber, int mazeNumber, World world, Bonus bonus,
 			GhostHouseRules houseRules, byte[] data) {
 		float playerSpeed = percentage(data[1]);
 		float ghostSpeed = percentage(data[2]);
@@ -123,8 +116,27 @@ public abstract class GameModel {
 				ghostFrightenedSeconds, numFlashes);
 	}
 
-	private static float percentage(int value) {
+	protected static float percentage(int value) {
 		return value / 100f;
+	}
+
+	protected static int checkGhostID(int id) {
+		if (id < 0 || id > 3) {
+			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
+		}
+		return id;
+	}
+
+	protected static void checkLevelNumber(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
+		}
+	}
+
+	// simulates the overflow bug from the original Arcade version
+	protected static Vector2i tilesAhead(Creature guy, int n) {
+		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
+		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
 
 	protected GameLevel level;
@@ -147,25 +159,6 @@ public abstract class GameModel {
 
 	/** Remembers what happens during a tick. */
 	public final Memory memo = new Memory();
-
-	protected static int checkGhostID(int id) {
-		if (id < 0 || id > 3) {
-			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
-		}
-		return id;
-	}
-
-	protected static void checkLevelNumber(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
-		}
-	}
-
-	// simulates the overflow bug from the original Arcade version
-	protected static Vector2i tilesAhead(Creature guy, int n) {
-		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
-		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
-	}
 
 	/**
 	 * Creates the game model.
