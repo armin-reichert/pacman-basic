@@ -238,14 +238,14 @@ public abstract class GameModel {
 		gameScore().setLevelNumber(levelNumber);
 		if (levelNumber == 1) {
 			levelCounter().clear();
-			levelCounter().addSymbol(level().bonusIndex());
+			levelCounter().addSymbol(level().bonusSymbol());
 		}
 	}
 
 	public void startLevel() {
 		getReadyToRumble();
 		guys().forEach(Entity::hide);
-		levelCounter.addSymbol(level.bonusIndex());
+		levelCounter.addSymbol(level.bonusSymbol());
 		level.houseRules().resetPrivateGhostDotCounters();
 	}
 

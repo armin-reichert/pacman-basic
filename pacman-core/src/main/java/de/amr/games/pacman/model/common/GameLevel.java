@@ -40,7 +40,7 @@ public record GameLevel(
 	/** Ghost house rules for this level */
 	GhostHouseRules houseRules,
 	/** Bonus (index) for current level. */
-	int bonusIndex,
+	int bonusSymbol,
 	/** Relative player speed at current level. */
 	float playerSpeed,
 	/** Relative ghost speed at current level. */
