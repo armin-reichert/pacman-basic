@@ -153,13 +153,14 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	protected GameLevel createLevel(int levelNumber) {
+	protected void createLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		int mazeNumber = 1;
 		var world = createWorld();
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		var houseRules = createHouseRules(levelNumber);
-		return GameLevel.of(levelNumber, mazeNumber, world, houseRules, GameLevel.USE_BONUS_FROM_DATA, data);
+		level = GameLevel.of(levelNumber, mazeNumber, world, houseRules, GameLevel.USE_BONUS_FROM_DATA, data);
+		bonus = new StaticBonus(BONUS_POSITION);
 	}
 
 	@Override
@@ -177,9 +178,6 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public StaticBonus bonus() {
-		if (bonus == null) {
-			bonus = new StaticBonus(BONUS_POSITION);
-		}
 		return bonus;
 	}
 

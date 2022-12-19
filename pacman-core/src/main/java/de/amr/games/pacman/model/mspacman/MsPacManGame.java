@@ -299,7 +299,7 @@ public class MsPacManGame extends GameModel {
 		return levelNumber < 14 ? mazeNumber(levelNumber) : mazeNumber(levelNumber) - 2;
 	}
 
-	private MovingBonus movingBonus;
+	private MovingBonus bonus;
 
 	@Override
 	protected Pac createPac() {
@@ -317,7 +317,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected GameLevel createLevel(int levelNumber) {
+	protected void createLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		int mapNumber = mapNumber(levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
@@ -325,7 +325,8 @@ public class MsPacManGame extends GameModel {
 		var world = createWorld(mapNumber);
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		var houseRules = createHouseRules(levelNumber);
-		return GameLevel.of(levelNumber, mazeNumber, world, houseRules, bonusSymbol, data);
+		level = GameLevel.of(levelNumber, mazeNumber, world, houseRules, bonusSymbol, data);
+		bonus = new MovingBonus();
 	}
 
 	@Override
@@ -335,10 +336,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public MovingBonus bonus() {
-		if (movingBonus == null) {
-			movingBonus = new MovingBonus();
-		}
-		return movingBonus;
+		return bonus;
 	}
 
 	@Override
@@ -357,11 +355,11 @@ public class MsPacManGame extends GameModel {
 			route.add(np(houseEntry));
 			route.add(orientation == Direction.RIGHT ? np(exitPortal.rightTunnelEnd()) : np(exitPortal.leftTunnelEnd()));
 			LOGGER.trace("Bonus route: %s, orientation: %s", route, orientation);
-			movingBonus.setRoute(route);
-			movingBonus.placeAtTile(start.tile(), 0, 0);
-			movingBonus.setMoveAndWishDir(orientation);
-			movingBonus.setEdible(level.bonusIndex(), BONUS_VALUES[level.bonusIndex()], TickTimer.INDEFINITE);
-			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
+			bonus.setRoute(route);
+			bonus.placeAtTile(start.tile(), 0, 0);
+			bonus.setMoveAndWishDir(orientation);
+			bonus.setEdible(level.bonusIndex(), BONUS_VALUES[level.bonusIndex()], TickTimer.INDEFINITE);
+			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.tile());
 		}
 	}
 }

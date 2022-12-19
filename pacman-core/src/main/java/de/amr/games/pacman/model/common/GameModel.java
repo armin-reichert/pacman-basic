@@ -184,12 +184,11 @@ public abstract class GameModel {
 	public abstract GameVariant variant();
 
 	/**
-	 * Creates and returns the specified level.
+	 * Creates the specified level.
 	 * 
 	 * @param levelNumber Level number (starting at 1)
-	 * @return the game level
 	 */
-	protected abstract GameLevel createLevel(int levelNumber);
+	protected abstract void createLevel(int levelNumber);
 
 	/**
 	 * @param levelNumber Level number (starting at 1)
@@ -231,7 +230,7 @@ public abstract class GameModel {
 	 */
 	public void setLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		level = createLevel(levelNumber);
+		createLevel(levelNumber);
 		level.world().assignGhostPositions(theGhosts);
 		numGhostsKilledInLevel = 0;
 		numGhostsKilledByEnergizer = 0;
