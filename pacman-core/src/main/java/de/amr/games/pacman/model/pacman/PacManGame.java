@@ -184,10 +184,10 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	protected void onBonusReached() {
+	protected void onBonusReached(Bonus bonus) {
 		int ticks = 10 * FPS - RND.nextInt(FPS); // between 9 and 10 seconds
-		level.bonus().setEdible(ticks);
-		LOGGER.info("Bonus activated for %d ticks (%.2f seconds). %s", ticks, (double) ticks / FPS, level.bonus());
-		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tileAt(level.bonus().entity().position()));
+		bonus.setEdible(ticks);
+		LOGGER.info("Bonus activated for %d ticks (%.2f seconds). %s", ticks, (double) ticks / FPS, bonus);
+		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 	}
 }

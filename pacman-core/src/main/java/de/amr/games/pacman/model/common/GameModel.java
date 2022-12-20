@@ -523,9 +523,9 @@ public abstract class GameModel {
 		return pacPowerTimer;
 	}
 
-	// Bonus stuff
+	// Bonus
 
-	protected abstract void onBonusReached();
+	protected abstract void onBonusReached(Bonus bonus);
 
 	// Game logic
 
@@ -671,7 +671,7 @@ public abstract class GameModel {
 			scorePoints(PELLET_VALUE);
 		}
 		if (memo.bonusReached) {
-			onBonusReached();
+			onBonusReached(level.bonus());
 		}
 		checkIfRedGhostBecomesCruiseElroy();
 		level.houseRules().updateGhostDotCounters(this);

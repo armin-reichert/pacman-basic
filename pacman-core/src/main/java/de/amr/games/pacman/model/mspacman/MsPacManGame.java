@@ -335,7 +335,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected void onBonusReached() {
+	protected void onBonusReached(Bonus bonus) {
 		var houseEntry = level.world().ghostHouse().entryTile();
 		int houseHeight = level.world().ghostHouse().size().y();
 		int numPortals = level.world().portals().size();
@@ -350,7 +350,7 @@ public class MsPacManGame extends GameModel {
 			route.add(np(houseEntry));
 			route.add(orientation == Direction.RIGHT ? np(exitPortal.rightTunnelEnd()) : np(exitPortal.leftTunnelEnd()));
 			LOGGER.trace("Bonus route: %s, orientation: %s", route, orientation);
-			MovingBonus movingBonus = (MovingBonus) level.bonus();
+			MovingBonus movingBonus = (MovingBonus) bonus;
 			movingBonus.setRoute(route);
 			movingBonus.placeAtTile(start.tile(), 0, 0);
 			movingBonus.setMoveAndWishDir(orientation);
