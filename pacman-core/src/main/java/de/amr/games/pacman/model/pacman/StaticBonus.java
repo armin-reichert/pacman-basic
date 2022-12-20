@@ -28,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
@@ -49,11 +48,10 @@ public class StaticBonus implements Bonus {
 	private BonusState state;
 	private long timer;
 
-	public StaticBonus(Vector2d position, int symbol, int points) {
+	public StaticBonus(int symbol, int points) {
 		this.symbol = symbol;
 		this.points = points;
 		entity = new Entity();
-		entity.setPosition(position);
 		entity.show();
 		state = BonusState.INACTIVE;
 	}

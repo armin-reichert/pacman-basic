@@ -64,24 +64,12 @@ import de.amr.games.pacman.model.common.world.World;
 public abstract class GameModel {
 
 	protected static final Logger LOGGER = LogManager.getFormatterLogger();
+	protected static final Random RND = new Random();
 
 	/** Pixels/tick at 100% relative speed. */
 	public static final double BASE_SPEED = 1.25;
-
 	/** Game loop speed in ticks/sec. */
-	public static final int FPS = 60;
-
-	public static final Random RND = new Random();
-
-	/** Duration (in ticks) of chase and scatter phases. See Pac-Man dossier. */
-	public static final int[][] HUNTING_DURATION = {
-		//@formatter:off
-		{ 7 *FPS, 20 *FPS, 7 *FPS, 20 *FPS, 5 *FPS,   20 *FPS, 5 *FPS, -1 },
-		{ 7 *FPS, 20 *FPS, 7 *FPS, 20 *FPS, 5 *FPS, 1033 *FPS,      1, -1 },
-		{ 5 *FPS, 20 *FPS, 5 *FPS, 20 *FPS, 5 *FPS, 1037 *FPS,      1, -1 },
-		//@formatter:on
-	};
-
+	public static final short FPS = 60;
 	public static final short MAX_CREDIT = 99;
 	public static final short PELLET_VALUE = 10;
 	public static final short PELLET_RESTING_TICKS = 1;
@@ -97,6 +85,44 @@ public abstract class GameModel {
 	public static final short PAC_POWER_FADING_TICKS = 2 * FPS; // unsure
 	public static final float GHOST_SPEED_INSIDE_HOUSE = 0.5f; // unsure
 	public static final float GHOST_SPEED_RETURNING = 2.0f; // unsure
+
+	//@formatter:off
+	protected static final byte[][] LEVELS = {
+	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
+	/* 2*/ { 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
+	/* Intermission scene 1 */
+	/* 3*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
+	/* 4*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
+	/* 5*/ {100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
+	/* Intermission scene 2 */
+	/* 6*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
+	/* 7*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 8*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 9*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
+	/* Intermission scene 3 */
+	/*10*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5},
+	/*11*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
+	/*12*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*13*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/* Intermission scene 3 */
+	/*14*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
+	/*15*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*16*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*17*/ {100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
+	/* Intermission scene 3 */
+	/*18*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*19*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*20*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*21*/ { 90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	};
+
+	/** Duration (in ticks) of chase and scatter phases. See Pac-Man dossier. */
+	public static final int[][] HUNTING_DURATION = {
+		{ 7 *FPS, 20 *FPS, 7 *FPS, 20 *FPS, 5 *FPS,   20 *FPS, 5 *FPS, -1 },
+		{ 7 *FPS, 20 *FPS, 7 *FPS, 20 *FPS, 5 *FPS, 1033 *FPS,      1, -1 },
+		{ 5 *FPS, 20 *FPS, 5 *FPS, 20 *FPS, 5 *FPS, 1037 *FPS,      1, -1 },
+	};
+	//@formatter:on
 
 	protected static GameLevel createLevelFromData(int levelNumber, int mazeNumber, World world, Bonus bonus,
 			GhostHouseRules houseRules, byte[] data) {

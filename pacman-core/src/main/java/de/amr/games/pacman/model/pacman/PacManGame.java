@@ -53,50 +53,6 @@ import de.amr.games.pacman.model.common.world.World;
 public class PacManGame extends GameModel {
 
 	//@formatter:off
-	private static final byte[][] LEVELS = {
-	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
-	/* 2*/ { 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
-	/* Intermission scene 1 */
-	/* 3*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
-	/* 4*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
-	/* 5*/ {100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
-	/* Intermission scene 2 */
-	/* 6*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
-	/* 7*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 8*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 9*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
-	/* Intermission scene 3 */
-	/*10*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5},
-	/*11*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
-	/*12*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/*13*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/* Intermission scene 3 */
-	/*14*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
-	/*15*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*16*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*17*/ {100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
-	/* Intermission scene 3 */
-	/*18*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*19*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*20*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*21*/ { 90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	};
-
-	private static final Vector2d BONUS_POSITION = World.halfTileRightOf(v2i(13, 20));
-
-	private static Bonus createBonus(int levelNumber) {
-		return switch (levelNumber) {
-		case 1      -> new StaticBonus(BONUS_POSITION, 0,  100); // Cherries
-		case 2      -> new StaticBonus(BONUS_POSITION, 1,  300); // Strawberry
-		case 3, 4   -> new StaticBonus(BONUS_POSITION, 2,  500); // Peach
-		case 5, 6   -> new StaticBonus(BONUS_POSITION, 3,  700); // Apple
-		case 7, 8   -> new StaticBonus(BONUS_POSITION, 4, 1000); // Grapes
-		case 9, 10  -> new StaticBonus(BONUS_POSITION, 5, 2000); // Galaxian
-		case 11, 12 -> new StaticBonus(BONUS_POSITION, 6, 3000); // Bell
-		default     -> new StaticBonus(BONUS_POSITION, 7, 5000); // Key
-		};
-	}
-
 	private static final byte[][] MAP = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
@@ -135,6 +91,21 @@ public class PacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 	};
+	
+	private static final Vector2d BONUS_POSITION = World.halfTileRightOf(v2i(13, 20));
+
+	private static Bonus createBonus(int levelNumber) {
+		return switch (levelNumber) {
+		case 1      -> new StaticBonus(0,  100); // Cherries
+		case 2      -> new StaticBonus(1,  300); // Strawberry
+		case 3, 4   -> new StaticBonus(2,  500); // Peach
+		case 5, 6   -> new StaticBonus(3,  700); // Apple
+		case 7, 8   -> new StaticBonus(4, 1000); // Grapes
+		case 9, 10  -> new StaticBonus(5, 2000); // Galaxian
+		case 11, 12 -> new StaticBonus(6, 3000); // Bell
+		default     -> new StaticBonus(7, 5000); // Key
+		};
+	}
 	//@formatter:on
 
 	// Tiles where chasing ghosts cannot move upwards
@@ -166,6 +137,7 @@ public class PacManGame extends GameModel {
 		int mazeNumber = 1;
 		var world = createWorld();
 		var bonus = createBonus(levelNumber);
+		bonus.entity().setPosition(BONUS_POSITION);
 		var houseRules = createHouseRules(levelNumber);
 		level = createLevelFromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
 	}

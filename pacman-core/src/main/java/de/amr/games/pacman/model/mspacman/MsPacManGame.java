@@ -77,49 +77,6 @@ import de.amr.games.pacman.model.common.world.HorizontalPortal;
 public class MsPacManGame extends GameModel {
 
 	/*@formatter:off*/
-	private static final byte[][] LEVELS = {
-	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
-	/* 2*/ { 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
-	/* Intermission scene 1: "They Meet" */
-	/* 3*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
-	/* 4*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
-	/* 5*/ {100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
-	/* Intermission scene 2: "The Chase" */
-	/* 6*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
-	/* 7*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 8*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 9*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
-	/* Intermission scene 3: "Junior" */
-	/*10*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
-	/*11*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
-	/*12*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/*13*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/* Intermission scene 3: "Junior" */
-	/*14*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
-	/*15*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*16*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*17*/ {100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
-	/* Intermission scene 3: "Junior" */
-	/*18*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*19*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*20*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*21*/ { 90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	};
-
-	private static Bonus createBonus(int levelNumber) {
-		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;	
-		return switch (n) {
-		case 1 -> new MovingBonus(0,  100); // Cherries
-		case 2 -> new MovingBonus(1,  200); // Strawberry
-		case 3 -> new MovingBonus(2,  500); // Peach
-		case 4 -> new MovingBonus(3,  700); // Pretzel (A Brezn, HerrGottSakra!)
-		case 5 -> new MovingBonus(4, 1000); // Apple
-		case 6 -> new MovingBonus(5, 2000); // Pear
-		case 7 -> new MovingBonus(6, 5000); // Banana
-		default -> throw new IllegalArgumentException();
-		};
-	}
-
 	private static final byte[][] MAP1 = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
@@ -275,6 +232,20 @@ public class MsPacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 	};
+	
+	private static Bonus createBonus(int levelNumber) {
+		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;	
+		return switch (n) {
+		case 1 -> new MovingBonus(0,  100); // Cherries
+		case 2 -> new MovingBonus(1,  200); // Strawberry
+		case 3 -> new MovingBonus(2,  500); // Peach
+		case 4 -> new MovingBonus(3,  700); // Pretzel (A Brezn, HerrGottSakra!)
+		case 5 -> new MovingBonus(4, 1000); // Apple
+		case 6 -> new MovingBonus(5, 2000); // Pear
+		case 7 -> new MovingBonus(6, 5000); // Banana
+		default -> throw new IllegalArgumentException();
+		};
+	}
 	//@formatter:on
 
 	public static ArcadeWorld createWorld(int number) {
