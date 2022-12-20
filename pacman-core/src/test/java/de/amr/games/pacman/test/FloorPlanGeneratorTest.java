@@ -26,12 +26,14 @@ public class FloorPlanGeneratorTest {
 	private static File dir = new File(System.getProperty("user.dir"));
 
 	public static void main(String[] args) {
+		var pacManGame = new PacManGame();
+		var msPacManGame = new MsPacManGame();
 		List.of(8, 4, 2, 1).forEach(res -> {
-			createFloorPlan(PacManGame.createWorld(), "floorplan-pacman-map1-res-%d.txt", res);
-			createFloorPlan(MsPacManGame.createWorld(1), "floorplan-mspacman-map1-res-%d.txt", res);
-			createFloorPlan(MsPacManGame.createWorld(2), "floorplan-mspacman-map2-res-%d.txt", res);
-			createFloorPlan(MsPacManGame.createWorld(3), "floorplan-mspacman-map3-res-%d.txt", res);
-			createFloorPlan(MsPacManGame.createWorld(4), "floorplan-mspacman-map4-res-%d.txt", res);
+			createFloorPlan(pacManGame.createWorld(1), "floorplan-pacman-map1-res-%d.txt", res);
+			createFloorPlan(msPacManGame.createWorld(1), "floorplan-mspacman-map1-res-%d.txt", res);
+			createFloorPlan(msPacManGame.createWorld(2), "floorplan-mspacman-map2-res-%d.txt", res);
+			createFloorPlan(msPacManGame.createWorld(3), "floorplan-mspacman-map3-res-%d.txt", res);
+			createFloorPlan(msPacManGame.createWorld(4), "floorplan-mspacman-map4-res-%d.txt", res);
 		});
 	}
 

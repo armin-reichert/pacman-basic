@@ -35,7 +35,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Vector2i;
-import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -91,9 +90,20 @@ public class PacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
-	
-	private static Bonus createBonus(int levelNumber) {
-		return switch (levelNumber) {
+	//@formatter:on
+
+	// Tiles where chasing ghosts cannot move upwards
+	public static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
+
+	@Override
+	public ArcadeWorld createWorld(int mapNumber) {
+		return new ArcadeWorld(MAP);
+	}
+
+	@Override
+	public Bonus createBonus(int levelNumber) {
+		//@formatter:off
+		var bonus = switch (levelNumber) {
 		case 1      -> new StaticBonus(0,  100); // Cherries
 		case 2      -> new StaticBonus(1,  300); // Strawberry
 		case 3, 4   -> new StaticBonus(2,  500); // Peach
@@ -103,23 +113,18 @@ public class PacManGame extends GameModel {
 		case 11, 12 -> new StaticBonus(6, 3000); // Bell
 		default     -> new StaticBonus(7, 5000); // Key
 		};
-	}
-	//@formatter:on
-
-	// Tiles where chasing ghosts cannot move upwards
-	public static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
-
-	public static ArcadeWorld createWorld() {
-		return new ArcadeWorld(MAP);
+		//@formatter:on
+		bonus.entity().setPosition(13 * World.TS + World.HTS, 20 * World.TS);
+		return bonus;
 	}
 
 	@Override
-	protected Pac createPac() {
+	public Pac createPac() {
 		return new Pac("Pac-Man");
 	}
 
 	@Override
-	protected Ghost[] createGhosts() {
+	public Ghost[] createGhosts() {
 		return new Ghost[] { //
 				new Ghost(ID_RED_GHOST, "Blinky"), //
 				new Ghost(ID_PINK_GHOST, "Pinky"), //
@@ -129,14 +134,13 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	protected void createLevel(int levelNumber) {
-		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-		int mazeNumber = 1;
-		var world = createWorld();
-		var bonus = createBonus(levelNumber);
-		bonus.entity().setPosition(13 * World.TS + World.HTS, 20 * World.TS);
-		var houseRules = createHouseRules(levelNumber);
-		level = GameLevel.fromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
+	public int mapNumber(int levelNumber) {
+		return 1;
+	}
+
+	@Override
+	public int mazeNumber(int levelNumber) {
+		return 1;
 	}
 
 	@Override

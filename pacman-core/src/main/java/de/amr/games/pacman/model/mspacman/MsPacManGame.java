@@ -37,7 +37,6 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -233,10 +232,26 @@ public class MsPacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
-	
-	private static Bonus createBonus(int levelNumber) {
-		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;	
+	//@formatter:on
+
+	@Override
+	public ArcadeWorld createWorld(int mapNumber) {
+		var map = switch (mapNumber) {
+		case 1 -> MAP1;
+		case 2 -> MAP2;
+		case 3 -> MAP3;
+		case 4 -> MAP4;
+		default -> throw new IllegalArgumentException(
+				"Illegal map number: %d. Allowed values: 1, 2, 3, 4.".formatted(mapNumber));
+		};
+		return new ArcadeWorld(map);
+	}
+
+	@Override
+	public Bonus createBonus(int levelNumber) {
+		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
 		return switch (n) {
+		//@formatter:off
 		case 1 -> new MovingBonus(0,  100); // Cherries
 		case 2 -> new MovingBonus(1,  200); // Strawberry
 		case 3 -> new MovingBonus(2,  500); // Peach
@@ -245,43 +260,17 @@ public class MsPacManGame extends GameModel {
 		case 6 -> new MovingBonus(5, 2000); // Pear
 		case 7 -> new MovingBonus(6, 5000); // Banana
 		default -> throw new IllegalArgumentException();
+		//@formatter:on
 		};
-	}
-	//@formatter:on
-
-	public static ArcadeWorld createWorld(int number) {
-		var map = switch (number) {
-		case 1 -> MAP1;
-		case 2 -> MAP2;
-		case 3 -> MAP3;
-		case 4 -> MAP4;
-		default -> throw new IllegalArgumentException(
-				"Illegal map number: %d. Allowed values: 1, 2, 3, 4.".formatted(number));
-		};
-		return new ArcadeWorld(map);
-	}
-
-	private static int mazeNumber(int levelNumber) {
-		return switch (levelNumber) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
-		};
-	}
-
-	private static int mapNumber(int levelNumber) {
-		return levelNumber < 14 ? mazeNumber(levelNumber) : mazeNumber(levelNumber) - 2;
 	}
 
 	@Override
-	protected Pac createPac() {
+	public Pac createPac() {
 		return new Pac("Ms. Pac-Man");
 	}
 
 	@Override
-	protected Ghost[] createGhosts() {
+	public Ghost[] createGhosts() {
 		return new Ghost[] { //
 				new Ghost(ID_RED_GHOST, "Blinky"), //
 				new Ghost(ID_PINK_GHOST, "Pinky"), //
@@ -291,14 +280,19 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected void createLevel(int levelNumber) {
-		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-		int mapNumber = mapNumber(levelNumber);
-		int mazeNumber = mazeNumber(levelNumber);
-		var world = createWorld(mapNumber);
-		var bonus = createBonus(levelNumber);
-		var houseRules = createHouseRules(levelNumber);
-		level = GameLevel.fromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
+	public int mazeNumber(int levelNumber) {
+		return switch (levelNumber) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
+		};
+	}
+
+	@Override
+	public int mapNumber(int levelNumber) {
+		return levelNumber < 14 ? mazeNumber(levelNumber) : mazeNumber(levelNumber) - 2;
 	}
 
 	@Override

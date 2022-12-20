@@ -54,6 +54,7 @@ import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -174,18 +175,6 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * @return the Pac-person of this game
-	 */
-	protected abstract Pac createPac();
-
-	/**
-	 * Creates the ghosts.
-	 * 
-	 * @return the ghosts in order RED, PINK, CYAN, ORANGE
-	 */
-	protected abstract Ghost[] createGhosts();
-
-	/**
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
 	 */
 	protected void setGhostBehavior() {
@@ -209,12 +198,40 @@ public abstract class GameModel {
 	 */
 	public abstract GameVariant variant();
 
+	public abstract World createWorld(int levelNumber);
+
+	public abstract Bonus createBonus(int levelNumber);
+
+	/**
+	 * @return the Pac-person of this game
+	 */
+	public abstract Pac createPac();
+
+	/**
+	 * Creates the ghosts.
+	 * 
+	 * @return the ghosts in order RED, PINK, CYAN, ORANGE
+	 */
+	public abstract Ghost[] createGhosts();
+
+	public abstract int mapNumber(int levelNumber);
+
+	public abstract int mazeNumber(int levelNumber);
+
 	/**
 	 * Creates the specified level.
 	 * 
 	 * @param levelNumber Level number (starting at 1)
 	 */
-	protected abstract void createLevel(int levelNumber);
+	protected void createLevel(int levelNumber) {
+		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+		int mapNumber = mapNumber(levelNumber);
+		int mazeNumber = mazeNumber(levelNumber);
+		var world = createWorld(mapNumber);
+		var bonus = createBonus(levelNumber);
+		var houseRules = createHouseRules(levelNumber);
+		level = GameLevel.fromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
+	}
 
 	/**
 	 * @param levelNumber Level number (starting at 1)
