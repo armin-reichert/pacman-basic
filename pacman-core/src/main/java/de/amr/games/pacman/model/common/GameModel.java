@@ -627,7 +627,7 @@ public abstract class GameModel {
 	private void onPacPowerBegin() {
 		LOGGER.info("%s power begins", pac.name());
 		huntingTimer.stop();
-		pacPowerTimer.resetSeconds(level.ghostFrightenedSeconds());
+		pacPowerTimer.resetSeconds(level.pacPowerSeconds());
 		pacPowerTimer.start();
 		LOGGER.info("Timer started: %s", pacPowerTimer);
 		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened(this));
@@ -653,7 +653,7 @@ public abstract class GameModel {
 			memo.foodFoundTile = Optional.of(tile);
 			memo.lastFoodFound = world.foodRemaining() == 1;
 			memo.energizerFound = world.isEnergizerTile(tile);
-			memo.pacPowered = memo.energizerFound && level.ghostFrightenedSeconds() > 0;
+			memo.pacPowered = memo.energizerFound && level.pacPowerSeconds() > 0;
 			memo.bonusReached = world.eatenFoodCount() == BONUS1_PELLETS_EATEN
 					|| world.eatenFoodCount() == BONUS2_PELLETS_EATEN;
 			onFoodFound(tile);

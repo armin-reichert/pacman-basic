@@ -38,54 +38,62 @@ public record GameLevel(
 	int mazeNumber,
 	/** World used in this level. */
 	World world,
-	/** Bonus used in this lebvel */
+	/** Bonus used in this level. */
 	Bonus bonus,
-	/** Ghost house rules for this level */
+	/** Ghost house rules in this level */
 	GhostHouseRules houseRules,
-	/** Relative player speed at current level. */
+	/** Relative player speed in this level. */
 	float playerSpeed,
-	/** Relative ghost speed at current level. */
+	/** Relative ghost speed in this level. */
 	float ghostSpeed,
-	/** Relative ghost speed when inside tunnel at current level. */
+	/** Relative ghost speed when inside tunnel in this level. */
 	float ghostSpeedTunnel,
-	/** Number of pellets left before player becomes "Cruise Elroy" at severity 1. */
+	/** Number of pellets left before player becomes "Cruise Elroy" with severity 1. */
 	int elroy1DotsLeft,
 	/** Relative speed of player being "Cruise Elroy" at severity 1. */
 	float elroy1Speed,
-	/** Number of pellets left before player becomes "Cruise Elroy" at severity 2. */
+	/** Number of pellets left before player becomes "Cruise Elroy" with severity 2. */
 	int elroy2DotsLeft,
-	/** Relative speed of player being "Cruise Elroy" at severity 2. */
+	/** Relative speed of player being "Cruise Elroy" with severity 2. */
 	float elroy2Speed,
 	/** Relative speed of player in power mode. */
 	float playerSpeedPowered,
 	/** Relative speed of frightened ghost. */
 	float ghostSpeedFrightened,
-	/** Number of seconds ghost are frightened at current level. */
-	int ghostFrightenedSeconds,
-	/** Number of maze flashes at end of current level. */
+	/** Number of seconds Pac-Man gets power int this level. */
+	int pacPowerSeconds,
+	/** Number of maze flashes at end of this level. */
 	int numFlashes)
-//@formatter:on
 {
-	public static GameLevel fromData(int levelNumber, int mazeNumber, World world, Bonus bonus,
-			GhostHouseRules houseRules, byte[] data) {
-		float playerSpeed = percentage(data[0]);
-		float ghostSpeed = percentage(data[1]);
-		float ghostSpeedTunnel = percentage(data[2]);
-		int elroy1DotsLeft = data[3];
-		float elroy1Speed = percentage(data[4]);
-		int elroy2DotsLeft = data[5];
-		float elroy2Speed = percentage(data[6]);
-		float playerSpeedPowered = percentage(data[7]);
+	public static GameLevel fromData(
+			int levelNumber, 
+			int mazeNumber, 
+			World world, 
+			Bonus bonus,	
+			GhostHouseRules houseRules, 
+			byte[] data) 
+	{
+		float playerSpeed          = percentage(data[0]);
+		float ghostSpeed           = percentage(data[1]);
+		float ghostSpeedTunnel     = percentage(data[2]);
+		int elroy1DotsLeft         = data[3];
+		float elroy1Speed          = percentage(data[4]);
+		int elroy2DotsLeft         = data[5];
+		float elroy2Speed          = percentage(data[6]);
+		float playerSpeedPowered   = percentage(data[7]);
 		float ghostSpeedFrightened = percentage(data[8]);
-		int ghostFrightenedSeconds = data[9];
-		int numFlashes = data[10];
-		return new GameLevel(levelNumber, mazeNumber, world, bonus, houseRules, playerSpeed, ghostSpeed, ghostSpeedTunnel,
-				elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered, ghostSpeedFrightened,
-				ghostFrightenedSeconds, numFlashes);
+		int pacPowerSeconds        = data[9];
+		int numFlashes             = data[10];
+		
+		return new GameLevel(levelNumber, mazeNumber, world, bonus, houseRules, 
+				playerSpeed, ghostSpeed, ghostSpeedTunnel,
+				elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, 
+				playerSpeedPowered, ghostSpeedFrightened,
+				pacPowerSeconds, numFlashes);
 	}
+//@formatter:on
 
 	protected static float percentage(int value) {
 		return value / 100f;
 	}
-
 }
