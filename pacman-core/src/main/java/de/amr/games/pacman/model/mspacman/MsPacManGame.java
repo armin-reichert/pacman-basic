@@ -37,6 +37,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -297,7 +298,7 @@ public class MsPacManGame extends GameModel {
 		var world = createWorld(mapNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
-		level = createLevelFromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
+		level = GameLevel.fromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
 	}
 
 	@Override

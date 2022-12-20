@@ -54,7 +54,6 @@ import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -123,28 +122,6 @@ public abstract class GameModel {
 		{ 5 *FPS, 20 *FPS, 5 *FPS, 20 *FPS, 5 *FPS, 1037 *FPS,      1, -1 },
 	};
 	//@formatter:on
-
-	protected static GameLevel createLevelFromData(int levelNumber, int mazeNumber, World world, Bonus bonus,
-			GhostHouseRules houseRules, byte[] data) {
-		float playerSpeed = percentage(data[0]);
-		float ghostSpeed = percentage(data[1]);
-		float ghostSpeedTunnel = percentage(data[2]);
-		int elroy1DotsLeft = data[3];
-		float elroy1Speed = percentage(data[4]);
-		int elroy2DotsLeft = data[5];
-		float elroy2Speed = percentage(data[6]);
-		float playerSpeedPowered = percentage(data[7]);
-		float ghostSpeedFrightened = percentage(data[8]);
-		int ghostFrightenedSeconds = data[9];
-		int numFlashes = data[10];
-		return new GameLevel(levelNumber, mazeNumber, world, bonus, houseRules, playerSpeed, ghostSpeed, ghostSpeedTunnel,
-				elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered, ghostSpeedFrightened,
-				ghostFrightenedSeconds, numFlashes);
-	}
-
-	protected static float percentage(int value) {
-		return value / 100f;
-	}
 
 	protected static int checkGhostID(int id) {
 		if (id < 0 || id > 3) {

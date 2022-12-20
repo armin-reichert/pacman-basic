@@ -66,4 +66,26 @@ public record GameLevel(
 	int numFlashes)
 //@formatter:on
 {
+	public static GameLevel fromData(int levelNumber, int mazeNumber, World world, Bonus bonus,
+			GhostHouseRules houseRules, byte[] data) {
+		float playerSpeed = percentage(data[0]);
+		float ghostSpeed = percentage(data[1]);
+		float ghostSpeedTunnel = percentage(data[2]);
+		int elroy1DotsLeft = data[3];
+		float elroy1Speed = percentage(data[4]);
+		int elroy2DotsLeft = data[5];
+		float elroy2Speed = percentage(data[6]);
+		float playerSpeedPowered = percentage(data[7]);
+		float ghostSpeedFrightened = percentage(data[8]);
+		int ghostFrightenedSeconds = data[9];
+		int numFlashes = data[10];
+		return new GameLevel(levelNumber, mazeNumber, world, bonus, houseRules, playerSpeed, ghostSpeed, ghostSpeedTunnel,
+				elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered, ghostSpeedFrightened,
+				ghostFrightenedSeconds, numFlashes);
+	}
+
+	protected static float percentage(int value) {
+		return value / 100f;
+	}
+
 }

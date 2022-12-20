@@ -36,6 +36,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -138,7 +139,7 @@ public class PacManGame extends GameModel {
 		var bonus = createBonus(levelNumber);
 		bonus.entity().setPosition(BONUS_POSITION);
 		var houseRules = createHouseRules(levelNumber);
-		level = createLevelFromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
+		level = GameLevel.fromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
 	}
 
 	@Override
