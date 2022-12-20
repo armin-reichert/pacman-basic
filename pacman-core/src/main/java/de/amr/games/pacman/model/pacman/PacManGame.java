@@ -132,7 +132,6 @@ public class PacManGame extends GameModel {
 
 	@Override
 	protected void createLevel(int levelNumber) {
-		checkLevelNumber(levelNumber);
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		int mazeNumber = 1;
 		var world = createWorld();
