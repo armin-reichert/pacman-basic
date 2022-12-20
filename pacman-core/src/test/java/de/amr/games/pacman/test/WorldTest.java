@@ -2,9 +2,11 @@ package de.amr.games.pacman.test;
 
 import static java.util.function.Predicate.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
+import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -97,5 +99,24 @@ public class WorldTest {
 		assertEquals(234 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(234, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(2, world.portals().size());
+	}
+
+	@Test
+	public void testCopyMapData() {
+		byte[][] map = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } };
+		byte[][] copy = U.copyByteArray2D(map);
+		assertEquals(map.length, copy.length);
+		for (int i = 0; i < map.length; ++i) {
+			assertEquals(map[i].length, copy[i].length);
+		}
+		for (int i = 0; i < map.length; ++i) {
+			for (int j = 0; j < map[0].length; ++j) {
+				assertEquals(map[i][j], copy[i][j]);
+			}
+		}
+		assertEquals(4, map[1][1]);
+		assertEquals(4, copy[1][1]);
+		copy[1][1] = (byte) 42;
+		assertNotEquals(map[1][1], copy[1][1]);
 	}
 }

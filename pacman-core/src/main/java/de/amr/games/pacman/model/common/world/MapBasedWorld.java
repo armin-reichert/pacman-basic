@@ -27,10 +27,10 @@ package de.amr.games.pacman.model.common.world;
 import static de.amr.games.pacman.lib.Vector2i.v2i;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.Vector2i;
 
 /**
@@ -48,10 +48,6 @@ public abstract class MapBasedWorld implements World {
 	public static final byte ENERGIZER_EATEN = 6;
 	//@formatter:on
 
-	protected static byte[][] copyArray2D(byte[][] arr) {
-		return Arrays.stream(arr).map(byte[]::clone).toArray(byte[][]::new);
-	}
-
 	protected final Vector2i size;
 	protected final byte[][] map;
 	protected final List<Portal> portals;
@@ -60,7 +56,7 @@ public abstract class MapBasedWorld implements World {
 	protected int foodRemaining;
 
 	protected MapBasedWorld(byte[][] mapData, int sizeX, int sizeY) {
-		map = copyArray2D(mapData);
+		map = U.copyByteArray2D(mapData);
 		size = v2i(sizeX, sizeY);
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();

@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -33,6 +34,10 @@ import java.util.stream.Stream;
 public class U {
 
 	private U() {
+	}
+
+	public static byte[][] copyByteArray2D(byte[][] array) {
+		return Arrays.stream(array).map(byte[]::clone).toArray(byte[][]::new);
 	}
 
 	public static final Random rnd = new Random();
