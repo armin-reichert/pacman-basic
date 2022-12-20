@@ -100,17 +100,17 @@ public abstract class GameModel {
 
 	protected static GameLevel createLevelFromData(int levelNumber, int mazeNumber, World world, Bonus bonus,
 			GhostHouseRules houseRules, byte[] data) {
-		float playerSpeed = percentage(data[1]);
-		float ghostSpeed = percentage(data[2]);
-		float ghostSpeedTunnel = percentage(data[3]);
-		int elroy1DotsLeft = data[4];
-		float elroy1Speed = percentage(data[5]);
-		int elroy2DotsLeft = data[6];
-		float elroy2Speed = percentage(data[7]);
-		float playerSpeedPowered = percentage(data[8]);
-		float ghostSpeedFrightened = percentage(data[9]);
-		int ghostFrightenedSeconds = data[10];
-		int numFlashes = data[11];
+		float playerSpeed = percentage(data[0]);
+		float ghostSpeed = percentage(data[1]);
+		float ghostSpeedTunnel = percentage(data[2]);
+		int elroy1DotsLeft = data[3];
+		float elroy1Speed = percentage(data[4]);
+		int elroy2DotsLeft = data[5];
+		float elroy2Speed = percentage(data[6]);
+		float playerSpeedPowered = percentage(data[7]);
+		float ghostSpeedFrightened = percentage(data[8]);
+		int ghostFrightenedSeconds = data[9];
+		int numFlashes = data[10];
 		return new GameLevel(levelNumber, mazeNumber, world, bonus, houseRules, playerSpeed, ghostSpeed, ghostSpeedTunnel,
 				elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, playerSpeedPowered, ghostSpeedFrightened,
 				ghostFrightenedSeconds, numFlashes);
