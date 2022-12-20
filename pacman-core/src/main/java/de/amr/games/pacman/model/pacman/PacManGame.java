@@ -34,7 +34,6 @@ import java.util.List;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -93,8 +92,6 @@ public class PacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
 	
-	private static final Vector2d BONUS_POSITION = World.halfTileRightOf(v2i(13, 20));
-
 	private static Bonus createBonus(int levelNumber) {
 		return switch (levelNumber) {
 		case 1      -> new StaticBonus(0,  100); // Cherries
@@ -137,7 +134,7 @@ public class PacManGame extends GameModel {
 		int mazeNumber = 1;
 		var world = createWorld();
 		var bonus = createBonus(levelNumber);
-		bonus.entity().setPosition(BONUS_POSITION);
+		bonus.entity().setPosition(13 * World.TS + World.HTS, 20 * World.TS);
 		var houseRules = createHouseRules(levelNumber);
 		level = GameLevel.fromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
 	}
@@ -156,7 +153,7 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	protected void onBonusReached(Bonus bonus) {
+	public void onBonusReached(Bonus bonus) {
 		int ticks = 10 * FPS - RND.nextInt(FPS); // between 9 and 10 seconds
 		bonus.setEdible(ticks);
 		LOGGER.info("Bonus activated for %d ticks (%.2f seconds). %s", ticks, (double) ticks / FPS, bonus);

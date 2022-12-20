@@ -64,6 +64,11 @@ public interface Bonus {
 	void setInactive();
 
 	/**
+	 * Consume the bonus.
+	 */
+	void eat();
+
+	/**
 	 * Changes the bonus state to edible.
 	 * 
 	 * @param points earned when eating this bonus

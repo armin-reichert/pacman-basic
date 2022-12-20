@@ -528,7 +528,7 @@ public abstract class GameModel {
 
 	// Bonus
 
-	protected abstract void onBonusReached(Bonus bonus);
+	public abstract void onBonusReached(Bonus bonus);
 
 	// Game logic
 

@@ -94,6 +94,13 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
+	public void eat() {
+		state = BonusState.EATEN;
+		timer = GameModel.BONUS_EATEN_TICKS;
+		LOGGER.info("Bonus eaten: %s", this);
+	}
+
+	@Override
 	public void update(GameModel game) {
 		switch (state) {
 		case INACTIVE -> {
@@ -101,10 +108,8 @@ public class StaticBonus implements Bonus {
 		}
 		case EDIBLE -> {
 			if (entity.sameTile(game.pac())) {
+				eat();
 				game.scorePoints(points());
-				state = BonusState.EATEN;
-				timer = GameModel.BONUS_EATEN_TICKS;
-				LOGGER.info("Bonus eaten: %s", this);
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, entity.tile());
 				return;
 			}

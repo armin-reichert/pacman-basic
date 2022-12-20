@@ -193,18 +193,25 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
+			renderSound(game);
+
+			// Level test mode?
 			if (gc.levelTestMode) {
 				if (game.level().number() <= gc.levelTestLastLevelNumber) {
-					if (gc.state().timer().atSecond(1)) {
+					// show bonus, update it for one second, then eat it and show won points
+					if (gc.state().timer().atSecond(0.0)) {
+						game.onBonusReached(game.level().bonus());
+					} else if (gc.state().timer().atSecond(1.0)) {
+						game.level().bonus().eat();
+					} else if (gc.state().timer().atSecond(2.0)) {
 						gc.changeState(LEVEL_COMPLETE);
 					}
+					game.level().bonus().update(game);
 				} else {
 					gc.boot(); // end level test
 				}
 				return;
 			}
-
-			renderSound(game);
 
 			game.memo.forgetEverything(); // ich scholze jetzt
 

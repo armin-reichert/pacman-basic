@@ -119,6 +119,14 @@ public class MovingBonus extends Creature implements Bonus {
 		LOGGER.info("Bonus gets edible: %s", this);
 	}
 
+	@Override
+	public void eat() {
+		state = BonusState.EATEN;
+		timer = GameModel.BONUS_EATEN_TICKS;
+		LOGGER.info("Bonus eaten: %s", this);
+		jumpAnimation.stop();
+	}
+
 	public int dy() {
 		return jumpAnimation.isRunning() ? jumpAnimation.frame() : 0;
 	}
@@ -130,11 +138,8 @@ public class MovingBonus extends Creature implements Bonus {
 		}
 		case EDIBLE -> {
 			if (sameTile(game.pac())) {
-				state = BonusState.EATEN;
-				timer = GameModel.BONUS_EATEN_TICKS;
-				jumpAnimation.stop();
+				eat();
 				game.scorePoints(points);
-				LOGGER.info("Bonus eaten: %s", this);
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;
 			}

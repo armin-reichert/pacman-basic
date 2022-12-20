@@ -307,7 +307,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected void onBonusReached(Bonus bonus) {
+	public void onBonusReached(Bonus bonus) {
 		var houseEntry = level.world().ghostHouse().entryTile();
 		int houseHeight = level.world().ghostHouse().size().y();
 		int numPortals = level.world().portals().size();
