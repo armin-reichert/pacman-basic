@@ -125,6 +125,7 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = GameModel.BONUS_EATEN_TICKS;
 		LOGGER.info("Bonus eaten: %s", this);
 		jumpAnimation.stop();
+		GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 	}
 
 	public int dy() {
@@ -138,9 +139,8 @@ public class MovingBonus extends Creature implements Bonus {
 		}
 		case EDIBLE -> {
 			if (sameTile(game.pac())) {
-				eat();
 				game.scorePoints(points);
-				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
+				eat();
 				return;
 			}
 			steering.steer(game, this);
