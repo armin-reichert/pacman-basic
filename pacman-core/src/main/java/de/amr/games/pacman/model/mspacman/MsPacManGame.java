@@ -39,6 +39,7 @@ import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -75,8 +76,8 @@ import de.amr.games.pacman.model.common.world.HorizontalPortal;
  */
 public class MsPacManGame extends GameModel {
 
-	private static final byte[][] LEVELS = {
 	/*@formatter:off*/
+	private static final byte[][] LEVELS = {
 	/* 1*/ {0, /* CHERRIES */    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {1, /* STRAWBERRY */  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* Intermission scene 1: "They Meet" */
@@ -103,13 +104,23 @@ public class MsPacManGame extends GameModel {
 	/*19*/ {7 /* RANDOM */,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	/*20*/ {7 /* RANDOM */,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	/*21*/ {7 /* RANDOM */,      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*@formatter:on*/
 	};
 
-	private static final short[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
+	private static Bonus createBonus(int levelNumber) {
+		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;	
+		return switch (n) {
+		case 1 -> new MovingBonus(0,  100); // Cherries
+		case 2 -> new MovingBonus(1,  200); // Strawberry
+		case 3 -> new MovingBonus(2,  500); // Peach
+		case 4 -> new MovingBonus(3,  700); // Pretzel (A Brezn, HerrGottSakra!)
+		case 5 -> new MovingBonus(4, 1000); // Apple
+		case 6 -> new MovingBonus(5, 2000); // Pear
+		case 7 -> new MovingBonus(6, 5000); // Banana
+		default -> throw new IllegalArgumentException();
+		};
+	}
 
 	private static final byte[][] MAP1 = {
-		//@formatter:off
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
@@ -146,11 +157,9 @@ public class MsPacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-		//@formatter:on
 	};
 
 	private static final byte[][] MAP2 = {
-		//@formatter:off
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
@@ -187,11 +196,9 @@ public class MsPacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-		//@formatter:on
 	};
 
 	private static final byte[][] MAP3 = {
-		//@formatter:off
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
@@ -228,11 +235,9 @@ public class MsPacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-		//@formatter:on
 	};
 
 	private static final byte[][] MAP4 = {
-		//@formatter:off
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
@@ -269,8 +274,8 @@ public class MsPacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-		//@formatter:on
 	};
+	//@formatter:on
 
 	public static ArcadeWorld createWorld(int number) {
 		var map = switch (number) {
@@ -318,9 +323,8 @@ public class MsPacManGame extends GameModel {
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		int mapNumber = mapNumber(levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
-		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(BONUS_VALUES.length) : data[0];
 		var world = createWorld(mapNumber);
-		var bonus = new MovingBonus(bonusSymbol, BONUS_VALUES[bonusSymbol]);
+		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
 		level = createLevelFromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
 	}

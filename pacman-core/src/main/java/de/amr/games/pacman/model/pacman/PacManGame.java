@@ -38,6 +38,7 @@ import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -80,14 +81,23 @@ public class PacManGame extends GameModel {
 	/*20*/ {7,                  100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	/*21*/ {7,                   90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
-	/*@formatter:on*/
 
 	private static final Vector2d BONUS_POSITION = World.halfTileRightOf(v2i(13, 20));
 
-	private static final short[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	private static Bonus createBonus(int levelNumber) {
+		return switch (levelNumber) {
+		case 1      -> new StaticBonus(BONUS_POSITION, 0,  100); // Cherries
+		case 2      -> new StaticBonus(BONUS_POSITION, 1,  300); // Strawberry
+		case 3, 4   -> new StaticBonus(BONUS_POSITION, 2,  500); // Peach
+		case 5, 6   -> new StaticBonus(BONUS_POSITION, 3,  700); // Apple
+		case 7, 8   -> new StaticBonus(BONUS_POSITION, 4, 1000); // Grapes
+		case 9, 10  -> new StaticBonus(BONUS_POSITION, 5, 2000); // Galaxian
+		case 11, 12 -> new StaticBonus(BONUS_POSITION, 6, 3000); // Bell
+		default     -> new StaticBonus(BONUS_POSITION, 7, 5000); // Key
+		};
+	}
 
 	private static final byte[][] MAP = {
-	//@formatter:off
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
@@ -124,8 +134,8 @@ public class PacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-		//@formatter:on
 	};
+	//@formatter:on
 
 	// Tiles where chasing ghosts cannot move upwards
 	public static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
@@ -155,8 +165,7 @@ public class PacManGame extends GameModel {
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		int mazeNumber = 1;
 		var world = createWorld();
-		int bonusSymbol = data[0];
-		var bonus = new StaticBonus(BONUS_POSITION, bonusSymbol, BONUS_VALUES[bonusSymbol]);
+		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
 		level = createLevelFromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
 	}
