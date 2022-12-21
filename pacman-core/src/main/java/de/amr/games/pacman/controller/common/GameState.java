@@ -208,7 +208,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					}
 					game.level().bonus().update(game);
 				} else {
-					gc.boot(); // end level test
+					// end level test
+					gc.levelTestMode = false;
+					gc.boot();
 				}
 				return;
 			}
