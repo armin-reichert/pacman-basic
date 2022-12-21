@@ -171,14 +171,14 @@ public abstract class GameModel {
 	protected GameModel() {
 		pac = createPac();
 		theGhosts = createGhosts();
-		setGhostBehavior();
+		defineGhostChasingBehavior();
 		setLevel(1);
 	}
 
 	/**
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
 	 */
-	protected void setGhostBehavior() {
+	protected void defineGhostChasingBehavior() {
 		var redGhost = ghost(ID_RED_GHOST);
 		var pinkGhost = ghost(ID_PINK_GHOST);
 		var cyanGhost = ghost(ID_CYAN_GHOST);
