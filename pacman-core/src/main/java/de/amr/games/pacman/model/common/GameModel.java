@@ -226,24 +226,16 @@ public abstract class GameModel {
 	public abstract Ghost[] createGhosts();
 
 	/**
-	 * 
-	 * @param levelNumber Level number (starting at 1)
-	 * @return
-	 */
-	public abstract int mazeNumber(int levelNumber);
-
-	/**
 	 * Creates the specified level.
 	 * 
 	 * @param levelNumber Level number (starting at 1)
 	 */
 	protected void createLevel(int levelNumber) {
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-		int mazeNumber = mazeNumber(levelNumber);
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
-		level = GameLevel.fromData(levelNumber, mazeNumber, world, bonus, houseRules, data);
+		level = GameLevel.fromData(levelNumber, world, bonus, houseRules, data);
 	}
 
 	/**

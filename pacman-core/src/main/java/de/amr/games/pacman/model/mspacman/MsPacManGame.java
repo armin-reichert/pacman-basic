@@ -283,9 +283,7 @@ public class MsPacManGame extends GameModel {
 		};
 	}
 
-	@Override
 	public int mazeNumber(int levelNumber) {
-		checkLevelNumber(levelNumber);
 		return switch (levelNumber) {
 		case 1, 2 -> 1;
 		case 3, 4, 5 -> 2;

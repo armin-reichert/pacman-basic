@@ -34,8 +34,6 @@ import de.amr.games.pacman.model.common.world.World;
 public record GameLevel(
 	/** Number of level, starts with 1. */
 	int number,
-	/** Maze number of this level, starts with 1. */
-	int mazeNumber,
 	/** World used in this level. */
 	World world,
 	/** Bonus used in this level. */
@@ -67,7 +65,6 @@ public record GameLevel(
 {
 	public static GameLevel fromData(
 			int levelNumber, 
-			int mazeNumber, 
 			World world, 
 			Bonus bonus,	
 			GhostHouseRules houseRules, 
@@ -85,7 +82,7 @@ public record GameLevel(
 		int pacPowerSeconds        = data[9];
 		int numFlashes             = data[10];
 		
-		return new GameLevel(levelNumber, mazeNumber, world, bonus, houseRules, 
+		return new GameLevel(levelNumber, world, bonus, houseRules, 
 				playerSpeed, ghostSpeed, ghostSpeedTunnel,
 				elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, 
 				playerSpeedPowered, ghostSpeedFrightened,

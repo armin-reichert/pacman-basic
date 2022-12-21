@@ -134,11 +134,6 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public int mazeNumber(int levelNumber) {
-		return 1;
-	}
-
-	@Override
 	public GameVariant variant() {
 		return GameVariant.PACMAN;
 	}
