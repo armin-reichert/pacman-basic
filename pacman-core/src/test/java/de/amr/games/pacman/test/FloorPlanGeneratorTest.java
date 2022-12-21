@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.FloorPlan;
 import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -26,14 +27,12 @@ public class FloorPlanGeneratorTest {
 	private static File dir = new File(System.getProperty("user.dir"));
 
 	public static void main(String[] args) {
-		var pacManGame = new PacManGame();
-		var msPacManGame = new MsPacManGame();
 		List.of(8, 4, 2, 1).forEach(res -> {
-			createFloorPlan(pacManGame.createWorld(1), "floorplan-pacman-map1-res-%d.txt", res);
-			createFloorPlan(msPacManGame.createWorld(1), "floorplan-mspacman-map1-res-%d.txt", res);
-			createFloorPlan(msPacManGame.createWorld(2), "floorplan-mspacman-map2-res-%d.txt", res);
-			createFloorPlan(msPacManGame.createWorld(3), "floorplan-mspacman-map3-res-%d.txt", res);
-			createFloorPlan(msPacManGame.createWorld(4), "floorplan-mspacman-map4-res-%d.txt", res);
+			createFloorPlan(new ArcadeWorld(PacManGame.MAP), "floorplan-pacman-map1-res-%d.txt", res);
+			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP1), "floorplan-mspacman-map1-res-%d.txt", res);
+			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP2), "floorplan-mspacman-map2-res-%d.txt", res);
+			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP3), "floorplan-mspacman-map3-res-%d.txt", res);
+			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP4), "floorplan-mspacman-map4-res-%d.txt", res);
 		});
 	}
 

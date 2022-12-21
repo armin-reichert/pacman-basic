@@ -52,7 +52,7 @@ import de.amr.games.pacman.model.common.world.World;
 public class PacManGame extends GameModel {
 
 	//@formatter:off
-	private static final byte[][] MAP = {
+	public static final byte[][] MAP = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -96,7 +96,7 @@ public class PacManGame extends GameModel {
 	public static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
 	@Override
-	public ArcadeWorld createWorld(int mapNumber) {
+	public ArcadeWorld createWorld(int levelNumber) {
 		return new ArcadeWorld(MAP);
 	}
 

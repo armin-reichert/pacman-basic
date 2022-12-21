@@ -4,13 +4,11 @@ import static java.util.function.Predicate.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.lib.Vector2i;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
@@ -18,13 +16,6 @@ import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
 public class WorldTest {
-
-	private GameModel msPacManGame;
-
-	@Before
-	public void setup() {
-		msPacManGame = new MsPacManGame();
-	}
 
 	@Test
 	public void testTileCoordinates() {
@@ -61,14 +52,9 @@ public class WorldTest {
 		assertEquals(1, world.portals().size());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testIllegalMapNumber() {
-		msPacManGame.createWorld(42);
-	}
-
 	@Test
 	public void testMsPacManWorld1() {
-		World world = msPacManGame.createWorld(1);
+		var world = new ArcadeWorld(MsPacManGame.MAP1);
 		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
 		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -79,7 +65,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld2() {
-		World world = msPacManGame.createWorld(2);
+		var world = new ArcadeWorld(MsPacManGame.MAP2);
 		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
 		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -90,7 +76,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld3() {
-		World world = msPacManGame.createWorld(3);
+		var world = new ArcadeWorld(MsPacManGame.MAP3);
 		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
 		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -101,7 +87,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld4() {
-		World world = msPacManGame.createWorld(4);
+		var world = new ArcadeWorld(MsPacManGame.MAP4);
 		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
 		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());

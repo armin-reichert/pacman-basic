@@ -226,9 +226,8 @@ public abstract class GameModel {
 	 */
 	protected void createLevel(int levelNumber) {
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-		int mapNumber = mapNumber(levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
-		var world = createWorld(mapNumber);
+		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
 		level = GameLevel.fromData(levelNumber, mazeNumber, world, bonus, houseRules, data);

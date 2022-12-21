@@ -31,6 +31,7 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -77,7 +78,7 @@ import de.amr.games.pacman.model.common.world.HorizontalPortal;
 public class MsPacManGame extends GameModel {
 
 	/*@formatter:off*/
-	private static final byte[][] MAP1 = {
+	public static final byte[][] MAP1 = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -116,7 +117,7 @@ public class MsPacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
 
-	private static final byte[][] MAP2 = {
+	public static final byte[][] MAP2 = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -155,7 +156,7 @@ public class MsPacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
 
-	private static final byte[][] MAP3 = {
+	public static final byte[][] MAP3 = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -194,7 +195,7 @@ public class MsPacManGame extends GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
 
-	private static final byte[][] MAP4 = {
+	public static final byte[][] MAP4 = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -235,7 +236,9 @@ public class MsPacManGame extends GameModel {
 	//@formatter:on
 
 	@Override
-	public ArcadeWorld createWorld(int mapNumber) {
+	public ArcadeWorld createWorld(int levelNumber) {
+		checkLevelNumber(levelNumber);
+		int mapNumber = mapNumber(levelNumber);
 		var map = switch (mapNumber) {
 		case 1 -> MAP1;
 		case 2 -> MAP2;
@@ -249,6 +252,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public Bonus createBonus(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
 		return switch (n) {
 		//@formatter:off
@@ -281,6 +285,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public int mazeNumber(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		return switch (levelNumber) {
 		case 1, 2 -> 1;
 		case 3, 4, 5 -> 2;
@@ -292,6 +297,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public int mapNumber(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		return levelNumber < 14 ? mazeNumber(levelNumber) : mazeNumber(levelNumber) - 2;
 	}
 
@@ -302,6 +308,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public void onBonusReached(Bonus bonus) {
+		Objects.requireNonNull(bonus, "Bonus must not be null");
 		var houseEntry = level.world().ghostHouse().entryTile();
 		int houseHeight = level.world().ghostHouse().size().y();
 		int numPortals = level.world().portals().size();
