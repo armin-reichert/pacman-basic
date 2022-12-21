@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.common.actors;
 import java.util.Objects;
 import java.util.Optional;
 
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.AnimatedEntity;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
@@ -37,20 +38,16 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
+	private final TickTimer powerTimer = new TickTimer("PacPower", GameModel.FPS);
 	private boolean autoControlled;
-
 	private boolean dead;
-
-	/* Number of ticks Pac is resting and not moving. */
 	private int restingTicks;
-
-	/* Number of ticks since Pac has has eaten a pellet or energizer. */
 	private int starvingTicks;
-
 	private EntityAnimationSet<AnimKeys> animationSet;
 
 	public Pac(String name) {
 		super(name);
+		reset();
 	}
 
 	@Override
@@ -68,7 +65,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		}
 		switch (restingTicks) {
 		case 0 -> {
-			var speed = game.pacPowerTimer().isRunning() ? game.level().playerSpeedPowered() : game.level().playerSpeed();
+			var speed = powerTimer.isRunning() ? game.level().playerSpeedPowered() : game.level().playerSpeed();
 			setRelSpeed(speed);
 			tryMoving(game);
 			runAnimation(AnimKeys.PAC_MUNCHING);
@@ -81,6 +78,12 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		}
 		default -> --restingTicks;
 		}
+		powerTimer.advance();
+	}
+
+	/** Controls the time Pac has power. */
+	public TickTimer powerTimer() {
+		return powerTimer;
 	}
 
 	public void setAnimationSet(EntityAnimationSet<AnimKeys> animationSet) {
@@ -99,6 +102,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		restingTicks = 0;
 		starvingTicks = 0;
 		selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+		powerTimer.reset(0);
 	}
 
 	public boolean isDead() {
@@ -120,6 +124,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		restingTicks = ticks;
 	}
 
+	/* Number of ticks Pac is resting and not moving. */
 	public int restingTicks() {
 		return restingTicks;
 	}
@@ -132,6 +137,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		starvingTicks = 0;
 	}
 
+	/* Number of ticks since Pac has has eaten a pellet or energizer. */
 	public int starvingTicks() {
 		return starvingTicks;
 	}

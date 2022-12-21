@@ -68,7 +68,7 @@ public abstract class GameModel {
 	protected static final Random RND = new Random();
 
 	/** Pixels/tick at 100% relative speed. */
-	public static final double BASE_SPEED = 1.25;
+	public static final float BASE_SPEED = 1.25f;
 	/** Game loop speed in ticks/sec. */
 	public static final short FPS = 60;
 	public static final short MAX_CREDIT = 99;
@@ -132,10 +132,11 @@ public abstract class GameModel {
 		return id;
 	}
 
-	protected static void checkLevelNumber(int levelNumber) {
+	protected static int checkLevelNumber(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
+		return levelNumber;
 	}
 
 	// simulates the overflow bug from the original Arcade version
@@ -145,10 +146,9 @@ public abstract class GameModel {
 	}
 
 	protected GameLevel level;
-	protected final Pac pac;
+	protected Pac pac;
 	protected Ghost[] theGhosts;
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
-	protected final TickTimer pacPowerTimer = new TickTimer("PacPower", FPS);
 	protected final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
 	protected int credit;
 	protected int lives;
@@ -388,7 +388,6 @@ public abstract class GameModel {
 		});
 		guys().forEach(Creature::show);
 		level.bonus().setInactive();
-		pacPowerTimer.reset(0);
 		energizerPulse.reset();
 	}
 
@@ -539,11 +538,6 @@ public abstract class GameModel {
 		};
 	}
 
-	/** Controls the time Pac has power. */
-	public TickTimer pacPowerTimer() {
-		return pacPowerTimer;
-	}
-
 	// Bonus
 
 	public abstract void onBonusReached(Bonus bonus);
@@ -556,7 +550,6 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> ghost.update(this));
 		level.bonus().update(this);
 		advanceHunting();
-		pacPowerTimer.advance();
 		energizerPulse.animate();
 	}
 
@@ -590,8 +583,8 @@ public abstract class GameModel {
 			return; // enter new game state
 		}
 
-		memo.pacPowerFading = pacPowerTimer.remaining() == PAC_POWER_FADING_TICKS;
-		memo.pacPowerLost = pacPowerTimer.hasExpired();
+		memo.pacPowerFading = pac.powerTimer().remaining() == PAC_POWER_FADING_TICKS;
+		memo.pacPowerLost = pac.powerTimer().hasExpired();
 		if (memo.pacPowerFading) {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
@@ -628,11 +621,11 @@ public abstract class GameModel {
 	// Pac-Man
 
 	public boolean isPacPowerFading() {
-		return pacPowerTimer.isRunning() && pacPowerTimer.remaining() <= PAC_POWER_FADING_TICKS;
+		return pac.powerTimer().isRunning() && pac.powerTimer().remaining() <= PAC_POWER_FADING_TICKS;
 	}
 
 	private boolean isPacMeetingKiller() {
-		return !pacImmune && !pacPowerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+		return !pacImmune && !pac.powerTimer().isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	private void onPacMeetsKiller() {
@@ -645,9 +638,9 @@ public abstract class GameModel {
 	private void onPacPowerBegin() {
 		LOGGER.info("%s power begins", pac.name());
 		huntingTimer.stop();
-		pacPowerTimer.resetSeconds(level.pacPowerSeconds());
-		pacPowerTimer.start();
-		LOGGER.info("Timer started: %s", pacPowerTimer);
+		pac.powerTimer().resetSeconds(level.pacPowerSeconds());
+		pac.powerTimer().start();
+		LOGGER.info("Timer started: %s", pac.powerTimer());
 		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened(this));
 		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
@@ -656,8 +649,8 @@ public abstract class GameModel {
 	private void onPacPowerEnd() {
 		LOGGER.info("%s power ends", pac.name());
 		huntingTimer.start();
-		pacPowerTimer.stop();
-		pacPowerTimer.resetIndefinitely();
+		pac.powerTimer().stop();
+		pac.powerTimer().resetIndefinitely();
 		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac(this));
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}

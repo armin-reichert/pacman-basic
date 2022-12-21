@@ -68,7 +68,6 @@ public class Creature extends Entity {
 
 	protected Creature(String name) {
 		this.name = (name != null) ? name : "Creature@%d".formatted(hashCode());
-		reset();
 	}
 
 	public void reset() {
@@ -346,6 +345,6 @@ public class Creature extends Entity {
 
 	protected boolean atTurnPositionTo(Direction dir) {
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
-		return Math.abs(offset) <= 0.5;
+		return Math.abs(offset) <= 1;
 	}
 }
