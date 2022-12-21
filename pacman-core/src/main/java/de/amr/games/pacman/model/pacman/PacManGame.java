@@ -95,6 +95,18 @@ public class PacManGame extends GameModel {
 	// Tiles where chasing ghosts cannot move upwards
 	public static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
+	public PacManGame() {
+		pac = new Pac("Pac-Man");
+		theGhosts = new Ghost[] { //
+				new Ghost(ID_RED_GHOST, "Blinky"), //
+				new Ghost(ID_PINK_GHOST, "Pinky"), //
+				new Ghost(ID_CYAN_GHOST, "Inky"), //
+				new Ghost(ID_ORANGE_GHOST, "Clyde") //
+		};
+		defineGhostChasingBehavior();
+		setLevel(1);
+	}
+
 	@Override
 	public ArcadeWorld createWorld(int levelNumber) {
 		return new ArcadeWorld(MAP);
@@ -116,21 +128,6 @@ public class PacManGame extends GameModel {
 		//@formatter:on
 		bonus.entity().setPosition(13 * World.TS + World.HTS, 20 * World.TS);
 		return bonus;
-	}
-
-	@Override
-	public Pac createPac() {
-		return new Pac("Pac-Man");
-	}
-
-	@Override
-	public Ghost[] createGhosts() {
-		return new Ghost[] { //
-				new Ghost(ID_RED_GHOST, "Blinky"), //
-				new Ghost(ID_PINK_GHOST, "Pinky"), //
-				new Ghost(ID_CYAN_GHOST, "Inky"), //
-				new Ghost(ID_ORANGE_GHOST, "Clyde") //
-		};
 	}
 
 	@Override

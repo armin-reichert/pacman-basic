@@ -166,16 +166,6 @@ public abstract class GameModel {
 	public final Memory memo = new Memory();
 
 	/**
-	 * Creates the game model.
-	 */
-	protected GameModel() {
-		pac = createPac();
-		theGhosts = createGhosts();
-		defineGhostChasingBehavior();
-		setLevel(1);
-	}
-
-	/**
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
 	 */
 	protected void defineGhostChasingBehavior() {
@@ -212,18 +202,6 @@ public abstract class GameModel {
 	 * @return bonus used in this level
 	 */
 	public abstract Bonus createBonus(int levelNumber);
-
-	/**
-	 * @return the Pac-person of this game
-	 */
-	public abstract Pac createPac();
-
-	/**
-	 * Creates the ghosts.
-	 * 
-	 * @return the ghosts in order RED, PINK, CYAN, ORANGE
-	 */
-	public abstract Ghost[] createGhosts();
 
 	/**
 	 * Creates the specified level.
