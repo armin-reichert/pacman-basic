@@ -204,19 +204,6 @@ public abstract class GameModel {
 	public abstract Bonus createBonus(int levelNumber);
 
 	/**
-	 * Creates the specified level.
-	 * 
-	 * @param levelNumber Level number (starting at 1)
-	 */
-	protected void createLevel(int levelNumber) {
-		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-		var world = createWorld(levelNumber);
-		var bonus = createBonus(levelNumber);
-		var houseRules = createHouseRules(levelNumber);
-		level = GameLevel.fromData(levelNumber, world, bonus, houseRules, data);
-	}
-
-	/**
 	 * @param levelNumber Level number (starting at 1)
 	 * @return ghost house rules used in this level
 	 */
@@ -250,25 +237,29 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Initializes the model for given game level.
+	 * Initializes the game to the given level.
 	 * 
 	 * @param levelNumber 1-based level number
 	 */
 	public void setLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		createLevel(levelNumber);
+		var world = createWorld(levelNumber);
+		var bonus = createBonus(levelNumber);
+		var houseRules = createHouseRules(levelNumber);
+		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+		level = GameLevel.fromData(levelNumber, world, bonus, houseRules, data);
+		level.world().assignGhostPositions(theGhosts);
 		numGhostsKilledInLevel = 0;
 		numGhostsKilledByEnergizer = 0;
-		level.world().assignGhostPositions(theGhosts);
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);
-		gameScore().setLevelNumber(levelNumber);
+		gameScore.setLevelNumber(levelNumber);
 		if (levelNumber == 1) {
 			levelCounter().clear();
 			levelCounter().addSymbol(level().bonus().symbol());
 		}
 	}
 
-	public void startLevel(int levelNumber) {
+	public void enterLevel(int levelNumber) {
 		setLevel(levelNumber);
 		getReadyToRumble();
 		guys().forEach(Entity::hide);
@@ -276,7 +267,7 @@ public abstract class GameModel {
 		level.houseRules().resetPrivateGhostDotCounters();
 	}
 
-	public void endLevel() {
+	public void exitLevel() {
 		huntingTimer.stop();
 		level.bonus().setInactive();
 		pac.rest(Integer.MAX_VALUE);

@@ -311,7 +311,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.resetSeconds(4);
 			timer.start();
 			gc.sounds().stopAll();
-			game.endLevel();
+			game.exitLevel();
 			GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
 		}
 
@@ -344,7 +344,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(1);
 			timer.start();
-			game.startLevel(game.level().number() + 1);
+			game.enterLevel(game.level().number() + 1);
 		}
 
 		@Override
