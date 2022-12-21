@@ -56,7 +56,7 @@ public class TickTimer {
 	 * @param sec seconds
 	 */
 	public long secToTicks(double sec) {
-		return Math.round(sec * fps);
+		return Math.round(sec * 60);
 	}
 
 	public String ticksToString(long ticks) {
@@ -65,19 +65,13 @@ public class TickTimer {
 
 	private final String name;
 	private State state;
-	private int fps = 60;
 	private long duration;
 	private long tick; // 0..(duration - 1)
 	private List<Consumer<TickTimerEvent>> subscribers;
 
-	public TickTimer(String name, int fps) {
+	public TickTimer(String name) {
 		this.name = name;
-		this.fps = fps;
 		resetIndefinitely();
-	}
-
-	public void setFps(int fps) {
-		this.fps = fps;
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {

@@ -36,7 +36,6 @@ import de.amr.games.pacman.lib.Vector2d;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -259,7 +258,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 
 		// common fields of each state
 		MsPacManIntermission1 intermission;
-		TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
+		TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
 		public TickTimer timer() {

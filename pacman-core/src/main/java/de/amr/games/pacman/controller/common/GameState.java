@@ -480,7 +480,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	};
 
 	/* package */ GameController gc;
-	/* package */ final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
+	/* package */ final TickTimer timer = new TickTimer("Timer-" + name());
 
 	@Override
 	public TickTimer timer() {

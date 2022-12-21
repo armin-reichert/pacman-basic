@@ -38,7 +38,7 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
-	private final TickTimer powerTimer = new TickTimer("PacPower", GameModel.FPS);
+	private final TickTimer powerTimer;
 	private boolean autoControlled;
 	private boolean dead;
 	private int restingTicks;
@@ -47,7 +47,18 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public Pac(String name) {
 		super(name);
+		powerTimer = new TickTimer("PacPower");
 		reset();
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+		dead = false;
+		restingTicks = 0;
+		starvingTicks = 0;
+		selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+		powerTimer.reset(0);
 	}
 
 	@Override
@@ -93,16 +104,6 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	@Override
 	public Optional<EntityAnimationSet<AnimKeys>> animationSet() {
 		return Optional.ofNullable(animationSet);
-	}
-
-	@Override
-	public void reset() {
-		super.reset();
-		dead = false;
-		restingTicks = 0;
-		starvingTicks = 0;
-		selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
-		powerTimer.reset(0);
 	}
 
 	public boolean isDead() {

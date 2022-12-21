@@ -40,7 +40,6 @@ import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
@@ -74,7 +73,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		public final int msPacManStopX = t(15);
 		public final Vector2i titlePosition = v2i(t(10), t(8));
 		public final EntityAnimation blinking = SingleEntityAnimation.pulse(30);
-		public final TickTimer lightsTimer = new TickTimer("lights-timer", GameModel.FPS);
+		public final TickTimer lightsTimer = new TickTimer("lights-timer");
 		public final double actorSpeed = 1.1f;
 		public int ghostIndex = 0;
 		public boolean creditVisible = false;
@@ -183,7 +182,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		};
 
 		MsPacManIntro controller;
-		final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
+		final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
 		public TickTimer timer() {

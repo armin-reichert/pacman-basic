@@ -38,7 +38,6 @@ import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -288,7 +287,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 		};
 
 		PacManIntro controller;
-		final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
+		final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
 		public TickTimer timer() {
