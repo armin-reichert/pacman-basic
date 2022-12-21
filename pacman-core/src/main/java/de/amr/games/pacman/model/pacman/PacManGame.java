@@ -134,11 +134,6 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public int mapNumber(int levelNumber) {
-		return 1;
-	}
-
-	@Override
 	public int mazeNumber(int levelNumber) {
 		return 1;
 	}

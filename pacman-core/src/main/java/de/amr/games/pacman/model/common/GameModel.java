@@ -199,8 +199,18 @@ public abstract class GameModel {
 	 */
 	public abstract GameVariant variant();
 
+	/**
+	 * 
+	 * @param levelNumber Level number (starting at 1)
+	 * @return world used in this level
+	 */
 	public abstract World createWorld(int levelNumber);
 
+	/**
+	 * 
+	 * @param levelNumber Level number (starting at 1)
+	 * @return bonus used in this level
+	 */
 	public abstract Bonus createBonus(int levelNumber);
 
 	/**
@@ -215,8 +225,11 @@ public abstract class GameModel {
 	 */
 	public abstract Ghost[] createGhosts();
 
-	public abstract int mapNumber(int levelNumber);
-
+	/**
+	 * 
+	 * @param levelNumber Level number (starting at 1)
+	 * @return
+	 */
 	public abstract int mazeNumber(int levelNumber);
 
 	/**

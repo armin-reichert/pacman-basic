@@ -295,9 +295,7 @@ public class MsPacManGame extends GameModel {
 		};
 	}
 
-	@Override
-	public int mapNumber(int levelNumber) {
-		checkLevelNumber(levelNumber);
+	private int mapNumber(int levelNumber) {
 		return levelNumber < 14 ? mazeNumber(levelNumber) : mazeNumber(levelNumber) - 2;
 	}
 
