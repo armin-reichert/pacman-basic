@@ -64,7 +64,7 @@ public class GameEvents {
 		IT.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 
-	public static void publish(GameEventType info, Vector2i tile) {
-		publish(new GameEvent(IT.fnGame.get(), info, null, tile));
+	public static void publish(GameEventType type, Vector2i tile) {
+		publish(new GameEvent(IT.fnGame.get(), type, null, tile));
 	}
 }
