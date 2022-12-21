@@ -30,6 +30,8 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -502,7 +504,7 @@ public abstract class GameModel {
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
 			// locked and house-leaving ghost will reverse as soon as he has left the house
-			ghosts(GhostState.HUNTING_PAC, GhostState.LOCKED, GhostState.LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
+			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
 		}
 	}
 
@@ -599,7 +601,7 @@ public abstract class GameModel {
 	}
 
 	public void killAllPossibleGhosts() {
-		var prey = ghosts(GhostState.HUNTING_PAC, GhostState.FRIGHTENED).toList();
+		var prey = ghosts(HUNTING_PAC, FRIGHTENED).toList();
 		numGhostsKilledByEnergizer = 0;
 		killGhosts(prey);
 	}
