@@ -28,6 +28,8 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
+import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.List;
 
@@ -39,10 +41,8 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Model of the Pac-Man game.
@@ -126,7 +126,7 @@ public class PacManGame extends GameModel {
 		default     -> new StaticBonus(7, 5000); // Key
 		};
 		//@formatter:on
-		bonus.entity().setPosition(13 * World.TS + World.HTS, 20 * World.TS);
+		bonus.entity().setPosition(halfTileRightOf(v2i(13, 20)));
 		return bonus;
 	}
 
@@ -137,7 +137,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
-		if (dir == Direction.UP && ghost.is(GhostState.HUNTING_PAC) && RED_ZONE.contains(ghost.tile())) {
+		if (dir == Direction.UP && ghost.is(HUNTING_PAC) && RED_ZONE.contains(ghost.tile())) {
 			return false;
 		}
 		return super.isGhostAllowedMoving(ghost, dir);
@@ -147,7 +147,7 @@ public class PacManGame extends GameModel {
 	public void onBonusReached(Bonus bonus) {
 		int ticks = 10 * FPS - RND.nextInt(FPS); // between 9 and 10 seconds
 		bonus.setEdible(ticks);
-		LOGGER.info("Bonus activated for %d ticks (%.2f seconds). %s", ticks, (double) ticks / FPS, bonus);
+		LOGGER.info("Bonus activated for %d ticks (%.2f seconds): %s", ticks, (double) ticks / FPS, bonus);
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 	}
 }
