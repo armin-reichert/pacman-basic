@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.model.common.actors.MoveResult.notMoved;
+import static de.amr.games.pacman.model.common.actors.MoveResult.teleported;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
 import de.amr.games.pacman.lib.Vector2i;
@@ -42,21 +44,16 @@ public record HorizontalPortal(Vector2i leftTunnelEnd, Vector2i rightTunnelEnd) 
 	private static final int DEPTH = 2;
 
 	@Override
-	public String toString() {
-		return "[Portal left=%s right=%s]".formatted(leftTunnelEnd, rightTunnelEnd());
-	}
-
-	@Override
 	public MoveResult teleport(Creature guy) {
 		var oldPos = guy.position();
 		if (guy.tile().y() == leftTunnelEnd.y() && guy.position().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
 			guy.placeAtTile(rightTunnelEnd);
-			return MoveResult.teleported("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
+			return teleported("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
 		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
 			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
-			return MoveResult.teleported("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
+			return teleported("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
 		}
-		return MoveResult.notMoved("No teleport possible at position %s", oldPos);
+		return notMoved("No teleport possible at position %s", oldPos);
 	}
 
 	@Override
