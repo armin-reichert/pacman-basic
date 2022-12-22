@@ -156,12 +156,11 @@ public abstract class GameModel {
 	protected int numGhostsKilledByEnergizer;
 	protected boolean playing;
 	protected boolean pacImmune;
-	protected boolean oneLessLifeDisplayed;
+	protected boolean oneLessLifeDisplayed; // to be replaced
 	protected final LevelCounter levelCounter = new LevelCounter();
 	protected final Score gameScore = new Score("SCORE");
 	protected final Score highScore = new Score("HIGH SCORE");
 	protected boolean scoresEnabled;
-
 	/** Remembers what happens during a tick. */
 	public final Memory memo = new Memory();
 
@@ -169,19 +168,19 @@ public abstract class GameModel {
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
 	 */
 	protected void defineGhostChasingBehavior() {
-		var redGhost = ghost(ID_RED_GHOST);
-		var pinkGhost = ghost(ID_PINK_GHOST);
-		var cyanGhost = ghost(ID_CYAN_GHOST);
-		var orangeGhost = ghost(ID_ORANGE_GHOST);
 		// Red ghost attacks Pac-Man directly
-		redGhost.setChasingBehavior(pac::tile);
+		ghost(ID_RED_GHOST).setChasingBehavior(pac::tile);
+
 		// Pink ghost ambushes Pac-Man
-		pinkGhost.setChasingBehavior(() -> tilesAhead(pac, 4));
+		ghost(ID_PINK_GHOST).setChasingBehavior(() -> tilesAhead(pac, 4));
+
 		// Cyan ghost attacks from opposite side than red ghost
-		cyanGhost.setChasingBehavior(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
-		// Orange ghost attacks and retreats if too near
-		orangeGhost.setChasingBehavior(
-				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? orangeGhost.scatterTile() : pac.tile());
+		ghost(ID_CYAN_GHOST).setChasingBehavior(() -> tilesAhead(pac, 2).scaled(2).minus(ghost(ID_RED_GHOST).tile()));
+
+		// Orange ghost attacks directly but retreats if too near
+		ghost(ID_ORANGE_GHOST).setChasingBehavior( //
+				() -> ghost(ID_ORANGE_GHOST).tile().euclideanDistance(pac.tile()) < 8 ? //
+						ghost(ID_ORANGE_GHOST).scatterTile() : pac.tile());
 	}
 
 	/**
