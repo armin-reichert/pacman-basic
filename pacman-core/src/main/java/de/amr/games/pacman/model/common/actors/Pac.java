@@ -71,6 +71,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	public void update(GameModel game) {
 		Objects.requireNonNull(game, "Game must not be null");
 		if (dead) {
+			setRelSpeed(0);
 			animate();
 			return;
 		}
@@ -145,7 +146,6 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public void die() {
 		dead = true;
-		setRelSpeed(0);
 		stopAnimation();
 	}
 }
