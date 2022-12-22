@@ -148,7 +148,7 @@ public abstract class GameModel {
 	protected Pac pac;
 	protected Ghost[] theGhosts;
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
-	protected final Pulse energizerPulse = new Pulse(10, true, false);
+	protected final Pulse energizerPulse = new Pulse(10, true);
 	protected int credit;
 	protected int numGhostsKilledInLevel;
 	protected int numGhostsKilledByEnergizer;

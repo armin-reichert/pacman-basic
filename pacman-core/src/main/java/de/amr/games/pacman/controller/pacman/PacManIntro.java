@@ -71,7 +71,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 	public static class IntroData {
 		public static final double CHASING_SPEED = 1.1;
 		public static final int LEFT_TILE = 4;
-		public static final Pulse BLINKING = new Pulse(10, true, false);
+		public static final Pulse BLINKING = new Pulse(10, true);
 		public static final String[] NICKNAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
 		public static final String[] CHARACTERS = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
 		public final boolean[] pictureVisible = { false, false, false, false };
