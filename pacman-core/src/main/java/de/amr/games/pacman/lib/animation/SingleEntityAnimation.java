@@ -34,17 +34,6 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 
 	public static final int INDEFINITE = -1;
 
-	/**
-	 * @param ticks duration (in ticks) of a single pulse
-	 * @return an endless sequence of {@code (true, false)}, each value taking {@code ticks} ticks
-	 */
-	public static SingleEntityAnimation<Boolean> pulse(int ticks) {
-		var pulse = new SingleEntityAnimation<>(true, false);
-		pulse.setFrameDuration(ticks);
-		pulse.repeatForever();
-		return pulse;
-	}
-
 	protected T[] things;
 	protected int repetitions;
 	protected long totalRunningTicks;

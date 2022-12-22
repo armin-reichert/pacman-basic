@@ -47,6 +47,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.lib.animation.Pulse;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -149,7 +150,7 @@ public abstract class GameModel {
 	protected Pac pac;
 	protected Ghost[] theGhosts;
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
-	protected final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
+	protected final Pulse energizerPulse = new Pulse(10, true, false);
 	protected int credit;
 	protected int lives;
 	protected int numGhostsKilledInLevel;

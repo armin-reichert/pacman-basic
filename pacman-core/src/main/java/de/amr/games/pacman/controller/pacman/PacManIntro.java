@@ -35,7 +35,7 @@ import de.amr.games.pacman.controller.pacman.PacManIntro.IntroState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
+import de.amr.games.pacman.lib.animation.Pulse;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
@@ -71,7 +71,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 	public static class IntroData {
 		public static final double CHASING_SPEED = 1.1;
 		public static final int LEFT_TILE = 4;
-		public static final SingleEntityAnimation<Boolean> BLINKING = SingleEntityAnimation.pulse(10);
+		public static final Pulse BLINKING = new Pulse(10, true, false);
 		public static final String[] NICKNAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
 		public static final String[] CHARACTERS = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
 		public final boolean[] pictureVisible = { false, false, false, false };

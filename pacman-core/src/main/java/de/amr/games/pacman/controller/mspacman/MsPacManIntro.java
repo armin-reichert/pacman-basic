@@ -37,7 +37,7 @@ import de.amr.games.pacman.controller.mspacman.MsPacManIntro.IntroState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
+import de.amr.games.pacman.lib.animation.Pulse;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
@@ -72,7 +72,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		public final Vector2i turningPoint = v2i(t(6), t(20)).plus(0, HTS);
 		public final int msPacManStopX = t(15);
 		public final Vector2i titlePosition = v2i(t(10), t(8));
-		public final EntityAnimation blinking = SingleEntityAnimation.pulse(30);
+		public final Pulse blinking = new Pulse(30, true, false);
 		public final TickTimer lightsTimer = new TickTimer("lights-timer");
 		public final double actorSpeed = 1.1f;
 		public int ghostIndex = 0;
