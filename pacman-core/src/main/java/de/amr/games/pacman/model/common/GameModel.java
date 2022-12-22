@@ -523,7 +523,7 @@ public abstract class GameModel {
 			onPacPowerBegin();
 		}
 
-		memo.pacMetKiller = isPacMeetingKiller();
+		memo.pacMetKiller = pac.isMeetingKiller(this);
 		if (memo.pacMetKiller) {
 			onPacMeetsKiller();
 			return; // enter new game state
@@ -573,16 +573,8 @@ public abstract class GameModel {
 
 	// Pac-Man
 
-	public boolean isPacPowerFading() {
-		return pac.powerTimer().isRunning() && pac.powerTimer().remaining() <= PAC_POWER_FADING_TICKS;
-	}
-
-	private boolean isPacMeetingKiller() {
-		return !pac.isImmune() && !pac.powerTimer().isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
-	}
-
 	private void onPacMeetsKiller() {
-		pac.die();
+		pac.kill();
 		level.houseRules().resetGlobalDotCounterAndSetEnabled(true);
 		ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
 		LOGGER.info("%s died at tile %s", pac.name(), pac.tile());

@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
+import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
+
 import java.util.Objects;
 import java.util.Optional;
 
@@ -39,34 +41,18 @@ import de.amr.games.pacman.model.common.GameModel;
 public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	private final TickTimer powerTimer;
-	private boolean immune;
-	private boolean autoControlled;
 	private boolean dead;
 	private int lives;
 	private int restingTicks;
 	private int starvingTicks;
 	private EntityAnimationSet<AnimKeys> animationSet;
+	private boolean immune; // extra
+	private boolean autoControlled; // extra
 
 	public Pac(String name) {
 		super(name);
 		powerTimer = new TickTimer("PacPower");
 		reset();
-	}
-
-	public void setImmune(boolean immune) {
-		this.immune = immune;
-	}
-
-	public boolean isImmune() {
-		return immune;
-	}
-
-	public int lives() {
-		return lives;
-	}
-
-	public void setLives(int lives) {
-		this.lives = lives;
 	}
 
 	@Override
@@ -79,20 +65,16 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		powerTimer.reset(0);
 	}
 
-	@Override
-	public String toString() {
-		return "[Pac: name='%s' lives=%d position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
-				.formatted(name(), lives, position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
-						restingTicks, starvingTicks);
+	public void update(GameModel game) {
+		Objects.requireNonNull(game, MSG_GAME_NULL);
+		if (dead) {
+			updateDead();
+		} else {
+			updateAlive(game);
+		}
 	}
 
-	public void update(GameModel game) {
-		Objects.requireNonNull(game, "Game must not be null");
-		if (dead) {
-			setAbsSpeed(0);
-			animate();
-			return;
-		}
+	private void updateAlive(GameModel game) {
 		switch (restingTicks) {
 		case 0 -> {
 			var speed = powerTimer.isRunning() ? game.level().playerSpeedPowered() : game.level().playerSpeed();
@@ -111,18 +93,62 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		powerTimer.advance();
 	}
 
-	/** Controls the time Pac has power. */
-	public TickTimer powerTimer() {
-		return powerTimer;
+	private void updateDead() {
+		setAbsSpeed(0);
+		animate();
 	}
 
-	public void setAnimationSet(EntityAnimationSet<AnimKeys> animationSet) {
-		this.animationSet = animationSet;
+	public void kill() {
+		stopAnimation();
+		setAbsSpeed(0);
+		dead = true;
+	}
+
+	public boolean isPowerFading(GameModel game) {
+		Objects.requireNonNull(game, MSG_GAME_NULL);
+		return powerTimer.isRunning() && powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS;
+	}
+
+	public boolean isMeetingKiller(GameModel game) {
+		Objects.requireNonNull(game, MSG_GAME_NULL);
+		return !immune && !powerTimer.isRunning() && game.ghosts(HUNTING_PAC).anyMatch(this::sameTile);
+	}
+
+	@Override
+	public String toString() {
+		return "[Pac: name='%s' lives=%d position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
+				.formatted(name(), lives, position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
+						restingTicks, starvingTicks);
+	}
+
+	public boolean isImmune() {
+		return immune;
+	}
+
+	public void setImmune(boolean immune) {
+		this.immune = immune;
+	}
+
+	public int lives() {
+		return lives;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+
+	/** Timer controlling how long Pac-Man has power. */
+	public TickTimer powerTimer() {
+		return powerTimer;
 	}
 
 	@Override
 	public Optional<EntityAnimationSet<AnimKeys>> animationSet() {
 		return Optional.ofNullable(animationSet);
+	}
+
+	public void setAnimationSet(EntityAnimationSet<AnimKeys> animationSet) {
+		this.animationSet = animationSet;
 	}
 
 	public boolean isDead() {
@@ -137,6 +163,11 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		this.autoControlled = autoControlled;
 	}
 
+	/* Number of ticks Pac is resting and not moving. */
+	public int restingTicks() {
+		return restingTicks;
+	}
+
 	public void rest(int ticks) {
 		if (ticks < 0) {
 			throw new IllegalArgumentException("Resting time cannot be negative, but is: %d".formatted(ticks));
@@ -144,9 +175,9 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		restingTicks = ticks;
 	}
 
-	/* Number of ticks Pac is resting and not moving. */
-	public int restingTicks() {
-		return restingTicks;
+	/* Number of ticks since Pac has has eaten a pellet or energizer. */
+	public int starvingTicks() {
+		return starvingTicks;
 	}
 
 	public void starve() {
@@ -155,16 +186,5 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public void endStarving() {
 		starvingTicks = 0;
-	}
-
-	/* Number of ticks since Pac has has eaten a pellet or energizer. */
-	public int starvingTicks() {
-		return starvingTicks;
-	}
-
-	public void die() {
-		dead = true;
-		stopAnimation();
-		setAbsSpeed(0);
 	}
 }

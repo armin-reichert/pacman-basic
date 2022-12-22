@@ -121,7 +121,7 @@ public class GameModelTest {
 	@Test
 	public void testPacDying() {
 		assertFalse(game.pac().isDead());
-		game.pac().die();
+		game.pac().kill();
 		assertTrue(game.pac().isDead());
 	}
 
@@ -129,7 +129,7 @@ public class GameModelTest {
 	public void testDeadPacHasZeroSpeed() {
 		game.pac().setAbsSpeed(42);
 		assertEquals(42.0, game.pac().velocity().length(), Vector2d.EPSILON);
-		game.pac().die();
+		game.pac().kill();
 		assertEquals(0.0, game.pac().velocity().length(), Vector2d.EPSILON);
 	}
 
