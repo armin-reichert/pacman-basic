@@ -24,14 +24,14 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.lib.Vector2i.v2i;
+import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.U;
-import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.lib.math.Vector2i;
 
 /**
  * @author Armin Reichert

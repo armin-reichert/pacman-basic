@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package de.amr.games.pacman.lib;
+package de.amr.games.pacman.lib.steering;
+
+import de.amr.games.pacman.lib.math.Vector2i;
 
 /**
  * @author Armin Reichert

@@ -26,7 +26,7 @@ package de.amr.games.pacman.model.common.world;
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.lib.math.Vector2i;
 
 /**
  * Provides information about rooms, walls, doors etc.

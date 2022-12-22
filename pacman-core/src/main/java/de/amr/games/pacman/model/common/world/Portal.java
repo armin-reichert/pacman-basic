@@ -24,7 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
-import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.MoveResult;
 

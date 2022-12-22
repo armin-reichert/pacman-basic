@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.lib.NavigationPoint.np;
+import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
@@ -35,9 +35,9 @@ import java.util.Objects;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.NavigationPoint;
-import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.lib.steering.NavigationPoint;
+import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;

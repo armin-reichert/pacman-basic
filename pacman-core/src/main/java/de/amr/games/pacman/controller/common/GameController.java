@@ -34,9 +34,9 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
-import de.amr.games.pacman.lib.RuleBasedSteering;
-import de.amr.games.pacman.lib.FollowRoute;
 import de.amr.games.pacman.lib.fsm.Fsm;
+import de.amr.games.pacman.lib.steering.RouteBasedSteering;
+import de.amr.games.pacman.lib.steering.RuleBasedSteering;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -78,7 +78,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public int intermissionTestNumber; // intermission test mode
 	public boolean levelTestMode = false; // level test mode
 	public int levelTestLastLevelNumber = 21; // level test mode
-	public FollowRoute pacSteeringInAttractMode = new FollowRoute(); // experimental
+	public RouteBasedSteering pacSteeringInAttractMode = new RouteBasedSteering(); // experimental
 
 	public GameController(GameVariant variant) {
 		states = GameState.values();

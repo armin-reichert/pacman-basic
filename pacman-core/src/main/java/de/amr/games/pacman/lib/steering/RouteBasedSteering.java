@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.lib;
+package de.amr.games.pacman.lib.steering;
 
 import java.util.List;
 
@@ -34,9 +34,11 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
+ * Pac-Man steering based on a defined route.
+ * 
  * @author Armin Reichert
  */
-public class FollowRoute implements Steering {
+public class RouteBasedSteering implements Steering {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 

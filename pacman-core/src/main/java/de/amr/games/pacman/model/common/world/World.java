@@ -28,9 +28,9 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.Vector2d;
-import de.amr.games.pacman.lib.Vector2i;
-import de.amr.games.pacman.lib.animation.EntityAnimation;
+import de.amr.games.pacman.lib.anim.EntityAnimation;
+import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**

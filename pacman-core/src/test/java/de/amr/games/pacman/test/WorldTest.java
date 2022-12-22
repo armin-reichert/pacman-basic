@@ -7,8 +7,8 @@ import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 import de.amr.games.pacman.lib.U;
-import de.amr.games.pacman.lib.Vector2d;
-import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;

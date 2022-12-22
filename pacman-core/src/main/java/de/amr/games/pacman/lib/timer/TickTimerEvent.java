@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Armin Reichert
+Copyright (c) 2021-22 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,19 +20,28 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-
-package de.amr.games.pacman.lib.animation;
+ */
+package de.amr.games.pacman.lib.timer;
 
 /**
  * @author Armin Reichert
- *
  */
-public class Pulse extends SingleEntityAnimation<Boolean> {
+public class TickTimerEvent {
 
-	public Pulse(int ticks, boolean first, boolean second) {
-		super(first, second);
-		setFrameDuration(ticks);
-		repeatForever();
+	public enum Type {
+		RESET, STARTED, STOPPED, EXPIRED;
 	}
+
+	public TickTimerEvent(Type type, long ticks) {
+		this.type = type;
+		this.ticks = ticks;
+	}
+
+	public TickTimerEvent(Type type) {
+		this.type = type;
+		ticks = 0;
+	}
+
+	public final Type type;
+	public final long ticks;
 }

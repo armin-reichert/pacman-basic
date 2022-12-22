@@ -23,9 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.steering.Direction.DOWN;
+import static de.amr.games.pacman.lib.steering.Direction.LEFT;
+import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.EATEN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
@@ -44,14 +44,14 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.U;
-import de.amr.games.pacman.lib.Vector2d;
-import de.amr.games.pacman.lib.Vector2i;
-import de.amr.games.pacman.lib.animation.AnimatedEntity;
-import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.EntityAnimationSet;
+import de.amr.games.pacman.lib.anim.AnimatedEntity;
+import de.amr.games.pacman.lib.anim.EntityAnimation;
+import de.amr.games.pacman.lib.anim.EntityAnimationSet;
+import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.world.World;

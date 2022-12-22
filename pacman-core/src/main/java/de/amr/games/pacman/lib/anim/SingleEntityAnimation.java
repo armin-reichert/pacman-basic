@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.lib.animation;
+package de.amr.games.pacman.lib.anim;
 
 /**
  * Time-controlled sequence of things, for example of boolean values, numbers, images, spritesheet regions etc.

@@ -29,8 +29,8 @@ import static de.amr.games.pacman.model.common.world.World.tileAt;
 
 import java.util.Objects;
 
-import de.amr.games.pacman.lib.Vector2d;
-import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2i;
 
 /**
  * Base class for all "entities" that are part of the game.

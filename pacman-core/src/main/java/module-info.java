@@ -25,8 +25,12 @@ module de.amr.games.pacman {
 	exports de.amr.games.pacman.controller.pacman;
 	exports de.amr.games.pacman.event;
 	exports de.amr.games.pacman.lib;
-	exports de.amr.games.pacman.lib.animation;
+	exports de.amr.games.pacman.lib.anim;
 	exports de.amr.games.pacman.lib.fsm;
+	exports de.amr.games.pacman.lib.math;
+	exports de.amr.games.pacman.lib.option;
+	exports de.amr.games.pacman.lib.steering;
+	exports de.amr.games.pacman.lib.timer;
 	exports de.amr.games.pacman.model.common;
 	exports de.amr.games.pacman.model.common.actors;
 	exports de.amr.games.pacman.model.common.world;

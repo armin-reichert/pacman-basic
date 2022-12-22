@@ -27,7 +27,7 @@ import static de.amr.games.pacman.model.common.actors.MoveResult.notMoved;
 import static de.amr.games.pacman.model.common.actors.MoveResult.teleported;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.MoveResult;
 

@@ -23,12 +23,12 @@ SOFTWARE.
 */
 package de.amr.games.pacman.model.pacman;
 
-import static de.amr.games.pacman.lib.NavigationPoint.np;
+import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
 
 import java.util.List;
 
-import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.NavigationPoint;
+import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.lib.steering.NavigationPoint;
 
 /**
  * Experimental. Does not work.

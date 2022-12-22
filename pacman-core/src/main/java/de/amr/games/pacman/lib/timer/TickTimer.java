@@ -21,12 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.lib;
+package de.amr.games.pacman.lib.timer;
 
-import static de.amr.games.pacman.lib.TickTimer.State.EXPIRED;
-import static de.amr.games.pacman.lib.TickTimer.State.READY;
-import static de.amr.games.pacman.lib.TickTimer.State.RUNNING;
-import static de.amr.games.pacman.lib.TickTimer.State.STOPPED;
+import static de.amr.games.pacman.lib.timer.TickTimer.State.EXPIRED;
+import static de.amr.games.pacman.lib.timer.TickTimer.State.READY;
+import static de.amr.games.pacman.lib.timer.TickTimer.State.RUNNING;
+import static de.amr.games.pacman.lib.timer.TickTimer.State.STOPPED;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.amr.games.pacman.lib.TickTimerEvent.Type;
+import de.amr.games.pacman.lib.timer.TickTimerEvent.Type;
 
 /**
  * A simple, but useful, passive timer counting ticks.

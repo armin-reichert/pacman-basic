@@ -24,7 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib.fsm;
 
-import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.timer.TickTimer;
 
 /**
  * Interface implemented by all states (enums) of a FSM. Each state has a timer and a reference to its FSM.

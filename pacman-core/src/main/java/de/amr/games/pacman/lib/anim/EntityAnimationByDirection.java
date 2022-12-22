@@ -21,13 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package de.amr.games.pacman.lib.animation;
+package de.amr.games.pacman.lib.anim;
 
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.steering.Direction;
 
 /**
  * @author Armin Reichert

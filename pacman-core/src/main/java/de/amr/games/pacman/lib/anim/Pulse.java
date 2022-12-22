@@ -21,44 +21,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package de.amr.games.pacman.lib.animation;
+
+package de.amr.games.pacman.lib.anim;
 
 /**
  * @author Armin Reichert
+ *
  */
-public interface EntityAnimation {
+public class Pulse extends SingleEntityAnimation<Boolean> {
 
-	boolean isRunning();
-
-	void ensureRunning();
-
-	Object animate();
-
-	void start();
-
-	void stop();
-
-	void reset();
-
-	/**
-	 * Resets and starts the animation.
-	 */
-	default void restart() {
-		reset();
-		start();
+	public Pulse(int ticks, boolean first, boolean second) {
+		super(first, second);
+		setFrameDuration(ticks);
+		repeatForever();
 	}
-
-	void setRepetitions(int n);
-
-	Object frame(int i);
-
-	Object frame();
-
-	int frameIndex();
-
-	void setFrameIndex(int i);
-
-	int numFrames();
-
-	void setFrameDuration(long frameTicks);
 }

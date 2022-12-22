@@ -30,9 +30,9 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.FollowRoute;
-import de.amr.games.pacman.lib.NavigationPoint;
-import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
+import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
+import de.amr.games.pacman.lib.steering.NavigationPoint;
+import de.amr.games.pacman.lib.steering.RouteBasedSteering;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
@@ -56,7 +56,7 @@ public class MovingBonus extends Creature implements Bonus {
 	private long timer;
 	private BonusState state;
 	private final SingleEntityAnimation<Integer> jumpAnimation;
-	private final FollowRoute steering = new FollowRoute();
+	private final RouteBasedSteering steering = new RouteBasedSteering();
 
 	public MovingBonus(int symbol, int points) {
 		super("MovingBonus");

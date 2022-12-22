@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Armin Reichert
+Copyright (c) 2022 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,28 +20,45 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
-package de.amr.games.pacman.lib;
+*/
+package de.amr.games.pacman.lib.anim;
 
 /**
  * @author Armin Reichert
  */
-public class TickTimerEvent {
+public interface EntityAnimation {
 
-	public enum Type {
-		RESET, STARTED, STOPPED, EXPIRED;
+	boolean isRunning();
+
+	void ensureRunning();
+
+	Object animate();
+
+	void start();
+
+	void stop();
+
+	void reset();
+
+	/**
+	 * Resets and starts the animation.
+	 */
+	default void restart() {
+		reset();
+		start();
 	}
 
-	public TickTimerEvent(Type type, long ticks) {
-		this.type = type;
-		this.ticks = ticks;
-	}
+	void setRepetitions(int n);
 
-	public TickTimerEvent(Type type) {
-		this.type = type;
-		ticks = 0;
-	}
+	Object frame(int i);
 
-	public final Type type;
-	public final long ticks;
+	Object frame();
+
+	int frameIndex();
+
+	void setFrameIndex(int i);
+
+	int numFrames();
+
+	void setFrameDuration(long frameTicks);
 }

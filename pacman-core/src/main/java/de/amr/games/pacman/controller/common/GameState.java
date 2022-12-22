@@ -27,9 +27,9 @@ import static java.util.function.Predicate.not;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.EntityAnimation;
+import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameVariant;

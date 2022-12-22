@@ -25,8 +25,8 @@ package de.amr.games.pacman.model.mspacman;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.animation.AnimatedEntity;
-import de.amr.games.pacman.lib.animation.EntityAnimationSet;
+import de.amr.games.pacman.lib.anim.AnimatedEntity;
+import de.amr.games.pacman.lib.anim.EntityAnimationSet;
 import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
