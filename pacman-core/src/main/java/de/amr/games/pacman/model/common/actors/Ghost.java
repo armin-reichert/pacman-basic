@@ -251,7 +251,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			} else if (position.y() >= homePosition.y() + World.HTS) {
 				setMoveAndWishDir(UP);
 			}
-			setAbsSpeed(GameModel.GHOST_SPEED_INSIDE_HOUSE);
+			setAbsSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE);
 			move();
 		}
 		updateColorOrBlueOrFlashingAnimation(game);
@@ -262,7 +262,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateLeavingHouse(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		state = LEAVING_HOUSE;
-		setAbsSpeed(GameModel.GHOST_SPEED_INSIDE_HOUSE);
+		setAbsSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE);
 		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 	}
 
@@ -460,7 +460,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (game.level().world().ghostHouse().atHouseEntry(this)) {
 			enterStateEnteringHouse(game);
 		} else {
-			setAbsSpeed(GameModel.GHOST_SPEED_RETURNING);
+			setAbsSpeed(GameModel.SPEED_GHOST_RETURNING);
 			navigateTowardsTarget(game);
 			tryMoving(game);
 		}
@@ -485,7 +485,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateEnteringHouse(GameModel game) {
-		setAbsSpeed(GameModel.GHOST_SPEED_RETURNING);
+		setAbsSpeed(GameModel.SPEED_GHOST_RETURNING);
 		boolean atRevivalTile = game.level().world().ghostHouse().leadGuyInside(this, revivalPosition);
 		if (atRevivalTile) {
 			setMoveAndWishDir(UP);

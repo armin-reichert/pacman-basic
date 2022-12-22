@@ -73,19 +73,19 @@ public abstract class GameModel {
 	/** Game loop speed in ticks/sec. */
 	public static final short FPS = 60;
 	public static final short MAX_CREDIT = 99;
-	public static final short PELLET_VALUE = 10;
-	public static final short PELLET_RESTING_TICKS = 1;
-	public static final short ENERGIZER_VALUE = 50;
-	public static final short ENERGIZER_RESTING_TICKS = 3;
 	public static final short INITIAL_LIVES = 3;
-	public static final short[] GHOST_EATEN_POINTS = { 200, 400, 800, 1600 };
-	public static final short ALL_GHOSTS_KILLED_POINTS = 12_000;
-	public static final short EXTRA_LIFE_POINTS = 10_000;
-	public static final short BONUS1_PELLETS_EATEN = 70;
-	public static final short BONUS2_PELLETS_EATEN = 170;
-	public static final short BONUS_EATEN_TICKS = 2 * FPS; // unsure
-	public static final float GHOST_SPEED_INSIDE_HOUSE = 0.5f; // unsure
-	public static final float GHOST_SPEED_RETURNING = 2.0f; // unsure
+	public static final short RESTING_TICKS_NORMAL_PELLET = 1;
+	public static final short RESTING_TICKS_ENERGIZER = 3;
+	public static final short POINTS_NORMAL_PELLET = 10;
+	public static final short POINTS_ENERGIZER = 50;
+	public static final short POINTS_ALL_GHOSTS_KILLED = 12_000;
+	public static final short[] POINTS_GHOSTS_SEQUENCE = { 200, 400, 800, 1600 };
+	public static final short SCORE_EXTRA_LIFE = 10_000;
+	public static final short PELLETS_EATEN_BONUS1 = 70;
+	public static final short PELLETS_EATEN_BONUS2 = 170;
+	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
+	public static final float SPEED_GHOST_INSIDE_HOUSE = 0.5f; // unsure
+	public static final float SPEED_GHOST_RETURNING = 2.0f; // unsure
 
 	//@formatter:off
 	protected static final byte[][] LEVELS = {
@@ -314,7 +314,7 @@ public abstract class GameModel {
 			highScore.setLevelNumber(level.number());
 			highScore.setDate(LocalDate.now());
 		}
-		if (oldScore < EXTRA_LIFE_POINTS && newScore >= EXTRA_LIFE_POINTS) {
+		if (oldScore < SCORE_EXTRA_LIFE && newScore >= SCORE_EXTRA_LIFE) {
 			pac.setLives(pac.lives() + 1);
 			GameEvents.publish(GameEventType.PLAYER_GETS_EXTRA_LIFE, pac.tile());
 		}
@@ -555,9 +555,9 @@ public abstract class GameModel {
 		prey.forEach(this::killGhost);
 		numGhostsKilledInLevel += prey.size();
 		if (numGhostsKilledInLevel == 16) {
-			scorePoints(ALL_GHOSTS_KILLED_POINTS);
+			scorePoints(POINTS_ALL_GHOSTS_KILLED);
 			LOGGER.info("All ghosts killed at level %d, %s wins %d points", level.number(), pac.name(),
-					ALL_GHOSTS_KILLED_POINTS);
+					POINTS_ALL_GHOSTS_KILLED);
 		}
 	}
 
@@ -565,7 +565,7 @@ public abstract class GameModel {
 		ghost.setKilledIndex(numGhostsKilledByEnergizer++);
 		ghost.enterStateEaten(this);
 		memo.killedGhosts.add(ghost);
-		int points = GHOST_EATEN_POINTS[ghost.killedIndex()];
+		int points = POINTS_GHOSTS_SEQUENCE[ghost.killedIndex()];
 		scorePoints(points);
 		LOGGER.info("%s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), points);
 	}
@@ -608,8 +608,8 @@ public abstract class GameModel {
 			memo.lastFoodFound = world.foodRemaining() == 1;
 			memo.energizerFound = world.isEnergizerTile(tile);
 			memo.pacPowered = memo.energizerFound && level.pacPowerSeconds() > 0;
-			memo.bonusReached = world.eatenFoodCount() == BONUS1_PELLETS_EATEN
-					|| world.eatenFoodCount() == BONUS2_PELLETS_EATEN;
+			memo.bonusReached = world.eatenFoodCount() == PELLETS_EATEN_BONUS1
+					|| world.eatenFoodCount() == PELLETS_EATEN_BONUS2;
 			onFoodFound(tile);
 		} else {
 			pac.starve();
@@ -621,11 +621,11 @@ public abstract class GameModel {
 		pac.endStarving();
 		if (memo.energizerFound) {
 			numGhostsKilledByEnergizer = 0;
-			pac.rest(ENERGIZER_RESTING_TICKS);
-			scorePoints(ENERGIZER_VALUE);
+			pac.rest(RESTING_TICKS_ENERGIZER);
+			scorePoints(POINTS_ENERGIZER);
 		} else {
-			pac.rest(PELLET_RESTING_TICKS);
-			scorePoints(PELLET_VALUE);
+			pac.rest(RESTING_TICKS_NORMAL_PELLET);
+			scorePoints(POINTS_NORMAL_PELLET);
 		}
 		if (memo.bonusReached) {
 			onBonusReached(level.bonus());
