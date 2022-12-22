@@ -39,6 +39,7 @@ import de.amr.games.pacman.model.common.GameModel;
 public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	private final TickTimer powerTimer;
+	private boolean immune;
 	private boolean autoControlled;
 	private boolean dead;
 	private int lives;
@@ -50,6 +51,14 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		super(name);
 		powerTimer = new TickTimer("PacPower");
 		reset();
+	}
+
+	public void setImmune(boolean immune) {
+		this.immune = immune;
+	}
+
+	public boolean isImmune() {
+		return immune;
 	}
 
 	public int lives() {

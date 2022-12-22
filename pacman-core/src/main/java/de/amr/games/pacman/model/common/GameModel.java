@@ -155,7 +155,6 @@ public abstract class GameModel {
 	protected int numGhostsKilledInLevel;
 	protected int numGhostsKilledByEnergizer;
 	protected boolean playing;
-	protected boolean pacImmune;
 	protected boolean oneLessLifeDisplayed; // to be replaced
 	protected final LevelCounter levelCounter = new LevelCounter();
 	protected final Score gameScore = new Score("SCORE");
@@ -378,15 +377,6 @@ public abstract class GameModel {
 		return pac;
 	}
 
-	/** Tells if Pac-Man can be killed by ghosts. Not part of original game. */
-	public boolean isPacImmune() {
-		return pacImmune;
-	}
-
-	public void setPacImmune(boolean immune) {
-		this.pacImmune = immune;
-	}
-
 	/** Number of ghosts killed at the current level. */
 	public int numGhostsKilledInLevel() {
 		return numGhostsKilledInLevel;
@@ -588,7 +578,7 @@ public abstract class GameModel {
 	}
 
 	private boolean isPacMeetingKiller() {
-		return !pacImmune && !pac.powerTimer().isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+		return !pac.isImmune() && !pac.powerTimer().isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	private void onPacMeetsKiller() {
