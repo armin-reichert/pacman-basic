@@ -45,7 +45,6 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.Pulse;
-import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -395,7 +394,7 @@ public abstract class GameModel {
 		this.oneLessLifeDisplayed = value;
 	}
 
-	public SingleEntityAnimation<Boolean> energizerPulse() {
+	public Pulse energizerPulse() {
 		return energizerPulse;
 	}
 
