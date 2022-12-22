@@ -582,8 +582,7 @@ public abstract class GameModel {
 	private void onPacPowerBegin() {
 		LOGGER.info("%s power begins", pac.name());
 		huntingTimer.stop();
-		pac.powerTimer().resetSeconds(level.pacPowerSeconds());
-		pac.powerTimer().start();
+		pac.powerTimer().restartSeconds(level.pacPowerSeconds());
 		LOGGER.info("Timer started: %s", pac.powerTimer());
 		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened(this));
 		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
