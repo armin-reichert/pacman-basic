@@ -83,10 +83,10 @@ public class GhostHouseRules {
 		Arrays.fill(ghostDotCounters, 0);
 	}
 
-	public void resetGlobalDotCounterAndSetEnabled(boolean enable) {
+	public void resetGlobalDotCounterAndSetEnabled(boolean enabled) {
 		globalDotCounter = 0;
-		globalDotCounterEnabled = enable;
-		LOGGER.info("Global dot counter reset to 0 and %s", enable ? "enabled" : "disabled");
+		globalDotCounterEnabled = enabled;
+		LOGGER.info("Global dot counter reset to 0 and %s", enabled ? "enabled" : "disabled");
 	}
 
 	public void updateGhostDotCounters(GameModel game) {
@@ -99,8 +99,8 @@ public class GhostHouseRules {
 			}
 		} else {
 			var house = game.level().world().ghostHouse();
-			game.ghosts(LOCKED).filter(ghost -> house.contains(ghost.tile())).findFirst()
-					.ifPresent(this::increaseGhostDotCounter);
+			var preferredGhost = game.ghosts(LOCKED).filter(ghost -> house.contains(ghost.tile())).findFirst();
+			preferredGhost.ifPresent(this::increaseGhostDotCounter);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class GhostHouseRules {
 		LOGGER.info("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id()]);
 	}
 
-	public Optional<UnlockResult> checkIfGhostCanBeGetUnlocked(GameModel game) {
+	public Optional<UnlockResult> checkIfGhostUnlocked(GameModel game) {
 		var ghost = game.ghosts(LOCKED).findFirst().orElse(null);
 		if (ghost == null) {
 			return Optional.empty();

@@ -206,7 +206,7 @@ public abstract class GameModel {
 	 */
 	protected GhostHouseRules createHouseRules(int levelNumber) {
 		var rules = new GhostHouseRules();
-		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 240 : 180);
+		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 4 * FPS : 3 * FPS);
 		rules.setGlobalGhostDotLimits(GhostHouseRules.NO_LIMIT, 7, 17, GhostHouseRules.NO_LIMIT);
 		switch (levelNumber) {
 		case 1 -> rules.setPrivateGhostDotLimits(0, 0, 30, 60);
@@ -506,7 +506,7 @@ public abstract class GameModel {
 	}
 
 	private void checkIfGhostCanGetUnlocked() {
-		level.houseRules().checkIfGhostCanBeGetUnlocked(this).ifPresent(unlock -> {
+		level.houseRules().checkIfGhostUnlocked(this).ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
 			LOGGER.info("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
