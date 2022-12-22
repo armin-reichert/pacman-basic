@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
-import de.amr.games.pacman.lib.Autopilot;
+import de.amr.games.pacman.lib.RuleBasedSteering;
 import de.amr.games.pacman.lib.FollowRoute;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
@@ -90,7 +90,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(context(), oldState, newState)));
 		GameEvents.setGame(this::game);
 
-		autopilot = new Autopilot();
+		autopilot = new RuleBasedSteering();
 		sounds = GameSoundController.NO_SOUND;
 		createGame(variant);
 	}

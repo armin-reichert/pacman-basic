@@ -44,11 +44,11 @@ import de.amr.games.pacman.model.common.world.World;
  * 
  * @author Armin Reichert
  */
-public class Autopilot implements Steering {
+public class RuleBasedSteering implements Steering {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private static class AutopilotData {
+	private static class CollectedData {
 
 		static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
 		static final int MAX_GHOST_BEHIND_DETECTION_DIST = 1; // tiles
@@ -97,15 +97,15 @@ public class Autopilot implements Steering {
 		if (!guy.isStuck() && !guy.isNewTileEntered()) {
 			return;
 		}
-		AutopilotData data = collectData(game);
+		var data = collectData(game);
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
 			LOGGER.trace("%n%s", data);
 		}
 		takeAction(game, data);
 	}
 
-	private AutopilotData collectData(GameModel game) {
-		AutopilotData data = new AutopilotData();
+	private CollectedData collectData(GameModel game) {
+		var data = new CollectedData();
 		Ghost hunterAhead = findHuntingGhostAhead(game); // Where is Hunter?
 		if (hunterAhead != null) {
 			data.hunterAhead = hunterAhead;
@@ -117,14 +117,14 @@ public class Autopilot implements Steering {
 			data.hunterBehindDistance = game.pac().tile().manhattanDistance(hunterBehind.tile());
 		}
 		data.frightenedGhosts = game.ghosts(GhostState.FRIGHTENED)
-				.filter(ghost -> ghost.tile().manhattanDistance(game.pac().tile()) <= AutopilotData.MAX_GHOST_CHASE_DIST)
+				.filter(ghost -> ghost.tile().manhattanDistance(game.pac().tile()) <= CollectedData.MAX_GHOST_CHASE_DIST)
 				.toList();
 		data.frightenedGhostsDistance = data.frightenedGhosts.stream()
 				.map(ghost -> ghost.tile().manhattanDistance(game.pac().tile())).toList();
 		return data;
 	}
 
-	private void takeAction(GameModel game, AutopilotData data) {
+	private void takeAction(GameModel game, CollectedData data) {
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
@@ -152,7 +152,7 @@ public class Autopilot implements Steering {
 			game.pac().setTargetTile(prey.tile());
 		} else if (game.level().bonus() != null && game.level().bonus().state() == BonusState.EDIBLE
 				&& World.tileAt(game.level().bonus().entity().position())
-						.manhattanDistance(game.pac().tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
+						.manhattanDistance(game.pac().tile()) <= CollectedData.MAX_BONUS_HARVEST_DIST) {
 			LOGGER.trace("Detected active bonus");
 			game.pac().setTargetTile(World.tileAt(game.level().bonus().entity().position()));
 		} else {
@@ -165,7 +165,7 @@ public class Autopilot implements Steering {
 	private Ghost findHuntingGhostAhead(GameModel game) {
 		Vector2i pacManTile = game.pac().tile();
 		boolean energizerFound = false;
-		for (int i = 1; i <= AutopilotData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
+		for (int i = 1; i <= CollectedData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
 			Vector2i ahead = pacManTile.plus(game.pac().moveDir().vec.scaled(i));
 			if (!game.pac().canAccessTile(ahead, game)) {
 				break;
@@ -190,7 +190,7 @@ public class Autopilot implements Steering {
 
 	private Ghost findHuntingGhostBehind(GameModel game) {
 		Vector2i pacManTile = game.pac().tile();
-		for (int i = 1; i <= AutopilotData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
+		for (int i = 1; i <= CollectedData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			Vector2i behind = pacManTile.plus(game.pac().moveDir().opposite().vec.scaled(i));
 			if (!game.pac().canAccessTile(behind, game)) {
 				break;
