@@ -84,7 +84,6 @@ public abstract class GameModel {
 	public static final short BONUS1_PELLETS_EATEN = 70;
 	public static final short BONUS2_PELLETS_EATEN = 170;
 	public static final short BONUS_EATEN_TICKS = 2 * FPS; // unsure
-	public static final short PAC_POWER_FADING_TICKS = 2 * FPS; // unsure
 	public static final float GHOST_SPEED_INSIDE_HOUSE = 0.5f; // unsure
 	public static final float GHOST_SPEED_RETURNING = 2.0f; // unsure
 
@@ -536,7 +535,7 @@ public abstract class GameModel {
 			return; // enter new game state
 		}
 
-		memo.pacPowerFading = pac.powerTimer().remaining() == PAC_POWER_FADING_TICKS;
+		memo.pacPowerFading = pac.powerTimer().remaining() == pac.powerFadingTicks();
 		memo.pacPowerLost = pac.powerTimer().hasExpired();
 		if (memo.pacPowerFading) {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());

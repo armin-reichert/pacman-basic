@@ -512,18 +512,19 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			animationSet.select(AnimKeys.GHOST_COLOR);
 			return;
 		}
-		if (game.pac().powerTimer().remaining() > GameModel.PAC_POWER_FADING_TICKS) {
+		if (game.pac().powerTimer().remaining() > game.pac().powerFadingTicks()) {
 			animationSet.select(AnimKeys.GHOST_BLUE);
 		} else {
 			if (!animationSet.isSelected(AnimKeys.GHOST_FLASHING)) {
 				animationSet.select(AnimKeys.GHOST_FLASHING);
-				animationSet.selectedAnimation().ifPresent(flashing -> startFlashing(flashing, game.level().numFlashes()));
+				animationSet.selectedAnimation()
+						.ifPresent(flashing -> startFlashing(game, flashing, game.level().numFlashes()));
 			}
 		}
 	}
 
-	private void startFlashing(EntityAnimation flashing, int numFlashes) {
-		long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
+	private void startFlashing(GameModel game, EntityAnimation flashing, int numFlashes) {
+		long frameTicks = game.pac().powerFadingTicks() / (numFlashes * flashing.numFrames());
 		flashing.setFrameDuration(frameTicks);
 		flashing.setRepetitions(numFlashes);
 		flashing.restart();

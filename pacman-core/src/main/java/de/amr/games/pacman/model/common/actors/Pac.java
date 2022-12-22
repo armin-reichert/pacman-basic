@@ -41,6 +41,7 @@ import de.amr.games.pacman.model.common.GameModel;
 public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	private final TickTimer powerTimer;
+	private int powerFadingTicks;
 	private boolean dead;
 	private int lives;
 	private int restingTicks;
@@ -63,6 +64,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		starvingTicks = 0;
 		selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		powerTimer.reset(0);
+		powerFadingTicks = 2 * GameModel.FPS;
 	}
 
 	public void update(GameModel game) {
@@ -104,9 +106,13 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		dead = true;
 	}
 
+	public int powerFadingTicks() {
+		return powerFadingTicks;
+	}
+
 	public boolean isPowerFading(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
-		return powerTimer.isRunning() && powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS;
+		return powerTimer.isRunning() && powerTimer.remaining() <= powerFadingTicks;
 	}
 
 	public boolean isMeetingKiller(GameModel game) {
