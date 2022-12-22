@@ -41,6 +41,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	private final TickTimer powerTimer;
 	private boolean autoControlled;
 	private boolean dead;
+	private int lives;
 	private int restingTicks;
 	private int starvingTicks;
 	private EntityAnimationSet<AnimKeys> animationSet;
@@ -49,6 +50,14 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		super(name);
 		powerTimer = new TickTimer("PacPower");
 		reset();
+	}
+
+	public int lives() {
+		return lives;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
 	}
 
 	@Override
@@ -63,8 +72,8 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	@Override
 	public String toString() {
-		return "[Pac: name='%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
-				.formatted(name(), position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
+		return "[Pac: name='%s' lives=%d position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
+				.formatted(name(), lives, position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
 						restingTicks, starvingTicks);
 	}
 

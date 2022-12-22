@@ -152,7 +152,6 @@ public abstract class GameModel {
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
 	protected final Pulse energizerPulse = new Pulse(10, true, false);
 	protected int credit;
-	protected int lives;
 	protected int numGhostsKilledInLevel;
 	protected int numGhostsKilledByEnergizer;
 	protected boolean playing;
@@ -225,7 +224,7 @@ public abstract class GameModel {
 	 */
 	public void reset() {
 		playing = false;
-		lives = INITIAL_LIVES;
+		pac.setLives(INITIAL_LIVES);
 		oneLessLifeDisplayed = false;
 		gameScore.reset();
 		enableScores(true);
@@ -319,7 +318,7 @@ public abstract class GameModel {
 			highScore.setDate(LocalDate.now());
 		}
 		if (oldScore < EXTRA_LIFE_POINTS && newScore >= EXTRA_LIFE_POINTS) {
-			lives++;
+			pac.setLives(pac.lives() + 1);
 			GameEvents.publish(GameEventType.PLAYER_GETS_EXTRA_LIFE, pac.tile());
 		}
 	}
@@ -397,15 +396,6 @@ public abstract class GameModel {
 	/** Number of ghosts killed by current energizer. */
 	public int numGhostsKilledByEnergizer() {
 		return numGhostsKilledByEnergizer;
-	}
-
-	/** Number of lives remaining. */
-	public int lives() {
-		return lives;
-	}
-
-	public void setLives(int lives) {
-		this.lives = lives;
 	}
 
 	/** If one less life is displayed in the lives counter. */
