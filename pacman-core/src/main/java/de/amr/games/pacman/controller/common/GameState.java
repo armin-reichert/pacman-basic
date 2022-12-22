@@ -308,8 +308,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	LEVEL_COMPLETE {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(4);
-			timer.start();
+			timer.restartSeconds(4);
 			gc.sounds().stopAll();
 			game.exitLevel();
 			GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
@@ -342,8 +341,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	LEVEL_STARTING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(1);
-			timer.start();
+			timer.restartSeconds(1);
 			game.enterLevel(game.level().number() + 1);
 		}
 
@@ -358,8 +356,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	GHOST_DYING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(1);
-			timer.start();
+			timer.restartSeconds(1);
 			game.pac().hide();
 			game.ghosts().forEach(ghost -> ghost.pauseFlashing(true));
 			gc.sounds().play(GameSound.GHOST_EATEN);
@@ -387,8 +384,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	PACMAN_DYING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(4);
-			timer.start();
+			timer.restartSeconds(4);
 			game.level().bonus().setInactive();
 			gc.sounds().stopAll();
 		}
@@ -425,8 +421,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	GAME_OVER {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(1.5);
-			timer.start();
+			timer.restartSeconds(1.5);
 			gc.sounds().stopAll();
 			game.changeCredit(-1);
 			ScoreManager.saveHiscore(game.highScore(), game.variant());

@@ -164,6 +164,16 @@ public class TickTimer {
 	}
 
 	/**
+	 * Convenience method to reset the timer to given seconds and start it.
+	 * 
+	 * @param seconds number of seconds
+	 */
+	public void restartSeconds(double seconds) {
+		resetSeconds(seconds);
+		start();
+	}
+
+	/**
 	 * Stops the timer. If the timer is not running, does nothing.
 	 */
 	public void stop() {
