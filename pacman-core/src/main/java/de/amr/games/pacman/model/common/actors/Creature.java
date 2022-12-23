@@ -109,6 +109,11 @@ public class Creature extends Entity {
 		return stuck;
 	}
 
+	/**
+	 * Sets the tile this creature tries to reach. May be an unreachable tile or <code>null</code>.
+	 * 
+	 * @param tile some tile or <code>null</code>
+	 */
 	public void setTargetTile(Vector2i tile) {
 		targetTile = tile;
 	}
