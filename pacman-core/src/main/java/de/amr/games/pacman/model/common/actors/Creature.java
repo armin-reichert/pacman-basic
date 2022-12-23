@@ -320,11 +320,15 @@ public class Creature extends Entity {
 			return trySmallMove(dir, game, dirVector, speed);
 		}
 		// split "large" move such that turns are not missed
-		var result = trySmallMove(dir, game, dirVector, 0.5 * speed);
-		if (!result.moved()) {
-			return result;
+		int steps = 4;
+		double pixels = speed / steps;
+		for (int i = 0; i < steps - 1; ++i) {
+			var result = trySmallMove(dir, game, dirVector, pixels);
+			if (!result.moved()) {
+				return result;
+			}
 		}
-		return trySmallMove(dir, game, dirVector, 0.5 * speed);
+		return trySmallMove(dir, game, dirVector, pixels);
 	}
 
 	private MoveResult trySmallMove(Direction dir, GameModel game, Vector2d dirVector, double speed) {
