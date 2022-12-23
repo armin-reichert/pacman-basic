@@ -224,9 +224,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
 		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
-		selectedAnimation().ifPresent(selectedAnimation -> {
-			selectedAnimation.ensureRunning();
-			selectedAnimation.animate();
+		animation().ifPresent(animation -> {
+			animation.ensureRunning();
+			animation.animate();
 		});
 	}
 
@@ -432,7 +432,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateEaten(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		state = EATEN;
-		runAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
+		selectRunnableAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
 	}
 
 	private void updateStateEaten() {

@@ -167,14 +167,14 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 				ctx.pacMan.setMoveDir(Direction.LEFT);
 				ctx.pacMan.setAbsSpeed(IntroData.CHASING_SPEED);
 				ctx.pacMan.show();
-				ctx.pacMan.runAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.selectRunnableAnimation(AnimKeys.PAC_MUNCHING);
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterStateHuntingPac(ctx.gameController.game());
 					ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id() + 1), 0));
 					ghost.setMoveAndWishDir(Direction.LEFT);
 					ghost.setAbsSpeed(IntroData.CHASING_SPEED);
 					ghost.show();
-					ghost.runAnimation(AnimKeys.GHOST_COLOR);
+					ghost.selectRunnableAnimation(AnimKeys.GHOST_COLOR);
 				}
 			}
 
@@ -188,7 +188,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 				else if (ctx.pacMan.position().x() <= t(IntroData.LEFT_TILE) + 4) {
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.enterStateFrightened(ctx.gameController.game());
-						ghost.runAnimation(AnimKeys.GHOST_BLUE);
+						ghost.selectRunnableAnimation(AnimKeys.GHOST_BLUE);
 						ghost.setMoveAndWishDir(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();

@@ -120,7 +120,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		GHOSTS {
 			@Override
 			public void onEnter(IntroData ctx) {
-				ctx.game().ghosts().forEach(ghost -> ghost.runAnimation(AnimKeys.GHOST_COLOR));
+				ctx.game().ghosts().forEach(ghost -> ghost.selectRunnableAnimation(AnimKeys.GHOST_COLOR));
 			}
 
 			@Override
@@ -134,7 +134,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 				}
 				if (ghost.position().y() <= ctx.redGhostEndPosition.y() + ghost.id() * 18) {
 					ghost.setAbsSpeed(0);
-					ghost.selectedAnimation().ifPresent(EntityAnimation::stop);
+					ghost.animation().ifPresent(EntityAnimation::stop);
 					if (++ctx.ghostIndex == 4) {
 						controller.changeState(IntroState.MSPACMAN);
 					}
@@ -147,7 +147,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 			public void onEnter(IntroData ctx) {
 				ctx.game().pac().setMoveDir(LEFT);
 				ctx.game().pac().setAbsSpeed(ctx.actorSpeed);
-				ctx.game().pac().runAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.game().pac().selectRunnableAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.game().pac().show();
 			}
 
@@ -158,7 +158,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 				ctx.game().pac().animate();
 				if (ctx.game().pac().position().x() <= ctx.msPacManStopX) {
 					ctx.game().pac().setAbsSpeed(0);
-					ctx.game().pac().selectedAnimation().ifPresent(EntityAnimation::reset);
+					ctx.game().pac().animation().ifPresent(EntityAnimation::reset);
 					controller.changeState(IntroState.READY_TO_PLAY);
 				}
 			}

@@ -48,7 +48,7 @@ public interface AnimatedEntity<K> {
 	/**
 	 * @return (optional) selected animation
 	 */
-	default Optional<EntityAnimation> selectedAnimation() {
+	default Optional<EntityAnimation> animation() {
 		var animSet = animationSet();
 		return animSet.isPresent() ? animSet.get().selectedAnimation() : Optional.empty();
 	}
@@ -59,12 +59,12 @@ public interface AnimatedEntity<K> {
 	 * @param key key identifying animation in set
 	 * @return (optional) selected animation
 	 */
-	default Optional<EntityAnimation> runAnimation(K key) {
+	default Optional<EntityAnimation> selectRunnableAnimation(K key) {
 		animationSet().ifPresent(animSet -> {
 			animSet.select(key);
 			animSet.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
 		});
-		return selectedAnimation();
+		return animation();
 	}
 
 	/**
@@ -78,17 +78,17 @@ public interface AnimatedEntity<K> {
 			animSet.select(key);
 			animSet.selectedAnimation().ifPresent(EntityAnimation::reset);
 		});
-		return selectedAnimation();
+		return animation();
 	}
 
 	/**
 	 * Advances the currently selected animation by a single frame.
 	 */
 	default void animate() {
-		selectedAnimation().ifPresent(EntityAnimation::animate);
+		animation().ifPresent(EntityAnimation::animate);
 	}
 
 	default void stopAnimation() {
-		selectedAnimation().ifPresent(EntityAnimation::stop);
+		animation().ifPresent(EntityAnimation::stop);
 	}
 }

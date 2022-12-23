@@ -399,7 +399,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.pac().selectAndResetAnimation(AnimKeys.PAC_DYING);
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(1.4)) {
-				game.pac().selectedAnimation().ifPresent(EntityAnimation::start);
+				game.pac().animation().ifPresent(EntityAnimation::start);
 				gc.sounds().play(GameSound.PACMAN_DEATH);
 			} else if (timer.atSecond(3.0)) {
 				game.pac().setLives(game.pac().lives() - 1);
