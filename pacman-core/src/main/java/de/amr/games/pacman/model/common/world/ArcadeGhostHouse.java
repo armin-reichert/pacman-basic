@@ -111,6 +111,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 	@Override
 	public boolean leadGuyInside(Creature guy, Vector2d targetPosition) {
 		if (atHouseEntry(guy)) {
+			guy.setPosition(World.halfTileRightOf(DOOR_TILE_LEFT)); // align
 			guy.setMoveAndWishDir(Direction.DOWN);
 		}
 		var middlePosition = World.halfTileRightOf(SEAT_TILE_CENTER);

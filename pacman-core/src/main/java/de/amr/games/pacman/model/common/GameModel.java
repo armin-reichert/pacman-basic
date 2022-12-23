@@ -84,7 +84,8 @@ public abstract class GameModel {
 	public static final short PELLETS_EATEN_BONUS2 = 170;
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
 	public static final float SPEED_GHOST_INSIDE_HOUSE = 0.5f; // unsure
-	public static final float SPEED_GHOST_RETURNING = 2.0f; // unsure
+	public static final float SPEED_GHOST_RETURNING = 2.5f; // unsure
+	public static final float SPEED_GHOST_TAKING_SEAT = 2.0f; // unsure
 
 	//@formatter:off
 	protected static final byte[][] LEVELS = {
