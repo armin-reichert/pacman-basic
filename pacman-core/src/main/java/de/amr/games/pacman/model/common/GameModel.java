@@ -259,7 +259,6 @@ public abstract class GameModel {
 		LOGGER.info("Enter level %d (%s)", levelNumber, variant());
 		initLevel(levelNumber);
 		getReadyToRumble();
-		guys().forEach(Entity::hide);
 		levelCounter.addSymbol(level.bonus().symbol());
 		level.houseRules().resetPrivateGhostDotCounters();
 	}
@@ -271,6 +270,14 @@ public abstract class GameModel {
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		energizerPulse.reset();
+	}
+
+	public void enterAttractMode() {
+		reset();
+		enableScores(false);
+		gameScore().setShowContent(false);
+		levelCounter().clear();
+		guys().forEach(Entity::show);
 	}
 
 	/** Tells if the game play is running. */
@@ -356,7 +363,7 @@ public abstract class GameModel {
 			ghost.setMoveAndWishDir(initialDirs.get(ghost.id()));
 			ghost.enterStateLocked();
 		});
-		guys().forEach(Creature::show);
+		guys().forEach(Creature::hide);
 		level.bonus().setInactive();
 		energizerPulse.reset();
 	}
