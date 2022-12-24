@@ -143,13 +143,13 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 					"Cruise Elroy state must be one of -2, -1, 0, 1, 2, but is " + cruiseElroyState);
 		}
 		this.cruiseElroyState = (byte) cruiseElroyState;
-		LOGGER.trace("Cruise Elroy state set to " + cruiseElroyState);
+		LOGGER.trace("Cruise Elroy state set to %d", cruiseElroyState);
 	}
 
 	public void setCruiseElroyStateEnabled(boolean enabled) {
 		if (enabled && cruiseElroyState < 0 || !enabled && cruiseElroyState > 0) {
 			cruiseElroyState = (byte) (-cruiseElroyState);
-			LOGGER.trace("%s: Cruise Elroy state set to " + cruiseElroyState, name());
+			LOGGER.trace("Cruise Elroy state set to %d", cruiseElroyState);
 		}
 	}
 
