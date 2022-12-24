@@ -35,7 +35,6 @@ import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.ScoreManager;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
-import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -137,7 +136,10 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (!game.hasCredit()) {
 				enterAttractMode(game);
 			} else if (!game.isPlaying()) {
-				startPlaying(game);
+				game.reset();
+				game.initLevel(1);
+				game.enterLevel();
+				gc.sounds().play(GameSound.GAME_READY);
 			} else {
 				game.getReadyToRumble();
 			}
@@ -145,17 +147,11 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		private void enterAttractMode(GameModel game) {
 			game.reset();
+			game.initLevel(1);
 			game.getReadyToRumble();
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
 			gc.pacSteeringInAttractMode.init();
-		}
-
-		private void startPlaying(GameModel game) {
-			game.reset();
-			game.getReadyToRumble();
-			game.guys().forEach(Creature::hide);
-			gc.sounds().play(GameSound.GAME_READY);
 		}
 
 		@Override
@@ -342,7 +338,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.restartSeconds(1);
-			game.enterLevel(game.level().number() + 1);
+			game.initLevel(game.level().number() + 1);
+			game.enterLevel();
 		}
 
 		@Override

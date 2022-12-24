@@ -224,8 +224,8 @@ public abstract class GameModel {
 		pac.setLives(INITIAL_LIVES);
 		oneLessLifeDisplayed = false;
 		gameScore.reset();
+		levelCounter.clear();
 		enableScores(true);
-		setLevel(1);
 	}
 
 	/** Current level. */
@@ -238,7 +238,7 @@ public abstract class GameModel {
 	 * 
 	 * @param levelNumber 1-based level number
 	 */
-	public void setLevel(int levelNumber) {
+	public void initLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
@@ -250,14 +250,9 @@ public abstract class GameModel {
 		numGhostsKilledByEnergizer = 0;
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);
 		gameScore.setLevelNumber(levelNumber);
-		if (levelNumber == 1) {
-			levelCounter().clear();
-			levelCounter().addSymbol(level().bonus().symbol());
-		}
 	}
 
-	public void enterLevel(int levelNumber) {
-		setLevel(levelNumber);
+	public void enterLevel() {
 		getReadyToRumble();
 		guys().forEach(Entity::hide);
 		levelCounter.addSymbol(level.bonus().symbol());
