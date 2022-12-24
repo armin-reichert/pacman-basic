@@ -135,22 +135,19 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			gc.sounds().stopAll();
 			if (!game.hasCredit()) {
 				enterAttractMode(game);
-			} else if (!game.isPlaying()) {
-				game.reset();
-				game.initLevel(1);
-				game.enterLevel();
-				gc.sounds().play(GameSound.GAME_READY);
-			} else {
+			} else if (game.isPlaying()) {
 				game.getReadyToRumble();
+			} else {
+				game.reset();
+				gc.sounds().play(GameSound.GAME_READY);
 			}
 		}
 
 		private void enterAttractMode(GameModel game) {
 			game.reset();
-			game.initLevel(1);
-			game.getReadyToRumble();
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
+			game.levelCounter().clear();
 			gc.pacSteeringInAttractMode.init();
 		}
 
@@ -170,6 +167,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				}
 			} else { // in attract mode or game already running
 				if (timer.tick() == 90) {
+					game.guys().forEach(Entity::show);
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
@@ -338,8 +336,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.restartSeconds(1);
-			game.initLevel(game.level().number() + 1);
-			game.enterLevel();
+			game.enterLevel(game.level().number() + 1);
 		}
 
 		@Override
@@ -435,7 +432,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onExit(GameModel game) {
-			game.reset();
+//			game.reset();
 		}
 	},
 

@@ -220,12 +220,14 @@ public abstract class GameModel {
 	 * Resets the game to the initial state and first level.
 	 */
 	public void reset() {
+		LOGGER.info("Reset game (%s)", variant());
 		playing = false;
 		pac.setLives(INITIAL_LIVES);
 		oneLessLifeDisplayed = false;
 		gameScore.reset();
 		levelCounter.clear();
 		enableScores(true);
+		enterLevel(1);
 	}
 
 	/** Current level. */
@@ -239,6 +241,7 @@ public abstract class GameModel {
 	 * @param levelNumber 1-based level number
 	 */
 	public void initLevel(int levelNumber) {
+		LOGGER.info("Init level %d", levelNumber);
 		checkLevelNumber(levelNumber);
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
@@ -252,7 +255,9 @@ public abstract class GameModel {
 		gameScore.setLevelNumber(levelNumber);
 	}
 
-	public void enterLevel() {
+	public void enterLevel(int levelNumber) {
+		LOGGER.info("Enter level %d", levelNumber);
+		initLevel(levelNumber);
 		getReadyToRumble();
 		guys().forEach(Entity::hide);
 		levelCounter.addSymbol(level.bonus().symbol());
