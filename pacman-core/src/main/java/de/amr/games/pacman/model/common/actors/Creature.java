@@ -349,7 +349,7 @@ public class Creature extends Entity {
 
 		setVelocity(newVelocity);
 		move();
-		return MoveResult.moved("Moved %5s %.2f pixels", dir, pixels);
+		return MoveResult.moved("Moved a bit %5s (%.2f pixels)", dir, pixels);
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {
