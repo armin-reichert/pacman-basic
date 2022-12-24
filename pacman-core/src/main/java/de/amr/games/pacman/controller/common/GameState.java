@@ -148,6 +148,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.enableScores(false);
 			game.gameScore().setShowContent(false);
 			game.levelCounter().clear();
+			game.guys().forEach(Entity::show);
 			gc.pacSteeringInAttractMode.init();
 		}
 
