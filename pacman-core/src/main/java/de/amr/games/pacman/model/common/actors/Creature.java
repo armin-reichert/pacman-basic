@@ -331,9 +331,9 @@ public class Creature extends Entity {
 		return trySmallMove(dir, game, dirVector, pixels);
 	}
 
-	private MoveResult trySmallMove(Direction dir, GameModel game, Vector2f dirVector, float speed) {
+	private MoveResult trySmallMove(Direction dir, GameModel game, Vector2f dirVector, float pixels) {
 		var turn = !dir.sameOrientation(moveDir);
-		var newVelocity = dirVector.scaled(speed);
+		var newVelocity = dirVector.scaled(pixels);
 		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
 
 		if (!canAccessTile(tileAt(touchPosition), game)) {
@@ -349,7 +349,7 @@ public class Creature extends Entity {
 
 		setVelocity(newVelocity);
 		move();
-		return MoveResult.moved("Moved %5s %.2f pixels", dir);
+		return MoveResult.moved("Moved %5s %.2f pixels", dir, pixels);
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {
