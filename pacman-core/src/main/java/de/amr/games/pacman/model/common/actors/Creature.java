@@ -270,17 +270,17 @@ public class Creature extends Entity {
 	}
 
 	private MoveResult tryTeleport(GameModel game) {
-		MoveResult result = MoveResult.notMoved("No teleport");
+		MoveResult mr = MoveResult.notMoved("No teleport");
 		if (canTeleport) {
 			for (var portal : game.level().world().portals()) {
-				result = portal.teleport(this);
-				if (result.teleported()) {
+				mr = portal.teleport(this);
+				if (mr.teleported()) {
 					newTileEntered = true;
 					break;
 				}
 			}
 		}
-		return result;
+		return mr;
 	}
 
 	/**
@@ -292,24 +292,24 @@ public class Creature extends Entity {
 	public void tryMoving(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		Vector2i tileBeforeMove = tile();
-		MoveResult m = tryTeleport(game);
-		if (m.teleported()) {
+		MoveResult mr = tryTeleport(game);
+		if (mr.teleported()) {
 			return;
 		}
 		if (shouldReverse && canReverse(game)) {
 			setWishDir(moveDir.opposite());
 			shouldReverse = false;
 		}
-		m = tryMoving(wishDir, game);
-		if (m.moved()) {
+		mr = tryMoving(wishDir, game);
+		if (mr.moved()) {
 			setMoveDir(wishDir);
 		} else {
-			m = tryMoving(moveDir, game);
+			mr = tryMoving(moveDir, game);
 		}
-		stuck = !m.moved();
+		stuck = !mr.moved();
 		newTileEntered = !tileBeforeMove.equals(tile());
-		if (m.moved()) {
-			LOGGER.trace("%-6s: %s %s", name, m.message(), this);
+		if (mr.moved()) {
+			LOGGER.trace("%-6s: %s %s", name, mr.message(), this);
 		}
 	}
 
@@ -349,7 +349,7 @@ public class Creature extends Entity {
 
 		setVelocity(newVelocity);
 		move();
-		return MoveResult.moved("Moved %5s", dir);
+		return MoveResult.moved("Moved %5s %.2f pixels", dir);
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {
