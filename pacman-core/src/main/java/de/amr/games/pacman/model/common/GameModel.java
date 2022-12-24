@@ -594,6 +594,7 @@ public abstract class GameModel {
 		huntingTimer.start();
 		pac.powerTimer().stop();
 		pac.powerTimer().resetIndefinitely();
+		LOGGER.info("Timer stopped: %s", pac.powerTimer());
 		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac(this));
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
