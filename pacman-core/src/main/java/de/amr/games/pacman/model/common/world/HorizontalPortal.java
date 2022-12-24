@@ -71,8 +71,8 @@ public record HorizontalPortal(Vector2i leftTunnelEnd, Vector2i rightTunnelEnd) 
 
 	@Override
 	public double distance(Creature guy) {
-		var leftEndPosition = leftTunnelEnd.minus(DEPTH, 0).scaled(TS).toDoubleVec();
-		var rightEndPosition = rightTunnelEnd.plus(DEPTH, 0).scaled(TS).toDoubleVec();
+		var leftEndPosition = leftTunnelEnd.minus(DEPTH, 0).scaled(TS).toFloatVec();
+		var rightEndPosition = rightTunnelEnd.plus(DEPTH, 0).scaled(TS).toFloatVec();
 		var guyPos = guy.position();
 		return Math.abs(Math.min(guyPos.euclideanDistance(leftEndPosition), guyPos.euclideanDistance(rightEndPosition)));
 	}

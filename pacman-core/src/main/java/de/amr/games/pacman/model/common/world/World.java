@@ -29,7 +29,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.anim.EntityAnimation;
-import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
@@ -58,7 +58,7 @@ public interface World {
 	 * @param position a position
 	 * @return Tile containing given position.
 	 */
-	public static Vector2i tileAt(Vector2d position) {
+	public static Vector2i tileAt(Vector2f position) {
 		return tileAt(position.x(), position.y());
 	}
 
@@ -75,12 +75,12 @@ public interface World {
 	 * @param tile a tile
 	 * @return Position of the left-upper corner of given tile.
 	 */
-	public static Vector2d originOfTile(Vector2i tile) {
-		return tile.scaled(TS).toDoubleVec();
+	public static Vector2f originOfTile(Vector2i tile) {
+		return tile.scaled(TS).toFloatVec();
 	}
 
-	public static Vector2d halfTileRightOf(Vector2i tile) {
-		return tile.scaled(TS).plus(HTS, 0).toDoubleVec();
+	public static Vector2f halfTileRightOf(Vector2i tile) {
+		return tile.scaled(TS).plus(HTS, 0).toFloatVec();
 	}
 
 	/**
@@ -173,7 +173,7 @@ public interface World {
 	/**
 	 * @return start position of Pac-Man in this world
 	 */
-	Vector2d pacStartPosition();
+	Vector2f pacStartPosition();
 
 	/**
 	 * @return the ghost house in this world

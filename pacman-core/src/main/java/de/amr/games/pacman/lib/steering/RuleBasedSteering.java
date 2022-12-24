@@ -57,11 +57,11 @@ public class RuleBasedSteering implements Steering {
 		static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
 
 		Ghost hunterAhead;
-		double hunterAheadDistance;
+		float hunterAheadDistance;
 		Ghost hunterBehind;
-		double hunterBehindDistance;
+		float hunterBehindDistance;
 		List<Ghost> frightenedGhosts;
-		List<Double> frightenedGhostsDistance;
+		List<Float> frightenedGhostsDistance;
 
 		@Override
 		public String toString() {
@@ -230,7 +230,7 @@ public class RuleBasedSteering implements Steering {
 		long time = System.nanoTime();
 		List<Vector2i> foodTiles = new ArrayList<>();
 		Vector2i pacManTile = game.pac().tile();
-		double minDist = Double.MAX_VALUE;
+		float minDist = Float.MAX_VALUE;
 		for (int x = 0; x < game.level().world().numCols(); ++x) {
 			for (int y = 0; y < game.level().world().numRows(); ++y) {
 				Vector2i tile = new Vector2i(x, y);
@@ -241,7 +241,7 @@ public class RuleBasedSteering implements Steering {
 						&& game.level().world().foodRemaining() > 1) {
 					continue;
 				}
-				double dist = pacManTile.manhattanDistance(tile);
+				float dist = pacManTile.manhattanDistance(tile);
 				if (dist < minDist) {
 					minDist = dist;
 					foodTiles.clear();
@@ -262,9 +262,9 @@ public class RuleBasedSteering implements Steering {
 
 	private Vector2i findTileFarestFromGhosts(GameModel game, List<Vector2i> tiles) {
 		Vector2i farestTile = null;
-		double maxDist = -1;
+		float maxDist = -1;
 		for (Vector2i tile : tiles) {
-			double dist = minDistanceFromGhosts(game);
+			float dist = minDistanceFromGhosts(game);
 			if (dist > maxDist) {
 				maxDist = dist;
 				farestTile = tile;
@@ -273,7 +273,7 @@ public class RuleBasedSteering implements Steering {
 		return farestTile;
 	}
 
-	private double minDistanceFromGhosts(GameModel game) {
-		return game.ghosts().map(Ghost::tile).mapToDouble(game.pac().tile()::manhattanDistance).min().getAsDouble();
+	private float minDistanceFromGhosts(GameModel game) {
+		return (float) game.ghosts().map(Ghost::tile).mapToDouble(game.pac().tile()::manhattanDistance).min().getAsDouble();
 	}
 }

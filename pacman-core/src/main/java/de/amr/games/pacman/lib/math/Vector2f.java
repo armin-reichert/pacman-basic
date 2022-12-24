@@ -24,51 +24,51 @@ SOFTWARE.
 package de.amr.games.pacman.lib.math;
 
 /**
- * Immutable 2D vector with double precision. Component values are treated as equal if they differ less than
+ * Immutable 2D vector with float precision. Component values are treated as equal if they differ less than
  * {@link #EPSILON}.
  * 
  * @author Armin Reichert
  */
-public record Vector2d(double x, double y) {
+public record Vector2f(float x, float y) {
 
-	public static final Vector2d ZERO = new Vector2d(0, 0);
+	public static final Vector2f ZERO = new Vector2f(0, 0);
 
-	public static final double EPSILON = 1e-6;
+	public static final float EPSILON = 1e-6f;
 
-	public Vector2d plus(Vector2d v) {
-		return new Vector2d(x + v.x, y + v.y);
+	public Vector2f plus(Vector2f v) {
+		return new Vector2f(x + v.x, y + v.y);
 	}
 
-	public Vector2d plus(double vx, double vy) {
-		return new Vector2d(x + vx, y + vy);
+	public Vector2f plus(float vx, float vy) {
+		return new Vector2f(x + vx, y + vy);
 	}
 
-	public Vector2d minus(Vector2d v) {
-		return new Vector2d(x - v.x, y - v.y);
+	public Vector2f minus(Vector2f v) {
+		return new Vector2f(x - v.x, y - v.y);
 	}
 
-	public Vector2d minus(double vx, double vy) {
-		return new Vector2d(x - vx, y - vy);
+	public Vector2f minus(float vx, float vy) {
+		return new Vector2f(x - vx, y - vy);
 	}
 
-	public Vector2d scaled(double s) {
-		return new Vector2d(s * x, s * y);
+	public Vector2f scaled(float s) {
+		return new Vector2f(s * x, s * y);
 	}
 
-	public Vector2d inverse() {
-		return new Vector2d(-x, -y);
+	public Vector2f inverse() {
+		return new Vector2f(-x, -y);
 	}
 
-	public double length() {
-		return Math.hypot(x, y);
+	public float length() {
+		return (float) Math.hypot(x, y);
 	}
 
-	public Vector2d normalized() {
-		double len = length();
-		return new Vector2d(x / len, y / len);
+	public Vector2f normalized() {
+		float len = length();
+		return new Vector2f(x / len, y / len);
 	}
 
-	public double euclideanDistance(Vector2d v) {
+	public float euclideanDistance(Vector2f v) {
 		return this.minus(v).length();
 	}
 
@@ -80,7 +80,7 @@ public record Vector2d(double x, double y) {
 			return false;
 		if (getClass() != other.getClass())
 			return false;
-		Vector2d v = (Vector2d) other;
+		Vector2f v = (Vector2f) other;
 		return Math.abs(v.x - x) <= EPSILON && Math.abs(v.y - y) <= EPSILON;
 	}
 
@@ -88,5 +88,4 @@ public record Vector2d(double x, double y) {
 	public String toString() {
 		return String.format("(%.2f,%.2f)", x, y);
 	}
-
 }

@@ -37,7 +37,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.GameModel;
@@ -72,9 +72,9 @@ public class Creature extends Entity {
 
 	public void reset() {
 		visible = false;
-		position = Vector2d.ZERO;
-		velocity = Vector2d.ZERO;
-		acceleration = Vector2d.ZERO;
+		position = Vector2f.ZERO;
+		velocity = Vector2f.ZERO;
+		acceleration = Vector2f.ZERO;
 		moveDir = RIGHT;
 		wishDir = RIGHT;
 		targetTile = null;
@@ -123,13 +123,13 @@ public class Creature extends Entity {
 		return Optional.ofNullable(targetTile);
 	}
 
-	public void placeAtTile(int tx, int ty, double ox, double oy) {
+	public void placeAtTile(int tx, int ty, float ox, float oy) {
 		var prevTile = tile();
 		setPosition(tx * TS + ox, ty * TS + oy);
 		newTileEntered = !tile().equals(prevTile);
 	}
 
-	public void placeAtTile(Vector2i tile, double ox, double oy) {
+	public void placeAtTile(Vector2i tile, float ox, float oy) {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		placeAtTile(tile.x(), tile.y(), ox, oy);
 	}
@@ -163,7 +163,7 @@ public class Creature extends Entity {
 		if (moveDir != dir) {
 			moveDir = dir;
 			LOGGER.trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
-			velocity = moveDir.vec.toDoubleVec().scaled(velocity.length());
+			velocity = moveDir.vec.toFloatVec().scaled(velocity.length());
 		}
 	}
 
@@ -208,7 +208,7 @@ public class Creature extends Entity {
 	 * 
 	 * @param fraction fraction of base speed
 	 */
-	public void setRelSpeed(double fraction) {
+	public void setRelSpeed(float fraction) {
 		if (fraction < 0) {
 			throw new IllegalArgumentException("Negative speed fraction: " + fraction);
 		}
@@ -220,11 +220,11 @@ public class Creature extends Entity {
 	 * 
 	 * @param speed speed in pixels per tick
 	 */
-	public void setAbsSpeed(double speed) {
+	public void setAbsSpeed(float speed) {
 		if (speed < 0) {
 			throw new IllegalArgumentException("Negative speed: " + speed);
 		}
-		velocity = speed == 0 ? Vector2d.ZERO : moveDir.vec.toDoubleVec().scaled(speed);
+		velocity = speed == 0 ? Vector2f.ZERO : moveDir.vec.toFloatVec().scaled(speed);
 	}
 
 	/**
@@ -252,14 +252,14 @@ public class Creature extends Entity {
 	private Optional<Direction> computeTargetDirection(GameModel game) {
 		Direction targetDir = null;
 		Vector2i currentTile = tile();
-		double minDistance = Double.MAX_VALUE;
+		float minDistance = Float.MAX_VALUE;
 		for (var dir : DIRECTION_PRIORITY) {
 			if (dir == moveDir.opposite()) {
 				continue; // reversing the move direction is not allowed
 			}
 			var neighborTile = currentTile.plus(dir.vec);
 			if (canAccessTile(neighborTile, game)) {
-				double distance = neighborTile.euclideanDistance(targetTile);
+				float distance = neighborTile.euclideanDistance(targetTile);
 				if (distance < minDistance) {
 					minDistance = distance;
 					targetDir = dir;
@@ -314,14 +314,14 @@ public class Creature extends Entity {
 	}
 
 	private MoveResult tryMoving(Direction dir, GameModel game) {
-		double speed = velocity.length();
-		Vector2d dirVector = dir.vec.toDoubleVec();
+		float speed = velocity.length();
+		Vector2f dirVector = dir.vec.toFloatVec();
 		if (speed <= 1.0) {
 			return trySmallMove(dir, game, dirVector, speed);
 		}
 		// split "large" move such that turns are not missed
 		int steps = 4;
-		double pixels = speed / steps;
+		float pixels = speed / steps;
 		for (int i = 0; i < steps - 1; ++i) {
 			var result = trySmallMove(dir, game, dirVector, pixels);
 			if (!result.moved()) {
@@ -331,7 +331,7 @@ public class Creature extends Entity {
 		return trySmallMove(dir, game, dirVector, pixels);
 	}
 
-	private MoveResult trySmallMove(Direction dir, GameModel game, Vector2d dirVector, double speed) {
+	private MoveResult trySmallMove(Direction dir, GameModel game, Vector2f dirVector, float speed) {
 		var turn = !dir.sameOrientation(moveDir);
 		var newVelocity = dirVector.scaled(speed);
 		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);

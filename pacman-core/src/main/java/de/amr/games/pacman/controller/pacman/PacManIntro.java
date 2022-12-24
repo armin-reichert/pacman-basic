@@ -69,7 +69,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 	}
 
 	public static class IntroData {
-		public static final double CHASING_SPEED = 1.1;
+		public static final float CHASING_SPEED = 1.1f;
 		public static final int LEFT_TILE = 4;
 		public static final Pulse BLINKING = new Pulse(10, true);
 		public static final String[] NICKNAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
@@ -190,7 +190,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 						ghost.enterStateFrightened(ctx.gameController.game());
 						ghost.selectRunnableAnimation(AnimKeys.GHOST_BLUE);
 						ghost.setMoveAndWishDir(Direction.RIGHT);
-						ghost.setAbsSpeed(0.6);
+						ghost.setAbsSpeed(0.6f);
 						ghost.move();
 						ghost.animate();
 					}
@@ -253,7 +253,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 					for (Ghost ghost : ctx.ghosts) {
 						if (!ghost.is(GhostState.EATEN)) {
 							ghost.show();
-							ghost.setAbsSpeed(0.6);
+							ghost.setAbsSpeed(0.6f);
 							ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(EntityAnimation::start);
 						} else {
 							ghost.hide();

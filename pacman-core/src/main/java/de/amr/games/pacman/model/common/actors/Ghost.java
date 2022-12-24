@@ -48,7 +48,7 @@ import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.anim.EntityAnimationSet;
-import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
@@ -70,8 +70,8 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final int ID_ORANGE_GHOST = 3;
 
 	private final int id;
-	private Vector2d homePosition;
-	private Vector2d revivalPosition;
+	private Vector2f homePosition;
+	private Vector2f revivalPosition;
 	private Vector2i scatterTile;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
@@ -104,19 +104,19 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		killedIndex = -1;
 	}
 
-	public Vector2d homePosition() {
+	public Vector2f homePosition() {
 		return homePosition;
 	}
 
-	public void setHomePosition(Vector2d homePosition) {
+	public void setHomePosition(Vector2f homePosition) {
 		this.homePosition = homePosition;
 	}
 
-	public Vector2d revivalPosition() {
+	public Vector2f revivalPosition() {
 		return revivalPosition;
 	}
 
-	public void setRevivalPosition(Vector2d revivalPosition) {
+	public void setRevivalPosition(Vector2f revivalPosition) {
 		this.revivalPosition = revivalPosition;
 	}
 
@@ -234,7 +234,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public void enterStateLocked() {
 		state = LOCKED;
-		setAbsSpeed(0.0);
+		setAbsSpeed(0);
 		selectAndResetAnimation(AnimKeys.GHOST_COLOR);
 	}
 

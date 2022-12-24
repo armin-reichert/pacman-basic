@@ -33,7 +33,7 @@ import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.Intermissio
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
-import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.GameSound;
@@ -200,13 +200,13 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				else if (ctx.inky.moveDir() == Direction.LEFT && ctx.inky.position().x() - ctx.pinky.position().x() < t(2)) {
 					ctx.inky.setMoveAndWishDir(Direction.RIGHT);
 					ctx.inky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
-					ctx.inky.setVelocity(ctx.inky.velocity().minus(0, 2.0));
-					ctx.inky.setAcceleration(0, 0.4);
+					ctx.inky.setVelocity(ctx.inky.velocity().minus(0, 2.0f));
+					ctx.inky.setAcceleration(0, 0.4f);
 
 					ctx.pinky.setMoveAndWishDir(Direction.LEFT);
 					ctx.pinky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
-					ctx.pinky.setVelocity(ctx.pinky.velocity().minus(0, 2.0));
-					ctx.pinky.setAcceleration(0, 0.4);
+					ctx.pinky.setVelocity(ctx.pinky.velocity().minus(0, 2.0f));
+					ctx.pinky.setAcceleration(0, 0.4f);
 				} else {
 					ctx.pacMan.move();
 					ctx.pacMan.animate();
@@ -218,11 +218,11 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 					ctx.pinky.animate();
 					if (ctx.inky.position().y() > ctx.middleY) {
 						ctx.inky.setPosition(ctx.inky.position().x(), ctx.middleY);
-						ctx.inky.setAcceleration(Vector2d.ZERO);
+						ctx.inky.setAcceleration(Vector2f.ZERO);
 					}
 					if (ctx.pinky.position().y() > ctx.middleY) {
 						ctx.pinky.setPosition(ctx.pinky.position().x(), ctx.middleY);
-						ctx.pinky.setAcceleration(Vector2d.ZERO);
+						ctx.pinky.setAcceleration(Vector2f.ZERO);
 					}
 				}
 			}

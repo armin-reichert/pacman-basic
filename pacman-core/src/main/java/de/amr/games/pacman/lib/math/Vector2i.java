@@ -60,11 +60,11 @@ public record Vector2i(int x, int y) {
 		return new Vector2i(x - dx, y - dy);
 	}
 
-	public double euclideanDistance(Vector2i v) {
-		return Math.hypot(x - v.x, y - v.y);
+	public float euclideanDistance(Vector2i v) {
+		return (float) Math.hypot(x - v.x, y - v.y);
 	}
 
-	public double manhattanDistance(Vector2i v) {
+	public float manhattanDistance(Vector2i v) {
 		return Math.abs(x - v.x) + Math.abs(y - v.y);
 	}
 
@@ -77,7 +77,7 @@ public record Vector2i(int x, int y) {
 		return String.format("(%2d,%2d)", x, y);
 	}
 
-	public Vector2d toDoubleVec() {
-		return new Vector2d(x, y);
+	public Vector2f toFloatVec() {
+		return new Vector2f(x, y);
 	}
 }

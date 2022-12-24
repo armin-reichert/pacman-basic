@@ -115,7 +115,7 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = ticks;
 		visible = true;
 		jumpAnimation.restart();
-		setAbsSpeed(0.5); // how fast in the original game?
+		setAbsSpeed(0.5f); // how fast in the original game?
 		setTargetTile(null);
 		LOGGER.info("Bonus gets edible: %s", this);
 	}

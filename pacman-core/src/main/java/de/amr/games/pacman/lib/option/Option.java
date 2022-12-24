@@ -44,6 +44,10 @@ public class Option<T> {
 		return new Option<>(name, defaultValue, Integer::valueOf);
 	}
 
+	public static Option<Float> floatOption(String name, float defaultValue) {
+		return new Option<>(name, defaultValue, Float::valueOf);
+	}
+
 	public static Option<Double> doubleOption(String name, double defaultValue) {
 		return new Option<>(name, defaultValue, Double::valueOf);
 	}

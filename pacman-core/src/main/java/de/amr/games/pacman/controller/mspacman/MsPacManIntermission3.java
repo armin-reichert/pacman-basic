@@ -32,7 +32,7 @@ import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.Intermissio
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
-import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.GameSound;
@@ -128,12 +128,12 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 				ctx.msPacMan.show();
 
 				ctx.stork.setPosition(t(30), t(12));
-				ctx.stork.setVelocity(-0.8, 0);
+				ctx.stork.setVelocity(-0.8f, 0);
 				ctx.stork.show();
 
 				ctx.bag.setPosition(ctx.stork.position().plus(-14, 3));
 				ctx.bag.setVelocity(ctx.stork.velocity());
-				ctx.bag.setAcceleration(Vector2d.ZERO);
+				ctx.bag.setAcceleration(Vector2f.ZERO);
 				ctx.bag.show();
 				ctx.bagOpen = false;
 				ctx.numBagBounces = 0;
@@ -146,7 +146,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 
 				// release bag from storks beak?
 				if ((int) ctx.stork.position().x() == t(20)) {
-					ctx.bag.setAcceleration(0, 0.04);
+					ctx.bag.setAcceleration(0, 0.04f);
 					ctx.stork.setVelocity(-1, 0);
 				}
 
@@ -158,7 +158,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 						ctx.bag.setPosition(ctx.bag.position().x(), ctx.groundY);
 					} else {
 						ctx.bagOpen = true;
-						ctx.bag.setVelocity(Vector2d.ZERO);
+						ctx.bag.setVelocity(Vector2f.ZERO);
 						intermission.changeState(IntermissionState.DONE);
 					}
 				}

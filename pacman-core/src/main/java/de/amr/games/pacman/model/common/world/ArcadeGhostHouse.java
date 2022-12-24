@@ -32,7 +32,7 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.U;
-import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -48,7 +48,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 	public static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
 	public static final Vector2i DOOR_TILE_LEFT = v2i(13, 15);
 	public static final Vector2i DOOR_TILE_RIGHT = v2i(14, 15);
-	public static final Vector2d DOOR_CENTER = World.halfTileRightOf(DOOR_TILE_LEFT).plus(0, HTS);
+	public static final Vector2f DOOR_CENTER = World.halfTileRightOf(DOOR_TILE_LEFT).plus(0, HTS);
 	public static final Vector2i ENTRY_TILE = v2i(13, 14);
 	public static final Vector2i SEAT_TILE_LEFT = v2i(11, 17);
 	public static final Vector2i SEAT_TILE_CENTER = v2i(13, 17);
@@ -79,7 +79,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 		return ENTRY_TILE;
 	}
 
-	public Vector2d middleSeatCenterPosition() {
+	public Vector2f middleSeatCenterPosition() {
 		return World.halfTileRightOf(SEAT_TILE_CENTER).plus(0, HTS);
 	}
 
@@ -109,7 +109,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public boolean leadGuyInside(Creature guy, Vector2d targetPosition) {
+	public boolean leadGuyInside(Creature guy, Vector2f targetPosition) {
 		if (atHouseEntry(guy)) {
 			guy.setPosition(World.halfTileRightOf(DOOR_TILE_LEFT)); // align
 			guy.setMoveAndWishDir(Direction.DOWN);

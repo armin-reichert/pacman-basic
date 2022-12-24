@@ -26,7 +26,7 @@ package de.amr.games.pacman.model.common.world;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 
@@ -56,5 +56,5 @@ public interface GhostHouse {
 
 	boolean leadGuyOutOfHouse(Creature guest);
 
-	boolean leadGuyInside(Creature guest, Vector2d targetPosition);
+	boolean leadGuyInside(Creature guest, Vector2f targetPosition);
 }

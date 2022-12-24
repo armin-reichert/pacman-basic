@@ -33,7 +33,7 @@ import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.anim.EntityAnimation;
-import de.amr.games.pacman.lib.math.Vector2d;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
@@ -94,8 +94,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public Vector2d pacStartPosition() {
-		return new Vector2d(13 * TS + HTS, 26 * TS);
+	public Vector2f pacStartPosition() {
+		return new Vector2f(13 * TS + HTS, 26 * TS);
 	}
 
 	@Override
