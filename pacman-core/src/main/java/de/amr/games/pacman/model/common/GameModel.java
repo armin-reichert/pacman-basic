@@ -67,10 +67,13 @@ public abstract class GameModel {
 	protected static final Logger LOGGER = LogManager.getFormatterLogger();
 	protected static final Random RND = new Random();
 
-	/** Pixels/tick at 100% relative speed. */
-	public static final float BASE_SPEED = 1.25f;
 	/** Game loop speed in ticks/sec. */
 	public static final short FPS = 60;
+	/** Speed in pixels/tick at 100% relative speed. */
+	public static final float SPEED_100_PERCENT_PX = 1.25f;
+	public static final float SPEED_GHOST_INSIDE_HOUSE_PX = 0.5f; // unsure
+	public static final float SPEED_GHOST_RETURNING_TO_HOUSE_PX = 2.0f; // unsure
+	public static final float SPEED_GHOST_ENTERING_HOUSE_PX = 1.25f; // unsure
 	public static final short MAX_CREDIT = 99;
 	public static final short INITIAL_LIVES = 3;
 	public static final short RESTING_TICKS_NORMAL_PELLET = 1;
@@ -83,9 +86,6 @@ public abstract class GameModel {
 	public static final short PELLETS_EATEN_BONUS1 = 70;
 	public static final short PELLETS_EATEN_BONUS2 = 170;
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
-	public static final float SPEED_GHOST_INSIDE_HOUSE = 0.5f; // unsure
-	public static final float SPEED_GHOST_RETURNING = 2.5f; // unsure
-	public static final float SPEED_GHOST_TAKING_SEAT = 2.0f; // unsure
 
 	//@formatter:off
 	protected static final byte[][] LEVELS = {

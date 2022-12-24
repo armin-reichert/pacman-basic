@@ -212,7 +212,7 @@ public class Creature extends Entity {
 		if (fraction < 0) {
 			throw new IllegalArgumentException("Negative speed fraction: " + fraction);
 		}
-		setAbsSpeed(fraction * GameModel.BASE_SPEED);
+		setAbsSpeed(fraction * GameModel.SPEED_100_PERCENT_PX);
 	}
 
 	/**
