@@ -241,7 +241,7 @@ public abstract class GameModel {
 	 * @param levelNumber 1-based level number
 	 */
 	public void initLevel(int levelNumber) {
-		LOGGER.info("Init level %d", levelNumber);
+		LOGGER.info("Init level %d (%s)", levelNumber, variant());
 		checkLevelNumber(levelNumber);
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
@@ -256,7 +256,7 @@ public abstract class GameModel {
 	}
 
 	public void enterLevel(int levelNumber) {
-		LOGGER.info("Enter level %d", levelNumber);
+		LOGGER.info("Enter level %d (%s)", levelNumber, variant());
 		initLevel(levelNumber);
 		getReadyToRumble();
 		guys().forEach(Entity::hide);

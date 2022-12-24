@@ -86,13 +86,13 @@ public class GhostHouseRules {
 	public void resetGlobalDotCounterAndSetEnabled(boolean enabled) {
 		globalDotCounter = 0;
 		globalDotCounterEnabled = enabled;
-		LOGGER.info("Global dot counter reset to 0 and %s", enabled ? "enabled" : "disabled");
+		LOGGER.trace("Global dot counter reset to 0 and %s", enabled ? "enabled" : "disabled");
 	}
 
 	public void updateGhostDotCounters(GameModel game) {
 		if (globalDotCounterEnabled) {
 			if (game.theGhosts[ID_ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
-				LOGGER.info("%s inside house when counter reached 32", game.theGhosts[ID_ORANGE_GHOST].name());
+				LOGGER.trace("%s inside house when counter reached 32", game.theGhosts[ID_ORANGE_GHOST].name());
 				resetGlobalDotCounterAndSetEnabled(false);
 			} else {
 				globalDotCounter++;
@@ -106,7 +106,7 @@ public class GhostHouseRules {
 
 	private void increaseGhostDotCounter(Ghost ghost) {
 		ghostDotCounters[ghost.id()]++;
-		LOGGER.info("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id()]);
+		LOGGER.trace("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id()]);
 	}
 
 	public Optional<UnlockResult> checkIfGhostUnlocked(GameModel game) {
@@ -131,7 +131,7 @@ public class GhostHouseRules {
 		// check Pac-Man starving reaches limit
 		if (game.pac.starvingTicks() >= pacStarvingTimeLimit) {
 			game.pac.endStarving();
-			LOGGER.info("Pac-Man starving timer reset to 0");
+			LOGGER.trace("Pac-Man starving timer reset to 0");
 			return unlockGhost(game, ghost, "%s reached starving limit (%d ticks)", game.pac.name(), pacStarvingTimeLimit);
 		}
 		return Optional.empty();
