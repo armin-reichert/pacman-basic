@@ -24,9 +24,14 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
+
 import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -154,6 +159,12 @@ public class GameLevel {
 		return value / 100f;
 	}
 
+	public void update(GameModel game) {
+		bonus.update(game);
+		energizerPulse.animate();
+		advanceHunting(game);
+	}
+
 	/**
 	 * Hunting happens in different phases. Phases 0, 2, 4, 6 are scattering phases where the ghosts target for their
 	 * respective corners and circle around the walls in their corner, phases 1, 3, 5, 7 are chasing phases where the
@@ -166,10 +177,23 @@ public class GameLevel {
 	}
 
 	/**
+	 * Advances the current hunting phase and enters the next phase when the current phase ends. On every change between
+	 * phases, the living ghosts outside of the ghost house reverse their move direction.
+	 */
+	private void advanceHunting(GameModel game) {
+		huntingTimer.advance();
+		if (huntingTimer.hasExpired()) {
+			startHuntingPhase(huntingTimer.phase() + 1);
+			// locked and house-leaving ghost will reverse as soon as he has left the house
+			game.ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
+		}
+	}
+
+	/**
 	 * @param phase hunting phase (0, ... 7)
 	 * @return hunting (scattering or chasing) ticks for current level and given phase
 	 */
-	public long huntingPhaseTicks(int phase) {
+	private long huntingPhaseTicks(int phase) {
 		if (phase < 0 || phase > 7) {
 			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
 		}

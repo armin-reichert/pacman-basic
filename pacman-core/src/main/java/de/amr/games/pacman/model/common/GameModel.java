@@ -30,8 +30,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -116,7 +114,7 @@ public abstract class GameModel {
 	};
 
 	/** Duration (in ticks) of chase and scatter phases. See Pac-Man dossier. */
-	public static final int[][] HUNTING_DURATION = {
+	public static final int[][] HUNTING_DURATIONS = {
 		{ 7 *FPS, 20 *FPS, 7 *FPS, 20 *FPS, 5 *FPS,   20 *FPS, 5 *FPS, -1 },
 		{ 7 *FPS, 20 *FPS, 7 *FPS, 20 *FPS, 5 *FPS, 1033 *FPS,      1, -1 },
 		{ 5 *FPS, 20 *FPS, 5 *FPS, 20 *FPS, 5 *FPS, 1037 *FPS,      1, -1 },
@@ -241,9 +239,9 @@ public abstract class GameModel {
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
 		var huntingDurations = switch (levelNumber) {
-		case 1 -> HUNTING_DURATION[0];
-		case 2, 3, 4 -> HUNTING_DURATION[1];
-		default -> HUNTING_DURATION[2];
+		case 1 -> HUNTING_DURATIONS[0];
+		case 2, 3, 4 -> HUNTING_DURATIONS[1];
+		default -> HUNTING_DURATIONS[2];
 		};
 		var params = levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
@@ -423,19 +421,6 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Advances the current hunting phase and enters the next phase when the current phase ends. On every change between
-	 * phases, the living ghosts outside of the ghost house reverse their move direction.
-	 */
-	private void advanceHunting() {
-		level().huntingTimer().advance();
-		if (level().huntingTimer().hasExpired()) {
-			level().startHuntingPhase(level().huntingTimer().phase() + 1);
-			// locked and house-leaving ghost will reverse as soon as he has left the house
-			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
-		}
-	}
-
-	/**
 	 * @param levelNumber game level number
 	 * @return 1-based intermission (cut scene) number that is played after given level or <code>0</code> if no
 	 *         intermission is played after given level.
@@ -460,9 +445,7 @@ public abstract class GameModel {
 		pac.update(this);
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
-		level.bonus().update(this);
-		level.energizerPulse().animate();
-		advanceHunting();
+		level.update(this);
 	}
 
 	private void checkIfGhostCanGetUnlocked() {
