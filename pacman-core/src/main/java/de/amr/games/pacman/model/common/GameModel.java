@@ -121,9 +121,13 @@ public abstract class GameModel {
 	}
 
 	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
-	private static final int[] HUNTING_1 = { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, -1 };
-	private static final int[] HUNTING_2_TO_4 = { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS, 1, -1 };
-	private static final int[] HUNTING_5_AND_LATER = { 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS, 1, -1 };
+	private static int[] getHuntingDurations(int levelNumber) {
+		return switch (levelNumber) {
+		case 1 -> new int[] { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, -1 };
+		case 2, 3, 4 -> new int[] { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS, 1, -1 };
+		default -> new int[] { 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS, 1, -1 };
+		};
+	}
 
 	protected static int checkGhostID(int id) {
 		if (id < 0 || id > 3) {
@@ -235,6 +239,7 @@ public abstract class GameModel {
 	 * Builds the given level.
 	 * 
 	 * @param levelNumber 1-based level number
+	 * @return game level object
 	 */
 	public GameLevel buildLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
@@ -242,11 +247,7 @@ public abstract class GameModel {
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
-		var huntingDurations = switch (levelNumber) {
-		case 1 -> HUNTING_1;
-		case 2, 3, 4 -> HUNTING_2_TO_4;
-		default -> HUNTING_5_AND_LATER;
-		};
+		var huntingDurations = getHuntingDurations(levelNumber);
 		var params = getLevelParams(levelNumber);
 		return new GameLevel(levelNumber, world, bonus, huntingDurations, houseRules, params);
 	}
@@ -258,16 +259,13 @@ public abstract class GameModel {
 		level.world().assignGhostPositions(theGhosts);
 		level.houseRules().resetPrivateGhostDotCounters();
 		levelCounter.addSymbol(level.bonus().symbol());
-		ghost(ID_RED_GHOST).setCruiseElroyState(0);
 		gameScore.setLevelNumber(levelNumber);
+		ghost(ID_RED_GHOST).setCruiseElroyState(0);
 		getReadyToRumble();
 	}
 
 	public void exitLevel() {
-		// TODO level.exit()
-		level().huntingTimer().stop();
-		level.energizerPulse().reset();
-		level.bonus().setInactive();
+		level.exit();
 		pac.rest(Integer.MAX_VALUE);
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
