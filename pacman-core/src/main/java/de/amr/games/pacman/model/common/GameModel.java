@@ -88,7 +88,7 @@ public abstract class GameModel {
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
 
 	//@formatter:off
-	protected static final byte[][] LEVELS = {
+	protected static final byte[][] LEVEL_PARAMETERS = {
 	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ { 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* Intermission scene 1 */
@@ -244,7 +244,8 @@ public abstract class GameModel {
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
-		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+		var data = levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
+				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
 		level = new GameLevel(levelNumber, world, bonus, houseRules, data);
 		level.world().assignGhostPositions(theGhosts);
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);
@@ -252,6 +253,7 @@ public abstract class GameModel {
 	}
 
 	public void enterLevel(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		LOGGER.info("Enter level %d (%s)", levelNumber, variant());
 		initLevel(levelNumber);
 		getReadyToRumble();
