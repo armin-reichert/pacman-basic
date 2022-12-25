@@ -25,6 +25,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import de.amr.games.pacman.lib.anim.Pulse;
+import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -66,16 +67,19 @@ public class GameLevel {
 	private final Pulse energizerPulse;
 	private final Bonus bonus;
 	private final HuntingTimer huntingTimer;
+	private final int[] huntingDurations;
 	private final GhostHouseRules houseRules;
 	private final Parameters params;
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
 
-	public GameLevel(int levelNumber, World world, Bonus bonus, GhostHouseRules houseRules, byte[] data) {
+	public GameLevel(int levelNumber, World world, Bonus bonus, int[] huntingDurations, GhostHouseRules houseRules,
+			byte[] data) {
 		this.number = levelNumber;
 		this.world = world;
 		this.energizerPulse = new Pulse(10, true);
 		this.bonus = bonus;
+		this.huntingDurations = huntingDurations;
 		this.huntingTimer = new HuntingTimer("HuntingTimer-level-%d".formatted(levelNumber));
 		this.houseRules = houseRules;
 
@@ -148,5 +152,28 @@ public class GameLevel {
 
 	private static float percentage(int value) {
 		return value / 100f;
+	}
+
+	/**
+	 * Hunting happens in different phases. Phases 0, 2, 4, 6 are scattering phases where the ghosts target for their
+	 * respective corners and circle around the walls in their corner, phases 1, 3, 5, 7 are chasing phases where the
+	 * ghosts attack Pac-Man.
+	 * 
+	 * @param phase hunting phase (0..7)
+	 */
+	public void startHuntingPhase(int phase) {
+		huntingTimer.startPhase(phase, huntingPhaseTicks(phase));
+	}
+
+	/**
+	 * @param phase hunting phase (0, ... 7)
+	 * @return hunting (scattering or chasing) ticks for current level and given phase
+	 */
+	public long huntingPhaseTicks(int phase) {
+		if (phase < 0 || phase > 7) {
+			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
+		}
+		var ticks = huntingDurations[phase];
+		return ticks == -1 ? TickTimer.INDEFINITE : ticks;
 	}
 }

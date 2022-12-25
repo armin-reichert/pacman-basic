@@ -46,7 +46,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -241,9 +240,15 @@ public abstract class GameModel {
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
-		var data = levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
+		var huntingDurations = switch (levelNumber5) {
+		case 1 -> HUNTING_DURATION[0];
+		case 2, 3, 4 -> HUNTING_DURATION[1];
+		default -> HUNTING_DURATION[2];
+		};
+		var params = levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
-		level = new GameLevel(levelNumber, world, bonus, houseRules, data);
+
+		level = new GameLevel(levelNumber, world, bonus, huntingDurations, houseRules, params);
 		level.world().assignGhostPositions(theGhosts);
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);
 		gameScore.setLevelNumber(levelNumber);
@@ -418,43 +423,16 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Hunting happens in different phases. Phases 0, 2, 4, 6 are scattering phases where the ghosts target for their
-	 * respective corners and circle around the walls in their corner, phases 1, 3, 5, 7 are chasing phases where the
-	 * ghosts attack Pac-Man.
-	 * 
-	 * @param phase hunting phase (0..7)
-	 */
-	public void startHuntingPhase(int phase) {
-		level().huntingTimer().startPhase(phase, huntingPhaseTicks(phase));
-	}
-
-	/**
 	 * Advances the current hunting phase and enters the next phase when the current phase ends. On every change between
 	 * phases, the living ghosts outside of the ghost house reverse their move direction.
 	 */
 	private void advanceHunting() {
 		level().huntingTimer().advance();
 		if (level().huntingTimer().hasExpired()) {
-			startHuntingPhase(level().huntingTimer().phase() + 1);
+			level().startHuntingPhase(level().huntingTimer().phase() + 1);
 			// locked and house-leaving ghost will reverse as soon as he has left the house
 			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
 		}
-	}
-
-	/**
-	 * @param phase hunting phase (0, ... 7)
-	 * @return hunting (scattering or chasing) ticks for current level and given phase
-	 */
-	private long huntingPhaseTicks(int phase) {
-		if (phase < 0 || phase > 7) {
-			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
-		}
-		var ticks = switch (level.number()) {
-		case 1 -> HUNTING_DURATION[0][phase];
-		case 2, 3, 4 -> HUNTING_DURATION[1][phase];
-		default -> HUNTING_DURATION[2][phase];
-		};
-		return ticks == -1 ? TickTimer.INDEFINITE : ticks;
 	}
 
 	/**
