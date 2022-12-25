@@ -112,14 +112,12 @@ public abstract class GameModel {
 	/*20*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	/*21*/ { 90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
-
-	/** Duration (in ticks) of chase and scatter phases. See Pac-Man dossier. */
-	public static final int[][] HUNTING_DURATIONS = {
-		{ 7 *FPS, 20 *FPS, 7 *FPS, 20 *FPS, 5 *FPS,   20 *FPS, 5 *FPS, -1 },
-		{ 7 *FPS, 20 *FPS, 7 *FPS, 20 *FPS, 5 *FPS, 1033 *FPS,      1, -1 },
-		{ 5 *FPS, 20 *FPS, 5 *FPS, 20 *FPS, 5 *FPS, 1037 *FPS,      1, -1 },
-	};
 	//@formatter:on
+
+	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
+	public static final int[] HUNTING_1 = { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, -1 };
+	public static final int[] HUNTING_2_TO_4 = { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS, 1, -1 };
+	public static final int[] HUNTING_5_AND_LATER = { 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS, 1, -1 };
 
 	protected static int checkGhostID(int id) {
 		if (id < 0 || id > 3) {
@@ -239,13 +237,12 @@ public abstract class GameModel {
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
 		var huntingDurations = switch (levelNumber) {
-		case 1 -> HUNTING_DURATIONS[0];
-		case 2, 3, 4 -> HUNTING_DURATIONS[1];
-		default -> HUNTING_DURATIONS[2];
+		case 1 -> HUNTING_1;
+		case 2, 3, 4 -> HUNTING_2_TO_4;
+		default -> HUNTING_5_AND_LATER;
 		};
 		var params = levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
-
 		level = new GameLevel(levelNumber, world, bonus, huntingDurations, houseRules, params);
 		level.world().assignGhostPositions(theGhosts);
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);
