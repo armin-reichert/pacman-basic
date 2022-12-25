@@ -25,6 +25,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.common;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -54,23 +55,23 @@ public class SceneControllerContext {
 		return game().variant();
 	}
 
-	public GameLevel level() {
-		return game().level();
-	}
-
 	public GameState state() {
 		return gameController.state();
+	}
+
+	public boolean hasCredit() {
+		return game().hasCredit();
 	}
 
 	public GameSoundController sounds() {
 		return gameController.sounds();
 	}
 
-	public World world() {
-		return game().level().world();
+	public Optional<GameLevel> level() {
+		return Optional.ofNullable(game().level());
 	}
 
-	public boolean hasCredit() {
-		return game().hasCredit();
+	public Optional<World> world() {
+		return level().map(GameLevel::world);
 	}
 }

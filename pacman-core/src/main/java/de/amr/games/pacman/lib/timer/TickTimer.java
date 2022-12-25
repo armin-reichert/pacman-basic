@@ -59,7 +59,7 @@ public class TickTimer {
 		return Math.round(sec * 60);
 	}
 
-	public String ticksToString(long ticks) {
+	public static String ticksToString(long ticks) {
 		return ticks == INDEFINITE ? "indefinite" : "%d".formatted(ticks);
 	}
 

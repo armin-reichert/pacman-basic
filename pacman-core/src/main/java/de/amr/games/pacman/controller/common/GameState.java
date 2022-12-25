@@ -66,6 +66,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.restartIndefinitely();
+			game.setPlaying(false);
 		}
 
 		@Override
@@ -141,6 +142,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.guys().forEach(Entity::show);
 			} else {
 				game.reset();
+				game.enterLevel(1);
 				gc.sounds().play(GameSound.GAME_READY);
 			}
 		}

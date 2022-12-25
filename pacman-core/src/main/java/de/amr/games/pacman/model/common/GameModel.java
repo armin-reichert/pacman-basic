@@ -227,7 +227,6 @@ public abstract class GameModel {
 		gameScore.reset();
 		levelCounter.clear();
 		enableScores(true);
-		enterLevel(1);
 	}
 
 	/** Current level. */
@@ -273,6 +272,7 @@ public abstract class GameModel {
 
 	public void enterAttractMode() {
 		reset();
+		enterLevel(1);
 		guys().forEach(Entity::show);
 		enableScores(false);
 		gameScore.setShowContent(false);
