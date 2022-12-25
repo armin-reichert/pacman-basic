@@ -173,7 +173,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			if (!gc.levelTestMode) {
-				int sirenIndex = game.huntingTimer().phase() / 2;
+				int sirenIndex = game.level().huntingTimer().phase() / 2;
 				gc.sounds().ensureSirenStarted(sirenIndex);
 			}
 			game.level().energizerPulse().restart();
@@ -228,8 +228,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		private void renderSound(GameModel game) {
 			var snd = gc.sounds();
-			if (game.huntingTimer().tick() == 1) {
-				var sirenIndex = game.huntingTimer().phase() / 2;
+			if (game.level().huntingTimer().tick() == 1) {
+				var sirenIndex = game.level().huntingTimer().phase() / 2;
 				snd.ensureSirenStarted(sirenIndex);
 			}
 			if (game.memo.pacPowered) {
@@ -238,7 +238,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			}
 			if (game.memo.pacPowerLost) {
 				snd.stop(GameSound.PACMAN_POWER);
-				snd.ensureSirenStarted(game.huntingTimer().phase() / 2);
+				snd.ensureSirenStarted(game.level().huntingTimer().phase() / 2);
 			}
 			if (game.memo.foodFoundTile.isPresent()) {
 				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);

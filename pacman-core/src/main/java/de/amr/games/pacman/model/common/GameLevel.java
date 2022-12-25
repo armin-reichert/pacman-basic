@@ -65,6 +65,7 @@ public class GameLevel {
 	private final World world;
 	private final Pulse energizerPulse;
 	private final Bonus bonus;
+	private final HuntingTimer huntingTimer;
 	private final GhostHouseRules houseRules;
 	private final Parameters params;
 	private int numGhostsKilledInLevel;
@@ -75,6 +76,7 @@ public class GameLevel {
 		this.world = world;
 		this.energizerPulse = new Pulse(10, true);
 		this.bonus = bonus;
+		this.huntingTimer = new HuntingTimer("HuntingTimer-level-%d".formatted(levelNumber));
 		this.houseRules = houseRules;
 
 		//@formatter:off
@@ -112,6 +114,10 @@ public class GameLevel {
 	/** Bonus used in this level. */
 	public Bonus bonus() {
 		return bonus;
+	}
+
+	public HuntingTimer huntingTimer() {
+		return huntingTimer;
 	}
 
 	/** Ghost house rules in this level */

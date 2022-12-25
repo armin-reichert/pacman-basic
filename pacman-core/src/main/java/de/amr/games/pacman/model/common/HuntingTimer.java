@@ -45,8 +45,8 @@ public class HuntingTimer extends TickTimer {
 
 	private int phase;
 
-	public HuntingTimer() {
-		super("HuntingTimer");
+	public HuntingTimer(String name) {
+		super(name);
 	}
 
 	@Override

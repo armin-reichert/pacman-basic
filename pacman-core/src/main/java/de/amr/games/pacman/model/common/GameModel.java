@@ -147,7 +147,6 @@ public abstract class GameModel {
 	protected GameLevel level;
 	protected Pac pac;
 	protected Ghost[] theGhosts;
-	protected final HuntingTimer huntingTimer = new HuntingTimer();
 	protected int credit;
 	protected boolean playing;
 	protected boolean oneLessLifeDisplayed; // to be replaced
@@ -260,7 +259,8 @@ public abstract class GameModel {
 	}
 
 	public void exitLevel() {
-		huntingTimer.stop();
+		// TODO level.exit()
+		level().huntingTimer().stop();
 		level.energizerPulse().reset();
 		level.bonus().setInactive();
 		pac.rest(Integer.MAX_VALUE);
@@ -417,13 +417,6 @@ public abstract class GameModel {
 		return true;
 	}
 
-	// Hunting
-
-	/** Timer used to control hunting phases. */
-	public HuntingTimer huntingTimer() {
-		return huntingTimer;
-	}
-
 	/**
 	 * Hunting happens in different phases. Phases 0, 2, 4, 6 are scattering phases where the ghosts target for their
 	 * respective corners and circle around the walls in their corner, phases 1, 3, 5, 7 are chasing phases where the
@@ -432,7 +425,7 @@ public abstract class GameModel {
 	 * @param phase hunting phase (0..7)
 	 */
 	public void startHuntingPhase(int phase) {
-		huntingTimer.startPhase(phase, huntingPhaseTicks(phase));
+		level().huntingTimer().startPhase(phase, huntingPhaseTicks(phase));
 	}
 
 	/**
@@ -440,9 +433,9 @@ public abstract class GameModel {
 	 * phases, the living ghosts outside of the ghost house reverse their move direction.
 	 */
 	private void advanceHunting() {
-		huntingTimer.advance();
-		if (huntingTimer.hasExpired()) {
-			startHuntingPhase(huntingTimer.phase() + 1);
+		level().huntingTimer().advance();
+		if (level().huntingTimer().hasExpired()) {
+			startHuntingPhase(level().huntingTimer().phase() + 1);
 			// locked and house-leaving ghost will reverse as soon as he has left the house
 			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
 		}
@@ -571,7 +564,7 @@ public abstract class GameModel {
 
 	private void onPacPowerBegin() {
 		LOGGER.info("%s power begins", pac.name());
-		huntingTimer.stop();
+		level().huntingTimer().stop();
 		pac.powerTimer().restartSeconds(level.params().pacPowerSeconds());
 		LOGGER.info("Timer started: %s", pac.powerTimer());
 		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened(this));
@@ -581,7 +574,7 @@ public abstract class GameModel {
 
 	private void onPacPowerEnd() {
 		LOGGER.info("%s power ends", pac.name());
-		huntingTimer.start();
+		level().huntingTimer().start();
 		pac.powerTimer().stop();
 		pac.powerTimer().resetIndefinitely();
 		LOGGER.info("Timer stopped: %s", pac.powerTimer());
