@@ -230,9 +230,9 @@ public abstract class GameModel {
 	 * 
 	 * @param levelNumber 1-based level number
 	 */
-	public void initLevel(int levelNumber) {
+	public GameLevel buildLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		LOGGER.info("Init level %d (%s)", levelNumber, variant());
+		LOGGER.info("Build game level %d (%s)", levelNumber, variant());
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
@@ -243,19 +243,19 @@ public abstract class GameModel {
 		};
 		var params = levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
-		level = new GameLevel(levelNumber, world, bonus, huntingDurations, houseRules, params);
-		level.world().assignGhostPositions(theGhosts);
-		ghost(ID_RED_GHOST).setCruiseElroyState(0);
-		gameScore.setLevelNumber(levelNumber);
+		return new GameLevel(levelNumber, world, bonus, huntingDurations, houseRules, params);
 	}
 
 	public void enterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		LOGGER.info("Enter level %d (%s)", levelNumber, variant());
-		initLevel(levelNumber);
-		getReadyToRumble();
-		levelCounter.addSymbol(level.bonus().symbol());
+		level = buildLevel(levelNumber);
+		level.world().assignGhostPositions(theGhosts);
 		level.houseRules().resetPrivateGhostDotCounters();
+		levelCounter.addSymbol(level.bonus().symbol());
+		ghost(ID_RED_GHOST).setCruiseElroyState(0);
+		gameScore.setLevelNumber(levelNumber);
+		getReadyToRumble();
 	}
 
 	public void exitLevel() {

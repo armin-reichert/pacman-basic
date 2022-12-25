@@ -104,7 +104,7 @@ public class PacManGame extends GameModel {
 				new Ghost(ID_ORANGE_GHOST, "Clyde") //
 		};
 		defineGhostChasingBehavior();
-		initLevel(1);
+		level = buildLevel(1);
 	}
 
 	@Override
