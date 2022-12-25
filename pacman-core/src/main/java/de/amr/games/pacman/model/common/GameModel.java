@@ -114,10 +114,16 @@ public abstract class GameModel {
 	};
 	//@formatter:on
 
+	// from level 21 on, level parameters remain the same
+	private static byte[] getLevelParams(int levelNumber) {
+		return levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
+				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
+	}
+
 	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
-	public static final int[] HUNTING_1 = { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, -1 };
-	public static final int[] HUNTING_2_TO_4 = { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS, 1, -1 };
-	public static final int[] HUNTING_5_AND_LATER = { 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS, 1, -1 };
+	private static final int[] HUNTING_1 = { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, -1 };
+	private static final int[] HUNTING_2_TO_4 = { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS, 1, -1 };
+	private static final int[] HUNTING_5_AND_LATER = { 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS, 1, -1 };
 
 	protected static int checkGhostID(int id) {
 		if (id < 0 || id > 3) {
@@ -241,8 +247,7 @@ public abstract class GameModel {
 		case 2, 3, 4 -> HUNTING_2_TO_4;
 		default -> HUNTING_5_AND_LATER;
 		};
-		var params = levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
-				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
+		var params = getLevelParams(levelNumber);
 		return new GameLevel(levelNumber, world, bonus, huntingDurations, houseRules, params);
 	}
 
