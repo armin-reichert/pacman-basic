@@ -79,7 +79,8 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	private void updateAlive(GameModel game) {
 		switch (restingTicks) {
 		case 0 -> {
-			var speed = powerTimer.isRunning() ? game.level().playerSpeedPowered() : game.level().playerSpeed();
+			var speed = powerTimer.isRunning() ? game.level().params().playerSpeedPowered()
+					: game.level().params().playerSpeed();
 			setRelSpeed(speed);
 			tryMoving(game);
 			selectRunnableAnimation(AnimKeys.PAC_MUNCHING);

@@ -30,46 +30,49 @@ import de.amr.games.pacman.model.common.world.World;
 /**
  * @author Armin Reichert
  */
-//@formatter:off
-public record GameLevel(
-	/** Number of level, starts with 1. */
-	int number,
-	/** World used in this level. */
-	World world,
-	/** Bonus used in this level. */
-	Bonus bonus,
-	/** Ghost house rules in this level */
-	GhostHouseRules houseRules,
-	/** Relative player speed in this level. */
-	float playerSpeed,
-	/** Relative ghost speed in this level. */
-	float ghostSpeed,
-	/** Relative ghost speed when inside tunnel in this level. */
-	float ghostSpeedTunnel,
-	/** Number of pellets left before player becomes "Cruise Elroy" with severity 1. */
-	int elroy1DotsLeft,
-	/** Relative speed of player being "Cruise Elroy" at severity 1. */
-	float elroy1Speed,
-	/** Number of pellets left before player becomes "Cruise Elroy" with severity 2. */
-	int elroy2DotsLeft,
-	/** Relative speed of player being "Cruise Elroy" with severity 2. */
-	float elroy2Speed,
-	/** Relative speed of player in power mode. */
-	float playerSpeedPowered,
-	/** Relative speed of frightened ghost. */
-	float ghostSpeedFrightened,
-	/** Number of seconds Pac-Man gets power int this level. */
-	int pacPowerSeconds,
-	/** Number of maze flashes at end of this level. */
-	int numFlashes)
-{
-	public static GameLevel fromData(
-			int levelNumber, 
-			World world, 
-			Bonus bonus,	
-			GhostHouseRules houseRules, 
-			byte[] data) 
+public class GameLevel {
+
+	public record Parameters(
+	//@formatter:off
+		/** Relative player speed in this level. */
+		float playerSpeed,
+		/** Relative ghost speed in this level. */
+		float ghostSpeed,
+		/** Relative ghost speed when inside tunnel in this level. */
+		float ghostSpeedTunnel,
+		/** Number of pellets left before player becomes "Cruise Elroy" with severity 1. */
+		int elroy1DotsLeft,
+		/** Relative speed of player being "Cruise Elroy" at severity 1. */
+		float elroy1Speed,
+		/** Number of pellets left before player becomes "Cruise Elroy" with severity 2. */
+		int elroy2DotsLeft,
+		/** Relative speed of player being "Cruise Elroy" with severity 2. */
+		float elroy2Speed,
+		/** Relative speed of player in power mode. */
+		float playerSpeedPowered,
+		/** Relative speed of frightened ghost. */
+		float ghostSpeedFrightened,
+		/** Number of seconds Pac-Man gets power int this level. */
+		int pacPowerSeconds,
+		/** Number of maze flashes at end of this level. */
+		int numFlashes)
+	//@formatter:on
 	{
+	}
+
+	private final int number;
+	private final World world;
+	private final Bonus bonus;
+	private final GhostHouseRules houseRules;
+	private final Parameters params;
+
+	public GameLevel(int levelNumber, World world, Bonus bonus, GhostHouseRules houseRules, byte[] data) {
+		this.number = levelNumber;
+		this.world = world;
+		this.bonus = bonus;
+		this.houseRules = houseRules;
+
+		//@formatter:off
 		float playerSpeed          = percentage(data[0]);
 		float ghostSpeed           = percentage(data[1]);
 		float ghostSpeedTunnel     = percentage(data[2]);
@@ -81,16 +84,38 @@ public record GameLevel(
 		float ghostSpeedFrightened = percentage(data[8]);
 		int pacPowerSeconds        = data[9];
 		int numFlashes             = data[10];
-		
-		return new GameLevel(levelNumber, world, bonus, houseRules, 
-				playerSpeed, ghostSpeed, ghostSpeedTunnel,
-				elroy1DotsLeft, elroy1Speed, elroy2DotsLeft, elroy2Speed, 
-				playerSpeedPowered, ghostSpeedFrightened,
-				pacPowerSeconds, numFlashes);
-	}
-//@formatter:on
+		//@formatter:on
 
-	protected static float percentage(int value) {
+		params = new Parameters(playerSpeed, ghostSpeed, ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft,
+				elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes);
+	}
+
+	/** Number of level, starts with 1. */
+	public int number() {
+		return number;
+	}
+
+	/** World used in this level. */
+	public World world() {
+		return world;
+	}
+
+	/** Bonus used in this level. */
+	public Bonus bonus() {
+		return bonus;
+	}
+
+	/** Ghost house rules in this level */
+	public GhostHouseRules houseRules() {
+		return houseRules;
+	}
+
+	/** Parameters in this level */
+	public Parameters params() {
+		return params;
+	}
+
+	private static float percentage(int value) {
 		return value / 100f;
 	}
 }

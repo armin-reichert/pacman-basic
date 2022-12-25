@@ -236,18 +236,18 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Initializes the game to the given level.
+	 * Builds the given level.
 	 * 
 	 * @param levelNumber 1-based level number
 	 */
 	public void initLevel(int levelNumber) {
-		LOGGER.info("Init level %d (%s)", levelNumber, variant());
 		checkLevelNumber(levelNumber);
+		LOGGER.info("Init level %d (%s)", levelNumber, variant());
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-		level = GameLevel.fromData(levelNumber, world, bonus, houseRules, data);
+		level = new GameLevel(levelNumber, world, bonus, houseRules, data);
 		level.world().assignGhostPositions(theGhosts);
 		numGhostsKilledInLevel = 0;
 		numGhostsKilledByEnergizer = 0;
@@ -589,7 +589,7 @@ public abstract class GameModel {
 	private void onPacPowerBegin() {
 		LOGGER.info("%s power begins", pac.name());
 		huntingTimer.stop();
-		pac.powerTimer().restartSeconds(level.pacPowerSeconds());
+		pac.powerTimer().restartSeconds(level.params().pacPowerSeconds());
 		LOGGER.info("Timer started: %s", pac.powerTimer());
 		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened(this));
 		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
@@ -615,7 +615,7 @@ public abstract class GameModel {
 			memo.foodFoundTile = Optional.of(tile);
 			memo.lastFoodFound = world.foodRemaining() == 1;
 			memo.energizerFound = world.isEnergizerTile(tile);
-			memo.pacPowered = memo.energizerFound && level.pacPowerSeconds() > 0;
+			memo.pacPowered = memo.energizerFound && level.params().pacPowerSeconds() > 0;
 			memo.bonusReached = world.eatenFoodCount() == PELLETS_EATEN_BONUS1
 					|| world.eatenFoodCount() == PELLETS_EATEN_BONUS2;
 			onFoodFound(tile);
@@ -645,9 +645,9 @@ public abstract class GameModel {
 
 	private void checkIfRedGhostBecomesCruiseElroy() {
 		var foodRemaining = level.world().foodRemaining();
-		if (foodRemaining == level.elroy1DotsLeft()) {
+		if (foodRemaining == level.params().elroy1DotsLeft()) {
 			ghost(ID_RED_GHOST).setCruiseElroyState(1);
-		} else if (foodRemaining == level.elroy2DotsLeft()) {
+		} else if (foodRemaining == level.params().elroy2DotsLeft()) {
 			ghost(ID_RED_GHOST).setCruiseElroyState(2);
 		}
 	}

@@ -315,13 +315,13 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	private void updateStateHuntingPac(GameModel game) {
 		if (game.level().world().isTunnel(tile())) {
-			setRelSpeed(game.level().ghostSpeedTunnel());
+			setRelSpeed(game.level().params().ghostSpeedTunnel());
 		} else if (cruiseElroyState == 1) {
-			setRelSpeed(game.level().elroy1Speed());
+			setRelSpeed(game.level().params().elroy1Speed());
 		} else if (cruiseElroyState == 2) {
-			setRelSpeed(game.level().elroy2Speed());
+			setRelSpeed(game.level().params().elroy2Speed());
 		} else {
-			setRelSpeed(game.level().ghostSpeed());
+			setRelSpeed(game.level().params().ghostSpeed());
 		}
 		if (game.variant() == MS_PACMAN && game.huntingTimer().scatterPhase() == 0
 				&& (id == ID_RED_GHOST || id == ID_PINK_GHOST)) {
@@ -363,8 +363,8 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateFrightened(GameModel game) {
-		setRelSpeed(
-				game.level().world().isTunnel(tile()) ? game.level().ghostSpeedTunnel() : game.level().ghostSpeedFrightened());
+		setRelSpeed(game.level().world().isTunnel(tile()) ? game.level().params().ghostSpeedTunnel()
+				: game.level().params().ghostSpeedFrightened());
 		roam(game);
 		if (animationSet != null) {
 			updateColorOrBlueOrFlashingAnimation(game);
@@ -518,7 +518,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			if (!animationSet.isSelected(AnimKeys.GHOST_FLASHING)) {
 				animationSet.select(AnimKeys.GHOST_FLASHING);
 				animationSet.selectedAnimation()
-						.ifPresent(flashing -> startFlashing(game, flashing, game.level().numFlashes()));
+						.ifPresent(flashing -> startFlashing(game, flashing, game.level().params().numFlashes()));
 			}
 		}
 	}

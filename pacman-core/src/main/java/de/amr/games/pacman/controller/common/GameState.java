@@ -315,7 +315,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			} else {
 				game.level().world().levelCompleteAnimation().ifPresent(animation -> {
 					if (timer.atSecond(1)) {
-						animation.setRepetitions(game.level().numFlashes());
+						animation.setRepetitions(game.level().params().numFlashes());
 						animation.restart();
 					} else {
 						animation.animate();
