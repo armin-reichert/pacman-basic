@@ -60,8 +60,8 @@ public class GameModelTest {
 		assertEquals(1, game.gameScore().levelNumber());
 		assertTrue(game.level().bonus() instanceof Bonus);
 		assertEquals(BonusState.INACTIVE, game.level().bonus().state());
-		assertEquals(0, game.numGhostsKilledInLevel());
-		assertEquals(0, game.numGhostsKilledByEnergizer());
+		assertEquals(0, game.level().numGhostsKilledInLevel());
+		assertEquals(0, game.level().numGhostsKilledByEnergizer());
 		assertEquals(0, game.ghost(Ghost.ID_RED_GHOST).cruiseElroyState());
 	}
 

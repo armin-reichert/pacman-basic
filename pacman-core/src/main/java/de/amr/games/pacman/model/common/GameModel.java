@@ -151,8 +151,6 @@ public abstract class GameModel {
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
 	protected final Pulse energizerPulse = new Pulse(10, true);
 	protected int credit;
-	protected int numGhostsKilledInLevel;
-	protected int numGhostsKilledByEnergizer;
 	protected boolean playing;
 	protected boolean oneLessLifeDisplayed; // to be replaced
 	protected final LevelCounter levelCounter = new LevelCounter();
@@ -249,8 +247,6 @@ public abstract class GameModel {
 		var data = levelNumber <= LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 		level = new GameLevel(levelNumber, world, bonus, houseRules, data);
 		level.world().assignGhostPositions(theGhosts);
-		numGhostsKilledInLevel = 0;
-		numGhostsKilledByEnergizer = 0;
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);
 		gameScore.setLevelNumber(levelNumber);
 	}
@@ -381,16 +377,6 @@ public abstract class GameModel {
 	 */
 	public Pac pac() {
 		return pac;
-	}
-
-	/** Number of ghosts killed at the current level. */
-	public int numGhostsKilledInLevel() {
-		return numGhostsKilledInLevel;
-	}
-
-	/** Number of ghosts killed by current energizer. */
-	public int numGhostsKilledByEnergizer() {
-		return numGhostsKilledByEnergizer;
 	}
 
 	/** If one less life is displayed in the lives counter. */
@@ -554,14 +540,14 @@ public abstract class GameModel {
 
 	public void killAllPossibleGhosts() {
 		var prey = ghosts(HUNTING_PAC, FRIGHTENED).toList();
-		numGhostsKilledByEnergizer = 0;
+		level.setNumGhostsKilledByEnergizer(0);
 		killGhosts(prey);
 	}
 
 	private void killGhosts(List<Ghost> prey) {
 		prey.forEach(this::killGhost);
-		numGhostsKilledInLevel += prey.size();
-		if (numGhostsKilledInLevel == 16) {
+		level.setNumGhostsKilledInLevel(level.numGhostsKilledInLevel() + prey.size());
+		if (level.numGhostsKilledInLevel() == 16) {
 			scorePoints(POINTS_ALL_GHOSTS_KILLED);
 			LOGGER.info("All ghosts killed at level %d, %s wins %d points", level.number(), pac.name(),
 					POINTS_ALL_GHOSTS_KILLED);
@@ -569,8 +555,9 @@ public abstract class GameModel {
 	}
 
 	private void killGhost(Ghost ghost) {
-		ghost.setKilledIndex(numGhostsKilledByEnergizer++);
+		ghost.setKilledIndex(level.numGhostsKilledByEnergizer());
 		ghost.enterStateEaten(this);
+		level.setNumGhostsKilledByEnergizer(level.numGhostsKilledByEnergizer() + 1);
 		memo.killedGhosts.add(ghost);
 		int points = POINTS_GHOSTS_SEQUENCE[ghost.killedIndex()];
 		scorePoints(points);
@@ -628,7 +615,7 @@ public abstract class GameModel {
 		level.world().removeFood(tile);
 		pac.endStarving();
 		if (memo.energizerFound) {
-			numGhostsKilledByEnergizer = 0;
+			level.setNumGhostsKilledByEnergizer(0);
 			pac.rest(RESTING_TICKS_ENERGIZER);
 			scorePoints(POINTS_ENERGIZER);
 		} else {

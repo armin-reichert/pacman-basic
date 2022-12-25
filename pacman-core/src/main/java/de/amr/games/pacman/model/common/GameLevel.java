@@ -65,6 +65,8 @@ public class GameLevel {
 	private final Bonus bonus;
 	private final GhostHouseRules houseRules;
 	private final Parameters params;
+	private int numGhostsKilledInLevel;
+	private int numGhostsKilledByEnergizer;
 
 	public GameLevel(int levelNumber, World world, Bonus bonus, GhostHouseRules houseRules, byte[] data) {
 		this.number = levelNumber;
@@ -113,6 +115,22 @@ public class GameLevel {
 	/** Parameters in this level */
 	public Parameters params() {
 		return params;
+	}
+
+	public int numGhostsKilledInLevel() {
+		return numGhostsKilledInLevel;
+	}
+
+	public void setNumGhostsKilledInLevel(int number) {
+		this.numGhostsKilledInLevel = number;
+	}
+
+	public int numGhostsKilledByEnergizer() {
+		return numGhostsKilledByEnergizer;
+	}
+
+	public void setNumGhostsKilledByEnergizer(int number) {
+		this.numGhostsKilledByEnergizer = number;
 	}
 
 	private static float percentage(int value) {
