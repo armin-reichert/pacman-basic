@@ -228,7 +228,6 @@ public class MsPacManGame extends GameModel {
 				new Ghost(ID_ORANGE_GHOST, "Sue") //
 		};
 		defineGhostChasingBehavior();
-		level = buildLevel(1);
 	}
 
 	@Override
