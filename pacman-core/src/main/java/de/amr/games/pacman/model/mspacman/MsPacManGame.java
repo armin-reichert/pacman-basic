@@ -30,7 +30,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import de.amr.games.pacman.event.GameEventType;
@@ -306,26 +305,24 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public void onBonusReached(Bonus bonus) {
 		Objects.requireNonNull(bonus, "Bonus must not be null");
+		int numPortals = level.world().portals().size();
+		var entryPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
+		var exitPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
+		var orientation = RND.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+		var start = orientation == Direction.RIGHT ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
 		var houseEntry = level.world().ghostHouse().entryTile();
 		int houseHeight = level.world().ghostHouse().size().y();
-		int numPortals = level.world().portals().size();
-		if (numPortals > 0) {
-			var entryPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
-			var exitPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
-			var orientation = RND.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-			var start = orientation == Direction.RIGHT ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
-			List<NavigationPoint> route = new ArrayList<>();
-			route.add(np(houseEntry));
-			route.add(np(houseEntry.plus(0, houseHeight + 2)));
-			route.add(np(houseEntry));
-			route.add(orientation == Direction.RIGHT ? np(exitPortal.rightTunnelEnd()) : np(exitPortal.leftTunnelEnd()));
-			LOGGER.trace("Bonus route: %s, orientation: %s", route, orientation);
-			MovingBonus movingBonus = (MovingBonus) bonus;
-			movingBonus.setRoute(route);
-			movingBonus.placeAtTile(start.tile(), 0, 0);
-			movingBonus.setMoveAndWishDir(orientation);
-			movingBonus.setEdible(TickTimer.INDEFINITE);
-			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
-		}
+		var route = new ArrayList<NavigationPoint>();
+		route.add(np(houseEntry));
+		route.add(np(houseEntry.plus(0, houseHeight + 2)));
+		route.add(np(houseEntry));
+		route.add(orientation == Direction.RIGHT ? np(exitPortal.rightTunnelEnd()) : np(exitPortal.leftTunnelEnd()));
+		LOGGER.trace("Bonus route: %s, orientation: %s", route, orientation);
+		var movingBonus = (MovingBonus) bonus;
+		movingBonus.setRoute(route);
+		movingBonus.placeAtTile(start.tile(), 0, 0);
+		movingBonus.setMoveAndWishDir(orientation);
+		movingBonus.setEdible(TickTimer.INDEFINITE);
+		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 	}
 }
