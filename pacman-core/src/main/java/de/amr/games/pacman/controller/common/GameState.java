@@ -176,7 +176,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				int sirenIndex = game.huntingTimer().phase() / 2;
 				gc.sounds().ensureSirenStarted(sirenIndex);
 			}
-			game.energizerPulse().restart();
+			game.level().energizerPulse().restart();
 		}
 
 		@Override
@@ -358,7 +358,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				gc.steering().steer(game, game.pac());
 				game.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
 						.forEach(ghost -> ghost.update(game));
-				game.energizerPulse().animate();
+				game.level().energizerPulse().animate();
 			}
 		}
 
@@ -380,7 +380,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			game.energizerPulse().animate();
+			game.level().energizerPulse().animate();
 			game.pac().update(game);
 			if (timer.betweenSeconds(0, 1)) {
 				game.ghosts().forEach(Ghost::animate);
@@ -393,7 +393,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			} else if (timer.atSecond(3.0)) {
 				game.pac().setLives(game.pac().lives() - 1);
 				if (game.pac().lives() == 0) {
-					game.energizerPulse().stop();
+					game.level().energizerPulse().stop();
 					game.setOneLessLifeDisplayed(false);
 				}
 				game.pac().hide();

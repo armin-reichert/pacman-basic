@@ -44,7 +44,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -149,7 +148,6 @@ public abstract class GameModel {
 	protected Pac pac;
 	protected Ghost[] theGhosts;
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
-	protected final Pulse energizerPulse = new Pulse(10, true);
 	protected int credit;
 	protected boolean playing;
 	protected boolean oneLessLifeDisplayed; // to be replaced
@@ -263,11 +261,11 @@ public abstract class GameModel {
 
 	public void exitLevel() {
 		huntingTimer.stop();
+		level.energizerPulse().reset();
 		level.bonus().setInactive();
 		pac.rest(Integer.MAX_VALUE);
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
-		energizerPulse.reset();
 	}
 
 	public void enterAttractMode() {
@@ -363,7 +361,7 @@ public abstract class GameModel {
 		});
 		guys().forEach(Creature::hide);
 		level.bonus().setInactive();
-		energizerPulse.reset();
+		level.energizerPulse().reset();
 	}
 
 	/**
@@ -388,10 +386,6 @@ public abstract class GameModel {
 
 	public void setOneLessLifeDisplayed(boolean value) {
 		this.oneLessLifeDisplayed = value;
-	}
-
-	public Pulse energizerPulse() {
-		return energizerPulse;
 	}
 
 	/**
@@ -496,8 +490,8 @@ public abstract class GameModel {
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
 		level.bonus().update(this);
+		level.energizerPulse().animate();
 		advanceHunting();
-		energizerPulse.animate();
 	}
 
 	private void checkIfGhostCanGetUnlocked() {

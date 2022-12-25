@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -62,6 +63,7 @@ public class GameLevel {
 
 	private final int number;
 	private final World world;
+	private final Pulse energizerPulse;
 	private final Bonus bonus;
 	private final GhostHouseRules houseRules;
 	private final Parameters params;
@@ -71,6 +73,7 @@ public class GameLevel {
 	public GameLevel(int levelNumber, World world, Bonus bonus, GhostHouseRules houseRules, byte[] data) {
 		this.number = levelNumber;
 		this.world = world;
+		this.energizerPulse = new Pulse(10, true);
 		this.bonus = bonus;
 		this.houseRules = houseRules;
 
@@ -100,6 +103,10 @@ public class GameLevel {
 	/** World used in this level. */
 	public World world() {
 		return world;
+	}
+
+	public Pulse energizerPulse() {
+		return energizerPulse;
 	}
 
 	/** Bonus used in this level. */
