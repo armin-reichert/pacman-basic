@@ -272,10 +272,10 @@ public abstract class GameModel {
 
 	public void enterAttractMode() {
 		reset();
-		enableScores(false);
-		gameScore().setShowContent(false);
-		levelCounter().clear();
 		guys().forEach(Entity::show);
+		enableScores(false);
+		gameScore.setShowContent(false);
+		levelCounter.clear();
 	}
 
 	/** Tells if the game play is running. */
