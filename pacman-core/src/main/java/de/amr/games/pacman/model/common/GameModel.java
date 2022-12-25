@@ -240,7 +240,7 @@ public abstract class GameModel {
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
-		var huntingDurations = switch (levelNumber5) {
+		var huntingDurations = switch (levelNumber) {
 		case 1 -> HUNTING_DURATION[0];
 		case 2, 3, 4 -> HUNTING_DURATION[1];
 		default -> HUNTING_DURATION[2];
