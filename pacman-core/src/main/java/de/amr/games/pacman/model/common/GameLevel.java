@@ -28,6 +28,9 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -38,6 +41,8 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public class GameLevel {
+
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	public record Parameters(
 	//@formatter:off
@@ -71,10 +76,11 @@ public class GameLevel {
 	private final World world;
 	private final Pulse energizerPulse;
 	private final Bonus bonus;
-	private final HuntingTimer huntingTimer;
+	private final TickTimer huntingTimer;
 	private final int[] huntingDurations;
 	private final GhostHouseRules houseRules;
 	private final Parameters params;
+	private int huntingPhase;
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
 
@@ -85,7 +91,7 @@ public class GameLevel {
 		this.energizerPulse = new Pulse(10, true);
 		this.bonus = bonus;
 		this.huntingDurations = huntingDurations;
-		this.huntingTimer = new HuntingTimer("HuntingTimer-level-%d".formatted(levelNumber));
+		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(levelNumber));
 		this.houseRules = houseRules;
 
 		//@formatter:off
@@ -125,7 +131,7 @@ public class GameLevel {
 		return bonus;
 	}
 
-	public HuntingTimer huntingTimer() {
+	public TickTimer huntingTimer() {
 		return huntingTimer;
 	}
 
@@ -171,6 +177,10 @@ public class GameLevel {
 		huntingTimer.stop();
 	}
 
+	public void startHunting() {
+		startHuntingPhase(0);
+	}
+
 	/**
 	 * Hunting happens in different phases. Phases 0, 2, 4, 6 are scattering phases where the ghosts target for their
 	 * respective corners and circle around the walls in their corner, phases 1, 3, 5, 7 are chasing phases where the
@@ -178,8 +188,15 @@ public class GameLevel {
 	 * 
 	 * @param phase hunting phase (0..7)
 	 */
-	public void startHuntingPhase(int phase) {
-		huntingTimer.startPhase(phase, huntingPhaseTicks(phase));
+	private void startHuntingPhase(int phase) {
+		if (phase < 0 || phase > 7) {
+			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
+		}
+		this.huntingPhase = phase;
+		var ticks = huntingDurations[phase] == -1 ? TickTimer.INDEFINITE : huntingDurations[phase];
+		LOGGER.info("Start hunting phase %d (%s). %s", phase, currentHuntingPhaseName(), huntingTimer);
+		huntingTimer.reset(ticks);
+		huntingTimer.start();
 	}
 
 	/**
@@ -189,21 +206,42 @@ public class GameLevel {
 	private void advanceHunting(GameModel game) {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
-			startHuntingPhase(huntingTimer.phase() + 1);
+			startHuntingPhase(huntingPhase + 1);
 			// locked and house-leaving ghost will reverse as soon as he has left the house
 			game.ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
 		}
 	}
 
 	/**
-	 * @param phase hunting phase (0, ... 7)
-	 * @return hunting (scattering or chasing) ticks for current level and given phase
+	 * @return number of current phase <code>(0-7)
 	 */
-	private long huntingPhaseTicks(int phase) {
-		if (phase < 0 || phase > 7) {
-			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
-		}
-		var ticks = huntingDurations[phase];
-		return ticks == -1 ? TickTimer.INDEFINITE : ticks;
+	public int huntingPhase() {
+		return huntingPhase;
+	}
+
+	/**
+	 * @return number of current scattering phase <code>(0-4)</code> or <code>-1</code> if currently chasing
+	 */
+	public int scatterPhaseIndex() {
+		return huntingPhase % 2 == 0 ? huntingPhase / 2 : -1;
+	}
+
+	/**
+	 * @return number of current chasing phase <code>(0-4)</code> or <code>-1</code> if currently scattering
+	 */
+	public int chasingPhaseIndex() {
+		return huntingPhase % 2 == 1 ? huntingPhase / 2 : -1;
+	}
+
+	public String currentHuntingPhaseName() {
+		return huntingPhase % 2 == 0 ? "Scattering" : "Chasing";
+	}
+
+	public boolean inChasingPhase() {
+		return chasingPhaseIndex() != -1;
+	}
+
+	public boolean inScatterPhase() {
+		return scatterPhaseIndex() != -1;
 	}
 }

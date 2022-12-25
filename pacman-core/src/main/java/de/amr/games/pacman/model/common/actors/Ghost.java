@@ -323,10 +323,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			setRelSpeed(game.level().params().ghostSpeed());
 		}
-		if (game.variant() == MS_PACMAN && game.level().huntingTimer().scatterPhase() == 0
+		if (game.variant() == MS_PACMAN && game.level().scatterPhaseIndex() == 0
 				&& (id == ID_RED_GHOST || id == ID_PINK_GHOST)) {
 			roam(game);
-		} else if (game.level().huntingTimer().inChasingPhase() || cruiseElroyState > 0) {
+		} else if (game.level().inChasingPhase() || cruiseElroyState > 0) {
 			setTargetTile(fnChasingTarget.get());
 			navigateTowardsTarget(game);
 			tryMoving(game);
