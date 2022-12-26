@@ -90,6 +90,10 @@ public class GameLevel {
 	{
 	}
 
+	private static float percentage(int value) {
+		return value / 100f;
+	}
+
 	/** Remembers what happens during a tick. */
 	public final Memory memo = new Memory();
 
@@ -223,8 +227,12 @@ public class GameLevel {
 		this.numGhostsKilledByEnergizer = number;
 	}
 
-	private static float percentage(int value) {
-		return value / 100f;
+	public void enter() {
+		LOGGER.trace("Enter level %d (%s)", number, game.variant());
+		world.assignGhostPositions(theGhosts);
+		houseRules.resetPrivateGhostDotCounters();
+		ghost(ID_RED_GHOST).setCruiseElroyState(0);
+		letsGetReadyToRumbleAndShowGuys(false);
 	}
 
 	public void update() {
@@ -236,22 +244,14 @@ public class GameLevel {
 		advanceHunting();
 	}
 
-	public void enter() {
-		LOGGER.trace("Enter level %d (%s)", number, game.variant());
-		world.assignGhostPositions(theGhosts);
-		houseRules.resetPrivateGhostDotCounters();
-		ghost(ID_RED_GHOST).setCruiseElroyState(0);
-		letsGetReadyToRumble();
-	}
-
 	public void exit() {
 		LOGGER.trace("Exit level %d (%s)", number, game.variant());
-		bonus.setInactive();
-		energizerPulse.reset();
-		huntingTimer.stop();
 		pac.rest(Integer.MAX_VALUE);
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
+		bonus.setInactive();
+		energizerPulse.reset();
+		huntingTimer.stop();
 	}
 
 	/**
@@ -319,10 +319,12 @@ public class GameLevel {
 	}
 
 	/**
-	 * Sets the game state to be ready for playing. Pac-Man and the ghosts are placed at their initial positions, made
-	 * visible and their state is initialized. Also the power timer and energizers are reset.
+	 * Pac-Man and the ghosts are placed at their initial positions and locks them. Also the power timer and energizers
+	 * are reset.
+	 * 
+	 * @param guysVisible if the guys are visible when ready
 	 */
-	public void letsGetReadyToRumble() {
+	public void letsGetReadyToRumbleAndShowGuys(boolean guysVisible) {
 		pac.reset();
 		pac.setPosition(world.pacStartPosition());
 		pac.setMoveAndWishDir(Direction.LEFT);
@@ -333,7 +335,7 @@ public class GameLevel {
 			ghost.setMoveAndWishDir(initialDirs.get(ghost.id()));
 			ghost.enterStateLocked();
 		});
-		guys().forEach(Creature::hide);
+		guys().forEach(guy -> guy.setVisible(guysVisible));
 		bonus.setInactive();
 		energizerPulse().reset();
 	}

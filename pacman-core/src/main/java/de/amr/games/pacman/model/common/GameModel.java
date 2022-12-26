@@ -245,20 +245,14 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Builds the given level.
+	 * Builds and enters the given level.
 	 * 
 	 * @param levelNumber 1-based level number
-	 * @return game level object
 	 */
-	public GameLevel buildLevel(int levelNumber) {
-		checkLevelNumber(levelNumber);
-		LOGGER.trace("Build game level %d (%s)", levelNumber, variant());
-		return new GameLevel(levelNumber, this);
-	}
-
 	public void buildAndEnterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		level = buildLevel(levelNumber);
+		LOGGER.trace("Build game level %d (%s)", levelNumber, variant());
+		level = new GameLevel(levelNumber, this);
 		level.enter();
 		levelCounter.addSymbol(level.bonus().symbol());
 		gameScore.setLevelNumber(levelNumber);

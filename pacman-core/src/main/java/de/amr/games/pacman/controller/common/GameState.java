@@ -37,7 +37,6 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.ScoreManager;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Creature;
-import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 
@@ -140,10 +139,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				gc.pacSteeringInAttractMode.init();
 				game.enterDemoLevel();
 			} else if (game.isPlaying()) {
-				game.level().ifPresent(level -> {
-					level.letsGetReadyToRumble();
-					level.guys().forEach(Entity::show);
-				});
+				game.level().ifPresent(level -> level.letsGetReadyToRumbleAndShowGuys(true));
 			} else {
 				game.reset();
 				game.buildAndEnterLevel(1);
