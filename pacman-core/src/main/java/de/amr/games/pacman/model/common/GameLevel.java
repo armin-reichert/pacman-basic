@@ -343,7 +343,7 @@ public class GameLevel {
 		energizerPulse().reset();
 	}
 
-	public void checkIfGhostBecomesCruiseElroy(Ghost ghost) {
+	private void checkIfGhostBecomesCruiseElroy(Ghost ghost) {
 		var foodRemaining = world.foodRemaining();
 		if (foodRemaining == params.elroy1DotsLeft()) {
 			ghost.setCruiseElroyState(1);

@@ -290,19 +290,21 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void cheatKillAllEatableGhosts(GameModel game) {
 			if (game.isPlaying()) {
-				var level = game.level().get();
-				level.killAllPossibleGhosts();
-				gc.changeState(GameState.GHOST_DYING);
+				game.level().ifPresent(level -> {
+					level.killAllPossibleGhosts();
+					gc.changeState(GameState.GHOST_DYING);
+				});
 			}
 		}
 
 		@Override
 		public void cheatEnterNextLevel(GameModel game) {
 			if (game.isPlaying()) {
-				var level = game.level().get();
-				var world = level.world();
-				world.tiles().forEach(world::removeFood);
-				gc.changeState(GameState.LEVEL_COMPLETE);
+				game.level().ifPresent(level -> {
+					var world = level.world();
+					world.tiles().forEach(world::removeFood);
+					gc.changeState(GameState.LEVEL_COMPLETE);
+				});
 			}
 		}
 	},
@@ -318,27 +320,28 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			var level = game.level().get();
-			if (timer.hasExpired()) {
-				if (!game.hasCredit()) {
-					gc.changeState(INTRO);
-					// attract mode -> back to intro scene
-				} else if (game.intermissionNumber(level.number()) != 0) {
-					gc.changeState(INTERMISSION); // play intermission scene
-				} else {
-					gc.changeState(LEVEL_STARTING); // next level
-				}
-			} else {
-				level.world().levelCompleteAnimation().ifPresent(animation -> {
-					if (timer.atSecond(1)) {
-						animation.setRepetitions(level.params().numFlashes());
-						animation.restart();
+			game.level().ifPresent(level -> {
+				if (timer.hasExpired()) {
+					if (!game.hasCredit()) {
+						gc.changeState(INTRO);
+						// attract mode -> back to intro scene
+					} else if (game.intermissionNumber(level.number()) != 0) {
+						gc.changeState(INTERMISSION); // play intermission scene
 					} else {
-						animation.animate();
+						gc.changeState(LEVEL_STARTING); // next level
 					}
-				});
-				level.pac().update(level);
-			}
+				} else {
+					level.world().levelCompleteAnimation().ifPresent(animation -> {
+						if (timer.atSecond(1)) {
+							animation.setRepetitions(level.params().numFlashes());
+							animation.restart();
+						} else {
+							animation.animate();
+						}
+					});
+					level.pac().update(level);
+				}
+			});
 		}
 	},
 
@@ -396,9 +399,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	PACMAN_DYING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.restartSeconds(4);
-			gc.sounds().stopAll();
 			game.level().ifPresent(level -> {
+				timer.restartSeconds(4);
+				gc.sounds().stopAll();
 				level.bonus().setInactive();
 			});
 		}
