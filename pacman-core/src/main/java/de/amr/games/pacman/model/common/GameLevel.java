@@ -24,9 +24,12 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
+
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -171,7 +174,10 @@ public class GameLevel {
 		return value / 100f;
 	}
 
-	public void update(GameModel game) {
+	public void update() {
+		game.pac.update(this);
+		checkIfGhostCanGetUnlocked(game.memo, game.ghost(Ghost.ID_RED_GHOST));
+		game.ghosts().forEach(ghost -> ghost.update(this));
 		bonus.update(this);
 		energizerPulse.animate();
 		advanceHunting(game);
@@ -255,4 +261,17 @@ public class GameLevel {
 			ghost.setCruiseElroyState(2);
 		}
 	}
+
+	private void checkIfGhostCanGetUnlocked(Memory memo, Ghost redGhost) {
+		houseRules().checkIfGhostUnlocked(this).ifPresent(unlock -> {
+			memo.unlockedGhost = Optional.of(unlock.ghost());
+			memo.unlockReason = unlock.reason();
+			LOGGER.trace("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
+			if (unlock.ghost().id() == ID_ORANGE_GHOST && redGhost.cruiseElroyState() < 0) {
+				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
+				redGhost.setCruiseElroyStateEnabled(true);
+			}
+		});
+	}
+
 }

@@ -448,27 +448,6 @@ public abstract class GameModel {
 
 	// Game logic
 
-	public void update() {
-		if (level != null) {
-			pac.update(level);
-			checkIfGhostCanGetUnlocked();
-			ghosts().forEach(ghost -> ghost.update(level));
-			level.update(this);
-		}
-	}
-
-	private void checkIfGhostCanGetUnlocked() {
-		level.houseRules().checkIfGhostUnlocked(level).ifPresent(unlock -> {
-			memo.unlockedGhost = Optional.of(unlock.ghost());
-			memo.unlockReason = unlock.reason();
-			LOGGER.trace("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
-			if (unlock.ghost().id() == ID_ORANGE_GHOST && ghost(ID_RED_GHOST).cruiseElroyState() < 0) {
-				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
-				ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(true);
-			}
-		});
-	}
-
 	public void checkHowTheGuysAreDoing(GameLevel level) {
 		if (memo.pacPowered) {
 			onPacPowerBegin();

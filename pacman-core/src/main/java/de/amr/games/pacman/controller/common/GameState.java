@@ -229,7 +229,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			}
 
 			gc.steering().steer(level, game.pac());
-			game.update();
+			level.update();
 		}
 
 		private void renderSound(GameLevel level) {
