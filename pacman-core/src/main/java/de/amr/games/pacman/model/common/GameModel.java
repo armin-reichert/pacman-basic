@@ -30,7 +30,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -254,10 +253,10 @@ public abstract class GameModel {
 		level = buildLevel(levelNumber);
 		level.world().assignGhostPositions(theGhosts);
 		level.houseRules().resetPrivateGhostDotCounters();
+		level.letsGetReadyToRumble();
 		levelCounter.addSymbol(level.bonus().symbol());
 		gameScore.setLevelNumber(levelNumber);
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);
-		getReadyToRumble();
 	}
 
 	public void exitLevel() {
@@ -348,26 +347,6 @@ public abstract class GameModel {
 
 	public boolean hasCredit() {
 		return credit > 0;
-	}
-
-	/**
-	 * Sets the game state to be ready for playing. Pac-Man and the ghosts are placed at their initial positions, made
-	 * visible and their state is initialized. Also the power timer and energizers are reset.
-	 */
-	public void getReadyToRumble() {
-		pac.reset();
-		pac.setPosition(level.world().pacStartPosition());
-		pac.setMoveAndWishDir(Direction.LEFT);
-		var initialDirs = List.of(Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP);
-		ghosts().forEach(ghost -> {
-			ghost.reset();
-			ghost.setPosition(ghost.homePosition());
-			ghost.setMoveAndWishDir(initialDirs.get(ghost.id()));
-			ghost.enterStateLocked();
-		});
-		guys().forEach(Creature::hide);
-		level.bonus().setInactive();
-		level.energizerPulse().reset();
 	}
 
 	/**

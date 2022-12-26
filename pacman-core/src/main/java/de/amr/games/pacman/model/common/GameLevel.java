@@ -41,8 +41,10 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -260,6 +262,26 @@ public class GameLevel {
 
 	public boolean inScatterPhase() {
 		return scatterPhaseIndex() != -1;
+	}
+
+	/**
+	 * Sets the game state to be ready for playing. Pac-Man and the ghosts are placed at their initial positions, made
+	 * visible and their state is initialized. Also the power timer and energizers are reset.
+	 */
+	public void letsGetReadyToRumble() {
+		game.pac.reset();
+		game.pac.setPosition(world.pacStartPosition());
+		game.pac.setMoveAndWishDir(Direction.LEFT);
+		var initialDirs = List.of(Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP);
+		game.ghosts().forEach(ghost -> {
+			ghost.reset();
+			ghost.setPosition(ghost.homePosition());
+			ghost.setMoveAndWishDir(initialDirs.get(ghost.id()));
+			ghost.enterStateLocked();
+		});
+		game.guys().forEach(Creature::hide);
+		bonus.setInactive();
+		energizerPulse().reset();
 	}
 
 	public void checkIfGhostBecomesCruiseElroy(Ghost ghost) {

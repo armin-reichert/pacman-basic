@@ -139,7 +139,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				gc.pacSteeringInAttractMode.init();
 				game.enterAttractMode();
 			} else if (game.isPlaying()) {
-				game.getReadyToRumble();
+				game.level().get().letsGetReadyToRumble();
 				game.guys().forEach(Entity::show);
 			} else {
 				game.reset();
@@ -162,7 +162,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					game.startHunting();
 					gc.changeState(GameState.HUNTING);
 				}
-			} else { // in attract mode or game already running
+			} else { // in attract mode or game
+								// already running
 				if (timer.tick() == 90) {
 					game.guys().forEach(Entity::show);
 					game.startHunting();
@@ -318,7 +319,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			var level = game.level().get();
 			if (timer.hasExpired()) {
 				if (!game.hasCredit()) {
-					gc.changeState(INTRO); // attract mode -> back to intro scene
+					gc.changeState(INTRO); // attract mode
+																	// -> back to
+																	// intro scene
 				} else if (game.intermissionNumber(level.number()) != 0) {
 					gc.changeState(INTERMISSION); // play intermission scene
 				} else {
