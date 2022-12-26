@@ -202,11 +202,6 @@ public class GameLevel {
 		return huntingTimer;
 	}
 
-	/** Ghost house rules in this level */
-	public GhostHouseRules houseRules() {
-		return houseRules;
-	}
-
 	/** Parameters in this level */
 	public Parameters params() {
 		return params;
@@ -238,13 +233,13 @@ public class GameLevel {
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus.update(this);
 		energizerPulse.animate();
-		advanceHunting(game);
+		advanceHunting();
 	}
 
 	public void enter() {
 		LOGGER.trace("Enter level %d (%s)", number, game.variant());
 		world.assignGhostPositions(theGhosts);
-		houseRules().resetPrivateGhostDotCounters();
+		houseRules.resetPrivateGhostDotCounters();
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);
 		letsGetReadyToRumble();
 	}
@@ -281,7 +276,7 @@ public class GameLevel {
 	 * Advances the current hunting phase and enters the next phase when the current phase ends. On every change between
 	 * phases, the living ghosts outside of the ghost house reverse their move direction.
 	 */
-	private void advanceHunting(GameModel game) {
+	private void advanceHunting() {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingPhase + 1);
@@ -354,7 +349,7 @@ public class GameLevel {
 
 	private void checkIfGhostCanGetUnlocked() {
 		Ghost redGhost = ghost(ID_RED_GHOST);
-		houseRules().checkIfGhostUnlocked(this).ifPresent(unlock -> {
+		houseRules.checkIfGhostUnlocked(this).ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
 			LOGGER.trace("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
@@ -423,7 +418,7 @@ public class GameLevel {
 
 	private void onPacMeetsKiller() {
 		pac.kill();
-		houseRules().resetGlobalDotCounterAndSetEnabled(true);
+		houseRules.resetGlobalDotCounterAndSetEnabled(true);
 		ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
 		LOGGER.trace("%s died at tile %s", pac.name(), pac.tile());
 	}
@@ -480,7 +475,7 @@ public class GameLevel {
 			game.onBonusReached(bonus);
 		}
 		checkIfGhostBecomesCruiseElroy(ghost(ID_RED_GHOST));
-		houseRules().updateGhostDotCounters(this);
+		houseRules.updateGhostDotCounters(this);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
 	}
 }

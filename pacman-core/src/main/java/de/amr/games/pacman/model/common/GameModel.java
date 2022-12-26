@@ -139,6 +139,8 @@ public abstract class GameModel {
 		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
 
+	// the game model ingredients
+
 	protected GameLevel level;
 	protected int credit;
 	protected int lives;
@@ -176,8 +178,14 @@ public abstract class GameModel {
 	 */
 	public abstract GameVariant variant();
 
+	/**
+	 * @return new Pac-Man or Ms. Pac-Man
+	 */
 	public abstract Pac createPac();
 
+	/**
+	 * @return a set of new ghosts
+	 */
 	public abstract Ghost[] createGhosts();
 
 	/**
@@ -193,6 +201,13 @@ public abstract class GameModel {
 	 * @return bonus used in this level
 	 */
 	public abstract Bonus createBonus(int levelNumber);
+
+	/**
+	 * Called when the bonus gets activated.
+	 * 
+	 * @param bonus the bonus
+	 */
+	public abstract void onBonusReached(Bonus bonus);
 
 	/**
 	 * @param levelNumber Level number (starting at 1)
@@ -249,7 +264,7 @@ public abstract class GameModel {
 		gameScore.setLevelNumber(levelNumber);
 	}
 
-	public void enterAttractMode() {
+	public void enterDemoLevel() {
 		reset();
 		buildAndEnterLevel(1);
 		level.guys().forEach(Entity::show);
@@ -382,6 +397,4 @@ public abstract class GameModel {
 		default -> 0;
 		};
 	}
-
-	public abstract void onBonusReached(Bonus bonus);
 }

@@ -138,7 +138,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			gc.sounds().stopAll();
 			if (!game.hasCredit()) {
 				gc.pacSteeringInAttractMode.init();
-				game.enterAttractMode();
+				game.enterDemoLevel();
 			} else if (game.isPlaying()) {
 				game.level().ifPresent(level -> {
 					level.letsGetReadyToRumble();
