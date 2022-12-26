@@ -272,12 +272,6 @@ public abstract class GameModel {
 		levelCounter.clear();
 	}
 
-	public void startHunting() {
-		if (level != null) {
-			level.startHuntingPhase(0);
-		}
-	}
-
 	/** Tells if the game play is running. */
 	public boolean isPlaying() {
 		return playing;
