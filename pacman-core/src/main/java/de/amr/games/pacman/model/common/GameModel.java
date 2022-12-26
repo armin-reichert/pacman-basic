@@ -247,7 +247,7 @@ public abstract class GameModel {
 		return new GameLevel(levelNumber, this, world, bonus, huntingDurations, houseRules, params);
 	}
 
-	public void enterLevel(int levelNumber) {
+	public void buildAndEnterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		level = buildLevel(levelNumber);
 		level.enter();
@@ -265,7 +265,7 @@ public abstract class GameModel {
 
 	public void enterAttractMode() {
 		reset();
-		enterLevel(1);
+		buildAndEnterLevel(1);
 		guys().forEach(Entity::show);
 		enableScores(false);
 		gameScore.setShowContent(false);
