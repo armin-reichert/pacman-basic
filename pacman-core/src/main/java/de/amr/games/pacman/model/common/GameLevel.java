@@ -25,16 +25,22 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
+import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.Pulse;
+import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -74,6 +80,9 @@ public class GameLevel {
 	//@formatter:on
 	{
 	}
+
+	/** Remembers what happens during a tick. */
+	public final Memory memo = new Memory();
 
 	private final int number;
 	private final GameModel game;
@@ -176,7 +185,7 @@ public class GameLevel {
 
 	public void update() {
 		game.pac.update(this);
-		checkIfGhostCanGetUnlocked(game.memo, game.ghost(Ghost.ID_RED_GHOST));
+		checkIfGhostCanGetUnlocked();
 		game.ghosts().forEach(ghost -> ghost.update(this));
 		bonus.update(this);
 		energizerPulse.animate();
@@ -262,7 +271,8 @@ public class GameLevel {
 		}
 	}
 
-	private void checkIfGhostCanGetUnlocked(Memory memo, Ghost redGhost) {
+	private void checkIfGhostCanGetUnlocked() {
+		Ghost redGhost = game.ghost(ID_RED_GHOST);
 		houseRules().checkIfGhostUnlocked(this).ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
@@ -272,6 +282,125 @@ public class GameLevel {
 				redGhost.setCruiseElroyStateEnabled(true);
 			}
 		});
+	}
+
+	public void checkHowTheGuysAreDoing() {
+		if (memo.pacPowered) {
+			onPacPowerBegin();
+		}
+
+		memo.pacMetKiller = game.pac.isMeetingKiller(this);
+		if (memo.pacMetKiller) {
+			onPacMeetsKiller();
+			return; // enter new game state
+		}
+
+		memo.edibleGhosts = game.ghosts(FRIGHTENED).filter(game.pac::sameTile).toList();
+		if (!memo.edibleGhosts.isEmpty()) {
+			killGhosts(memo.edibleGhosts);
+			memo.ghostsKilled = true;
+			return; // enter new game state
+		}
+
+		memo.pacPowerFading = game.pac.powerTimer().remaining() == game.pac.powerFadingTicks();
+		memo.pacPowerLost = game.pac.powerTimer().hasExpired();
+		if (memo.pacPowerFading) {
+			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, game.pac.tile());
+		}
+		if (memo.pacPowerLost) {
+			onPacPowerEnd();
+		}
+	}
+
+	public void killAllPossibleGhosts() {
+		var prey = game.ghosts(HUNTING_PAC, FRIGHTENED).toList();
+		setNumGhostsKilledByEnergizer(0);
+		killGhosts(prey);
+	}
+
+	private void killGhosts(List<Ghost> prey) {
+		prey.forEach(this::killGhost);
+		setNumGhostsKilledInLevel(numGhostsKilledInLevel() + prey.size());
+		if (numGhostsKilledInLevel() == 16) {
+			game.scorePoints(GameModel.POINTS_ALL_GHOSTS_KILLED);
+			LOGGER.trace("All ghosts killed at level %d, %s wins %d points", number, game.pac.name(),
+					GameModel.POINTS_ALL_GHOSTS_KILLED);
+		}
+	}
+
+	private void killGhost(Ghost ghost) {
+		ghost.setKilledIndex(numGhostsKilledByEnergizer());
+		ghost.enterStateEaten();
+		setNumGhostsKilledByEnergizer(numGhostsKilledByEnergizer() + 1);
+		memo.killedGhosts.add(ghost);
+		int points = GameModel.POINTS_GHOSTS_SEQUENCE[ghost.killedIndex()];
+		game.scorePoints(points);
+		LOGGER.trace("%s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), game.pac.name(), points);
+	}
+
+	// Pac-Man
+
+	private void onPacMeetsKiller() {
+		game.pac.kill();
+		houseRules().resetGlobalDotCounterAndSetEnabled(true);
+		game.ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
+		LOGGER.trace("%s died at tile %s", game.pac.name(), game.pac.tile());
+	}
+
+	private void onPacPowerBegin() {
+		LOGGER.trace("%s power begins", game.pac.name());
+		huntingTimer().stop();
+		game.pac.powerTimer().restartSeconds(params().pacPowerSeconds());
+		LOGGER.trace("Timer started: %s", game.pac.powerTimer());
+		game.ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened());
+		game.ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
+		GameEvents.publish(GameEventType.PAC_GETS_POWER, game.pac.tile());
+	}
+
+	private void onPacPowerEnd() {
+		LOGGER.trace("%s power ends", game.pac.name());
+		huntingTimer().start();
+		game.pac.powerTimer().stop();
+		game.pac.powerTimer().resetIndefinitely();
+		LOGGER.trace("Timer stopped: %s", game.pac.powerTimer());
+		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac());
+		GameEvents.publish(GameEventType.PAC_LOSES_POWER, game.pac.tile());
+	}
+
+	// Food
+
+	public void checkIfPacFindsFood() {
+		var tile = game.pac.tile();
+		if (world.containsFood(tile)) {
+			memo.foodFoundTile = Optional.of(tile);
+			memo.lastFoodFound = world.foodRemaining() == 1;
+			memo.energizerFound = world.isEnergizerTile(tile);
+			memo.pacPowered = memo.energizerFound && params().pacPowerSeconds() > 0;
+			memo.bonusReached = world.eatenFoodCount() == GameModel.PELLETS_EATEN_BONUS1
+					|| world.eatenFoodCount() == GameModel.PELLETS_EATEN_BONUS2;
+			onFoodFound(tile);
+		} else {
+			game.pac.starve();
+		}
+	}
+
+	private void onFoodFound(Vector2i tile) {
+		world.removeFood(tile);
+		game.pac.endStarving();
+		if (memo.energizerFound) {
+			setNumGhostsKilledByEnergizer(0);
+			game.pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
+			game.scorePoints(GameModel.POINTS_ENERGIZER);
+		} else {
+			game.pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
+			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
+		}
+		if (memo.bonusReached) {
+			game.onBonusReached(bonus);
+		}
+		checkIfGhostBecomesCruiseElroy(game.ghost(ID_RED_GHOST));
+		houseRules().updateGhostDotCounters(this);
+		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
 	}
 
 }

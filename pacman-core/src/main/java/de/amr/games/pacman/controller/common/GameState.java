@@ -186,6 +186,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			var level = game.level().get();
+			var memo = level.memo;
 
 			renderSound(level);
 
@@ -209,21 +210,21 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				return;
 			}
 
-			game.memo.forgetEverything(); // ich scholze jetzt
+			memo.forgetEverything(); // ich scholze jetzt
 
-			game.checkIfPacFindsFood();
-			if (game.memo.lastFoodFound) {
+			level.checkIfPacFindsFood();
+			if (memo.lastFoodFound) {
 				gc.changeState(LEVEL_COMPLETE);
 				return;
 			}
 
-			game.checkHowTheGuysAreDoing(level);
-			if (game.memo.pacMetKiller) {
+			level.checkHowTheGuysAreDoing();
+			if (memo.pacMetKiller) {
 				gc.changeState(PACMAN_DYING);
 				return;
 			}
 
-			if (game.memo.ghostsKilled) {
+			if (memo.ghostsKilled) {
 				gc.changeState(GHOST_DYING);
 				return;
 			}
@@ -233,20 +234,21 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 
 		private void renderSound(GameLevel level) {
+			var memo = level.memo;
 			var snd = gc.sounds();
 			if (level.huntingTimer().tick() == 1) {
 				var sirenIndex = level.huntingPhase() / 2;
 				snd.ensureSirenStarted(sirenIndex);
 			}
-			if (level.game().memo.pacPowered) {
+			if (memo.pacPowered) {
 				snd.stopSirens();
 				snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.LOOP_FOREVER);
 			}
-			if (level.game().memo.pacPowerLost) {
+			if (memo.pacPowerLost) {
 				snd.stop(GameSound.PACMAN_POWER);
 				snd.ensureSirenStarted(level.huntingPhase() / 2);
 			}
-			if (level.game().memo.foodFoundTile.isPresent()) {
+			if (memo.foodFoundTile.isPresent()) {
 				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
 			}
 			if (level.game().pac().starvingTicks() >= 12) { // ???
@@ -285,7 +287,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void cheatKillAllEatableGhosts(GameModel game) {
 			if (game.isPlaying()) {
-				game.killAllPossibleGhosts();
+				var level = game.level().get();
+				level.killAllPossibleGhosts();
 				gc.changeState(GameState.GHOST_DYING);
 			}
 		}

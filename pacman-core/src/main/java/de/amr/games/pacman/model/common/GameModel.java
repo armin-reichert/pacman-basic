@@ -28,8 +28,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
-import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -159,8 +157,6 @@ public abstract class GameModel {
 	protected final Score gameScore = new Score("SCORE");
 	protected final Score highScore = new Score("HIGH SCORE");
 	protected boolean scoresEnabled;
-	/** Remembers what happens during a tick. */
-	public final Memory memo = new Memory();
 
 	/**
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
@@ -442,129 +438,5 @@ public abstract class GameModel {
 		};
 	}
 
-	// Bonus
-
 	public abstract void onBonusReached(Bonus bonus);
-
-	// Game logic
-
-	public void checkHowTheGuysAreDoing(GameLevel level) {
-		if (memo.pacPowered) {
-			onPacPowerBegin();
-		}
-
-		memo.pacMetKiller = pac.isMeetingKiller(level);
-		if (memo.pacMetKiller) {
-			onPacMeetsKiller();
-			return; // enter new game state
-		}
-
-		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
-		if (!memo.edibleGhosts.isEmpty()) {
-			killGhosts(memo.edibleGhosts);
-			memo.ghostsKilled = true;
-			return; // enter new game state
-		}
-
-		memo.pacPowerFading = pac.powerTimer().remaining() == pac.powerFadingTicks();
-		memo.pacPowerLost = pac.powerTimer().hasExpired();
-		if (memo.pacPowerFading) {
-			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
-		}
-		if (memo.pacPowerLost) {
-			onPacPowerEnd();
-		}
-	}
-
-	public void killAllPossibleGhosts() {
-		var prey = ghosts(HUNTING_PAC, FRIGHTENED).toList();
-		level.setNumGhostsKilledByEnergizer(0);
-		killGhosts(prey);
-	}
-
-	private void killGhosts(List<Ghost> prey) {
-		prey.forEach(this::killGhost);
-		level.setNumGhostsKilledInLevel(level.numGhostsKilledInLevel() + prey.size());
-		if (level.numGhostsKilledInLevel() == 16) {
-			scorePoints(POINTS_ALL_GHOSTS_KILLED);
-			LOGGER.trace("All ghosts killed at level %d, %s wins %d points", level.number(), pac.name(),
-					POINTS_ALL_GHOSTS_KILLED);
-		}
-	}
-
-	private void killGhost(Ghost ghost) {
-		ghost.setKilledIndex(level.numGhostsKilledByEnergizer());
-		ghost.enterStateEaten();
-		level.setNumGhostsKilledByEnergizer(level.numGhostsKilledByEnergizer() + 1);
-		memo.killedGhosts.add(ghost);
-		int points = POINTS_GHOSTS_SEQUENCE[ghost.killedIndex()];
-		scorePoints(points);
-		LOGGER.trace("%s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), points);
-	}
-
-	// Pac-Man
-
-	private void onPacMeetsKiller() {
-		pac.kill();
-		level.houseRules().resetGlobalDotCounterAndSetEnabled(true);
-		ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
-		LOGGER.trace("%s died at tile %s", pac.name(), pac.tile());
-	}
-
-	private void onPacPowerBegin() {
-		LOGGER.trace("%s power begins", pac.name());
-		level.huntingTimer().stop();
-		pac.powerTimer().restartSeconds(level.params().pacPowerSeconds());
-		LOGGER.trace("Timer started: %s", pac.powerTimer());
-		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened());
-		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
-		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
-	}
-
-	private void onPacPowerEnd() {
-		LOGGER.trace("%s power ends", pac.name());
-		level.huntingTimer().start();
-		pac.powerTimer().stop();
-		pac.powerTimer().resetIndefinitely();
-		LOGGER.trace("Timer stopped: %s", pac.powerTimer());
-		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac());
-		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
-	}
-
-	// Food
-
-	public void checkIfPacFindsFood() {
-		var world = level.world();
-		var tile = pac.tile();
-		if (world.containsFood(tile)) {
-			memo.foodFoundTile = Optional.of(tile);
-			memo.lastFoodFound = world.foodRemaining() == 1;
-			memo.energizerFound = world.isEnergizerTile(tile);
-			memo.pacPowered = memo.energizerFound && level.params().pacPowerSeconds() > 0;
-			memo.bonusReached = world.eatenFoodCount() == PELLETS_EATEN_BONUS1
-					|| world.eatenFoodCount() == PELLETS_EATEN_BONUS2;
-			onFoodFound(tile);
-		} else {
-			pac.starve();
-		}
-	}
-
-	private void onFoodFound(Vector2i tile) {
-		level.world().removeFood(tile);
-		pac.endStarving();
-		if (memo.energizerFound) {
-			level.setNumGhostsKilledByEnergizer(0);
-			pac.rest(RESTING_TICKS_ENERGIZER);
-			scorePoints(POINTS_ENERGIZER);
-		} else {
-			pac.rest(RESTING_TICKS_NORMAL_PELLET);
-			scorePoints(POINTS_NORMAL_PELLET);
-		}
-		if (memo.bonusReached) {
-			onBonusReached(level.bonus());
-		}
-		level.checkIfGhostBecomesCruiseElroy(ghost(ID_RED_GHOST));
-		level.houseRules().updateGhostDotCounters(level);
-		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
-	}
 }
