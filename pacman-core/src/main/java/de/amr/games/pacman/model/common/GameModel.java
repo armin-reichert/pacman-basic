@@ -38,7 +38,6 @@ import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
-import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
@@ -261,7 +260,7 @@ public abstract class GameModel {
 	public void enterDemoLevel() {
 		reset();
 		buildAndEnterLevel(1);
-		level.guys().forEach(Entity::show);
+		level.guys().forEach(Creature::show);
 		enableScores(false);
 		gameScore.setShowContent(false);
 		levelCounter.clear();

@@ -273,7 +273,7 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 		READY_TO_PLAY {
 			@Override
 			public void onUpdate(IntroData ctx) {
-				if (timer.atSecond(1)) {
+				if (timer.atSecond(0.5)) {
 					ctx.ghosts[3].hide();
 					if (!ctx.gameController.game().hasCredit()) {
 						ctx.gameController.changeState(GameState.READY);

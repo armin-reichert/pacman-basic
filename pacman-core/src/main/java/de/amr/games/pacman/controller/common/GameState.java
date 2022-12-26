@@ -149,28 +149,28 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			final int showGuysTick = 134;
-			if (game.hasCredit() && !game.isPlaying()) {
-				// starting new game
-				if (timer.tick() == showGuysTick) {
-					game.level().ifPresent(level -> level.guys().forEach(Creature::show));
-					game.setOneLessLifeDisplayed(true);
-				} else if (timer.tick() == showGuysTick + 118) {
-					// start playing
-					game.setPlaying(true);
-					game.level().ifPresent(level -> level.startHuntingPhase(0));
-					gc.changeState(GameState.HUNTING);
-				}
-			} else {
-				// in attract mode or game already running
-				if (timer.tick() == 90) {
-					game.level().ifPresent(level -> {
+			final int showGuysTick = 130; // not sure
+			game.level().ifPresent(level -> {
+				if (game.hasCredit() && !game.isPlaying()) {
+					// start new game
+					if (timer.tick() == showGuysTick) {
+						level.guys().forEach(Creature::show);
+						game.setOneLessLifeDisplayed(true); // remove this crap
+					} else if (timer.tick() == showGuysTick + 118) {
+						// start playing
+						game.setPlaying(true);
+						level.startHuntingPhase(0);
+						gc.changeState(GameState.HUNTING);
+					}
+				} else {
+					// in attract mode or game already running
+					if (timer.tick() == 120) {
 						level.guys().forEach(Creature::show);
 						level.startHuntingPhase(0);
-					});
-					gc.changeState(GameState.HUNTING);
+						gc.changeState(GameState.HUNTING);
+					}
 				}
-			}
+			});
 		}
 	},
 
