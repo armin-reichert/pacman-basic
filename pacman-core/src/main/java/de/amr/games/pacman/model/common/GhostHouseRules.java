@@ -91,15 +91,15 @@ public class GhostHouseRules {
 
 	public void updateGhostDotCounters(GameLevel level) {
 		if (globalDotCounterEnabled) {
-			if (level.game().ghost(ID_ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
-				LOGGER.trace("%s inside house when counter reached 32", level.game().ghost(ID_ORANGE_GHOST).name());
+			if (level.ghost(ID_ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
+				LOGGER.trace("%s inside house when counter reached 32", level.ghost(ID_ORANGE_GHOST).name());
 				resetGlobalDotCounterAndSetEnabled(false);
 			} else {
 				globalDotCounter++;
 			}
 		} else {
 			var house = level.world().ghostHouse();
-			var preferredGhost = level.game().ghosts(LOCKED).filter(ghost -> house.contains(ghost.tile())).findFirst();
+			var preferredGhost = level.ghosts(LOCKED).filter(ghost -> house.contains(ghost.tile())).findFirst();
 			preferredGhost.ifPresent(this::increaseGhostDotCounter);
 		}
 	}
@@ -110,7 +110,7 @@ public class GhostHouseRules {
 	}
 
 	public Optional<UnlockResult> checkIfGhostUnlocked(GameLevel level) {
-		var ghost = level.game().ghosts(LOCKED).findFirst().orElse(null);
+		var ghost = level.ghosts(LOCKED).findFirst().orElse(null);
 		if (ghost == null) {
 			return Optional.empty();
 		}
@@ -128,12 +128,12 @@ public class GhostHouseRules {
 		if (globalDotCounter >= globalDotLimit) {
 			return unlockGhost(level, ghost, "Global dot counter at limit (%d)", globalDotLimit);
 		}
-		var pac = level.game().pac;
 		// check Pac-Man starving reaches limit
-		if (pac.starvingTicks() >= pacStarvingTimeLimit) {
-			pac.endStarving();
+		if (level.pac().starvingTicks() >= pacStarvingTimeLimit) {
+			level.pac().endStarving();
 			LOGGER.trace("Pac-Man starving timer reset to 0");
-			return unlockGhost(level, ghost, "%s reached starving limit (%d ticks)", pac.name(), pacStarvingTimeLimit);
+			return unlockGhost(level, ghost, "%s reached starving limit (%d ticks)", level.pac().name(),
+					pacStarvingTimeLimit);
 		}
 		return Optional.empty();
 	}

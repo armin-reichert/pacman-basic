@@ -220,14 +220,22 @@ public class MsPacManGame extends GameModel {
 	//@formatter:on
 
 	public MsPacManGame() {
-		pac = new Pac("Ms. Pac-Man");
-		theGhosts = new Ghost[] { //
+		// ok
+	}
+
+	@Override
+	public Pac createPac() {
+		return new Pac("Ms. Pac-Man");
+	}
+
+	@Override
+	public Ghost[] createGhosts() {
+		return new Ghost[] { //
 				new Ghost(ID_RED_GHOST, "Blinky"), //
 				new Ghost(ID_PINK_GHOST, "Pinky"), //
 				new Ghost(ID_CYAN_GHOST, "Inky"), //
 				new Ghost(ID_ORANGE_GHOST, "Sue") //
 		};
-		defineGhostChasingBehavior();
 	}
 
 	@Override

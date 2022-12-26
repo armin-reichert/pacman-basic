@@ -44,12 +44,9 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	private final TickTimer powerTimer;
 	private int powerFadingTicks;
 	private boolean dead;
-	private int lives;
 	private int restingTicks;
 	private int starvingTicks;
 	private EntityAnimationSet<AnimKeys> animationSet;
-	private boolean immune; // extra
-	private boolean autoControlled; // extra
 
 	public Pac(String name) {
 		super(name);
@@ -118,30 +115,14 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public boolean isMeetingKiller(GameLevel level) {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
-		return !immune && !powerTimer.isRunning() && level.game().ghosts(HUNTING_PAC).anyMatch(this::sameTile);
+		return !level.game().isImmune() && !powerTimer.isRunning() && level.ghosts(HUNTING_PAC).anyMatch(this::sameTile);
 	}
 
 	@Override
 	public String toString() {
-		return "[Pac: name='%s' lives=%d position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
-				.formatted(name(), lives, position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
+		return "[Pac: name='%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
+				.formatted(name(), position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
 						restingTicks, starvingTicks);
-	}
-
-	public boolean isImmune() {
-		return immune;
-	}
-
-	public void setImmune(boolean immune) {
-		this.immune = immune;
-	}
-
-	public int lives() {
-		return lives;
-	}
-
-	public void setLives(int lives) {
-		this.lives = lives;
 	}
 
 	/** Timer controlling how long Pac-Man has power. */
@@ -160,14 +141,6 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public boolean isDead() {
 		return dead;
-	}
-
-	public boolean isAutoControlled() {
-		return autoControlled;
-	}
-
-	public void setAutoControlled(boolean autoControlled) {
-		this.autoControlled = autoControlled;
 	}
 
 	/* Number of ticks Pac is resting and not moving. */

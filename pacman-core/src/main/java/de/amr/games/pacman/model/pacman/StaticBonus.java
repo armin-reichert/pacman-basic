@@ -109,7 +109,7 @@ public class StaticBonus implements Bonus {
 			// nothing to do
 		}
 		case EDIBLE -> {
-			if (entity.sameTile(level.game().pac())) {
+			if (entity.sameTile(level.pac())) {
 				level.game().scorePoints(points());
 				eat();
 				return;

@@ -63,41 +63,44 @@ public class GameModelTest {
 		assertEquals(BonusState.INACTIVE, level.bonus().state());
 		assertEquals(0, level.numGhostsKilledInLevel());
 		assertEquals(0, level.numGhostsKilledByEnergizer());
-		assertEquals(0, game.ghost(Ghost.ID_RED_GHOST).cruiseElroyState());
+		assertEquals(0, level.ghost(Ghost.ID_RED_GHOST).cruiseElroyState());
 	}
 
 	@Test
 	public void testPacCreatedAndInitialized() {
-		assertTrue(game.pac() instanceof Pac);
-		assertFalse(game.pac().isDead());
-		assertEquals(0, game.pac().restingTicks());
-		assertEquals(0, game.pac().starvingTicks());
+		var level = game.level().get();
+		var pac = level.pac();
+		assertTrue(pac instanceof Pac);
+		assertFalse(pac.isDead());
+		assertEquals(0, pac.restingTicks());
+		assertEquals(0, pac.starvingTicks());
 	}
 
 	@Test
 	public void testGhostsCreatedAndInitialized() {
-		var redGhost = game.ghost(Ghost.ID_RED_GHOST);
+		var level = game.level().get();
+		var redGhost = level.ghost(Ghost.ID_RED_GHOST);
 		assertTrue(redGhost instanceof Ghost);
 		assertEquals(-1, redGhost.killedIndex());
 		assertNotNull(redGhost.homePosition());
 		assertNotNull(redGhost.revivalPosition());
 		assertNotNull(redGhost.scatterTile());
 
-		var pinkGhost = game.ghost(Ghost.ID_PINK_GHOST);
+		var pinkGhost = level.ghost(Ghost.ID_PINK_GHOST);
 		assertTrue(pinkGhost instanceof Ghost);
 		assertEquals(-1, pinkGhost.killedIndex());
 		assertNotNull(pinkGhost.homePosition());
 		assertNotNull(pinkGhost.revivalPosition());
 		assertNotNull(pinkGhost.scatterTile());
 
-		var cyanGhost = game.ghost(Ghost.ID_CYAN_GHOST);
+		var cyanGhost = level.ghost(Ghost.ID_CYAN_GHOST);
 		assertTrue(cyanGhost instanceof Ghost);
 		assertEquals(-1, cyanGhost.killedIndex());
 		assertNotNull(cyanGhost.homePosition());
 		assertNotNull(cyanGhost.revivalPosition());
 		assertNotNull(cyanGhost.scatterTile());
 
-		var orangeGhost = game.ghost(Ghost.ID_ORANGE_GHOST);
+		var orangeGhost = level.ghost(Ghost.ID_ORANGE_GHOST);
 		assertTrue(orangeGhost instanceof Ghost);
 		assertEquals(-1, orangeGhost.killedIndex());
 		assertNotNull(orangeGhost.homePosition());
@@ -107,31 +110,39 @@ public class GameModelTest {
 
 	@Test
 	public void testPacResting() {
-		game.pac().rest(3);
-		assertEquals(3, game.pac().restingTicks());
+		var level = game.level().get();
+		var pac = level.pac();
+		pac.rest(3);
+		assertEquals(3, pac.restingTicks());
 	}
 
 	@Test
 	public void testPacStarving() {
-		game.pac().starve();
-		assertEquals(1, game.pac().starvingTicks());
-		game.pac().starve();
-		assertEquals(2, game.pac().starvingTicks());
+		var level = game.level().get();
+		var pac = level.pac();
+		pac.starve();
+		assertEquals(1, pac.starvingTicks());
+		pac.starve();
+		assertEquals(2, pac.starvingTicks());
 	}
 
 	@Test
 	public void testPacDying() {
-		assertFalse(game.pac().isDead());
-		game.pac().kill();
-		assertTrue(game.pac().isDead());
+		var level = game.level().get();
+		var pac = level.pac();
+		assertFalse(pac.isDead());
+		pac.kill();
+		assertTrue(pac.isDead());
 	}
 
 	@Test
 	public void testDeadPacHasZeroSpeed() {
-		game.pac().setAbsSpeed(42);
-		assertEquals(42.0, game.pac().velocity().length(), Vector2f.EPSILON);
-		game.pac().kill();
-		assertEquals(0.0, game.pac().velocity().length(), Vector2f.EPSILON);
+		var level = game.level().get();
+		var pac = level.pac();
+		pac.setAbsSpeed(42);
+		assertEquals(42.0, pac.velocity().length(), Vector2f.EPSILON);
+		pac.kill();
+		assertEquals(0.0, pac.velocity().length(), Vector2f.EPSILON);
 	}
 
 	@Test
@@ -181,20 +192,23 @@ public class GameModelTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalKilledIndex() {
-		game.ghost(Ghost.ID_RED_GHOST).setKilledIndex(42);
+		var level = game.level().get();
+		level.ghost(Ghost.ID_RED_GHOST).setKilledIndex(42);
 	}
 
 	@Test
 	public void testLegalCruiseElroyState() {
-		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(-2);
-		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(-1);
-		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(0);
-		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(1);
-		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(2);
+		var level = game.level().get();
+		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(-2);
+		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(-1);
+		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(0);
+		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(1);
+		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(2);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalCruiseElroyState() {
-		game.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(42);
+		var level = game.level().get();
+		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(42);
 	}
 }

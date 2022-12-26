@@ -29,6 +29,9 @@ import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.t;
 
+import java.util.Arrays;
+import java.util.List;
+
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.controller.common.SceneControllerContext;
@@ -42,6 +45,7 @@ import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.Pac;
 
 /**
  * Intro scene of the Ms. Pac-Man game.
@@ -75,11 +79,15 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		public final Pulse blinking = new Pulse(30, true);
 		public final TickTimer lightsTimer = new TickTimer("lights-timer");
 		public final float actorSpeed = 1.1f;
+		public final Pac pac;
+		public final List<Ghost> ghosts;
 		public int ghostIndex = 0;
 		public boolean creditVisible = false;
 
 		public IntroData(GameController gameController) {
 			super(gameController);
+			pac = gameController.game().createPac();
+			ghosts = Arrays.asList(gameController.game().createGhosts());
 		}
 	}
 
@@ -91,9 +99,9 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 				ctx.game().gameScore().setShowContent(false);
 				ctx.game().highScore().setShowContent(true);
 				ctx.lightsTimer.restartIndefinitely();
-				ctx.game().pac().setPosition(t(34), ctx.turningPoint.y());
-				ctx.game().pac().setAbsSpeed(0);
-				ctx.game().ghosts().forEach(ghost -> {
+				ctx.pac.setPosition(t(34), ctx.turningPoint.y());
+				ctx.pac.setAbsSpeed(0);
+				ctx.ghosts.forEach(ghost -> {
 					ghost.enterStateHuntingPac();
 					ghost.setMoveAndWishDir(LEFT);
 					ghost.setPosition(t(34), ctx.turningPoint.y());
@@ -120,13 +128,13 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		GHOSTS {
 			@Override
 			public void onEnter(IntroData ctx) {
-				ctx.game().ghosts().forEach(ghost -> ghost.selectRunnableAnimation(AnimKeys.GHOST_COLOR));
+				ctx.ghosts.forEach(ghost -> ghost.selectRunnableAnimation(AnimKeys.GHOST_COLOR));
 			}
 
 			@Override
 			public void onUpdate(IntroData ctx) {
 				ctx.lightsTimer.advance();
-				Ghost ghost = ctx.game().ghost(ctx.ghostIndex);
+				Ghost ghost = ctx.ghosts.get(ctx.ghostIndex);
 				ghost.move();
 				ghost.animate();
 				if (ghost.position().x() <= ctx.turningPoint.x()) {
@@ -145,20 +153,20 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		MSPACMAN {
 			@Override
 			public void onEnter(IntroData ctx) {
-				ctx.game().pac().setMoveDir(LEFT);
-				ctx.game().pac().setAbsSpeed(ctx.actorSpeed);
-				ctx.game().pac().selectRunnableAnimation(AnimKeys.PAC_MUNCHING);
-				ctx.game().pac().show();
+				ctx.pac.setMoveDir(LEFT);
+				ctx.pac.setAbsSpeed(ctx.actorSpeed);
+				ctx.pac.selectRunnableAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pac.show();
 			}
 
 			@Override
 			public void onUpdate(IntroData ctx) {
 				ctx.lightsTimer.advance();
-				ctx.game().pac().move();
-				ctx.game().pac().animate();
-				if (ctx.game().pac().position().x() <= ctx.msPacManStopX) {
-					ctx.game().pac().setAbsSpeed(0);
-					ctx.game().pac().animation().ifPresent(EntityAnimation::reset);
+				ctx.pac.move();
+				ctx.pac.animate();
+				if (ctx.pac.position().x() <= ctx.msPacManStopX) {
+					ctx.pac.setAbsSpeed(0);
+					ctx.pac.animation().ifPresent(EntityAnimation::reset);
 					controller.changeState(IntroState.READY_TO_PLAY);
 				}
 			}

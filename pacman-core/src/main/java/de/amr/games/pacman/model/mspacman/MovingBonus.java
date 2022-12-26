@@ -140,7 +140,7 @@ public class MovingBonus extends Creature implements Bonus {
 		case INACTIVE -> { // nothing to do
 		}
 		case EDIBLE -> {
-			if (sameTile(level.game().pac())) {
+			if (sameTile(level.pac())) {
 				level.game().scorePoints(points);
 				eat();
 				return;

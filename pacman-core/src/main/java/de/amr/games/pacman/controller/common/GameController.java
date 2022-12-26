@@ -37,6 +37,7 @@ import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.steering.RouteBasedSteering;
 import de.amr.games.pacman.lib.steering.RuleBasedSteering;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -104,14 +105,14 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game;
 	}
 
-	public Steering steering() {
+	public Steering steering(GameLevel level) {
 		if (!game().hasCredit()) {
 			if (game().variant() == GameVariant.PACMAN) {
 				return pacSteeringInAttractMode;
 			}
 			return autopilot;
 		}
-		if (game().pac().isAutoControlled()) {
+		if (game.isAutoControlled()) {
 			return autopilot;
 		}
 		return normalSteering;
@@ -136,7 +137,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 */
 	public void createGame(GameVariant variant) {
 		Objects.requireNonNull(variant, "Game variant must not be null");
-		var oldGame = game;
 		game = switch (variant) {
 		case MS_PACMAN -> new MsPacManGame();
 		case PACMAN -> new PacManGame();
@@ -146,11 +146,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		// experimental
 		if (variant == GameVariant.PACMAN) {
 			pacSteeringInAttractMode.setRoute(PacManGameAttractModeRoutes.PACMAN);
-		}
-		// transfer settings to new game
-		if (oldGame != null) {
-			game.setCredit(oldGame.credit());
-			game.pac().setImmune(oldGame.pac().isImmune());
 		}
 		boot();
 	}

@@ -24,7 +24,10 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
@@ -33,6 +36,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,9 +47,12 @@ import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.GhostState;
+import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -88,6 +95,8 @@ public class GameLevel {
 
 	private final int number;
 	private final GameModel game;
+	private final Pac pac;
+	private final Ghost[] theGhosts;
 	private final World world;
 	private final Pulse energizerPulse;
 	private final Bonus bonus;
@@ -99,17 +108,20 @@ public class GameLevel {
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
 
-	public GameLevel(int levelNumber, GameModel game, World world, Bonus bonus, int[] huntingDurations,
-			GhostHouseRules houseRules, byte[] data) {
+	public GameLevel(int levelNumber, GameModel game) {
 		this.number = levelNumber;
 		this.game = game;
-		this.world = world;
-		this.energizerPulse = new Pulse(10, true);
-		this.bonus = bonus;
-		this.huntingDurations = huntingDurations;
-		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(levelNumber));
-		this.houseRules = houseRules;
+		world = game.createWorld(levelNumber);
+		energizerPulse = new Pulse(10, true);
+		huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(levelNumber));
+		pac = game.createPac();
+		theGhosts = game.createGhosts();
+		bonus = game.createBonus(levelNumber);
+		houseRules = game.createHouseRules(levelNumber);
+		huntingDurations = GameModel.getHuntingDurations(levelNumber);
+		GameModel.defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
 
+		var data = GameModel.getLevelParams(levelNumber);
 		//@formatter:off
 		float playerSpeed          = percentage(data[0]);
 		float ghostSpeed           = percentage(data[1]);
@@ -144,6 +156,41 @@ public class GameLevel {
 
 	public Pulse energizerPulse() {
 		return energizerPulse;
+	}
+
+	/**
+	 * @param id ghost ID (0, 1, 2, 3)
+	 * @return the ghost with the given ID
+	 */
+	public Ghost ghost(int id) {
+		return theGhosts[checkGhostID(id)];
+	}
+
+	/**
+	 * @param states states specifying which ghosts are returned
+	 * @return all ghosts which are in any of the given states or all ghosts, if no states are specified
+	 */
+	public Stream<Ghost> ghosts(GhostState... states) {
+		if (states.length > 0) {
+			return Stream.of(theGhosts).filter(ghost -> ghost.is(states));
+		}
+		// when no states are given, return *all* ghosts (ghost.is() would return *no* ghosts!)
+		return Stream.of(theGhosts);
+	}
+
+	/**
+	 * @return Pac-Man and the ghosts in order RED, PINK, CYAN, ORANGE
+	 */
+	public Stream<Creature> guys() {
+		return Stream.of(pac, theGhosts[ID_RED_GHOST], theGhosts[ID_PINK_GHOST], theGhosts[ID_CYAN_GHOST],
+				theGhosts[ID_ORANGE_GHOST]);
+	}
+
+	/**
+	 * @return Pac-Man or Ms. Pac-Man
+	 */
+	public Pac pac() {
+		return pac;
 	}
 
 	/** Bonus used in this level. */
@@ -186,9 +233,9 @@ public class GameLevel {
 	}
 
 	public void update() {
-		game.pac.update(this);
+		pac.update(this);
 		checkIfGhostCanGetUnlocked();
-		game.ghosts().forEach(ghost -> ghost.update(this));
+		ghosts().forEach(ghost -> ghost.update(this));
 		bonus.update(this);
 		energizerPulse.animate();
 		advanceHunting(game);
@@ -196,8 +243,9 @@ public class GameLevel {
 
 	public void enter() {
 		LOGGER.trace("Enter level %d (%s)", number, game.variant());
-		world.assignGhostPositions(game.theGhosts);
+		world.assignGhostPositions(theGhosts);
 		houseRules().resetPrivateGhostDotCounters();
+		ghost(ID_RED_GHOST).setCruiseElroyState(0);
 		letsGetReadyToRumble();
 	}
 
@@ -206,6 +254,9 @@ public class GameLevel {
 		bonus.setInactive();
 		energizerPulse.reset();
 		huntingTimer.stop();
+		pac.rest(Integer.MAX_VALUE);
+		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+		ghosts().forEach(Ghost::hide);
 	}
 
 	/**
@@ -235,7 +286,7 @@ public class GameLevel {
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingPhase + 1);
 			// locked and house-leaving ghost will reverse as soon as he has left the house
-			game.ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
+			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
 		}
 	}
 
@@ -277,17 +328,17 @@ public class GameLevel {
 	 * visible and their state is initialized. Also the power timer and energizers are reset.
 	 */
 	public void letsGetReadyToRumble() {
-		game.pac.reset();
-		game.pac.setPosition(world.pacStartPosition());
-		game.pac.setMoveAndWishDir(Direction.LEFT);
+		pac.reset();
+		pac.setPosition(world.pacStartPosition());
+		pac.setMoveAndWishDir(Direction.LEFT);
 		var initialDirs = List.of(Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP);
-		game.ghosts().forEach(ghost -> {
+		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setPosition(ghost.homePosition());
 			ghost.setMoveAndWishDir(initialDirs.get(ghost.id()));
 			ghost.enterStateLocked();
 		});
-		game.guys().forEach(Creature::hide);
+		guys().forEach(Creature::hide);
 		bonus.setInactive();
 		energizerPulse().reset();
 	}
@@ -302,7 +353,7 @@ public class GameLevel {
 	}
 
 	private void checkIfGhostCanGetUnlocked() {
-		Ghost redGhost = game.ghost(ID_RED_GHOST);
+		Ghost redGhost = ghost(ID_RED_GHOST);
 		houseRules().checkIfGhostUnlocked(this).ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
@@ -319,23 +370,23 @@ public class GameLevel {
 			onPacPowerBegin();
 		}
 
-		memo.pacMetKiller = game.pac.isMeetingKiller(this);
+		memo.pacMetKiller = pac.isMeetingKiller(this);
 		if (memo.pacMetKiller) {
 			onPacMeetsKiller();
 			return; // enter new game state
 		}
 
-		memo.edibleGhosts = game.ghosts(FRIGHTENED).filter(game.pac::sameTile).toList();
+		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
 		if (!memo.edibleGhosts.isEmpty()) {
 			killGhosts(memo.edibleGhosts);
 			memo.ghostsKilled = true;
 			return; // enter new game state
 		}
 
-		memo.pacPowerFading = game.pac.powerTimer().remaining() == game.pac.powerFadingTicks();
-		memo.pacPowerLost = game.pac.powerTimer().hasExpired();
+		memo.pacPowerFading = pac.powerTimer().remaining() == pac.powerFadingTicks();
+		memo.pacPowerLost = pac.powerTimer().hasExpired();
 		if (memo.pacPowerFading) {
-			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, game.pac.tile());
+			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
 		if (memo.pacPowerLost) {
 			onPacPowerEnd();
@@ -343,7 +394,7 @@ public class GameLevel {
 	}
 
 	public void killAllPossibleGhosts() {
-		var prey = game.ghosts(HUNTING_PAC, FRIGHTENED).toList();
+		var prey = ghosts(HUNTING_PAC, FRIGHTENED).toList();
 		setNumGhostsKilledByEnergizer(0);
 		killGhosts(prey);
 	}
@@ -353,7 +404,7 @@ public class GameLevel {
 		setNumGhostsKilledInLevel(numGhostsKilledInLevel() + prey.size());
 		if (numGhostsKilledInLevel() == 16) {
 			game.scorePoints(GameModel.POINTS_ALL_GHOSTS_KILLED);
-			LOGGER.trace("All ghosts killed at level %d, %s wins %d points", number, game.pac.name(),
+			LOGGER.trace("All ghosts killed at level %d, %s wins %d points", number, pac.name(),
 					GameModel.POINTS_ALL_GHOSTS_KILLED);
 		}
 	}
@@ -365,42 +416,42 @@ public class GameLevel {
 		memo.killedGhosts.add(ghost);
 		int points = GameModel.POINTS_GHOSTS_SEQUENCE[ghost.killedIndex()];
 		game.scorePoints(points);
-		LOGGER.trace("%s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), game.pac.name(), points);
+		LOGGER.trace("%s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), points);
 	}
 
 	// Pac-Man
 
 	private void onPacMeetsKiller() {
-		game.pac.kill();
+		pac.kill();
 		houseRules().resetGlobalDotCounterAndSetEnabled(true);
-		game.ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
-		LOGGER.trace("%s died at tile %s", game.pac.name(), game.pac.tile());
+		ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
+		LOGGER.trace("%s died at tile %s", pac.name(), pac.tile());
 	}
 
 	private void onPacPowerBegin() {
-		LOGGER.trace("%s power begins", game.pac.name());
+		LOGGER.trace("%s power begins", pac.name());
 		huntingTimer().stop();
-		game.pac.powerTimer().restartSeconds(params().pacPowerSeconds());
-		LOGGER.trace("Timer started: %s", game.pac.powerTimer());
-		game.ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened());
-		game.ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
-		GameEvents.publish(GameEventType.PAC_GETS_POWER, game.pac.tile());
+		pac.powerTimer().restartSeconds(params().pacPowerSeconds());
+		LOGGER.trace("Timer started: %s", pac.powerTimer());
+		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened());
+		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
+		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}
 
 	private void onPacPowerEnd() {
-		LOGGER.trace("%s power ends", game.pac.name());
+		LOGGER.trace("%s power ends", pac.name());
 		huntingTimer().start();
-		game.pac.powerTimer().stop();
-		game.pac.powerTimer().resetIndefinitely();
-		LOGGER.trace("Timer stopped: %s", game.pac.powerTimer());
-		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac());
-		GameEvents.publish(GameEventType.PAC_LOSES_POWER, game.pac.tile());
+		pac.powerTimer().stop();
+		pac.powerTimer().resetIndefinitely();
+		LOGGER.trace("Timer stopped: %s", pac.powerTimer());
+		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac());
+		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
 
 	// Food
 
 	public void checkIfPacFindsFood() {
-		var tile = game.pac.tile();
+		var tile = pac.tile();
 		if (world.containsFood(tile)) {
 			memo.foodFoundTile = Optional.of(tile);
 			memo.lastFoodFound = world.foodRemaining() == 1;
@@ -410,27 +461,26 @@ public class GameLevel {
 					|| world.eatenFoodCount() == GameModel.PELLETS_EATEN_BONUS2;
 			onFoodFound(tile);
 		} else {
-			game.pac.starve();
+			pac.starve();
 		}
 	}
 
 	private void onFoodFound(Vector2i tile) {
 		world.removeFood(tile);
-		game.pac.endStarving();
+		pac.endStarving();
 		if (memo.energizerFound) {
 			setNumGhostsKilledByEnergizer(0);
-			game.pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
+			pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
 			game.scorePoints(GameModel.POINTS_ENERGIZER);
 		} else {
-			game.pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
+			pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
 			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 		}
 		if (memo.bonusReached) {
 			game.onBonusReached(bonus);
 		}
-		checkIfGhostBecomesCruiseElroy(game.ghost(ID_RED_GHOST));
+		checkIfGhostBecomesCruiseElroy(ghost(ID_RED_GHOST));
 		houseRules().updateGhostDotCounters(this);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
 	}
-
 }

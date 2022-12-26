@@ -106,7 +106,7 @@ public class RuleBasedSteering implements Steering {
 	}
 
 	private CollectedData collectData(GameLevel level) {
-		var pac = level.game().pac();
+		var pac = level.pac();
 		var data = new CollectedData();
 		Ghost hunterAhead = findHuntingGhostAhead(level); // Where is Hunter?
 		if (hunterAhead != null) {
@@ -118,7 +118,7 @@ public class RuleBasedSteering implements Steering {
 			data.hunterBehind = hunterBehind;
 			data.hunterBehindDistance = pac.tile().manhattanDistance(hunterBehind.tile());
 		}
-		data.frightenedGhosts = level.game().ghosts(GhostState.FRIGHTENED)
+		data.frightenedGhosts = level.ghosts(GhostState.FRIGHTENED)
 				.filter(ghost -> ghost.tile().manhattanDistance(pac.tile()) <= CollectedData.MAX_GHOST_CHASE_DIST).toList();
 		data.frightenedGhostsDistance = data.frightenedGhosts.stream()
 				.map(ghost -> ghost.tile().manhattanDistance(pac.tile())).toList();
@@ -126,7 +126,7 @@ public class RuleBasedSteering implements Steering {
 	}
 
 	private void takeAction(GameLevel level, CollectedData data) {
-		var pac = level.game().pac();
+		var pac = level.pac();
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
@@ -164,7 +164,7 @@ public class RuleBasedSteering implements Steering {
 	}
 
 	private Ghost findHuntingGhostAhead(GameLevel level) {
-		var pac = level.game().pac();
+		var pac = level.pac();
 		Vector2i pacManTile = pac.tile();
 		boolean energizerFound = false;
 		for (int i = 1; i <= CollectedData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
@@ -177,7 +177,7 @@ public class RuleBasedSteering implements Steering {
 			}
 			Vector2i aheadLeft = ahead.plus(pac.moveDir().succAntiClockwise().vec);
 			Vector2i aheadRight = ahead.plus(pac.moveDir().succClockwise().vec);
-			for (Ghost ghost : level.game().ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
+			for (Ghost ghost : level.ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
 					if (energizerFound) {
 						LOGGER.trace("Ignore hunting ghost ahead, energizer comes first!");
@@ -191,14 +191,14 @@ public class RuleBasedSteering implements Steering {
 	}
 
 	private Ghost findHuntingGhostBehind(GameLevel level) {
-		var pac = level.game().pac();
+		var pac = level.pac();
 		Vector2i pacManTile = pac.tile();
 		for (int i = 1; i <= CollectedData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			Vector2i behind = pacManTile.plus(pac.moveDir().opposite().vec.scaled(i));
 			if (!pac.canAccessTile(behind, level)) {
 				break;
 			}
-			for (Ghost ghost : level.game().ghosts().toArray(Ghost[]::new)) {
+			for (Ghost ghost : level.ghosts().toArray(Ghost[]::new)) {
 				if (ghost.is(GhostState.HUNTING_PAC) && ghost.tile().equals(behind)) {
 					return ghost;
 				}
@@ -208,7 +208,7 @@ public class RuleBasedSteering implements Steering {
 	}
 
 	private Direction findEscapeDirectionExcluding(GameLevel level, Collection<Direction> forbidden) {
-		var pac = level.game().pac();
+		var pac = level.pac();
 		Vector2i pacManTile = pac.tile();
 		List<Direction> escapes = new ArrayList<>(4);
 		for (Direction dir : Direction.shuffled()) {
@@ -231,7 +231,7 @@ public class RuleBasedSteering implements Steering {
 
 	private List<Vector2i> findNearestFoodTiles(GameLevel level) {
 		long time = System.nanoTime();
-		var pac = level.game().pac();
+		var pac = level.pac();
 		List<Vector2i> foodTiles = new ArrayList<>();
 		Vector2i pacManTile = pac.tile();
 		float minDist = Float.MAX_VALUE;
@@ -278,8 +278,7 @@ public class RuleBasedSteering implements Steering {
 	}
 
 	private float minDistanceFromGhosts(GameLevel level) {
-		var pac = level.game().pac();
-		return (float) level.game().ghosts().map(Ghost::tile).mapToDouble(pac.tile()::manhattanDistance).min()
-				.getAsDouble();
+		var pac = level.pac();
+		return (float) level.ghosts().map(Ghost::tile).mapToDouble(pac.tile()::manhattanDistance).min().getAsDouble();
 	}
 }

@@ -24,15 +24,10 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.steering.Direction.UP;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,12 +36,10 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -112,13 +105,13 @@ public abstract class GameModel {
 	//@formatter:on
 
 	// from level 21 on, level parameters remain the same
-	private static byte[] getLevelParams(int levelNumber) {
+	protected static byte[] getLevelParams(int levelNumber) {
 		return levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
 	}
 
 	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
-	private static int[] getHuntingDurations(int levelNumber) {
+	protected static int[] getHuntingDurations(int levelNumber) {
 		return switch (levelNumber) {
 		case 1 -> new int[] { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, -1 };
 		case 2, 3, 4 -> new int[] { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS, 1, -1 };
@@ -147,10 +140,11 @@ public abstract class GameModel {
 	}
 
 	protected GameLevel level;
-	protected Pac pac;
-	protected Ghost[] theGhosts;
 	protected int credit;
+	protected int lives;
 	protected boolean playing;
+	protected boolean immune; // extra
+	protected boolean autoControlled; // extra
 	protected boolean oneLessLifeDisplayed; // to be replaced
 	protected final LevelCounter levelCounter = new LevelCounter();
 	protected final Score gameScore = new Score("SCORE");
@@ -160,26 +154,31 @@ public abstract class GameModel {
 	/**
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
 	 */
-	protected void defineGhostChasingBehavior() {
+	public static void defineGhostChasingBehavior(Pac pac, Ghost redGhost, Ghost pinkGhost, Ghost cyanGhost,
+			Ghost orangeGhost) {
 		// Red ghost attacks Pac-Man directly
-		ghost(ID_RED_GHOST).setChasingBehavior(pac::tile);
+		redGhost.setChasingBehavior(pac::tile);
 
 		// Pink ghost ambushes Pac-Man
-		ghost(ID_PINK_GHOST).setChasingBehavior(() -> tilesAhead(pac, 4));
+		pinkGhost.setChasingBehavior(() -> tilesAhead(pac, 4));
 
 		// Cyan ghost attacks from opposite side than red ghost
-		ghost(ID_CYAN_GHOST).setChasingBehavior(() -> tilesAhead(pac, 2).scaled(2).minus(ghost(ID_RED_GHOST).tile()));
+		cyanGhost.setChasingBehavior(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
 
 		// Orange ghost attacks directly but retreats if too near
-		ghost(ID_ORANGE_GHOST).setChasingBehavior( //
-				() -> ghost(ID_ORANGE_GHOST).tile().euclideanDistance(pac.tile()) < 8 ? //
-						ghost(ID_ORANGE_GHOST).scatterTile() : pac.tile());
+		orangeGhost.setChasingBehavior( //
+				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? //
+						orangeGhost.scatterTile() : pac.tile());
 	}
 
 	/**
 	 * @return the game variant realized by this model
 	 */
 	public abstract GameVariant variant();
+
+	public abstract Pac createPac();
+
+	public abstract Ghost[] createGhosts();
 
 	/**
 	 * 
@@ -217,7 +216,7 @@ public abstract class GameModel {
 	public void reset() {
 		LOGGER.trace("Reset game (%s)", variant());
 		playing = false;
-		pac.setLives(INITIAL_LIVES);
+		lives = INITIAL_LIVES;
 		oneLessLifeDisplayed = false;
 		gameScore.reset();
 		levelCounter.clear();
@@ -239,12 +238,7 @@ public abstract class GameModel {
 	public GameLevel buildLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		LOGGER.trace("Build game level %d (%s)", levelNumber, variant());
-		var world = createWorld(levelNumber);
-		var bonus = createBonus(levelNumber);
-		var houseRules = createHouseRules(levelNumber);
-		var huntingDurations = getHuntingDurations(levelNumber);
-		var params = getLevelParams(levelNumber);
-		return new GameLevel(levelNumber, this, world, bonus, huntingDurations, houseRules, params);
+		return new GameLevel(levelNumber, this);
 	}
 
 	public void buildAndEnterLevel(int levelNumber) {
@@ -253,20 +247,12 @@ public abstract class GameModel {
 		level.enter();
 		levelCounter.addSymbol(level.bonus().symbol());
 		gameScore.setLevelNumber(levelNumber);
-		ghost(ID_RED_GHOST).setCruiseElroyState(0);
-	}
-
-	public void exitLevel() {
-		level.exit();
-		pac.rest(Integer.MAX_VALUE);
-		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
-		ghosts().forEach(Ghost::hide);
 	}
 
 	public void enterAttractMode() {
 		reset();
 		buildAndEnterLevel(1);
-		guys().forEach(Entity::show);
+		level.guys().forEach(Entity::show);
 		enableScores(false);
 		gameScore.setShowContent(false);
 		levelCounter.clear();
@@ -279,6 +265,30 @@ public abstract class GameModel {
 
 	public void setPlaying(boolean playing) {
 		this.playing = playing;
+	}
+
+	public boolean isImmune() {
+		return immune;
+	}
+
+	public void setImmune(boolean immune) {
+		this.immune = immune;
+	}
+
+	public boolean isAutoControlled() {
+		return autoControlled;
+	}
+
+	public void setAutoControlled(boolean autoControlled) {
+		this.autoControlled = autoControlled;
+	}
+
+	public int lives() {
+		return lives;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
 	}
 
 	/** List of collected level symbols. */
@@ -314,8 +324,8 @@ public abstract class GameModel {
 			highScore.setDate(LocalDate.now());
 		}
 		if (oldScore < SCORE_EXTRA_LIFE && newScore >= SCORE_EXTRA_LIFE) {
-			pac.setLives(pac.lives() + 1);
-			GameEvents.publish(GameEventType.PLAYER_GETS_EXTRA_LIFE, pac.tile());
+			setLives(lives + 1);
+			GameEvents.publish(GameEventType.PLAYER_GETS_EXTRA_LIFE, level.pac().tile());
 		}
 	}
 
@@ -340,21 +350,6 @@ public abstract class GameModel {
 		return credit > 0;
 	}
 
-	/**
-	 * @return Pac-Man and the ghosts in order RED, PINK, CYAN, ORANGE
-	 */
-	public Stream<Creature> guys() {
-		return Stream.of(pac, theGhosts[ID_RED_GHOST], theGhosts[ID_PINK_GHOST], theGhosts[ID_CYAN_GHOST],
-				theGhosts[ID_ORANGE_GHOST]);
-	}
-
-	/**
-	 * @return Pac-Man or Ms. Pac-Man
-	 */
-	public Pac pac() {
-		return pac;
-	}
-
 	/** If one less life is displayed in the lives counter. */
 	public boolean isOneLessLifeDisplayed() {
 		return oneLessLifeDisplayed;
@@ -362,26 +357,6 @@ public abstract class GameModel {
 
 	public void setOneLessLifeDisplayed(boolean value) {
 		this.oneLessLifeDisplayed = value;
-	}
-
-	/**
-	 * @param id ghost ID (0, 1, 2, 3)
-	 * @return the ghost with the given ID
-	 */
-	public Ghost ghost(int id) {
-		return theGhosts[checkGhostID(id)];
-	}
-
-	/**
-	 * @param states states specifying which ghosts are returned
-	 * @return all ghosts which are in any of the given states or all ghosts, if no states are specified
-	 */
-	public Stream<Ghost> ghosts(GhostState... states) {
-		if (states.length > 0) {
-			return Stream.of(theGhosts).filter(ghost -> ghost.is(states));
-		}
-		// when no states are given, return *all* ghosts (ghost.is() would return *no* ghosts!)
-		return Stream.of(theGhosts);
 	}
 
 	/**
