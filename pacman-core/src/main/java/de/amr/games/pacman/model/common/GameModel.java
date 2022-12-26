@@ -217,7 +217,7 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Resets the game to the initial state and first level.
+	 * Resets the game to the initial state.
 	 */
 	public void reset() {
 		LOGGER.info("Reset game (%s)", variant());
@@ -227,6 +227,7 @@ public abstract class GameModel {
 		gameScore.reset();
 		levelCounter.clear();
 		enableScores(true);
+		level = null;
 	}
 
 	/** Current level. */
