@@ -584,17 +584,8 @@ public abstract class GameModel {
 		if (memo.bonusReached) {
 			onBonusReached(level.bonus());
 		}
-		checkIfRedGhostBecomesCruiseElroy();
+		level.checkIfGhostBecomesCruiseElroy(ghost(ID_RED_GHOST));
 		level.houseRules().updateGhostDotCounters(level);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
-	}
-
-	private void checkIfRedGhostBecomesCruiseElroy() {
-		var foodRemaining = level.world().foodRemaining();
-		if (foodRemaining == level.params().elroy1DotsLeft()) {
-			ghost(ID_RED_GHOST).setCruiseElroyState(1);
-		} else if (foodRemaining == level.params().elroy2DotsLeft()) {
-			ghost(ID_RED_GHOST).setCruiseElroyState(2);
-		}
 	}
 }

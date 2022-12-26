@@ -246,4 +246,13 @@ public class GameLevel {
 	public boolean inScatterPhase() {
 		return scatterPhaseIndex() != -1;
 	}
+
+	public void checkIfGhostBecomesCruiseElroy(Ghost ghost) {
+		var foodRemaining = world.foodRemaining();
+		if (foodRemaining == params.elroy1DotsLeft()) {
+			ghost.setCruiseElroyState(1);
+		} else if (foodRemaining == params.elroy2DotsLeft()) {
+			ghost.setCruiseElroyState(2);
+		}
+	}
 }
