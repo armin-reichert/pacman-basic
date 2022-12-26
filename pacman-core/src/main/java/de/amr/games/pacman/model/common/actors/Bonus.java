@@ -24,7 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.actors;
 
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameLevel;
 
 /**
  * @author Armin Reichert
@@ -54,9 +54,9 @@ public interface Bonus {
 	/**
 	 * Updates the bonus state.
 	 * 
-	 * @param game the game model
+	 * @param level the game level
 	 */
-	void update(GameModel game);
+	void update(GameLevel level);
 
 	/**
 	 * Changes the bonus state to inactive.

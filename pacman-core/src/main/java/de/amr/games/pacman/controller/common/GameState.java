@@ -30,6 +30,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -158,13 +159,13 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				} else if (timer.tick() == showGuysTick + 118) {
 					// start playing
 					game.setPlaying(true);
-					game.level().startHunting();
+					game.startHunting();
 					gc.changeState(GameState.HUNTING);
 				}
 			} else { // in attract mode or game already running
 				if (timer.tick() == 90) {
 					game.guys().forEach(Entity::show);
-					game.level().startHunting();
+					game.startHunting();
 					gc.changeState(GameState.HUNTING);
 				}
 			}
@@ -174,29 +175,32 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	HUNTING {
 		@Override
 		public void onEnter(GameModel game) {
+			var level = game.level().get();
 			if (!gc.levelTestMode) {
-				int sirenIndex = game.level().huntingPhase() / 2;
+				int sirenIndex = level.huntingPhase() / 2;
 				gc.sounds().ensureSirenStarted(sirenIndex);
 			}
-			game.level().energizerPulse().restart();
+			level.energizerPulse().restart();
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
-			renderSound(game);
+			var level = game.level().get();
+
+			renderSound(level);
 
 			// Level test mode?
 			if (gc.levelTestMode) {
-				if (game.level().number() <= gc.levelTestLastLevelNumber) {
+				if (level.number() <= gc.levelTestLastLevelNumber) {
 					// show bonus, update it for one second, then eat it and show won points
 					if (gc.state().timer().atSecond(0.0)) {
-						game.onBonusReached(game.level().bonus());
+						game.onBonusReached(level.bonus());
 					} else if (gc.state().timer().atSecond(1.0)) {
-						game.level().bonus().eat();
+						level.bonus().eat();
 					} else if (gc.state().timer().atSecond(2.0)) {
 						gc.changeState(LEVEL_COMPLETE);
 					}
-					game.level().bonus().update(game);
+					level.bonus().update(level);
 				} else {
 					// end level test
 					gc.levelTestMode = false;
@@ -213,7 +217,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				return;
 			}
 
-			game.checkHowTheGuysAreDoing();
+			game.checkHowTheGuysAreDoing(level);
 			if (game.memo.pacMetKiller) {
 				gc.changeState(PACMAN_DYING);
 				return;
@@ -224,31 +228,31 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				return;
 			}
 
-			gc.steering().steer(game, game.pac());
+			gc.steering().steer(level, game.pac());
 			game.update();
 		}
 
-		private void renderSound(GameModel game) {
+		private void renderSound(GameLevel level) {
 			var snd = gc.sounds();
-			if (game.level().huntingTimer().tick() == 1) {
-				var sirenIndex = game.level().huntingPhase() / 2;
+			if (level.huntingTimer().tick() == 1) {
+				var sirenIndex = level.huntingPhase() / 2;
 				snd.ensureSirenStarted(sirenIndex);
 			}
-			if (game.memo.pacPowered) {
+			if (level.game().memo.pacPowered) {
 				snd.stopSirens();
 				snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.LOOP_FOREVER);
 			}
-			if (game.memo.pacPowerLost) {
+			if (level.game().memo.pacPowerLost) {
 				snd.stop(GameSound.PACMAN_POWER);
-				snd.ensureSirenStarted(game.level().huntingPhase() / 2);
+				snd.ensureSirenStarted(level.huntingPhase() / 2);
 			}
-			if (game.memo.foodFoundTile.isPresent()) {
+			if (level.game().memo.foodFoundTile.isPresent()) {
 				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
 			}
-			if (game.pac().starvingTicks() >= 12) { // ???
+			if (level.game().pac().starvingTicks() >= 12) { // ???
 				snd.stop(GameSound.PACMAN_MUNCH);
 			}
-			if (game.ghosts(GhostState.RETURNING_TO_HOUSE).count() > 0) {
+			if (level.game().ghosts(GhostState.RETURNING_TO_HOUSE).count() > 0) {
 				if (!snd.isPlaying(GameSound.GHOST_RETURNING)) {
 					snd.loop(GameSound.GHOST_RETURNING, GameSoundController.LOOP_FOREVER);
 				}
@@ -271,7 +275,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void cheatEatAllPellets(GameModel game) {
 			if (game.isPlaying()) {
-				var world = game.level().world();
+				var level = game.level().get();
+				var world = level.world();
 				world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
 				GameEvents.publish(GameEventType.PAC_FINDS_FOOD, null);
 			}
@@ -288,7 +293,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void cheatEnterNextLevel(GameModel game) {
 			if (game.isPlaying()) {
-				var world = game.level().world();
+				var level = game.level().get();
+				var world = level.world();
 				world.tiles().forEach(world::removeFood);
 				gc.changeState(GameState.LEVEL_COMPLETE);
 			}
@@ -306,24 +312,25 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
+			var level = game.level().get();
 			if (timer.hasExpired()) {
 				if (!game.hasCredit()) {
 					gc.changeState(INTRO); // attract mode -> back to intro scene
-				} else if (game.intermissionNumber(game.level().number()) != 0) {
+				} else if (game.intermissionNumber(level.number()) != 0) {
 					gc.changeState(INTERMISSION); // play intermission scene
 				} else {
 					gc.changeState(LEVEL_STARTING); // next level
 				}
 			} else {
-				game.level().world().levelCompleteAnimation().ifPresent(animation -> {
+				level.world().levelCompleteAnimation().ifPresent(animation -> {
 					if (timer.atSecond(1)) {
-						animation.setRepetitions(game.level().params().numFlashes());
+						animation.setRepetitions(level.params().numFlashes());
 						animation.restart();
 					} else {
 						animation.animate();
 					}
 				});
-				game.pac().update(game);
+				game.pac().update(level);
 			}
 		}
 	},
@@ -331,8 +338,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	LEVEL_STARTING {
 		@Override
 		public void onEnter(GameModel game) {
+			var level = game.level().get();
 			timer.restartSeconds(1);
-			game.enterLevel(game.level().number() + 1);
+			game.enterLevel(level.number() + 1);
 		}
 
 		@Override
@@ -357,17 +365,19 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (timer.hasExpired()) {
 				gc.resumePreviousState();
 			} else {
-				gc.steering().steer(game, game.pac());
+				var level = game.level().get();
+				gc.steering().steer(level, game.pac());
 				game.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
-						.forEach(ghost -> ghost.update(game));
-				game.level().energizerPulse().animate();
+						.forEach(ghost -> ghost.update(level));
+				level.energizerPulse().animate();
 			}
 		}
 
 		@Override
 		public void onExit(GameModel game) {
+			var level = game.level().get();
 			game.pac().show();
-			game.ghosts(GhostState.EATEN).forEach(ghost -> ghost.enterStateReturningToHouse(game));
+			game.ghosts(GhostState.EATEN).forEach(ghost -> ghost.enterStateReturningToHouse(level));
 			game.ghosts().forEach(ghost -> ghost.pauseFlashing(false));
 		}
 	},
@@ -375,15 +385,17 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	PACMAN_DYING {
 		@Override
 		public void onEnter(GameModel game) {
+			var level = game.level().get();
 			timer.restartSeconds(4);
-			game.level().bonus().setInactive();
+			level.bonus().setInactive();
 			gc.sounds().stopAll();
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
-			game.level().energizerPulse().animate();
-			game.pac().update(game);
+			var level = game.level().get();
+			level.energizerPulse().animate();
+			game.pac().update(level);
 			if (timer.betweenSeconds(0, 1)) {
 				game.ghosts().forEach(Ghost::animate);
 			} else if (timer.atSecond(1)) {
@@ -395,7 +407,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			} else if (timer.atSecond(3.0)) {
 				game.pac().setLives(game.pac().lives() - 1);
 				if (game.pac().lives() == 0) {
-					game.level().energizerPulse().stop();
+					level.energizerPulse().stop();
 					game.setOneLessLifeDisplayed(false);
 				}
 				game.pac().hide();
@@ -424,11 +436,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.setPlaying(false);
 				gc.changeState(game.hasCredit() ? CREDIT : INTRO);
 			}
-		}
-
-		@Override
-		public void onExit(GameModel game) {
-//			game.reset();
 		}
 	},
 

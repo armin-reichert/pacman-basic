@@ -33,6 +33,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.steering.RouteBasedSteering;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
@@ -134,25 +135,25 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void update(GameModel game) {
+	public void update(GameLevel level) {
 		switch (state) {
 		case INACTIVE -> { // nothing to do
 		}
 		case EDIBLE -> {
-			if (sameTile(game.pac())) {
-				game.scorePoints(points);
+			if (sameTile(level.game().pac())) {
+				level.game().scorePoints(points);
 				eat();
 				return;
 			}
-			steering.steer(game, this);
+			steering.steer(level, this);
 			if (steering.isComplete()) {
 				LOGGER.info("Bonus reached target: %s", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
 			}
-			navigateTowardsTarget(game);
-			tryMoving(game);
+			navigateTowardsTarget(level);
+			tryMoving(level);
 			jumpAnimation.animate();
 		}
 		case EATEN -> {

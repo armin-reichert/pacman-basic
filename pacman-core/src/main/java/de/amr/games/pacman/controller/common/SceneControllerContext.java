@@ -68,7 +68,7 @@ public class SceneControllerContext {
 	}
 
 	public Optional<GameLevel> level() {
-		return Optional.ofNullable(game().level());
+		return game().level();
 	}
 
 	public Optional<World> world() {

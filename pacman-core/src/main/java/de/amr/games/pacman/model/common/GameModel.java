@@ -220,7 +220,7 @@ public abstract class GameModel {
 	 * Resets the game to the initial state.
 	 */
 	public void reset() {
-		LOGGER.info("Reset game (%s)", variant());
+		LOGGER.trace("Reset game (%s)", variant());
 		playing = false;
 		pac.setLives(INITIAL_LIVES);
 		oneLessLifeDisplayed = false;
@@ -231,8 +231,8 @@ public abstract class GameModel {
 	}
 
 	/** Current level. */
-	public GameLevel level() {
-		return level;
+	public Optional<GameLevel> level() {
+		return Optional.ofNullable(level);
 	}
 
 	/**
@@ -243,18 +243,18 @@ public abstract class GameModel {
 	 */
 	public GameLevel buildLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		LOGGER.info("Build game level %d (%s)", levelNumber, variant());
+		LOGGER.trace("Build game level %d (%s)", levelNumber, variant());
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
 		var huntingDurations = getHuntingDurations(levelNumber);
 		var params = getLevelParams(levelNumber);
-		return new GameLevel(levelNumber, world, bonus, huntingDurations, houseRules, params);
+		return new GameLevel(levelNumber, this, world, bonus, huntingDurations, houseRules, params);
 	}
 
 	public void enterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		LOGGER.info("Enter level %d (%s)", levelNumber, variant());
+		LOGGER.trace("Enter level %d (%s)", levelNumber, variant());
 		level = buildLevel(levelNumber);
 		level.world().assignGhostPositions(theGhosts);
 		level.houseRules().resetPrivateGhostDotCounters();
@@ -278,6 +278,12 @@ public abstract class GameModel {
 		enableScores(false);
 		gameScore.setShowContent(false);
 		levelCounter.clear();
+	}
+
+	public void startHunting() {
+		if (level != null) {
+			level.startHuntingPhase(0);
+		}
 	}
 
 	/** Tells if the game play is running. */
@@ -443,17 +449,19 @@ public abstract class GameModel {
 	// Game logic
 
 	public void update() {
-		pac.update(this);
-		checkIfGhostCanGetUnlocked();
-		ghosts().forEach(ghost -> ghost.update(this));
-		level.update(this);
+		if (level != null) {
+			pac.update(level);
+			checkIfGhostCanGetUnlocked();
+			ghosts().forEach(ghost -> ghost.update(level));
+			level.update(this);
+		}
 	}
 
 	private void checkIfGhostCanGetUnlocked() {
-		level.houseRules().checkIfGhostUnlocked(this).ifPresent(unlock -> {
+		level.houseRules().checkIfGhostUnlocked(level).ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
-			LOGGER.info("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
+			LOGGER.trace("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
 			if (unlock.ghost().id() == ID_ORANGE_GHOST && ghost(ID_RED_GHOST).cruiseElroyState() < 0) {
 				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
 				ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(true);
@@ -461,12 +469,12 @@ public abstract class GameModel {
 		});
 	}
 
-	public void checkHowTheGuysAreDoing() {
+	public void checkHowTheGuysAreDoing(GameLevel level) {
 		if (memo.pacPowered) {
 			onPacPowerBegin();
 		}
 
-		memo.pacMetKiller = pac.isMeetingKiller(this);
+		memo.pacMetKiller = pac.isMeetingKiller(level);
 		if (memo.pacMetKiller) {
 			onPacMeetsKiller();
 			return; // enter new game state
@@ -500,19 +508,19 @@ public abstract class GameModel {
 		level.setNumGhostsKilledInLevel(level.numGhostsKilledInLevel() + prey.size());
 		if (level.numGhostsKilledInLevel() == 16) {
 			scorePoints(POINTS_ALL_GHOSTS_KILLED);
-			LOGGER.info("All ghosts killed at level %d, %s wins %d points", level.number(), pac.name(),
+			LOGGER.trace("All ghosts killed at level %d, %s wins %d points", level.number(), pac.name(),
 					POINTS_ALL_GHOSTS_KILLED);
 		}
 	}
 
 	private void killGhost(Ghost ghost) {
 		ghost.setKilledIndex(level.numGhostsKilledByEnergizer());
-		ghost.enterStateEaten(this);
+		ghost.enterStateEaten();
 		level.setNumGhostsKilledByEnergizer(level.numGhostsKilledByEnergizer() + 1);
 		memo.killedGhosts.add(ghost);
 		int points = POINTS_GHOSTS_SEQUENCE[ghost.killedIndex()];
 		scorePoints(points);
-		LOGGER.info("%s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), points);
+		LOGGER.trace("%s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), points);
 	}
 
 	// Pac-Man
@@ -521,26 +529,26 @@ public abstract class GameModel {
 		pac.kill();
 		level.houseRules().resetGlobalDotCounterAndSetEnabled(true);
 		ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
-		LOGGER.info("%s died at tile %s", pac.name(), pac.tile());
+		LOGGER.trace("%s died at tile %s", pac.name(), pac.tile());
 	}
 
 	private void onPacPowerBegin() {
-		LOGGER.info("%s power begins", pac.name());
-		level().huntingTimer().stop();
+		LOGGER.trace("%s power begins", pac.name());
+		level.huntingTimer().stop();
 		pac.powerTimer().restartSeconds(level.params().pacPowerSeconds());
-		LOGGER.info("Timer started: %s", pac.powerTimer());
-		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened(this));
+		LOGGER.trace("Timer started: %s", pac.powerTimer());
+		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened());
 		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}
 
 	private void onPacPowerEnd() {
-		LOGGER.info("%s power ends", pac.name());
-		level().huntingTimer().start();
+		LOGGER.trace("%s power ends", pac.name());
+		level.huntingTimer().start();
 		pac.powerTimer().stop();
 		pac.powerTimer().resetIndefinitely();
-		LOGGER.info("Timer stopped: %s", pac.powerTimer());
-		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac(this));
+		LOGGER.trace("Timer stopped: %s", pac.powerTimer());
+		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac());
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
 
@@ -577,7 +585,7 @@ public abstract class GameModel {
 			onBonusReached(level.bonus());
 		}
 		checkIfRedGhostBecomesCruiseElroy();
-		level.houseRules().updateGhostDotCounters(this);
+		level.houseRules().updateGhostDotCounters(level);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
 	}
 

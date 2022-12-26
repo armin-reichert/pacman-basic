@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -52,6 +53,7 @@ public class Creature extends Entity {
 	protected static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	protected static final String MSG_GAME_NULL = "Game must not be null";
+	protected static final String MSG_LEVEL_NULL = "Game level must not be null";
 	protected static final String MSG_TILE_NULL = "Tile must not be null";
 	protected static final String MSG_DIR_NULL = "Direction must not be null";
 
@@ -143,14 +145,13 @@ public class Creature extends Entity {
 	 * @param tile some tile inside or outside of the world
 	 * @return if this creature can access the given tile
 	 */
-	public boolean canAccessTile(Vector2i tile, GameModel game) {
+	public boolean canAccessTile(Vector2i tile, GameLevel level) {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
-		Objects.requireNonNull(game, MSG_GAME_NULL);
-		var world = game.level().world();
-		if (world.insideMap(tile)) {
-			return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		if (level.world().insideMap(tile)) {
+			return !level.world().isWall(tile) && !level.world().ghostHouse().isDoorTile(tile);
 		}
-		return world.belongsToPortal(tile);
+		return level.world().belongsToPortal(tile);
 	}
 
 	/**
@@ -199,7 +200,7 @@ public class Creature extends Entity {
 	 * @param game game model
 	 * @return if the creature can reverse its direction
 	 */
-	protected boolean canReverse(GameModel game) {
+	protected boolean canReverse(GameLevel level) {
 		return newTileEntered;
 	}
 
@@ -232,24 +233,24 @@ public class Creature extends Entity {
 	 * 
 	 * @param game the game model
 	 */
-	public void navigateTowardsTarget(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public void navigateTowardsTarget(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		if (!newTileEntered && !stuck) {
 			return; // we don't need no navigation, dim dit diddit diddit dim dit diddit diddit...
 		}
 		if (targetTile == null) {
 			return;
 		}
-		if (game.level().world().belongsToPortal(tile())) {
+		if (level.world().belongsToPortal(tile())) {
 			return; // inside portal, no navigation happens
 		}
-		computeTargetDirection(game).ifPresent(this::setWishDir);
+		computeTargetDirection(level).ifPresent(this::setWishDir);
 	}
 
 	/*
 	 * For each neighbor tile, compute distance to target tile, select direction with smallest distance.
 	 */
-	private Optional<Direction> computeTargetDirection(GameModel game) {
+	private Optional<Direction> computeTargetDirection(GameLevel level) {
 		Direction targetDir = null;
 		Vector2i currentTile = tile();
 		float minDistance = Float.MAX_VALUE;
@@ -258,7 +259,7 @@ public class Creature extends Entity {
 				continue; // reversing the move direction is not allowed
 			}
 			var neighborTile = currentTile.plus(dir.vec);
-			if (canAccessTile(neighborTile, game)) {
+			if (canAccessTile(neighborTile, level)) {
 				float distance = neighborTile.euclideanDistance(targetTile);
 				if (distance < minDistance) {
 					minDistance = distance;
@@ -269,10 +270,10 @@ public class Creature extends Entity {
 		return Optional.ofNullable(targetDir);
 	}
 
-	private MoveResult tryTeleport(GameModel game) {
+	private MoveResult tryTeleport(GameLevel level) {
 		MoveResult mr = MoveResult.notMoved("No teleport");
 		if (canTeleport) {
-			for (var portal : game.level().world().portals()) {
+			for (var portal : level.world().portals()) {
 				mr = portal.teleport(this);
 				if (mr.teleported()) {
 					newTileEntered = true;
@@ -289,22 +290,22 @@ public class Creature extends Entity {
 	 * First checks if the creature can teleport, then if the creature can move to its wish direction. If this is not
 	 * possible, it keeps moving to its current move direction.
 	 */
-	public void tryMoving(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public void tryMoving(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		Vector2i tileBeforeMove = tile();
-		MoveResult mr = tryTeleport(game);
+		MoveResult mr = tryTeleport(level);
 		if (mr.teleported()) {
 			return;
 		}
-		if (shouldReverse && canReverse(game)) {
+		if (shouldReverse && canReverse(level)) {
 			setWishDir(moveDir.opposite());
 			shouldReverse = false;
 		}
-		mr = tryMoving(wishDir, game);
+		mr = tryMoving(wishDir, level);
 		if (mr.moved()) {
 			setMoveDir(wishDir);
 		} else {
-			mr = tryMoving(moveDir, game);
+			mr = tryMoving(moveDir, level);
 		}
 		stuck = !mr.moved();
 		newTileEntered = !tileBeforeMove.equals(tile());
@@ -313,30 +314,30 @@ public class Creature extends Entity {
 		}
 	}
 
-	private MoveResult tryMoving(Direction dir, GameModel game) {
+	private MoveResult tryMoving(Direction dir, GameLevel level) {
 		float speed = velocity.length();
 		Vector2f dirVector = dir.vec.toFloatVec();
 		if (speed <= 1.0) {
-			return trySmallMove(dir, game, dirVector, speed);
+			return trySmallMove(dir, level, dirVector, speed);
 		}
 		// split "large" move such that turns are not missed
 		int steps = 2; // TODO fixme such that more steps work
 		float pixels = speed / steps;
 		for (int i = 0; i < steps - 1; ++i) {
-			var result = trySmallMove(dir, game, dirVector, pixels);
+			var result = trySmallMove(dir, level, dirVector, pixels);
 			if (!result.moved()) {
 				return result;
 			}
 		}
-		return trySmallMove(dir, game, dirVector, pixels);
+		return trySmallMove(dir, level, dirVector, pixels);
 	}
 
-	private MoveResult trySmallMove(Direction dir, GameModel game, Vector2f dirVector, float pixels) {
+	private MoveResult trySmallMove(Direction dir, GameLevel level, Vector2f dirVector, float pixels) {
 		var turn = !dir.sameOrientation(moveDir);
 		var newVelocity = dirVector.scaled(pixels);
 		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
 
-		if (!canAccessTile(tileAt(touchPosition), game)) {
+		if (!canAccessTile(tileAt(touchPosition), level)) {
 			if (!turn) {
 				placeAtTile(tile()); // adjust exactly over tile if blocked
 			}

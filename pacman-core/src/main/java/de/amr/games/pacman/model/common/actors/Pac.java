@@ -31,6 +31,7 @@ import java.util.Optional;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.EntityAnimationSet;
 import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -67,22 +68,21 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		powerFadingTicks = 2 * GameModel.FPS;
 	}
 
-	public void update(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public void update(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		if (dead) {
 			updateDead();
 		} else {
-			updateAlive(game);
+			updateAlive(level);
 		}
 	}
 
-	private void updateAlive(GameModel game) {
+	private void updateAlive(GameLevel level) {
 		switch (restingTicks) {
 		case 0 -> {
-			var speed = powerTimer.isRunning() ? game.level().params().playerSpeedPowered()
-					: game.level().params().playerSpeed();
+			var speed = powerTimer.isRunning() ? level.params().playerSpeedPowered() : level.params().playerSpeed();
 			setRelSpeed(speed);
-			tryMoving(game);
+			tryMoving(level);
 			selectRunnableAnimation(AnimKeys.PAC_MUNCHING);
 			if (!isStuck()) {
 				animate();
@@ -111,14 +111,14 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		return powerFadingTicks;
 	}
 
-	public boolean isPowerFading(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public boolean isPowerFading(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		return powerTimer.isRunning() && powerTimer.remaining() <= powerFadingTicks;
 	}
 
-	public boolean isMeetingKiller(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
-		return !immune && !powerTimer.isRunning() && game.ghosts(HUNTING_PAC).anyMatch(this::sameTile);
+	public boolean isMeetingKiller(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		return !immune && !powerTimer.isRunning() && level.game().ghosts(HUNTING_PAC).anyMatch(this::sameTile);
 	}
 
 	@Override

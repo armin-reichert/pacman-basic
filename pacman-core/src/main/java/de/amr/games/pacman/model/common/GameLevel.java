@@ -73,6 +73,7 @@ public class GameLevel {
 	}
 
 	private final int number;
+	private final GameModel game;
 	private final World world;
 	private final Pulse energizerPulse;
 	private final Bonus bonus;
@@ -84,9 +85,10 @@ public class GameLevel {
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
 
-	public GameLevel(int levelNumber, World world, Bonus bonus, int[] huntingDurations, GhostHouseRules houseRules,
-			byte[] data) {
+	public GameLevel(int levelNumber, GameModel game, World world, Bonus bonus, int[] huntingDurations,
+			GhostHouseRules houseRules, byte[] data) {
 		this.number = levelNumber;
+		this.game = game;
 		this.world = world;
 		this.energizerPulse = new Pulse(10, true);
 		this.bonus = bonus;
@@ -115,6 +117,10 @@ public class GameLevel {
 	/** Number of level, starts with 1. */
 	public int number() {
 		return number;
+	}
+
+	public GameModel game() {
+		return game;
 	}
 
 	/** World used in this level. */
@@ -166,7 +172,7 @@ public class GameLevel {
 	}
 
 	public void update(GameModel game) {
-		bonus.update(game);
+		bonus.update(this);
 		energizerPulse.animate();
 		advanceHunting(game);
 	}
@@ -177,10 +183,6 @@ public class GameLevel {
 		huntingTimer.stop();
 	}
 
-	public void startHunting() {
-		startHuntingPhase(0);
-	}
-
 	/**
 	 * Hunting happens in different phases. Phases 0, 2, 4, 6 are scattering phases where the ghosts target for their
 	 * respective corners and circle around the walls in their corner, phases 1, 3, 5, 7 are chasing phases where the
@@ -188,7 +190,7 @@ public class GameLevel {
 	 * 
 	 * @param phase hunting phase (0..7)
 	 */
-	private void startHuntingPhase(int phase) {
+	public void startHuntingPhase(int phase) {
 		if (phase < 0 || phase > 7) {
 			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
 		}

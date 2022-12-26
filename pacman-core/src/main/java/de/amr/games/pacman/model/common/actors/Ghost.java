@@ -52,6 +52,7 @@ import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.world.World;
@@ -166,22 +167,22 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	@Override
-	public boolean canAccessTile(Vector2i tile, GameModel game) {
+	public boolean canAccessTile(Vector2i tile, GameLevel level) {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		var currentTile = tile();
-		if (tile.equals(currentTile.plus(UP.vec)) && !game.isGhostAllowedMoving(this, UP)) {
+		if (tile.equals(currentTile.plus(UP.vec)) && !level.game().isGhostAllowedMoving(this, UP)) {
 			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
 			return false;
 		}
-		if (game.level().world().ghostHouse().isDoorTile(tile)) {
+		if (level.world().ghostHouse().isDoorTile(tile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		return super.canAccessTile(tile, game);
+		return super.canAccessTile(tile, level);
 	}
 
 	@Override
-	protected boolean canReverse(GameModel game) {
+	protected boolean canReverse(GameLevel level) {
 		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 
@@ -208,20 +209,20 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	/**
-	 * Executes a single simulation step for this ghost in the specified game.
+	 * Executes a single simulation step for this ghost in the specified game level.
 	 * 
 	 * @param game the game
 	 */
-	public void update(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public void update(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		switch (state) {
-		case LOCKED -> updateStateLocked(game);
-		case LEAVING_HOUSE -> updateStateLeavingHouse(game);
-		case HUNTING_PAC -> updateStateHuntingPac(game);
-		case FRIGHTENED -> updateStateFrightened(game);
+		case LOCKED -> updateStateLocked(level);
+		case LEAVING_HOUSE -> updateStateLeavingHouse(level);
+		case HUNTING_PAC -> updateStateHuntingPac(level);
+		case FRIGHTENED -> updateStateFrightened(level);
 		case EATEN -> updateStateEaten();
-		case RETURNING_TO_HOUSE -> updateStateReturningToHouse(game);
-		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
+		case RETURNING_TO_HOUSE -> updateStateReturningToHouse(level);
+		case ENTERING_HOUSE -> updateStateEnteringHouse(level);
 		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
 		animation().ifPresent(animation -> {
@@ -242,10 +243,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * In locked state, ghosts inside the house are bouncing up and down. They become blue and blink if Pac-Man gets/loses
 	 * power. After that, they return to their normal color.
 	 * 
-	 * @param game the game
+	 * @param level the level
 	 */
-	private void updateStateLocked(GameModel game) {
-		if (game.level().world().ghostHouse().contains(tile())) {
+	private void updateStateLocked(GameLevel level) {
+		if (level.world().ghostHouse().contains(tile())) {
 			if (position.y() <= homePosition.y() - World.HTS) {
 				setMoveAndWishDir(DOWN);
 			} else if (position.y() >= homePosition.y() + World.HTS) {
@@ -254,16 +255,16 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			setAbsSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
 			move();
 		}
-		updateColorOrBlueOrFlashingAnimation(game);
+		updateColorOrBlueOrFlashingAnimation(level);
 	}
 
 	// --- LEAVING_HOUSE ---
 
-	public void enterStateLeavingHouse(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public void enterStateLeavingHouse(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = LEAVING_HOUSE;
 		setAbsSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
-		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
+		GameEvents.publish(new GameEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 	}
 
 	/**
@@ -274,66 +275,64 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * <p>
 	 * The ghost speed is slower than outside but I do not know yet the exact value.
 	 * 
-	 * @param game the game
+	 * @param level the level
 	 */
-	private void updateStateLeavingHouse(GameModel game) {
-		updateColorOrBlueOrFlashingAnimation(game);
-		var outOfHouse = game.level().world().ghostHouse().leadGuyOutOfHouse(this);
+	private void updateStateLeavingHouse(GameLevel level) {
+		updateColorOrBlueOrFlashingAnimation(level);
+		var outOfHouse = level.world().ghostHouse().leadGuyOutOfHouse(this);
 		if (outOfHouse) {
 			setNewTileEntered(false);
 			setMoveAndWishDir(LEFT);
-			if (game.pac().powerTimer().isRunning() && killedIndex == -1) {
-				enterStateFrightened(game);
+			if (level.game().pac().powerTimer().isRunning() && killedIndex == -1) {
+				enterStateFrightened();
 			} else {
 				killedIndex = -1;
-				enterStateHuntingPac(game);
+				enterStateHuntingPac();
 			}
-			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
+			GameEvents.publish(new GameEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
 	}
 
 	// --- HUNTING_PAC ---
 
 	/**
-	 * @param game the game model
+	 * @param level the game level
 	 */
-	public void enterStateHuntingPac(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public void enterStateHuntingPac() {
 		state = HUNTING_PAC;
 	}
 
-	/**
+	/*
 	 * There are 4 hunting phases of different duration at each level. A hunting phase always starts with a "scatter"
 	 * phase where the ghosts retreat to their maze corners. After some time they start chasing Pac-Man according to their
 	 * character ("Shadow", "Speedy", "Bashful", "Pokey"). The 4th hunting phase at each level has an "infinite" chasing
-	 * phase.
-	 * <p>
+	 * phase. <p>
 	 * 
 	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original intention
 	 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
 	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
-	private void updateStateHuntingPac(GameModel game) {
-		if (game.level().world().isTunnel(tile())) {
-			setRelSpeed(game.level().params().ghostSpeedTunnel());
+	private void updateStateHuntingPac(GameLevel level) {
+		if (level.world().isTunnel(tile())) {
+			setRelSpeed(level.params().ghostSpeedTunnel());
 		} else if (cruiseElroyState == 1) {
-			setRelSpeed(game.level().params().elroy1Speed());
+			setRelSpeed(level.params().elroy1Speed());
 		} else if (cruiseElroyState == 2) {
-			setRelSpeed(game.level().params().elroy2Speed());
+			setRelSpeed(level.params().elroy2Speed());
 		} else {
-			setRelSpeed(game.level().params().ghostSpeed());
+			setRelSpeed(level.params().ghostSpeed());
 		}
-		if (game.variant() == MS_PACMAN && game.level().scatterPhaseIndex() == 0
+		if (level.game().variant() == MS_PACMAN && level.scatterPhaseIndex() == 0
 				&& (id == ID_RED_GHOST || id == ID_PINK_GHOST)) {
-			roam(game);
-		} else if (game.level().inChasingPhase() || cruiseElroyState > 0) {
+			roam(level);
+		} else if (level.inChasingPhase() || cruiseElroyState > 0) {
 			setTargetTile(fnChasingTarget.get());
-			navigateTowardsTarget(game);
-			tryMoving(game);
+			navigateTowardsTarget(level);
+			tryMoving(level);
 		} else {
 			setTargetTile(scatterTile);
-			navigateTowardsTarget(game);
-			tryMoving(game);
+			navigateTowardsTarget(level);
+			tryMoving(level);
 		}
 		if (animationSet != null) {
 			animationSet.select(AnimKeys.GHOST_COLOR);
@@ -343,10 +342,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	// --- FRIGHTENED ---
 
 	/**
-	 * @param game the game model
+	 * @param level the game level
 	 */
-	public void enterStateFrightened(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public void enterStateFrightened() {
 		state = FRIGHTENED;
 		attractRouteIndex = 0;
 	}
@@ -362,20 +360,20 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * 
 	 * @param game the game
 	 */
-	private void updateStateFrightened(GameModel game) {
-		setRelSpeed(game.level().world().isTunnel(tile()) ? game.level().params().ghostSpeedTunnel()
-				: game.level().params().ghostSpeedFrightened());
-		roam(game);
+	private void updateStateFrightened(GameLevel level) {
+		setRelSpeed(
+				level.world().isTunnel(tile()) ? level.params().ghostSpeedTunnel() : level.params().ghostSpeedFrightened());
+		roam(level);
 		if (animationSet != null) {
-			updateColorOrBlueOrFlashingAnimation(game);
+			updateColorOrBlueOrFlashingAnimation(level);
 		}
 	}
 
-	private void roam(GameModel game) {
-		if (game.hasCredit()) {
-			moveRandomly(game);
+	private void roam(GameLevel level) {
+		if (level.game().hasCredit()) {
+			moveRandomly(level);
 		} else {
-			movePseudoRandomly(game);
+			movePseudoRandomly(level);
 		}
 	}
 
@@ -392,10 +390,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		};
 	}
 
-	private void movePseudoRandomly(GameModel game) {
-		var route = getAttractRoute(game.variant());
+	private void movePseudoRandomly(GameLevel level) {
+		var route = getAttractRoute(level.game().variant());
 		if (route.isEmpty()) {
-			moveRandomly(game);
+			moveRandomly(level);
 		} else if (tile().equals(route.get(attractRouteIndex).tile())) {
 			var navPoint = route.get(attractRouteIndex);
 			if (atTurnPositionTo(navPoint.dir())) {
@@ -403,22 +401,22 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 				LOGGER.trace("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
 				++attractRouteIndex;
 			}
-			tryMoving(game);
+			tryMoving(level);
 		} else {
-			navigateTowardsTarget(game);
-			tryMoving(game);
+			navigateTowardsTarget(level);
+			tryMoving(level);
 		}
 	}
 
-	private void moveRandomly(GameModel game) {
+	private void moveRandomly(GameLevel level) {
 		if (isNewTileEntered() || isStuck()) {
 			Direction.shuffled().stream()//
 					.filter(dir -> dir != moveDir().opposite())//
-					.filter(dir -> canAccessTile(tile().plus(dir.vec), game))//
+					.filter(dir -> canAccessTile(tile().plus(dir.vec), level))//
 					.findAny()//
 					.ifPresent(this::setWishDir);
 		}
-		tryMoving(game);
+		tryMoving(level);
 	}
 
 	// --- EATEN ---
@@ -427,10 +425,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * After a ghost is eaten by Pac-Man he is displayed for a short time as the number of points earned for eating him.
 	 * The value doubles for each ghost eaten using the power of the same energizer.
 	 * 
-	 * @param game the game
+	 * @param level the level
 	 */
-	public void enterStateEaten(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public void enterStateEaten() {
 		state = EATEN;
 		selectRunnableAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
 	}
@@ -441,10 +438,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	// --- RETURNING_HOUSE ---
 
-	public void enterStateReturningToHouse(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public void enterStateReturningToHouse(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = RETURNING_TO_HOUSE;
-		setTargetTile(game.level().world().ghostHouse().entryTile());
+		setTargetTile(level.world().ghostHouse().entryTile());
 		if (animationSet != null) {
 			animationSet.select(AnimKeys.GHOST_EYES);
 		}
@@ -456,37 +453,37 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * 
 	 * @param game the game
 	 */
-	private void updateStateReturningToHouse(GameModel game) {
-		if (game.level().world().ghostHouse().atHouseEntry(this)) {
-			enterStateEnteringHouse(game);
+	private void updateStateReturningToHouse(GameLevel level) {
+		if (level.world().ghostHouse().atHouseEntry(this)) {
+			enterStateEnteringHouse(level);
 		} else {
 			setAbsSpeed(GameModel.SPEED_GHOST_RETURNING_TO_HOUSE_PX);
-			navigateTowardsTarget(game);
-			tryMoving(game);
+			navigateTowardsTarget(level);
+			tryMoving(level);
 		}
 	}
 
 	// ENTERING_HOUSE state
 
-	public void enterStateEnteringHouse(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+	public void enterStateEnteringHouse(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = ENTERING_HOUSE;
 		setTargetTile(tileAt(revivalPosition));
 		if (animationSet != null) {
 			animationSet.select(AnimKeys.GHOST_EYES);
 		}
-		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+		GameEvents.publish(new GameEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 	}
 
 	/**
 	 * When an eaten ghost reaches the ghost house, he enters and moves to his revival position. Because the exact route
 	 * from the house entry to the revival tile is house-specific, this logic is in the house implementation.
 	 * 
-	 * @param game the game
+	 * @param level the level
 	 */
-	private void updateStateEnteringHouse(GameModel game) {
+	private void updateStateEnteringHouse(GameLevel level) {
 		setAbsSpeed(GameModel.SPEED_GHOST_ENTERING_HOUSE_PX);
-		boolean atRevivalTile = game.level().world().ghostHouse().leadGuyInside(this, revivalPosition);
+		boolean atRevivalTile = level.world().ghostHouse().leadGuyInside(this, revivalPosition);
 		if (atRevivalTile) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();
@@ -504,27 +501,28 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return Optional.ofNullable(animationSet);
 	}
 
-	private void updateColorOrBlueOrFlashingAnimation(GameModel game) {
+	private void updateColorOrBlueOrFlashingAnimation(GameLevel level) {
 		if (animationSet == null) {
 			return;
 		}
-		if (!game.pac().powerTimer().isRunning()) {
+		var pac = level.game().pac();
+		if (!pac.powerTimer().isRunning()) {
 			animationSet.select(AnimKeys.GHOST_COLOR);
 			return;
 		}
-		if (game.pac().powerTimer().remaining() > game.pac().powerFadingTicks()) {
+		if (pac.powerTimer().remaining() > pac.powerFadingTicks()) {
 			animationSet.select(AnimKeys.GHOST_BLUE);
 		} else {
 			if (!animationSet.isSelected(AnimKeys.GHOST_FLASHING)) {
 				animationSet.select(AnimKeys.GHOST_FLASHING);
-				animationSet.selectedAnimation()
-						.ifPresent(flashing -> startFlashing(game, flashing, game.level().params().numFlashes()));
+				animationSet.selectedAnimation().ifPresent(flashing -> startFlashing(level, flashing));
 			}
 		}
 	}
 
-	private void startFlashing(GameModel game, EntityAnimation flashing, int numFlashes) {
-		long frameTicks = game.pac().powerFadingTicks() / (numFlashes * flashing.numFrames());
+	private void startFlashing(GameLevel level, EntityAnimation flashing) {
+		int numFlashes = level.params().numFlashes();
+		long frameTicks = level.game().pac().powerFadingTicks() / (numFlashes * flashing.numFrames());
 		flashing.setFrameDuration(frameTicks);
 		flashing.setRepetitions(numFlashes);
 		flashing.restart();

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.controller.common.Steering;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
@@ -62,26 +62,26 @@ public class RouteBasedSteering implements Steering {
 	}
 
 	@Override
-	public void steer(GameModel game, Creature guy) {
-		guy.navigateTowardsTarget(game);
+	public void steer(GameLevel level, Creature guy) {
+		guy.navigateTowardsTarget(level);
 		if (targetIndex == route.size()) {
 			complete = true;
 		} else if (guy.targetTile().isEmpty()) {
 			guy.setTargetTile(currentTarget().tile());
-			guy.navigateTowardsTarget(game);
+			guy.navigateTowardsTarget(level);
 			LOGGER.trace("New target tile for %s=%ss", guy.name(), guy.targetTile().get());
 		} else if (guy.tile().equals(currentTarget().tile())) {
-			nextTarget(game, guy);
+			nextTarget(level, guy);
 			LOGGER.trace("New target tile for %s=%s", guy.name(), guy.targetTile().get());
 		}
 		LOGGER.trace("Current wish dir for %s: %s (tile: %s)", guy.name(), guy.wishDir(), guy.tile());
 	}
 
-	private void nextTarget(GameModel game, Creature guy) {
+	private void nextTarget(GameLevel level, Creature guy) {
 		++targetIndex;
 		if (targetIndex < route.size()) {
 			guy.setTargetTile(currentTarget().tile());
-			guy.navigateTowardsTarget(game);
+			guy.navigateTowardsTarget(level);
 		}
 	}
 

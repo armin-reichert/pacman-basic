@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
@@ -102,14 +103,14 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
-	public void update(GameModel game) {
+	public void update(GameLevel level) {
 		switch (state) {
 		case INACTIVE -> {
 			// nothing to do
 		}
 		case EDIBLE -> {
-			if (entity.sameTile(game.pac())) {
-				game.scorePoints(points());
+			if (entity.sameTile(level.game().pac())) {
+				level.game().scorePoints(points());
 				eat();
 				return;
 			}

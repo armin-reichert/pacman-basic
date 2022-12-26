@@ -89,17 +89,17 @@ public class GhostHouseRules {
 		LOGGER.trace("Global dot counter reset to 0 and %s", enabled ? "enabled" : "disabled");
 	}
 
-	public void updateGhostDotCounters(GameModel game) {
+	public void updateGhostDotCounters(GameLevel level) {
 		if (globalDotCounterEnabled) {
-			if (game.theGhosts[ID_ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
-				LOGGER.trace("%s inside house when counter reached 32", game.theGhosts[ID_ORANGE_GHOST].name());
+			if (level.game().ghost(ID_ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
+				LOGGER.trace("%s inside house when counter reached 32", level.game().ghost(ID_ORANGE_GHOST).name());
 				resetGlobalDotCounterAndSetEnabled(false);
 			} else {
 				globalDotCounter++;
 			}
 		} else {
-			var house = game.level().world().ghostHouse();
-			var preferredGhost = game.ghosts(LOCKED).filter(ghost -> house.contains(ghost.tile())).findFirst();
+			var house = level.world().ghostHouse();
+			var preferredGhost = level.game().ghosts(LOCKED).filter(ghost -> house.contains(ghost.tile())).findFirst();
 			preferredGhost.ifPresent(this::increaseGhostDotCounter);
 		}
 	}
@@ -109,42 +109,43 @@ public class GhostHouseRules {
 		LOGGER.trace("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id()]);
 	}
 
-	public Optional<UnlockResult> checkIfGhostUnlocked(GameModel game) {
-		var ghost = game.ghosts(LOCKED).findFirst().orElse(null);
+	public Optional<UnlockResult> checkIfGhostUnlocked(GameLevel level) {
+		var ghost = level.game().ghosts(LOCKED).findFirst().orElse(null);
 		if (ghost == null) {
 			return Optional.empty();
 		}
-		var outside = !game.level().world().ghostHouse().contains(ghost.tile());
+		var outside = !level.world().ghostHouse().contains(ghost.tile());
 		if (outside) {
-			return unlockGhost(game, ghost, "Outside house");
+			return unlockGhost(level, ghost, "Outside house");
 		}
 		// check private dot counter
 		if (!globalDotCounterEnabled && ghostDotCounters[ghost.id()] >= privateGhostDotLimits[ghost.id()]) {
-			return unlockGhost(game, ghost, "Private dot counter at limit (%d)", privateGhostDotLimits[ghost.id()]);
+			return unlockGhost(level, ghost, "Private dot counter at limit (%d)", privateGhostDotLimits[ghost.id()]);
 		}
 		// check global dot counter
 		var globalDotLimit = globalGhostDotLimits[ghost.id()] == NO_LIMIT ? Integer.MAX_VALUE
 				: globalGhostDotLimits[ghost.id()];
 		if (globalDotCounter >= globalDotLimit) {
-			return unlockGhost(game, ghost, "Global dot counter at limit (%d)", globalDotLimit);
+			return unlockGhost(level, ghost, "Global dot counter at limit (%d)", globalDotLimit);
 		}
+		var pac = level.game().pac;
 		// check Pac-Man starving reaches limit
-		if (game.pac.starvingTicks() >= pacStarvingTimeLimit) {
-			game.pac.endStarving();
+		if (pac.starvingTicks() >= pacStarvingTimeLimit) {
+			pac.endStarving();
 			LOGGER.trace("Pac-Man starving timer reset to 0");
-			return unlockGhost(game, ghost, "%s reached starving limit (%d ticks)", game.pac.name(), pacStarvingTimeLimit);
+			return unlockGhost(level, ghost, "%s reached starving limit (%d ticks)", pac.name(), pacStarvingTimeLimit);
 		}
 		return Optional.empty();
 	}
 
-	private Optional<UnlockResult> unlockGhost(GameModel game, Ghost ghost, String reason, Object... args) {
-		var outside = !game.level().world().ghostHouse().contains(ghost.tile());
+	private Optional<UnlockResult> unlockGhost(GameLevel level, Ghost ghost, String reason, Object... args) {
+		var outside = !level.world().ghostHouse().contains(ghost.tile());
 		if (outside) {
 			ghost.setMoveAndWishDir(LEFT);
-			ghost.enterStateHuntingPac(game);
+			ghost.enterStateHuntingPac();
 		} else {
 			// ghost inside house has to leave house first
-			ghost.enterStateLeavingHouse(game);
+			ghost.enterStateLeavingHouse(level);
 		}
 		return Optional.of(new UnlockResult(ghost, reason.formatted(args)));
 	}

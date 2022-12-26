@@ -94,7 +94,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 				ctx.game().pac().setPosition(t(34), ctx.turningPoint.y());
 				ctx.game().pac().setAbsSpeed(0);
 				ctx.game().ghosts().forEach(ghost -> {
-					ghost.enterStateHuntingPac(ctx.game());
+					ghost.enterStateHuntingPac();
 					ghost.setMoveAndWishDir(LEFT);
 					ghost.setPosition(t(34), ctx.turningPoint.y());
 					ghost.setAbsSpeed(ctx.actorSpeed);
