@@ -321,7 +321,7 @@ public class Creature extends Entity {
 			return trySmallMove(dir, level, dirVector, speed);
 		}
 		// split "large" move such that turns are not missed
-		int steps = 2; // TODO fixme such that more steps work
+		int steps = 2; // TODO fixme Movement is broken!
 		float pixels = speed / steps;
 		for (int i = 0; i < steps - 1; ++i) {
 			var result = trySmallMove(dir, level, dirVector, pixels);
