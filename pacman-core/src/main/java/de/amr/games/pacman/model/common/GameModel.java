@@ -249,11 +249,8 @@ public abstract class GameModel {
 
 	public void enterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		LOGGER.trace("Enter level %d (%s)", levelNumber, variant());
 		level = buildLevel(levelNumber);
-		level.world().assignGhostPositions(theGhosts);
-		level.houseRules().resetPrivateGhostDotCounters();
-		level.letsGetReadyToRumble();
+		level.enter();
 		levelCounter.addSymbol(level.bonus().symbol());
 		gameScore.setLevelNumber(levelNumber);
 		ghost(ID_RED_GHOST).setCruiseElroyState(0);

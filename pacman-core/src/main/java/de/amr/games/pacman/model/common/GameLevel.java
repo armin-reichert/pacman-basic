@@ -194,7 +194,15 @@ public class GameLevel {
 		advanceHunting(game);
 	}
 
+	public void enter() {
+		LOGGER.trace("Enter level %d (%s)", number, game.variant());
+		world.assignGhostPositions(game.theGhosts);
+		houseRules().resetPrivateGhostDotCounters();
+		letsGetReadyToRumble();
+	}
+
 	public void exit() {
+		LOGGER.trace("Exit level %d (%s)", number, game.variant());
 		bonus.setInactive();
 		energizerPulse.reset();
 		huntingTimer.stop();
