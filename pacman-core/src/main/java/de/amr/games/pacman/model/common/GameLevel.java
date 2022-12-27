@@ -85,7 +85,9 @@ public class GameLevel {
 		/** Number of seconds Pac-Man gets power int this level. */
 		int pacPowerSeconds,
 		/** Number of maze flashes at end of this level. */
-		int numFlashes)
+		int numFlashes,
+		/** Number of intermission scene played after this level (1, 2, 3, 0 = no intermission). */
+		int intermissionNumber)
 	//@formatter:on
 	{
 		public static Parameters createFromData(byte[] data) {
@@ -101,9 +103,10 @@ public class GameLevel {
 			float ghostSpeedFrightened = data[8] / 100f;
 			byte pacPowerSeconds       = data[9];
 			byte numFlashes            = data[10];
+			byte intermissionNumber    = data[11];
 			//@formatter:on
 			return new Parameters(playerSpeed, ghostSpeed, ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft,
-					elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes);
+					elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes, intermissionNumber);
 		}
 	}
 

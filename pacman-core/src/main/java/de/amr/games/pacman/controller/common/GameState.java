@@ -321,7 +321,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					if (!game.hasCredit()) {
 						gc.changeState(INTRO);
 						// attract mode -> back to intro scene
-					} else if (game.intermissionNumber(level.number()) != 0) {
+					} else if (level.params().intermissionNumber() > 0) {
 						gc.changeState(INTERMISSION); // play intermission scene
 					} else {
 						gc.changeState(LEVEL_STARTING); // next level

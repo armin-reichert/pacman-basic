@@ -74,49 +74,29 @@ public abstract class GameModel {
 
 	//@formatter:off
 	protected static final byte[][] LEVEL_PARAMETERS = {
-	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
-	/* 2*/ { 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
-	/* Intermission scene 1 */
-	/* 3*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
-	/* 4*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
-	/* 5*/ {100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
-	/* Intermission scene 2 */
-	/* 6*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
-	/* 7*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 8*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 9*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
-	/* Intermission scene 3 */
-	/*10*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5},
-	/*11*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
-	/*12*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/*13*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/* Intermission scene 3 */
-	/*14*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
-	/*15*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*16*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*17*/ {100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
-	/* Intermission scene 3 */
-	/*18*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*19*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*20*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*21*/ { 90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5, 0},
+	/* 2*/ { 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5, 1},
+	/* 3*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5, 0},
+	/* 4*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5, 0},
+	/* 5*/ {100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5, 2},
+	/* 6*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5, 0},
+	/* 7*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5, 0},
+	/* 8*/ {100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5, 0},
+	/* 9*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3, 3},
+	/*10*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5, 0},
+	/*11*/ {100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5, 0},
+	/*12*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3, 0},
+	/*13*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3, 3},
+	/*14*/ {100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5, 0},
+	/*15*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3, 0},
+	/*16*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3, 0},
+	/*17*/ {100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0, 3},
+	/*18*/ {100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3, 0},
+	/*19*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0, 0},
+	/*20*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0, 0},
+	/*21*/ { 90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0, 0},
 	};
 	//@formatter:on
-
-	// from level 21 on, level parameters remain the same
-	protected byte[] getLevelParams(int levelNumber) {
-		return levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
-				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
-	}
-
-	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
-	protected int[] getHuntingDurations(int levelNumber) {
-		return switch (levelNumber) {
-		case 1 -> new int[] { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, -1 };
-		case 2, 3, 4 -> new int[] { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS, 1, -1 };
-		default -> new int[] { 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS, 1, -1 };
-		};
-	}
 
 	protected static int checkGhostID(int id) {
 		if (id < 0 || id > 3) {
@@ -221,6 +201,21 @@ public abstract class GameModel {
 		default -> rules.setPrivateGhostDotLimits(0, 0, 0, 0);
 		}
 		return rules;
+	}
+
+	// from level 21 on, level parameters remain the same
+	protected byte[] getLevelParams(int levelNumber) {
+		return levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
+				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
+	}
+
+	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
+	protected int[] getHuntingDurations(int levelNumber) {
+		return switch (levelNumber) {
+		case 1 -> new int[] { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, -1 };
+		case 2, 3, 4 -> new int[] { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS, 1, -1 };
+		default -> new int[] { 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS, 1, -1 };
+		};
 	}
 
 	/**
@@ -373,20 +368,5 @@ public abstract class GameModel {
 	 */
 	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
 		return true;
-	}
-
-	/**
-	 * @param levelNumber game level number
-	 * @return 1-based intermission (cut scene) number that is played after given level or <code>0</code> if no
-	 *         intermission is played after given level.
-	 */
-	public int intermissionNumber(int levelNumber) {
-		checkLevelNumber(levelNumber);
-		return switch (levelNumber) {
-		case 2 -> 1;
-		case 5 -> 2;
-		case 9, 13, 17 -> 3;
-		default -> 0;
-		};
 	}
 }
