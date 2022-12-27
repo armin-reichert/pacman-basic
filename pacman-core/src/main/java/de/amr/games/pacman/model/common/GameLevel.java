@@ -88,10 +88,23 @@ public class GameLevel {
 		int numFlashes)
 	//@formatter:on
 	{
-	}
-
-	private static float percentage(int value) {
-		return value / 100f;
+		public static Parameters createFromData(byte[] data) {
+			//@formatter:off
+			float playerSpeed          = data[0] / 100f;
+			float ghostSpeed           = data[1] / 100f;
+			float ghostSpeedTunnel     = data[2] / 100f;
+			byte elroy1DotsLeft        = data[3];
+			float elroy1Speed          = data[4] / 100f;
+			byte elroy2DotsLeft        = data[5];
+			float elroy2Speed          = data[6] / 100f;
+			float playerSpeedPowered   = data[7] / 100f;
+			float ghostSpeedFrightened = data[8] / 100f;
+			byte pacPowerSeconds       = data[9];
+			byte numFlashes            = data[10];
+			//@formatter:on
+			return new Parameters(playerSpeed, ghostSpeed, ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft,
+					elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes);
+		}
 	}
 
 	/** Remembers what happens during a tick. */
@@ -124,24 +137,7 @@ public class GameLevel {
 		bonus = game.createBonus(levelNumber);
 		houseRules = game.createHouseRules(levelNumber);
 		huntingDurations = game.getHuntingDurations(levelNumber);
-
-		var data = game.getLevelParams(levelNumber);
-		//@formatter:off
-		float playerSpeed          = percentage(data[0]);
-		float ghostSpeed           = percentage(data[1]);
-		float ghostSpeedTunnel     = percentage(data[2]);
-		int elroy1DotsLeft         = data[3];
-		float elroy1Speed          = percentage(data[4]);
-		int elroy2DotsLeft         = data[5];
-		float elroy2Speed          = percentage(data[6]);
-		float playerSpeedPowered   = percentage(data[7]);
-		float ghostSpeedFrightened = percentage(data[8]);
-		int pacPowerSeconds        = data[9];
-		int numFlashes             = data[10];
-		//@formatter:on
-
-		params = new Parameters(playerSpeed, ghostSpeed, ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft,
-				elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes);
+		params = Parameters.createFromData(game.getLevelParams(levelNumber));
 	}
 
 	/** Number of level, starts with 1. */
