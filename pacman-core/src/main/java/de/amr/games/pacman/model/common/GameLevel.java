@@ -87,7 +87,9 @@ public class GameLevel {
 		/** Number of maze flashes at end of this level. */
 		int numFlashes,
 		/** Number of intermission scene played after this level (1, 2, 3, 0 = no intermission). */
-		int intermissionNumber)
+		int intermissionNumber,
+		/** Index into array of hunting times. */
+		int huntingTimesIndex)
 	//@formatter:on
 	{
 		public static Parameters createFromData(byte[] data) {
@@ -104,9 +106,11 @@ public class GameLevel {
 			byte pacPowerSeconds       = data[9];
 			byte numFlashes            = data[10];
 			byte intermissionNumber    = data[11];
+			byte huntingTimesIndex     = data[12]; 
 			//@formatter:on
 			return new Parameters(playerSpeed, ghostSpeed, ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft,
-					elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes, intermissionNumber);
+					elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes, intermissionNumber,
+					huntingTimesIndex);
 		}
 	}
 
@@ -121,7 +125,6 @@ public class GameLevel {
 	private final Pulse energizerPulse;
 	private final Bonus bonus;
 	private final TickTimer huntingTimer;
-	private final int[] huntingDurations;
 	private final GhostHouseRules houseRules;
 	private final Parameters params;
 	private int huntingPhase;
@@ -139,7 +142,6 @@ public class GameLevel {
 		game.defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
 		bonus = game.createBonus(levelNumber);
 		houseRules = game.createHouseRules(levelNumber);
-		huntingDurations = game.getHuntingDurations(levelNumber);
 		params = Parameters.createFromData(game.getLevelParams(levelNumber));
 	}
 
@@ -265,10 +267,14 @@ public class GameLevel {
 			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
 		}
 		this.huntingPhase = phase;
-		var ticks = huntingDurations[phase] == -1 ? TickTimer.INDEFINITE : huntingDurations[phase];
-		LOGGER.info("Start hunting phase %d (%s). %s", phase, currentHuntingPhaseName(), huntingTimer);
-		huntingTimer.reset(ticks);
+		huntingTimer.reset(huntingTicks(phase));
 		huntingTimer.start();
+		LOGGER.info("Started hunting phase %d (%s). %s", phase, currentHuntingPhaseName(), huntingTimer);
+	}
+
+	private long huntingTicks(int phase) {
+		var durations = GameModel.HUNTING_DURATIONS[params.huntingTimesIndex];
+		return durations[phase] == -1 ? TickTimer.INDEFINITE : durations[phase];
 	}
 
 	/**
