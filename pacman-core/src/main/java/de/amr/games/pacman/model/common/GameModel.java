@@ -104,13 +104,13 @@ public abstract class GameModel {
 	//@formatter:on
 
 	// from level 21 on, level parameters remain the same
-	protected static byte[] getLevelParams(int levelNumber) {
+	protected byte[] getLevelParams(int levelNumber) {
 		return levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
 	}
 
 	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
-	protected static int[] getHuntingDurations(int levelNumber) {
+	protected int[] getHuntingDurations(int levelNumber) {
 		return switch (levelNumber) {
 		case 1 -> new int[] { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, -1 };
 		case 2, 3, 4 -> new int[] { 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS, 1, -1 };
@@ -155,8 +155,7 @@ public abstract class GameModel {
 	/**
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
 	 */
-	public static void defineGhostChasingBehavior(Pac pac, Ghost redGhost, Ghost pinkGhost, Ghost cyanGhost,
-			Ghost orangeGhost) {
+	public void defineGhostChasingBehavior(Pac pac, Ghost redGhost, Ghost pinkGhost, Ghost cyanGhost, Ghost orangeGhost) {
 		// Red ghost attacks Pac-Man directly
 		redGhost.setChasingBehavior(pac::tile);
 

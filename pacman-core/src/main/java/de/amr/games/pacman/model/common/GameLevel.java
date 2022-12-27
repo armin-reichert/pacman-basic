@@ -120,12 +120,12 @@ public class GameLevel {
 		huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(levelNumber));
 		pac = game.createPac();
 		theGhosts = game.createGhosts();
+		game.defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
 		bonus = game.createBonus(levelNumber);
 		houseRules = game.createHouseRules(levelNumber);
-		huntingDurations = GameModel.getHuntingDurations(levelNumber);
-		GameModel.defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
+		huntingDurations = game.getHuntingDurations(levelNumber);
 
-		var data = GameModel.getLevelParams(levelNumber);
+		var data = game.getLevelParams(levelNumber);
 		//@formatter:off
 		float playerSpeed          = percentage(data[0]);
 		float ghostSpeed           = percentage(data[1]);
