@@ -162,9 +162,16 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 						level.startHuntingPhase(0);
 						gc.changeState(GameState.HUNTING);
 					}
+				} else if (game.isPlaying()) {
+					// game already running
+					if (timer.tick() == 90) {
+						level.guys().forEach(Creature::show);
+						level.startHuntingPhase(0);
+						gc.changeState(GameState.HUNTING);
+					}
 				} else {
-					// in attract mode or game already running
-					if (timer.tick() == 100) {
+					// attract mode
+					if (timer.tick() == 130) {
 						level.guys().forEach(Creature::show);
 						level.startHuntingPhase(0);
 						gc.changeState(GameState.HUNTING);
