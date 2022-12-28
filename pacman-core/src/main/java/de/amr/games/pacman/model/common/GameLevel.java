@@ -476,6 +476,9 @@ public class GameLevel {
 		} else {
 			pac.starve();
 		}
+		if (memo.bonusReached) {
+			game.onBonusReached();
+		}
 	}
 
 	private void onFoodFound(Vector2i tile) {
@@ -488,9 +491,6 @@ public class GameLevel {
 		} else {
 			pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
 			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
-		}
-		if (memo.bonusReached) {
-			game.onBonusReached();
 		}
 		checkIfGhostBecomesCruiseElroy(ghost(ID_RED_GHOST));
 		houseRules.updateGhostDotCounters(this);
