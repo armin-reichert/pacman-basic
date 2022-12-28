@@ -65,10 +65,10 @@ import de.amr.games.pacman.model.pacman.PacManGameAttractModeRoutes;
  */
 public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
-	public static final int ID_RED_GHOST = 0;
-	public static final int ID_PINK_GHOST = 1;
-	public static final int ID_CYAN_GHOST = 2;
-	public static final int ID_ORANGE_GHOST = 3;
+	public static final byte ID_RED_GHOST = 0;
+	public static final byte ID_PINK_GHOST = 1;
+	public static final byte ID_CYAN_GHOST = 2;
+	public static final byte ID_ORANGE_GHOST = 3;
 
 	private final int id;
 	private Vector2f homePosition;
@@ -80,7 +80,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private int killedIndex;
 	private int attractRouteIndex;
 
-	public Ghost(int id, String name) {
+	public Ghost(byte id, String name) {
 		super(name);
 		if (id < 0 || id > 3) {
 			throw new IllegalArgumentException("Ghost ID must be in range 0..3");
