@@ -164,7 +164,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					}
 				} else {
 					// in attract mode or game already running
-					if (timer.tick() == 120) {
+					if (timer.tick() == 100) {
 						level.guys().forEach(Creature::show);
 						level.startHuntingPhase(0);
 						gc.changeState(GameState.HUNTING);
@@ -434,7 +434,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	GAME_OVER {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.restartSeconds(1.5);
+			timer.restartSeconds(1.2);
 			gc.sounds().stopAll();
 			game.changeCredit(-1);
 			ScoreManager.saveHiscore(game.highScore(), game.variant());
