@@ -93,7 +93,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * The ghost ID. One of {@link #ID_RED_GHOST}, {@link #ID_PINK_GHOST}, {@link #ID_CYAN_GHOST},
 	 * {@link #ID_ORANGE_GHOST}.
 	 */
-	public int id() {
+	public byte id() {
 		return id;
 	}
 
