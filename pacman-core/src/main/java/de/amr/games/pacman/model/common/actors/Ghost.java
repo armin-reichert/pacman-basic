@@ -78,7 +78,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
 	private EntityAnimationSet<AnimKeys> animationSet;
 	private int killedIndex;
-	private byte cruiseElroyState;
 	private int attractRouteIndex;
 
 	public Ghost(int id, String name) {
@@ -131,27 +130,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public void setChasingBehavior(Supplier<Vector2i> fnTargetTile) {
 		this.fnChasingTarget = Objects.requireNonNull(fnTargetTile);
-	}
-
-	/** Blinky's "cruise elroy" state. Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled). */
-	public int cruiseElroyState() {
-		return cruiseElroyState;
-	}
-
-	public void setCruiseElroyState(int cruiseElroyState) {
-		if (cruiseElroyState < -2 || cruiseElroyState > 2) {
-			throw new IllegalArgumentException(
-					"Cruise Elroy state must be one of -2, -1, 0, 1, 2, but is " + cruiseElroyState);
-		}
-		this.cruiseElroyState = (byte) cruiseElroyState;
-		LOGGER.trace("Cruise Elroy state set to %d", cruiseElroyState);
-	}
-
-	public void setCruiseElroyStateEnabled(boolean enabled) {
-		if (enabled && cruiseElroyState < 0 || !enabled && cruiseElroyState > 0) {
-			cruiseElroyState = (byte) (-cruiseElroyState);
-			LOGGER.trace("Cruise Elroy state set to %d", cruiseElroyState);
-		}
 	}
 
 	/** 0..3. Index when this ghost has been killed using the currently active energizer. */
@@ -315,9 +293,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private void updateStateHuntingPac(GameLevel level) {
 		if (level.world().isTunnel(tile())) {
 			setRelSpeed(level.params().ghostSpeedTunnel());
-		} else if (cruiseElroyState == 1) {
+		} else if (id == ID_RED_GHOST && level.cruiseElroyState() == 1) {
 			setRelSpeed(level.params().elroy1Speed());
-		} else if (cruiseElroyState == 2) {
+		} else if (id == ID_RED_GHOST && level.cruiseElroyState() == 2) {
 			setRelSpeed(level.params().elroy2Speed());
 		} else {
 			setRelSpeed(level.params().ghostSpeed());
@@ -325,7 +303,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (level.game().variant() == MS_PACMAN && level.scatterPhaseIndex() == 0
 				&& (id == ID_RED_GHOST || id == ID_PINK_GHOST)) {
 			roam(level);
-		} else if (level.inChasingPhase() || cruiseElroyState > 0) {
+		} else if (level.inChasingPhase() || id == ID_RED_GHOST && level.cruiseElroyState() > 0) {
 			setTargetTile(fnChasingTarget.get());
 			navigateTowardsTarget(level);
 			tryMoving(level);

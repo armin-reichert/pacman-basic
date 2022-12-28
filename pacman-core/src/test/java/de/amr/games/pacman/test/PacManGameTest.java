@@ -64,7 +64,7 @@ public class PacManGameTest {
 		assertEquals(BonusState.INACTIVE, level.bonus().state());
 		assertEquals(0, level.numGhostsKilledInLevel());
 		assertEquals(0, level.numGhostsKilledByEnergizer());
-		assertEquals(0, level.ghost(Ghost.ID_RED_GHOST).cruiseElroyState());
+		assertEquals(0, level.cruiseElroyState());
 	}
 
 	@Test
@@ -253,16 +253,16 @@ public class PacManGameTest {
 	@Test
 	public void testLegalCruiseElroyState() {
 		var level = game.level().get();
-		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(-2);
-		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(-1);
-		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(0);
-		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(1);
-		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(2);
+		level.setCruiseElroyState(-2);
+		level.setCruiseElroyState(-1);
+		level.setCruiseElroyState(0);
+		level.setCruiseElroyState(1);
+		level.setCruiseElroyState(2);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalCruiseElroyState() {
 		var level = game.level().get();
-		level.ghost(Ghost.ID_RED_GHOST).setCruiseElroyState(42);
+		level.setCruiseElroyState(42);
 	}
 }

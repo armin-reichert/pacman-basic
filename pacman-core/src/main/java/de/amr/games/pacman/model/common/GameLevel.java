@@ -135,6 +135,7 @@ public class GameLevel {
 	private int huntingPhase;
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
+	private byte cruiseElroyState;
 
 	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus,
 			GhostHouseRules houseRules, Parameters params) {
@@ -223,6 +224,27 @@ public class GameLevel {
 		return memo;
 	}
 
+	/** Blinky's "cruise elroy" state. Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled). */
+	public byte cruiseElroyState() {
+		return cruiseElroyState;
+	}
+
+	public void setCruiseElroyState(int cruiseElroyState) {
+		if (cruiseElroyState < -2 || cruiseElroyState > 2) {
+			throw new IllegalArgumentException(
+					"Cruise Elroy state must be one of -2, -1, 0, 1, 2, but is " + cruiseElroyState);
+		}
+		this.cruiseElroyState = (byte) cruiseElroyState;
+		LOGGER.trace("Cruise Elroy state set to %d", cruiseElroyState);
+	}
+
+	private void setCruiseElroyStateEnabled(boolean enabled) {
+		if (enabled && cruiseElroyState < 0 || !enabled && cruiseElroyState > 0) {
+			cruiseElroyState = (byte) (-cruiseElroyState);
+			LOGGER.trace("Cruise Elroy state set to %d", cruiseElroyState);
+		}
+	}
+
 	public int numGhostsKilledInLevel() {
 		return numGhostsKilledInLevel;
 	}
@@ -243,7 +265,7 @@ public class GameLevel {
 		LOGGER.trace("Enter level %d (%s)", number, game.variant());
 		world.assignGhostPositions(theGhosts);
 		houseRules.resetPrivateGhostDotCounters();
-		ghost(ID_RED_GHOST).setCruiseElroyState(0);
+		setCruiseElroyState(0);
 		letsGetReadyToRumbleAndShowGuys(false);
 	}
 
@@ -359,21 +381,20 @@ public class GameLevel {
 	private void checkIfGhostBecomesCruiseElroy(Ghost ghost) {
 		var foodRemaining = world.foodRemaining();
 		if (foodRemaining == params.elroy1DotsLeft()) {
-			ghost.setCruiseElroyState(1);
+			setCruiseElroyState(1);
 		} else if (foodRemaining == params.elroy2DotsLeft()) {
-			ghost.setCruiseElroyState(2);
+			setCruiseElroyState(2);
 		}
 	}
 
 	private void checkIfGhostCanGetUnlocked() {
-		Ghost redGhost = ghost(ID_RED_GHOST);
 		houseRules.checkIfGhostUnlocked(this).ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
 			LOGGER.trace("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
-			if (unlock.ghost().id() == ID_ORANGE_GHOST && redGhost.cruiseElroyState() < 0) {
+			if (unlock.ghost().id() == ID_ORANGE_GHOST && cruiseElroyState < 0) {
 				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
-				redGhost.setCruiseElroyStateEnabled(true);
+				setCruiseElroyStateEnabled(true);
 			}
 		});
 	}
@@ -437,7 +458,7 @@ public class GameLevel {
 	private void onPacMeetsKiller() {
 		pac.kill();
 		houseRules.resetGlobalDotCounterAndSetEnabled(true);
-		ghost(ID_RED_GHOST).setCruiseElroyStateEnabled(false);
+		setCruiseElroyStateEnabled(false);
 		LOGGER.trace("%s died at tile %s", pac.name(), pac.tile());
 	}
 
