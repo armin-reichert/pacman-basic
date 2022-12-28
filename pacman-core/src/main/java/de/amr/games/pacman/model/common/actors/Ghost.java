@@ -70,7 +70,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final byte ID_CYAN_GHOST = 2;
 	public static final byte ID_ORANGE_GHOST = 3;
 
-	private final int id;
+	private final byte id;
 	private Vector2f homePosition;
 	private Vector2f revivalPosition;
 	private Vector2i scatterTile;
