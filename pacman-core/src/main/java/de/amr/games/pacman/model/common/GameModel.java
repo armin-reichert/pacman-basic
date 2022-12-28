@@ -106,13 +106,6 @@ public abstract class GameModel {
 	};
 //@formatter:on
 
-	protected static int checkGhostID(int id) {
-		if (id < 0 || id > 3) {
-			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
-		}
-		return id;
-	}
-
 	protected static int checkLevelNumber(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);

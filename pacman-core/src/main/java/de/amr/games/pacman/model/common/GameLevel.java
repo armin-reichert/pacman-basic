@@ -24,7 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
@@ -112,6 +111,13 @@ public class GameLevel {
 					elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes, intermissionNumber,
 					huntingTimesIndex);
 		}
+	}
+
+	protected static int checkGhostID(int id) {
+		if (id < 0 || id > 3) {
+			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
+		}
+		return id;
 	}
 
 	private final Memory memo = new Memory();
