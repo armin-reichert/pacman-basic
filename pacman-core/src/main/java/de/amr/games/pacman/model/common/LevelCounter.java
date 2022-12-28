@@ -24,8 +24,8 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -38,8 +38,15 @@ public class LevelCounter implements Iterable<Integer> {
 	private boolean visible;
 
 	public LevelCounter() {
-		symbols = new ArrayList<>(MAX_COUNT);
+		symbols = new LinkedList<>();
 		visible = true;
+	}
+
+	public void addSymbol(int symbol) {
+		if (symbols.size() == MAX_COUNT) {
+			symbols.remove(0);
+		}
+		symbols.add(symbol);
 	}
 
 	@Override
@@ -57,17 +64,6 @@ public class LevelCounter implements Iterable<Integer> {
 
 	public void clear() {
 		symbols.clear();
-	}
-
-	public void addSymbol(int symbol) {
-		if (symbols.size() == MAX_COUNT) {
-			symbols.remove(0);
-		}
-		symbols.add(symbol);
-	}
-
-	public int symbol(int i) {
-		return symbols.get(i);
 	}
 
 	public int size() {
