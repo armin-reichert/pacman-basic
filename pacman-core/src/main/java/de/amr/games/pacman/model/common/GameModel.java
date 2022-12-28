@@ -127,7 +127,6 @@ public abstract class GameModel {
 	protected boolean playing;
 	protected boolean immune; // extra
 	protected boolean autoControlled; // extra
-	protected boolean oneLessLifeDisplayed; // to be replaced
 	protected final LevelCounter levelCounter = new LevelCounter();
 	protected final Score gameScore = new Score("SCORE");
 	protected final Score highScore = new Score("HIGH SCORE");
@@ -232,11 +231,11 @@ public abstract class GameModel {
 	protected GameLevel createLevel(int levelNumber) {
 		var pac = createPac();
 		var theGhosts = createGhosts();
-		defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var houseRules = createHouseRules(levelNumber);
 		var params = Parameters.createFromData(getLevelParams(levelNumber));
+		defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
 		return new GameLevel(this, levelNumber, pac, theGhosts, world, bonus, houseRules, params);
 	}
 
@@ -355,6 +354,19 @@ public abstract class GameModel {
 		return credit > 0;
 	}
 
+	/**
+	 * @param ghost a ghost
+	 * @param dir   a direction
+	 * @return tells if the ghost can currently move towards the given direction
+	 */
+	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
+		return true;
+	}
+
+	// get rid of this:
+
+	protected boolean oneLessLifeDisplayed;
+
 	/** If one less life is displayed in the lives counter. */
 	public boolean isOneLessLifeDisplayed() {
 		return oneLessLifeDisplayed;
@@ -364,12 +376,4 @@ public abstract class GameModel {
 		this.oneLessLifeDisplayed = value;
 	}
 
-	/**
-	 * @param ghost a ghost
-	 * @param dir   a direction
-	 * @return tells if the ghost can currently move towards the given direction
-	 */
-	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
-		return true;
-	}
 }
