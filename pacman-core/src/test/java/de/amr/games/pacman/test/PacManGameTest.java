@@ -39,11 +39,12 @@ import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.pacman.PacManGame;
+import de.amr.games.pacman.model.pacman.StaticBonus;
 
 /**
  * @author Armin Reichert
  */
-public class GameModelTest {
+public class PacManGameTest {
 
 	private GameModel game;
 
@@ -143,6 +144,59 @@ public class GameModelTest {
 		assertEquals(42.0, pac.velocity().length(), Vector2f.EPSILON);
 		pac.kill();
 		assertEquals(0.0, pac.velocity().length(), Vector2f.EPSILON);
+	}
+
+	@Test
+	public void testBonus() {
+		Bonus bonus = null;
+
+		bonus = game.createBonus(1);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(100, bonus.points());
+
+		bonus = game.createBonus(2);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(300, bonus.points());
+
+		bonus = game.createBonus(3);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(500, bonus.points());
+
+		bonus = game.createBonus(4);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(500, bonus.points());
+
+		bonus = game.createBonus(5);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(700, bonus.points());
+
+		bonus = game.createBonus(6);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(700, bonus.points());
+
+		bonus = game.createBonus(7);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(1000, bonus.points());
+
+		bonus = game.createBonus(8);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(1000, bonus.points());
+
+		bonus = game.createBonus(9);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(2000, bonus.points());
+
+		bonus = game.createBonus(10);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(2000, bonus.points());
+
+		bonus = game.createBonus(11);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(3000, bonus.points());
+
+		bonus = game.createBonus(12);
+		assertTrue(bonus instanceof StaticBonus);
+		assertEquals(3000, bonus.points());
 	}
 
 	@Test
