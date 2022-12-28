@@ -114,9 +114,7 @@ public class GameLevel {
 		}
 	}
 
-	/** Remembers what happens during a tick. */
-	public final Memory memo = new Memory();
-
+	private final Memory memo = new Memory();
 	private final int number;
 	private final GameModel game;
 	private final Pac pac;
@@ -127,25 +125,26 @@ public class GameLevel {
 	private final TickTimer huntingTimer;
 	private final GhostHouseRules houseRules;
 	private final Parameters params;
+
 	private int huntingPhase;
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
 
-	public GameLevel(int levelNumber, GameModel game) {
-		this.number = levelNumber;
+	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus,
+			GhostHouseRules houseRules, Parameters params) {
 		this.game = game;
-		world = game.createWorld(levelNumber);
-		energizerPulse = new Pulse(10, true);
-		huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(levelNumber));
-		pac = game.createPac();
-		theGhosts = game.createGhosts();
-		game.defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
-		bonus = game.createBonus(levelNumber);
-		houseRules = game.createHouseRules(levelNumber);
-		params = Parameters.createFromData(game.getLevelParams(levelNumber));
+		this.number = number;
+		this.world = world;
+		this.energizerPulse = new Pulse(10, true);
+		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
+		this.pac = pac;
+		this.theGhosts = theGhosts;
+		this.bonus = bonus;
+		this.houseRules = houseRules;
+		this.params = params;
 	}
 
-	/** Number of level, starts with 1. */
+	/** @return Number of level, starts with 1. */
 	public int number() {
 		return number;
 	}
@@ -154,7 +153,6 @@ public class GameLevel {
 		return game;
 	}
 
-	/** World used in this level. */
 	public World world() {
 		return world;
 	}
@@ -198,7 +196,6 @@ public class GameLevel {
 		return pac;
 	}
 
-	/** Bonus used in this level. */
 	public Bonus bonus() {
 		return bonus;
 	}
@@ -207,9 +204,17 @@ public class GameLevel {
 		return huntingTimer;
 	}
 
-	/** Parameters in this level */
 	public Parameters params() {
 		return params;
+	}
+
+	/**
+	 * Remembers what happens during a tick.
+	 * 
+	 * @return the memo
+	 */
+	public Memory memo() {
+		return memo;
 	}
 
 	public int numGhostsKilledInLevel() {
@@ -435,7 +440,7 @@ public class GameLevel {
 		huntingTimer().stop();
 		pac.powerTimer().restartSeconds(params().pacPowerSeconds());
 		LOGGER.trace("Timer started: %s", pac.powerTimer());
-		ghosts(HUNTING_PAC).forEach(ghost -> ghost.enterStateFrightened());
+		ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}
@@ -446,7 +451,7 @@ public class GameLevel {
 		pac.powerTimer().stop();
 		pac.powerTimer().resetIndefinitely();
 		LOGGER.trace("Timer stopped: %s", pac.powerTimer());
-		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterStateHuntingPac());
+		ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
 

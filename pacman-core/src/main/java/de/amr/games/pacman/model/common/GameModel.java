@@ -36,6 +36,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.model.common.GameLevel.Parameters;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -235,6 +236,17 @@ public abstract class GameModel {
 		return Optional.ofNullable(level);
 	}
 
+	protected GameLevel createLevel(int levelNumber) {
+		var pac = createPac();
+		var theGhosts = createGhosts();
+		defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
+		var world = createWorld(levelNumber);
+		var bonus = createBonus(levelNumber);
+		var houseRules = createHouseRules(levelNumber);
+		var params = Parameters.createFromData(getLevelParams(levelNumber));
+		return new GameLevel(this, levelNumber, pac, theGhosts, world, bonus, houseRules, params);
+	}
+
 	/**
 	 * Builds and enters the given level.
 	 * 
@@ -243,7 +255,7 @@ public abstract class GameModel {
 	public void buildAndEnterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		LOGGER.trace("Build game level %d (%s)", levelNumber, variant());
-		level = new GameLevel(levelNumber, this);
+		level = createLevel(levelNumber);
 		level.enter();
 		levelCounter.addSymbol(level.bonus().symbol());
 		gameScore.setLevelNumber(levelNumber);

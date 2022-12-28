@@ -210,20 +210,19 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					return;
 				}
 
-				var memo = level.memo;
 				renderSound(level);
-				memo.forgetEverything(); // ich scholze jetzt
+				level.memo().forgetEverything(); // ich scholze jetzt
 				level.checkIfPacFindsFood();
-				if (memo.lastFoodFound) {
+				if (level.memo().lastFoodFound) {
 					gc.changeState(LEVEL_COMPLETE);
 					return;
 				}
 				level.checkHowTheGuysAreDoing();
-				if (memo.pacMetKiller) {
+				if (level.memo().pacMetKiller) {
 					gc.changeState(PACMAN_DYING);
 					return;
 				}
-				if (memo.ghostsKilled) {
+				if (level.memo().ghostsKilled) {
 					gc.changeState(GHOST_DYING);
 					return;
 				}
@@ -233,21 +232,20 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 
 		private void renderSound(GameLevel level) {
-			var memo = level.memo;
 			var snd = gc.sounds();
 			if (level.huntingTimer().tick() == 1) {
 				var sirenIndex = level.huntingPhase() / 2;
 				snd.ensureSirenStarted(sirenIndex);
 			}
-			if (memo.pacPowered) {
+			if (level.memo().pacPowered) {
 				snd.stopSirens();
 				snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.LOOP_FOREVER);
 			}
-			if (memo.pacPowerLost) {
+			if (level.memo().pacPowerLost) {
 				snd.stop(GameSound.PACMAN_POWER);
 				snd.ensureSirenStarted(level.huntingPhase() / 2);
 			}
-			if (memo.foodFoundTile.isPresent()) {
+			if (level.memo().foodFoundTile.isPresent()) {
 				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
 			}
 			if (level.pac().starvingTicks() >= 12) { // ???
