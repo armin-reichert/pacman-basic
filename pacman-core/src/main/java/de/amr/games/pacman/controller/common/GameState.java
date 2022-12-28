@@ -443,9 +443,13 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				game.setPlaying(false);
 				gc.changeState(game.hasCredit() ? CREDIT : INTRO);
 			}
+		}
+
+		@Override
+		public void onExit(GameModel game) {
+			game.setPlaying(false);
 		}
 	},
 
