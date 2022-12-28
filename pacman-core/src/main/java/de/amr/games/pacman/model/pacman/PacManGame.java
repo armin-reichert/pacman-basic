@@ -95,10 +95,6 @@ public class PacManGame extends GameModel {
 	// Tiles where chasing ghosts cannot move upwards
 	public static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
-	public PacManGame() {
-		// ok
-	}
-
 	@Override
 	public Pac createPac() {
 		return new Pac("Pac-Man");
@@ -116,11 +112,13 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public ArcadeWorld createWorld(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		return new ArcadeWorld(MAP);
 	}
 
 	@Override
 	public Bonus createBonus(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		//@formatter:off
 		var bonus = switch (levelNumber) {
 		case 1      -> new StaticBonus(0,  100); // Cherries

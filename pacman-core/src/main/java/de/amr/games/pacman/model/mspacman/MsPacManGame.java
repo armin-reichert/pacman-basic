@@ -219,10 +219,6 @@ public class MsPacManGame extends GameModel {
 	};
 	//@formatter:on
 
-	public MsPacManGame() {
-		// ok
-	}
-
 	@Override
 	public Pac createPac() {
 		return new Pac("Ms. Pac-Man");
