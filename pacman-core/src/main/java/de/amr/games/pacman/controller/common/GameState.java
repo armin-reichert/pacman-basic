@@ -202,7 +202,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					if (level.number() <= gc.levelTestLastLevelNumber) {
 						// show bonus, update it for one second, then eat it and show won points
 						if (gc.state().timer().atSecond(0.0)) {
-							game.onBonusReached(level.bonus());
+							game.onBonusReached();
 						} else if (gc.state().timer().atSecond(1.0)) {
 							level.bonus().eat();
 						} else if (gc.state().timer().atSecond(2.0)) {

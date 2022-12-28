@@ -186,7 +186,7 @@ public abstract class GameModel {
 	 * 
 	 * @param bonus the bonus
 	 */
-	public abstract void onBonusReached(Bonus bonus);
+	public abstract void onBonusReached();
 
 	/**
 	 * @param levelNumber Level number (starting at 1)

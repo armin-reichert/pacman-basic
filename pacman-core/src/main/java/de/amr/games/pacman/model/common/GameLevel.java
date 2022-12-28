@@ -490,7 +490,7 @@ public class GameLevel {
 			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 		}
 		if (memo.bonusReached) {
-			game.onBonusReached(bonus);
+			game.onBonusReached();
 		}
 		checkIfGhostBecomesCruiseElroy(ghost(ID_RED_GHOST));
 		houseRules.updateGhostDotCounters(this);

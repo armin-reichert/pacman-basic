@@ -30,7 +30,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -306,8 +305,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public void onBonusReached(Bonus bonus) {
-		Objects.requireNonNull(bonus, "Bonus must not be null");
+	public void onBonusReached() {
 		int numPortals = level.world().portals().size();
 		var entryPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
 		var exitPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
@@ -321,7 +319,7 @@ public class MsPacManGame extends GameModel {
 		route.add(np(houseEntry));
 		route.add(orientation == Direction.RIGHT ? np(exitPortal.rightTunnelEnd()) : np(exitPortal.leftTunnelEnd()));
 		LOGGER.trace("Bonus route: %s, orientation: %s", route, orientation);
-		var movingBonus = (MovingBonus) bonus;
+		var movingBonus = (MovingBonus) level.bonus();
 		movingBonus.setRoute(route);
 		movingBonus.placeAtTile(start.tile(), 0, 0);
 		movingBonus.setMoveAndWishDir(orientation);
