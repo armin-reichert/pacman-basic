@@ -35,6 +35,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -120,9 +121,8 @@ public class GameLevel {
 		return id;
 	}
 
-	private final Memory memo = new Memory();
-	private final int number;
 	private final GameModel game;
+	private final int number;
 	private final Pac pac;
 	private final Ghost[] theGhosts;
 	private final World world;
@@ -132,6 +132,7 @@ public class GameLevel {
 	private final GhostHouseRules houseRules;
 	private final Parameters params;
 
+	private final Memory memo = new Memory();
 	private int huntingPhase;
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
@@ -141,17 +142,17 @@ public class GameLevel {
 			GhostHouseRules houseRules, Parameters params) {
 		this.game = game;
 		this.number = number;
-		this.world = world;
-		this.energizerPulse = new Pulse(10, true);
-		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
 		this.pac = pac;
 		this.theGhosts = theGhosts;
+		this.world = world;
+		this.energizerPulse = new Pulse(10, true);
 		this.bonus = bonus;
+		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
 		this.houseRules = houseRules;
 		this.params = params;
 	}
 
-	/** @return Number of level, starts with 1. */
+	/** @return Level number, starting with 1. */
 	public int number() {
 		return number;
 	}
@@ -169,7 +170,8 @@ public class GameLevel {
 	}
 
 	/**
-	 * @param id ghost ID (0, 1, 2, 3)
+	 * @param id ghost ID, one of {@link Ghost#ID_RED_GHOST}, {@link Ghost#ID_PINK_GHOST}, {@value Ghost#ID_CYAN_GHOST},
+	 *           {@link Ghost#ID_ORANGE_GHOST}
 	 * @return the ghost with the given ID
 	 */
 	public Ghost ghost(int id) {
@@ -224,11 +226,14 @@ public class GameLevel {
 		return memo;
 	}
 
-	/** Blinky's "cruise elroy" state. Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled). */
+	/** @return Blinky's "cruise elroy" state. Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled). */
 	public byte cruiseElroyState() {
 		return cruiseElroyState;
 	}
 
+	/**
+	 * @param cruiseElroyState Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled).
+	 */
 	public void setCruiseElroyState(int cruiseElroyState) {
 		if (cruiseElroyState < -2 || cruiseElroyState > 2) {
 			throw new IllegalArgumentException(
@@ -275,7 +280,7 @@ public class GameLevel {
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus.update(this);
 		energizerPulse.animate();
-		advanceHunting();
+		updateHunting();
 	}
 
 	public void exit() {
@@ -314,7 +319,7 @@ public class GameLevel {
 	 * Advances the current hunting phase and enters the next phase when the current phase ends. On every change between
 	 * phases, the living ghosts outside of the ghost house reverse their move direction.
 	 */
-	private void advanceHunting() {
+	private void updateHunting() {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingPhase + 1);
@@ -331,29 +336,21 @@ public class GameLevel {
 	}
 
 	/**
-	 * @return number of current scattering phase <code>(0-4)</code> or <code>-1</code> if currently chasing
+	 * @return (optional) number of current scattering phase <code>(0-4)</code>
 	 */
-	public int scatterPhaseIndex() {
-		return huntingPhase % 2 == 0 ? huntingPhase / 2 : -1;
+	public OptionalInt scatterPhase() {
+		return huntingPhase % 2 == 0 ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
 	}
 
 	/**
-	 * @return number of current chasing phase <code>(0-4)</code> or <code>-1</code> if currently scattering
+	 * @return (optional) number of current chasing phase <code>(0-4)</code>
 	 */
-	public int chasingPhaseIndex() {
-		return huntingPhase % 2 == 1 ? huntingPhase / 2 : -1;
+	public OptionalInt chasingPhase() {
+		return huntingPhase % 2 == 1 ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
 	}
 
 	public String currentHuntingPhaseName() {
 		return huntingPhase % 2 == 0 ? "Scattering" : "Chasing";
-	}
-
-	public boolean inChasingPhase() {
-		return chasingPhaseIndex() != -1;
-	}
-
-	public boolean inScatterPhase() {
-		return scatterPhaseIndex() != -1;
 	}
 
 	/**
