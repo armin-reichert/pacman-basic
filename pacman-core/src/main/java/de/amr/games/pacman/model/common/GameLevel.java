@@ -336,14 +336,14 @@ public class GameLevel {
 	}
 
 	/**
-	 * @return (optional) number of current scattering phase <code>(0-4)</code>
+	 * @return (optional) number of current scattering phase <code>(0-3)</code>
 	 */
 	public OptionalInt scatterPhase() {
 		return huntingPhase % 2 == 0 ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
 	}
 
 	/**
-	 * @return (optional) number of current chasing phase <code>(0-4)</code>
+	 * @return (optional) number of current chasing phase <code>(0-3)</code>
 	 */
 	public OptionalInt chasingPhase() {
 		return huntingPhase % 2 == 1 ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
