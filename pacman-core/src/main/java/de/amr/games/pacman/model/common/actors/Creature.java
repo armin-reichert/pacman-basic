@@ -315,42 +315,27 @@ public class Creature extends Entity {
 	}
 
 	private MoveResult tryMoving(Direction dir, GameLevel level) {
-		float speed = velocity.length();
-		Vector2f dirVector = dir.vec.toFloatVec();
-		if (speed <= 1.0) {
-			return trySmallMove(dir, level, dirVector, speed);
-		}
-		// split "large" move such that turns are not missed
-		int steps = 2; // TODO fixme Movement is broken!
-		float pixels = speed / steps;
-		for (int i = 0; i < steps - 1; ++i) {
-			var result = trySmallMove(dir, level, dirVector, pixels);
-			if (!result.moved()) {
-				return result;
-			}
-		}
-		return trySmallMove(dir, level, dirVector, pixels);
-	}
-
-	private MoveResult trySmallMove(Direction dir, GameLevel level, Vector2f dirVector, float pixels) {
-		var turn = !dir.sameOrientation(moveDir);
-		var newVelocity = dirVector.scaled(pixels);
+		var aroundCorner = !dir.sameOrientation(moveDir);
+		var dirVector = dir.vec.toFloatVec();
+		var newVelocity = dirVector.scaled(velocity.length());
 		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
-
-		if (!canAccessTile(tileAt(touchPosition), level)) {
-			if (!turn) {
-				placeAtTile(tile()); // adjust exactly over tile if blocked
+		var touchedTile = tileAt(touchPosition);
+		if (!canAccessTile(touchedTile, level)) {
+			if (!aroundCorner) {
+				placeAtTile(tile()); // adjust if blocked and moving forward
 			}
-			return MoveResult.notMoved("Not moved: Cannot access tile %s", tileAt(touchPosition));
+			return MoveResult.notMoved("Not moved: Cannot move into tile %s", touchedTile);
 		}
-
-		if (turn && !atTurnPositionTo(dir)) {
-			return MoveResult.notMoved("Wants to move %s but not at turn position", dir);
+		if (aroundCorner) {
+			if (atTurnPositionTo(dir)) {
+				placeAtTile(tile()); // adjust if moving around corner
+			} else {
+				return MoveResult.notMoved("Wants to take corner towards %s but not at turn position", dir);
+			}
 		}
-
 		setVelocity(newVelocity);
 		move();
-		return MoveResult.moved("Moved a bit %5s (%.2f pixels)", dir, pixels);
+		return MoveResult.moved("Moved %5s (%.2f pixels)", dir, newVelocity.length());
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {
