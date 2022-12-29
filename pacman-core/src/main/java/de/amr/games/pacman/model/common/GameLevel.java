@@ -375,7 +375,7 @@ public class GameLevel {
 		energizerPulse().reset();
 	}
 
-	private void checkIfGhostBecomesCruiseElroy(Ghost ghost) {
+	private void checkIfBlinkyBecomesCruiseElroy() {
 		var foodRemaining = world.foodRemaining();
 		if (foodRemaining == params.elroy1DotsLeft()) {
 			setCruiseElroyState(1);
@@ -510,7 +510,7 @@ public class GameLevel {
 			pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
 			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 		}
-		checkIfGhostBecomesCruiseElroy(ghost(ID_RED_GHOST));
+		checkIfBlinkyBecomesCruiseElroy();
 		houseRules.updateGhostDotCounters(this);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
 	}
