@@ -97,7 +97,7 @@ public abstract class GameModel {
 	};
 
 	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
-	protected static final int[][] HUNTING_DURATIONS = {
+	private static final int[][] HUNTING_DURATIONS = {
 		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS,   20 * FPS, 5 * FPS, -1 },
 		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS,       1, -1 },
 		{ 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS,       1, -1 },
