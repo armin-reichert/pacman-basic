@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.amr.games.pacman.controller.common.GameSoundController;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.Pulse;
@@ -326,6 +327,7 @@ public class GameLevel {
 	}
 
 	public void update() {
+		memo.forgetEverything(); // ich scholze jetzt
 		pac.update(this);
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
@@ -534,7 +536,7 @@ public class GameLevel {
 
 	// Food
 
-	public void checkIfPacFindsFood() {
+	public void checkIfPacFoundFood() {
 		var tile = pac.tile();
 		if (world.containsFood(tile)) {
 			memo.foodFoundTile = Optional.of(tile);
@@ -566,5 +568,35 @@ public class GameLevel {
 		checkIfBlinkyBecomesCruiseElroy();
 		houseRules.updateGhostDotCounters(this);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
+	}
+
+	// Sound
+
+	public void renderSound(GameSoundController snd) {
+		if (huntingTimer().tick() == 1) {
+			var sirenIndex = huntingPhase() / 2;
+			snd.ensureSirenStarted(sirenIndex);
+		}
+		if (memo().pacPowered) {
+			snd.stopSirens();
+			snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.LOOP_FOREVER);
+		}
+		if (memo().pacPowerLost) {
+			snd.stop(GameSound.PACMAN_POWER);
+			snd.ensureSirenStarted(huntingPhase() / 2);
+		}
+		if (memo().foodFoundTile.isPresent()) {
+			snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
+		}
+		if (pac().starvingTicks() >= 12) { // ???
+			snd.stop(GameSound.PACMAN_MUNCH);
+		}
+		if (ghosts(GhostState.RETURNING_TO_HOUSE).count() > 0) {
+			if (!snd.isPlaying(GameSound.GHOST_RETURNING)) {
+				snd.loop(GameSound.GHOST_RETURNING, GameSoundController.LOOP_FOREVER);
+			}
+		} else {
+			snd.stop(GameSound.GHOST_RETURNING);
+		}
 	}
 }

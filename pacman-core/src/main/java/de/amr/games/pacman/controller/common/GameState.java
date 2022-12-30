@@ -202,27 +202,37 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					runLevelTestMode(level);
 					return;
 				}
-				// play the game level
-				gc.steering(level).steer(level, level.pac());
+
+				gc.steerPac(level);
 				level.update();
-				renderSound(level);
-				level.memo().forgetEverything(); // ich scholze jetzt
-				level.checkIfPacFindsFood();
+
+				level.checkIfPacFoundFood();
 				if (level.memo().lastFoodFound) {
 					gc.changeState(LEVEL_COMPLETE);
 					return;
 				}
+
 				level.checkTheGuys();
 				if (level.memo().pacKilled) {
 					level.onPacKilled();
 					gc.changeState(PACMAN_DYING);
 					return;
 				}
+
 				if (level.memo().edibleGhostsExist()) {
 					level.killEdibleGhosts();
 					gc.changeState(GHOST_DYING);
 					return;
 				}
+
+				level.renderSound(gc.sounds());
+			});
+		}
+
+		@Override
+		public void onExit(GameModel game) {
+			game.level().ifPresent(level -> {
+				level.renderSound(gc.sounds());
 			});
 		}
 
@@ -242,35 +252,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				// end level test mode
 				gc.levelTestMode = false;
 				gc.boot();
-			}
-		}
-
-		private void renderSound(GameLevel level) {
-			var snd = gc.sounds();
-			if (level.huntingTimer().tick() == 1) {
-				var sirenIndex = level.huntingPhase() / 2;
-				snd.ensureSirenStarted(sirenIndex);
-			}
-			if (level.memo().pacPowered) {
-				snd.stopSirens();
-				snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.LOOP_FOREVER);
-			}
-			if (level.memo().pacPowerLost) {
-				snd.stop(GameSound.PACMAN_POWER);
-				snd.ensureSirenStarted(level.huntingPhase() / 2);
-			}
-			if (level.memo().foodFoundTile.isPresent()) {
-				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
-			}
-			if (level.pac().starvingTicks() >= 12) { // ???
-				snd.stop(GameSound.PACMAN_MUNCH);
-			}
-			if (level.ghosts(GhostState.RETURNING_TO_HOUSE).count() > 0) {
-				if (!snd.isPlaying(GameSound.GHOST_RETURNING)) {
-					snd.loop(GameSound.GHOST_RETURNING, GameSoundController.LOOP_FOREVER);
-				}
-			} else {
-				snd.stop(GameSound.GHOST_RETURNING);
 			}
 		}
 

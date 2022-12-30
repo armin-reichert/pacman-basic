@@ -118,6 +118,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return normalSteering;
 	}
 
+	public void steerPac(GameLevel level) {
+		steering(level).steer(level, level.pac());
+	}
+
 	public void setNormalSteering(Steering steering) {
 		this.normalSteering = Objects.requireNonNull(steering);
 	}
