@@ -130,7 +130,7 @@ public class GameLevel {
 	private final Pulse energizerPulse;
 	private final Bonus bonus;
 	private final TickTimer huntingTimer;
-	private final GhostHouseRules houseRules;
+	private final GhostHouseRules houseRules = new GhostHouseRules();
 	private final Parameters params;
 
 	private final Memory memo = new Memory();
@@ -139,8 +139,7 @@ public class GameLevel {
 	private int numGhostsKilledByEnergizer;
 	private byte cruiseElroyState;
 
-	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus,
-			GhostHouseRules houseRules, Parameters params) {
+	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus, byte[] data) {
 		this.game = game;
 		this.number = number;
 		this.pac = pac;
@@ -149,8 +148,7 @@ public class GameLevel {
 		this.energizerPulse = new Pulse(10, true);
 		this.bonus = bonus;
 		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
-		this.houseRules = houseRules;
-		this.params = params;
+		this.params = Parameters.createFromData(data);
 	}
 
 	/** @return Level number, starting with 1. */
@@ -230,6 +228,10 @@ public class GameLevel {
 
 	public Parameters params() {
 		return params;
+	}
+
+	public GhostHouseRules houseRules() {
+		return houseRules;
 	}
 
 	/**

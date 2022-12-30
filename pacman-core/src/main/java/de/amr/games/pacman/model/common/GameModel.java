@@ -35,7 +35,6 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.GameLevel.Parameters;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -187,23 +186,21 @@ public abstract class GameModel {
 	public abstract void onBonusReached();
 
 	/**
-	 * @param levelNumber Level number (starting at 1)
-	 * @return ghost house rules used in this level
+	 * @param level game level
 	 */
-	protected GhostHouseRules createHouseRules(int levelNumber) {
-		var rules = new GhostHouseRules();
-		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 4 * FPS : 3 * FPS);
+	protected void setHouseRules(GameLevel level) {
+		var rules = level.houseRules();
+		rules.setPacStarvingTimeLimit(level.number() < 5 ? 4 * FPS : 3 * FPS);
 		rules.setGlobalGhostDotLimits(GhostHouseRules.NO_LIMIT, 7, 17, GhostHouseRules.NO_LIMIT);
-		switch (levelNumber) {
+		switch (level.number()) {
 		case 1 -> rules.setPrivateGhostDotLimits(0, 0, 30, 60);
 		case 2 -> rules.setPrivateGhostDotLimits(0, 0, 0, 50);
 		default -> rules.setPrivateGhostDotLimits(0, 0, 0, 0);
 		}
-		return rules;
 	}
 
 	// from level 21 on, level parameters remain the same
-	protected byte[] getLevelParams(int levelNumber) {
+	protected byte[] getLevelParameters(int levelNumber) {
 		return levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
 	}
@@ -227,15 +224,14 @@ public abstract class GameModel {
 		return Optional.ofNullable(level);
 	}
 
-	protected GameLevel createLevel(int levelNumber) {
+	protected void createLevel(int levelNumber) {
 		var pac = createPac();
 		var theGhosts = createGhosts();
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
-		var houseRules = createHouseRules(levelNumber);
-		var params = Parameters.createFromData(getLevelParams(levelNumber));
+		level = new GameLevel(this, levelNumber, pac, theGhosts, world, bonus, getLevelParameters(levelNumber));
 		defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
-		return new GameLevel(this, levelNumber, pac, theGhosts, world, bonus, houseRules, params);
+		setHouseRules(level);
 	}
 
 	/**
@@ -246,7 +242,7 @@ public abstract class GameModel {
 	public void buildAndEnterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		LOGGER.trace("Build game level %d (%s)", levelNumber, variant());
-		level = createLevel(levelNumber);
+		createLevel(levelNumber);
 		level.enter();
 		levelCounter.addSymbol(level.bonus().symbol());
 		gameScore.setLevelNumber(levelNumber);
