@@ -132,7 +132,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		this.fnChasingTarget = Objects.requireNonNull(fnTargetTile);
 	}
 
-	/** 0..3. Index when this ghost has been killed using the currently active energizer. */
+	/**
+	 * @return Order in which ghost was killed using the same energizer (power pill). First killed ghost has index 0,
+	 *         second 1 and so on. If not killed, value is -1.
+	 */
 	public int killedIndex() {
 		return killedIndex;
 	}
