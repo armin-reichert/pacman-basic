@@ -132,7 +132,7 @@ public class PacManGameTest {
 		var level = game.level().get();
 		var pac = level.pac();
 		assertFalse(pac.isDead());
-		pac.kill();
+		pac.die();
 		assertTrue(pac.isDead());
 	}
 
@@ -142,7 +142,7 @@ public class PacManGameTest {
 		var pac = level.pac();
 		pac.setAbsSpeed(42);
 		assertEquals(42.0, pac.velocity().length(), Vector2f.EPSILON);
-		pac.kill();
+		pac.die();
 		assertEquals(0.0, pac.velocity().length(), Vector2f.EPSILON);
 	}
 

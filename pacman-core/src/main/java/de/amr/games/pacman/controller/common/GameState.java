@@ -155,7 +155,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					// start new game
 					if (timer.tick() == showGuysTick) {
 						level.guys().forEach(Creature::show);
-						game.setOneLessLifeDisplayed(true); // remove this crap
+						game.setOneLessLifeDisplayed(true); // remove
+																								// this
+																								// crap
 					} else if (timer.tick() == showGuysTick + 118) {
 						// start playing
 						game.setPlaying(true);
@@ -196,27 +198,11 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
-
-				// Level test mode? Maybe this should become a separate state
 				if (gc.levelTestMode) {
-					if (level.number() <= gc.levelTestLastLevelNumber) {
-						// show bonus, update it for one second, then eat it and show won points
-						if (gc.state().timer().atSecond(0.0)) {
-							game.onBonusReached();
-						} else if (gc.state().timer().atSecond(1.0)) {
-							level.bonus().eat();
-						} else if (gc.state().timer().atSecond(2.0)) {
-							gc.changeState(LEVEL_COMPLETE);
-						}
-						level.bonus().update(level);
-					} else {
-						// end level test
-						gc.levelTestMode = false;
-						gc.boot();
-					}
+					runLevelTestMode(level);
 					return;
 				}
-
+				// play the game level
 				renderSound(level);
 				level.memo().forgetEverything(); // ich scholze jetzt
 				level.checkIfPacFindsFood();
@@ -224,18 +210,39 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					gc.changeState(LEVEL_COMPLETE);
 					return;
 				}
-				level.checkHowTheGuysAreDoing();
-				if (level.memo().pacMetKiller) {
+				level.checkTheGuys();
+				if (level.memo().pacKilled) {
+					level.onPacKilled();
 					gc.changeState(PACMAN_DYING);
 					return;
 				}
 				if (level.memo().ghostsKilled) {
+					level.killGhosts(level.memo().edibleGhosts);
 					gc.changeState(GHOST_DYING);
 					return;
 				}
 				gc.steering(level).steer(level, level.pac());
 				level.update();
 			});
+		}
+
+		private void runLevelTestMode(GameLevel level) {
+			if (level.number() <= gc.levelTestLastLevelNumber) {
+				var timer = gc.state().timer();
+				// activate bonus for one second, then eat it / show won points
+				if (timer.atSecond(0.0)) {
+					level.game().onBonusReached();
+				} else if (timer.atSecond(1.0)) {
+					level.bonus().eat();
+				} else if (timer.atSecond(2.0)) {
+					gc.changeState(LEVEL_COMPLETE);
+				}
+				level.bonus().update(level);
+			} else {
+				// end level test mode
+				gc.levelTestMode = false;
+				gc.boot();
+			}
 		}
 
 		private void renderSound(GameLevel level) {

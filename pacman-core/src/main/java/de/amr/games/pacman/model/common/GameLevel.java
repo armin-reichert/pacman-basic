@@ -450,21 +450,19 @@ public class GameLevel {
 		});
 	}
 
-	public void checkHowTheGuysAreDoing() {
+	public void checkTheGuys() {
 		if (memo.pacPowered) {
 			onPacPowerBegin();
 		}
 
-		memo.pacMetKiller = pac.isMeetingKiller(this);
-		if (memo.pacMetKiller) {
-			onPacMeetsKiller();
+		memo.pacKilled = pac.isMeetingKiller(this);
+		if (memo.pacKilled) {
 			return; // enter new game state
 		}
 
 		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
-		if (!memo.edibleGhosts.isEmpty()) {
-			killGhosts(memo.edibleGhosts);
-			memo.ghostsKilled = true;
+		memo.ghostsKilled = !memo.edibleGhosts.isEmpty();
+		if (memo.ghostsKilled) {
 			return; // enter new game state
 		}
 
@@ -484,7 +482,7 @@ public class GameLevel {
 		killGhosts(prey);
 	}
 
-	private void killGhosts(List<Ghost> prey) {
+	public void killGhosts(List<Ghost> prey) {
 		prey.forEach(this::killGhost);
 		setNumGhostsKilledInLevel(numGhostsKilledInLevel() + prey.size());
 		if (numGhostsKilledInLevel() == 16) {
@@ -506,8 +504,8 @@ public class GameLevel {
 
 	// Pac-Man
 
-	private void onPacMeetsKiller() {
-		pac.kill();
+	public void onPacKilled() {
+		pac.die();
 		houseRules.resetGlobalDotCounterAndSetEnabled(true);
 		setCruiseElroyStateEnabled(false);
 		LOGGER.trace("%s died at tile %s", pac.name(), pac.tile());
