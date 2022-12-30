@@ -23,8 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.lib.steering.Direction.UP;
-
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Random;
@@ -34,7 +32,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -111,12 +108,6 @@ public abstract class GameModel {
 		return levelNumber;
 	}
 
-	// simulates the overflow bug from the original Arcade version
-	protected static Vector2i tilesAhead(Creature guy, int n) {
-		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
-		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
-	}
-
 	// the game model ingredients
 
 	protected GameLevel level;
@@ -129,25 +120,6 @@ public abstract class GameModel {
 	protected final Score gameScore = new Score("SCORE");
 	protected final Score highScore = new Score("HIGH SCORE");
 	protected boolean scoresEnabled;
-
-	/**
-	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
-	 */
-	public void defineGhostChasingBehavior(Pac pac, Ghost redGhost, Ghost pinkGhost, Ghost cyanGhost, Ghost orangeGhost) {
-		// Red ghost attacks Pac-Man directly
-		redGhost.setChasingBehavior(pac::tile);
-
-		// Pink ghost ambushes Pac-Man
-		pinkGhost.setChasingBehavior(() -> tilesAhead(pac, 4));
-
-		// Cyan ghost attacks from opposite side than red ghost
-		cyanGhost.setChasingBehavior(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
-
-		// Orange ghost attacks directly but retreats if too near
-		orangeGhost.setChasingBehavior( //
-				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? //
-						orangeGhost.scatterTile() : pac.tile());
-	}
 
 	/**
 	 * @return the game variant realized by this model
@@ -185,18 +157,16 @@ public abstract class GameModel {
 	 */
 	public abstract void onBonusReached();
 
-	/**
-	 * @param level game level
-	 */
-	protected void setHouseRules(GameLevel level) {
-		var rules = level.houseRules();
-		rules.setPacStarvingTimeLimit(level.number() < 5 ? 4 * FPS : 3 * FPS);
+	protected GhostHouseRules createHouseRules(int levelNumber) {
+		var rules = new GhostHouseRules();
+		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 4 * FPS : 3 * FPS);
 		rules.setGlobalGhostDotLimits(GhostHouseRules.NO_LIMIT, 7, 17, GhostHouseRules.NO_LIMIT);
-		switch (level.number()) {
+		switch (levelNumber) {
 		case 1 -> rules.setPrivateGhostDotLimits(0, 0, 30, 60);
 		case 2 -> rules.setPrivateGhostDotLimits(0, 0, 0, 50);
 		default -> rules.setPrivateGhostDotLimits(0, 0, 0, 0);
 		}
+		return rules;
 	}
 
 	// from level 21 on, level parameters remain the same
@@ -229,11 +199,10 @@ public abstract class GameModel {
 		var theGhosts = createGhosts();
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
-		var huntingDurations = huntingDurations(levelNumber);
 		var params = levelParameters(levelNumber);
-		level = new GameLevel(this, levelNumber, pac, theGhosts, world, bonus, huntingDurations, params);
-		defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
-		setHouseRules(level);
+		level = new GameLevel(this, levelNumber, pac, theGhosts, world, bonus, params);
+		level.setHouseRules(createHouseRules(levelNumber));
+		level.setHuntingDurations(huntingDurations(levelNumber));
 		LOGGER.trace("Game level %d created. (%s game variant)", levelNumber, variant());
 	}
 

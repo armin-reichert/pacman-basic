@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
@@ -119,6 +120,12 @@ public class GameLevel {
 		return id;
 	}
 
+	// simulates the overflow bug from the original Arcade version
+	protected static Vector2i tilesAhead(Creature guy, int n) {
+		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
+		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
+	}
+
 	private final GameModel game;
 	private final int number;
 	private final Pac pac;
@@ -126,19 +133,17 @@ public class GameLevel {
 	private final World world;
 	private final Pulse energizerPulse;
 	private final Bonus bonus;
-	private final int[] huntingDurations;
 	private final TickTimer huntingTimer;
-	private final GhostHouseRules houseRules = new GhostHouseRules();
 	private final Parameters params;
-
-	private final Memory memo = new Memory();
+	private final Memory memo;
+	private int[] huntingDurations;
+	private GhostHouseRules houseRules;
 	private int huntingPhase;
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
 	private byte cruiseElroyState;
 
-	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus,
-			int[] huntingDurations, byte[] data) {
+	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus, byte[] data) {
 		this.game = game;
 		this.number = number;
 		this.pac = pac;
@@ -146,9 +151,34 @@ public class GameLevel {
 		this.world = world;
 		this.energizerPulse = new Pulse(10, true);
 		this.bonus = bonus;
-		this.huntingDurations = Arrays.copyOf(huntingDurations, huntingDurations.length);
 		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
 		this.params = Parameters.createFromData(data);
+		this.memo = new Memory();
+		defineGhostChasingBehavior();
+	}
+
+	/**
+	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
+	 */
+	public void defineGhostChasingBehavior() {
+		var redGhost = ghost(Ghost.ID_RED_GHOST);
+		var pinkGhost = ghost(Ghost.ID_PINK_GHOST);
+		var cyanGhost = ghost(Ghost.ID_CYAN_GHOST);
+		var orangeGhost = ghost(Ghost.ID_ORANGE_GHOST);
+
+		// Red ghost attacks Pac-Man directly
+		redGhost.setChasingBehavior(pac::tile);
+
+		// Pink ghost ambushes Pac-Man
+		pinkGhost.setChasingBehavior(() -> tilesAhead(pac, 4));
+
+		// Cyan ghost attacks from opposite side than red ghost
+		cyanGhost.setChasingBehavior(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
+
+		// Orange ghost attacks directly but retreats if too near
+		orangeGhost.setChasingBehavior( //
+				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? //
+						orangeGhost.scatterTile() : pac.tile());
 	}
 
 	/** @return Level number, starting with 1. */
@@ -234,6 +264,10 @@ public class GameLevel {
 		return houseRules;
 	}
 
+	public void setHouseRules(GhostHouseRules houseRules) {
+		this.houseRules = houseRules;
+	}
+
 	/**
 	 * Remembers what happens during a tick.
 	 * 
@@ -308,6 +342,10 @@ public class GameLevel {
 		bonus.setInactive();
 		energizerPulse.reset();
 		huntingTimer.stop();
+	}
+
+	public void setHuntingDurations(int[] huntingDurations) {
+		this.huntingDurations = Arrays.copyOf(huntingDurations, huntingDurations.length);
 	}
 
 	/**
