@@ -200,7 +200,7 @@ public abstract class GameModel {
 	}
 
 	// from level 21 on, level parameters remain the same
-	protected byte[] getLevelParameters(int levelNumber) {
+	protected byte[] levelParameters(int levelNumber) {
 		return levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
 	}
@@ -229,16 +229,21 @@ public abstract class GameModel {
 		var theGhosts = createGhosts();
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
+		var huntingDurations = huntingDurations(levelNumber);
+		var params = levelParameters(levelNumber);
+		level = new GameLevel(this, levelNumber, pac, theGhosts, world, bonus, huntingDurations, params);
+		defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
+		setHouseRules(level);
+		LOGGER.trace("Game level %d created. (%s game variant)", levelNumber, variant());
+	}
+
+	private int[] huntingDurations(int levelNumber) {
 		int index = switch (levelNumber) {
 		case 1 -> 0;
 		case 2, 3, 4 -> 1;
 		default -> 2;
 		};
-		level = new GameLevel(this, levelNumber, pac, theGhosts, world, bonus, HUNTING_DURATIONS[index],
-				getLevelParameters(levelNumber));
-		defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
-		setHouseRules(level);
-		LOGGER.trace("Game level %d created. (%s game variant)", levelNumber, variant());
+		return HUNTING_DURATIONS[index];
 	}
 
 	/**
