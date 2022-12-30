@@ -35,7 +35,6 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.GameLevel.Parameters;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -352,15 +351,6 @@ public abstract class GameModel {
 
 	public boolean hasCredit() {
 		return credit > 0;
-	}
-
-	/**
-	 * @param ghost a ghost
-	 * @param dir   a direction
-	 * @return tells if the ghost can currently move towards the given direction
-	 */
-	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
-		return true;
 	}
 
 	// get rid of this:

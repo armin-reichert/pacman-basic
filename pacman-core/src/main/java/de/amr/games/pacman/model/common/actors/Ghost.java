@@ -152,7 +152,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		var currentTile = tile();
-		if (tile.equals(currentTile.plus(UP.vec)) && !level.game().isGhostAllowedMoving(this, UP)) {
+		if (tile.equals(currentTile.plus(UP.vec)) && !level.isGhostAllowedMoving(this, UP)) {
 			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
 			return false;
 		}

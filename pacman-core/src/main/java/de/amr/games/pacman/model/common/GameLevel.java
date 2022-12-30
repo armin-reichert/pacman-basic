@@ -137,6 +137,7 @@ public class GameLevel {
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
 	private byte cruiseElroyState;
+	private List<Vector2i> upwardBlockedTiles = List.of();
 
 	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus,
 			GhostHouseRules houseRules, Parameters params) {
@@ -188,6 +189,25 @@ public class GameLevel {
 		}
 		// when no states are given, return *all* ghosts (ghost.is() would return *no* ghosts!)
 		return Stream.of(theGhosts);
+	}
+
+	/**
+	 * @param ghost a ghost
+	 * @param dir   a direction
+	 * @return tells if the ghost can currently move towards the given direction
+	 */
+	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
+		if (dir == Direction.UP && ghost.is(HUNTING_PAC) && upwardBlockedTiles.contains(ghost.tile())) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @param upwardBlockedTiles the upwardBlockedTiles to set
+	 */
+	public void setUpwardBlockedTiles(List<Vector2i> upwardBlockedTiles) {
+		this.upwardBlockedTiles = upwardBlockedTiles;
 	}
 
 	/**

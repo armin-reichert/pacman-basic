@@ -28,7 +28,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
-import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.List;
@@ -36,7 +35,7 @@ import java.util.List;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -96,6 +95,13 @@ public class PacManGame extends GameModel {
 	public static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
 	@Override
+	protected GameLevel createLevel(int levelNumber) {
+		var level = super.createLevel(levelNumber);
+		level.setUpwardBlockedTiles(RED_ZONE);
+		return level;
+	}
+
+	@Override
 	public Pac createPac() {
 		return new Pac("Pac-Man");
 	}
@@ -138,14 +144,6 @@ public class PacManGame extends GameModel {
 	@Override
 	public GameVariant variant() {
 		return GameVariant.PACMAN;
-	}
-
-	@Override
-	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
-		if (dir == Direction.UP && ghost.is(HUNTING_PAC) && RED_ZONE.contains(ghost.tile())) {
-			return false;
-		}
-		return super.isGhostAllowedMoving(ghost, dir);
 	}
 
 	@Override
