@@ -203,6 +203,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					return;
 				}
 				// play the game level
+				gc.steering(level).steer(level, level.pac());
+				level.update();
 				renderSound(level);
 				level.memo().forgetEverything(); // ich scholze jetzt
 				level.checkIfPacFindsFood();
@@ -216,13 +218,11 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					gc.changeState(PACMAN_DYING);
 					return;
 				}
-				if (level.memo().ghostsKilled) {
-					level.killGhosts(level.memo().edibleGhosts);
+				if (level.memo().edibleGhostsExist()) {
+					level.killEdibleGhosts();
 					gc.changeState(GHOST_DYING);
 					return;
 				}
-				gc.steering(level).steer(level, level.pac());
-				level.update();
 			});
 		}
 

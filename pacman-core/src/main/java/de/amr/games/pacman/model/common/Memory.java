@@ -43,7 +43,6 @@ public class Memory {
 	public boolean pacPowered;
 	public boolean pacPowerLost;
 	public boolean pacPowerFading;
-	public boolean ghostsKilled;
 	public List<Ghost> edibleGhosts;
 	public final List<Ghost> killedGhosts = new ArrayList<>(4);
 	public Optional<Ghost> unlockedGhost;
@@ -62,10 +61,13 @@ public class Memory {
 		pacPowered = false;
 		pacPowerLost = false;
 		pacPowerFading = false;
-		ghostsKilled = false;
 		edibleGhosts = Collections.emptyList();
 		killedGhosts.clear();
 		unlockedGhost = Optional.empty();
 		unlockReason = null;
+	}
+
+	public boolean edibleGhostsExist() {
+		return !edibleGhosts.isEmpty();
 	}
 }

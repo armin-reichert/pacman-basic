@@ -461,8 +461,7 @@ public class GameLevel {
 		}
 
 		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
-		memo.ghostsKilled = !memo.edibleGhosts.isEmpty();
-		if (memo.ghostsKilled) {
+		if (memo.edibleGhostsExist()) {
 			return; // enter new game state
 		}
 
@@ -477,18 +476,20 @@ public class GameLevel {
 	}
 
 	public void killAllPossibleGhosts() {
-		var prey = ghosts(HUNTING_PAC, FRIGHTENED).toList();
+		memo.edibleGhosts = ghosts(HUNTING_PAC, FRIGHTENED).toList();
 		setNumGhostsKilledByEnergizer(0);
-		killGhosts(prey);
+		killEdibleGhosts();
 	}
 
-	public void killGhosts(List<Ghost> prey) {
-		prey.forEach(this::killGhost);
-		setNumGhostsKilledInLevel(numGhostsKilledInLevel() + prey.size());
-		if (numGhostsKilledInLevel() == 16) {
-			game.scorePoints(GameModel.POINTS_ALL_GHOSTS_KILLED);
-			LOGGER.trace("All ghosts killed at level %d, %s wins %d points", number, pac.name(),
-					GameModel.POINTS_ALL_GHOSTS_KILLED);
+	public void killEdibleGhosts() {
+		if (!memo.edibleGhosts.isEmpty()) {
+			memo.edibleGhosts.forEach(this::killGhost);
+			setNumGhostsKilledInLevel(numGhostsKilledInLevel() + memo.edibleGhosts.size());
+			if (numGhostsKilledInLevel() == 16) {
+				game.scorePoints(GameModel.POINTS_ALL_GHOSTS_KILLED);
+				LOGGER.trace("All ghosts killed at level %d, %s wins %d points", number, pac.name(),
+						GameModel.POINTS_ALL_GHOSTS_KILLED);
+			}
 		}
 	}
 
