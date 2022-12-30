@@ -53,6 +53,7 @@ import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -137,7 +138,6 @@ public class GameLevel {
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
 	private byte cruiseElroyState;
-	private List<Vector2i> upwardBlockedTiles = List.of();
 
 	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus,
 			GhostHouseRules houseRules, Parameters params) {
@@ -197,17 +197,12 @@ public class GameLevel {
 	 * @return tells if the ghost can currently move towards the given direction
 	 */
 	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
-		if (dir == Direction.UP && ghost.is(HUNTING_PAC) && upwardBlockedTiles.contains(ghost.tile())) {
-			return false;
+		if (world instanceof ArcadeWorld arcadeWorld) {
+			boolean blocked = dir == Direction.UP && ghost.is(HUNTING_PAC)
+					&& arcadeWorld.upwardBlockedTiles().contains(ghost.tile());
+			return !blocked;
 		}
 		return true;
-	}
-
-	/**
-	 * @param upwardBlockedTiles the upwardBlockedTiles to set
-	 */
-	public void setUpwardBlockedTiles(List<Vector2i> upwardBlockedTiles) {
-		this.upwardBlockedTiles = upwardBlockedTiles;
 	}
 
 	/**

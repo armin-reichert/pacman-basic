@@ -30,6 +30,8 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.anim.EntityAnimation;
@@ -68,10 +70,22 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
+	private List<Vector2i> upwardBlockedTiles = List.of();
 	private EntityAnimation levelCompleteAnimation;
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
+	}
+
+	/**
+	 * @param upwardBlockedTiles the upwardBlockedTiles to set
+	 */
+	public void setUpwardBlockedTiles(List<Vector2i> upwardBlockedTiles) {
+		this.upwardBlockedTiles = upwardBlockedTiles;
+	}
+
+	public List<Vector2i> upwardBlockedTiles() {
+		return Collections.unmodifiableList(upwardBlockedTiles);
 	}
 
 	@Override

@@ -35,7 +35,6 @@ import java.util.List;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -92,14 +91,7 @@ public class PacManGame extends GameModel {
 	//@formatter:on
 
 	// Tiles where chasing ghosts cannot move upwards
-	public static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
-
-	@Override
-	protected GameLevel createLevel(int levelNumber) {
-		var level = super.createLevel(levelNumber);
-		level.setUpwardBlockedTiles(RED_ZONE);
-		return level;
-	}
+	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
 	@Override
 	public Pac createPac() {
@@ -119,7 +111,9 @@ public class PacManGame extends GameModel {
 	@Override
 	public ArcadeWorld createWorld(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		return new ArcadeWorld(MAP);
+		var world = new ArcadeWorld(MAP);
+		world.setUpwardBlockedTiles(RED_ZONE);
+		return world;
 	}
 
 	@Override
