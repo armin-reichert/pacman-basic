@@ -214,7 +214,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 				level.checkTheGuys();
 				if (level.memo().pacKilled) {
-					level.onPacKilled();
 					gc.changeState(PACMAN_DYING);
 					return;
 				}
@@ -392,6 +391,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				timer.restartSeconds(4);
 				gc.sounds().stopAll();
 				level.bonus().setInactive();
+				level.onPacKilled();
 			});
 		}
 
