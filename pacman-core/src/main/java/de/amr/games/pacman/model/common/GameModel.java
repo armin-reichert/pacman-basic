@@ -232,6 +232,7 @@ public abstract class GameModel {
 		level = new GameLevel(this, levelNumber, pac, theGhosts, world, bonus, getLevelParameters(levelNumber));
 		defineGhostChasingBehavior(pac, theGhosts[0], theGhosts[1], theGhosts[2], theGhosts[3]);
 		setHouseRules(level);
+		LOGGER.trace("Game level %d created. (%s game variant)", levelNumber, variant());
 	}
 
 	/**
@@ -241,7 +242,6 @@ public abstract class GameModel {
 	 */
 	public void buildAndEnterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		LOGGER.trace("Build game level %d (%s)", levelNumber, variant());
 		createLevel(levelNumber);
 		level.enter();
 		levelCounter.addSymbol(level.bonus().symbol());
