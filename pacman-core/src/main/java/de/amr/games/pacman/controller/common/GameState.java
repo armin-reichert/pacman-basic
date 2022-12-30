@@ -155,9 +155,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					// start new game
 					if (timer.tick() == showGuysTick) {
 						level.guys().forEach(Creature::show);
-						game.setOneLessLifeDisplayed(true); // remove
-																								// this
-																								// crap
+						game.setOneLessLifeDisplayed(true);
 					} else if (timer.tick() == showGuysTick + 118) {
 						// start playing
 						game.setPlaying(true);
