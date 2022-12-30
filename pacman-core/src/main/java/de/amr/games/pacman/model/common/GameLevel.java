@@ -33,6 +33,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -88,9 +89,7 @@ public class GameLevel {
 		/** Number of maze flashes at end of this level. */
 		int numFlashes,
 		/** Number of intermission scene played after this level (1, 2, 3, 0 = no intermission). */
-		int intermissionNumber,
-		/** Index into array of hunting times. */
-		int huntingTimesIndex)
+		int intermissionNumber)
 	//@formatter:on
 	{
 		public static Parameters createFromData(byte[] data) {
@@ -107,11 +106,9 @@ public class GameLevel {
 			byte pacPowerSeconds       = data[9];
 			byte numFlashes            = data[10];
 			byte intermissionNumber    = data[11];
-			byte huntingTimesIndex     = data[12]; 
 			//@formatter:on
 			return new Parameters(playerSpeed, ghostSpeed, ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft,
-					elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes, intermissionNumber,
-					huntingTimesIndex);
+					elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes, intermissionNumber);
 		}
 	}
 
@@ -129,6 +126,7 @@ public class GameLevel {
 	private final World world;
 	private final Pulse energizerPulse;
 	private final Bonus bonus;
+	private final int[] huntingDurations;
 	private final TickTimer huntingTimer;
 	private final GhostHouseRules houseRules = new GhostHouseRules();
 	private final Parameters params;
@@ -139,7 +137,8 @@ public class GameLevel {
 	private int numGhostsKilledByEnergizer;
 	private byte cruiseElroyState;
 
-	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus, byte[] data) {
+	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus,
+			int[] huntingDurations, byte[] data) {
 		this.game = game;
 		this.number = number;
 		this.pac = pac;
@@ -147,6 +146,7 @@ public class GameLevel {
 		this.world = world;
 		this.energizerPulse = new Pulse(10, true);
 		this.bonus = bonus;
+		this.huntingDurations = Arrays.copyOf(huntingDurations, huntingDurations.length);
 		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
 		this.params = Parameters.createFromData(data);
 	}
@@ -328,8 +328,7 @@ public class GameLevel {
 	}
 
 	private long huntingTicks(int phase) {
-		var durations = GameModel.HUNTING_DURATIONS[params.huntingTimesIndex];
-		return durations[phase] == -1 ? TickTimer.INDEFINITE : durations[phase];
+		return huntingDurations[phase] == -1 ? TickTimer.INDEFINITE : huntingDurations[phase];
 	}
 
 	/**
