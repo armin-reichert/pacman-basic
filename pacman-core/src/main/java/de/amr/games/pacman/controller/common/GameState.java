@@ -52,6 +52,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.restartIndefinitely();
 			game.reset();
+			game.levelCounter().clear();
 			ScoreManager.loadScore(game.highScore(), game.variant());
 		}
 

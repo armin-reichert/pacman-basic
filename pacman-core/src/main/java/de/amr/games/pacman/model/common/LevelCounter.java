@@ -35,11 +35,9 @@ public class LevelCounter implements Iterable<Integer> {
 
 	private static final int MAX_COUNT = 7;
 	private final List<Integer> symbols;
-	private boolean visible;
 
 	public LevelCounter() {
 		symbols = new LinkedList<>();
-		visible = true;
 	}
 
 	public void addSymbol(int symbol) {
@@ -52,14 +50,6 @@ public class LevelCounter implements Iterable<Integer> {
 	@Override
 	public Iterator<Integer> iterator() {
 		return symbols.iterator();
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
-	public boolean isVisible() {
-		return visible;
 	}
 
 	public void clear() {

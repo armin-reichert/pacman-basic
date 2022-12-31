@@ -184,7 +184,6 @@ public abstract class GameModel {
 		lives = INITIAL_LIVES;
 		oneLessLifeDisplayed = false;
 		gameScore.reset();
-		levelCounter.clear();
 		enableScores(true);
 		level = null;
 	}
@@ -224,17 +223,20 @@ public abstract class GameModel {
 		checkLevelNumber(levelNumber);
 		createLevel(levelNumber);
 		level.enter();
+		if (levelNumber == 1) {
+			levelCounter.clear();
+		}
 		levelCounter.addSymbol(level.bonus().symbol());
 		gameScore.setLevelNumber(levelNumber);
 	}
 
 	public void enterDemoLevel() {
 		reset();
-		buildAndEnterLevel(1);
+		createLevel(1);
+		level.enter();
 		level.guys().forEach(Creature::show);
 		enableScores(false);
 		gameScore.setShowContent(false);
-		levelCounter.clear();
 	}
 
 	/** Tells if the game play is running. */
