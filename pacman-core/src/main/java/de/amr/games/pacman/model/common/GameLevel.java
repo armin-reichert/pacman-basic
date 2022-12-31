@@ -573,22 +573,21 @@ public class GameLevel {
 	// Sound
 
 	public void renderSound(GameSoundController snd) {
-		if (huntingTimer().tick() == 1) {
-			var sirenIndex = huntingPhase() / 2;
-			snd.ensureSirenStarted(sirenIndex);
+		if (huntingTimer.isRunning() && huntingTimer.tick() == 1) {
+			snd.ensureSirenStarted(sirenIndex());
 		}
-		if (memo().pacPowered) {
+		if (memo.pacPowered) {
 			snd.stopSirens();
 			snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.LOOP_FOREVER);
 		}
-		if (memo().pacPowerLost) {
+		if (memo.pacPowerLost) {
 			snd.stop(GameSound.PACMAN_POWER);
-			snd.ensureSirenStarted(huntingPhase() / 2);
+			snd.ensureSirenStarted(sirenIndex());
 		}
-		if (memo().foodFoundTile.isPresent()) {
+		if (memo.foodFoundTile.isPresent()) {
 			snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
 		}
-		if (pac().starvingTicks() >= 12) { // ???
+		if (pac.starvingTicks() >= 12) { // ???
 			snd.stop(GameSound.PACMAN_MUNCH);
 		}
 		if (ghosts(GhostState.RETURNING_TO_HOUSE).count() > 0) {
@@ -598,5 +597,9 @@ public class GameLevel {
 		} else {
 			snd.stop(GameSound.GHOST_RETURNING);
 		}
+	}
+
+	private int sirenIndex() {
+		return huntingPhase / 2;
 	}
 }
