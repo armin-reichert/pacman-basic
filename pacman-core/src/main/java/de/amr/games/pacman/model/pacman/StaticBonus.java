@@ -45,14 +45,14 @@ public class StaticBonus extends Entity implements Bonus {
 
 	private final byte symbol;
 	private final int points;
-	private BonusState state;
 	private long timer;
+	private BonusState state;
 
 	public StaticBonus(byte symbol, int points) {
 		this.symbol = symbol;
 		this.points = points;
-		state = BonusState.INACTIVE;
-		show();
+		this.timer = 0;
+		this.state = BonusState.INACTIVE;
 	}
 
 	@Override
@@ -83,46 +83,56 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public void setInactive() {
+		timer = 0;
 		state = BonusState.INACTIVE;
+		hide();
 	}
 
 	@Override
 	public void setEdible(long ticks) {
-		state = BonusState.EDIBLE;
+		if (ticks <= 0) {
+			throw new IllegalArgumentException("Bonus edible time must be larger than zero");
+		}
 		timer = ticks;
+		state = BonusState.EDIBLE;
+		show();
 	}
 
 	@Override
 	public void eat() {
-		state = BonusState.EATEN;
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
+		state = BonusState.EATEN;
 		LOGGER.info("Bonus eaten: %s", this);
 		GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
+	}
+
+	private void expire() {
+		setInactive();
+		LOGGER.info("Bonus expired: %s", this);
+		GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 	}
 
 	@Override
 	public void update(GameLevel level) {
 		switch (state) {
 		case INACTIVE -> {
-			// nothing to do
+			// stay inactive
 		}
 		case EDIBLE -> {
 			if (sameTile(level.pac())) {
-				level.game().scorePoints(points());
+				level.game().scorePoints(points);
 				eat();
-				return;
-			}
-			if (--timer == 0) {
-				state = BonusState.INACTIVE;
-				LOGGER.info("Bonus expired: %s", this);
-				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
+			} else if (timer == 0) {
+				expire();
+			} else {
+				--timer;
 			}
 		}
 		case EATEN -> {
-			if (--timer == 0) {
-				setInactive();
-				LOGGER.info("Bonus expired: %s", this);
-				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
+			if (timer == 0) {
+				expire();
+			} else {
+				--timer;
 			}
 		}
 		}
