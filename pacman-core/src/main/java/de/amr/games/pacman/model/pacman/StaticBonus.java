@@ -39,33 +39,31 @@ import de.amr.games.pacman.model.common.actors.Entity;
  * 
  * @author Armin Reichert
  */
-public class StaticBonus implements Bonus {
+public class StaticBonus extends Entity implements Bonus {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private final byte symbol;
 	private final int points;
-	private Entity entity;
 	private BonusState state;
 	private long timer;
 
 	public StaticBonus(byte symbol, int points) {
 		this.symbol = symbol;
 		this.points = points;
-		entity = new Entity();
-		entity.show();
 		state = BonusState.INACTIVE;
+		show();
 	}
 
 	@Override
 	public Entity entity() {
-		return entity;
+		return this;
 	}
 
 	@Override
 	public String toString() {
-		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(symbol, points, state,
-				entity.position(), timer);
+		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(symbol, points, state, position(),
+				timer);
 	}
 
 	@Override
@@ -99,7 +97,7 @@ public class StaticBonus implements Bonus {
 		state = BonusState.EATEN;
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
 		LOGGER.info("Bonus eaten: %s", this);
-		GameEvents.publish(GameEventType.BONUS_GETS_EATEN, entity.tile());
+		GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 	}
 
 	@Override
@@ -109,7 +107,7 @@ public class StaticBonus implements Bonus {
 			// nothing to do
 		}
 		case EDIBLE -> {
-			if (entity.sameTile(level.pac())) {
+			if (sameTile(level.pac())) {
 				level.game().scorePoints(points());
 				eat();
 				return;
@@ -117,14 +115,14 @@ public class StaticBonus implements Bonus {
 			if (--timer == 0) {
 				state = BonusState.INACTIVE;
 				LOGGER.info("Bonus expired: %s", this);
-				GameEvents.publish(GameEventType.BONUS_EXPIRES, entity.tile());
+				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		case EATEN -> {
 			if (--timer == 0) {
 				setInactive();
 				LOGGER.info("Bonus expired: %s", this);
-				GameEvents.publish(GameEventType.BONUS_EXPIRES, entity.tile());
+				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		}
