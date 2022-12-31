@@ -43,13 +43,13 @@ public class StaticBonus implements Bonus {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private final int symbol;
+	private final byte symbol;
 	private final int points;
 	private Entity entity;
 	private BonusState state;
 	private long timer;
 
-	public StaticBonus(int symbol, int points) {
+	public StaticBonus(byte symbol, int points) {
 		this.symbol = symbol;
 		this.points = points;
 		entity = new Entity();
@@ -74,7 +74,7 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
-	public int symbol() {
+	public byte symbol() {
 		return symbol;
 	}
 

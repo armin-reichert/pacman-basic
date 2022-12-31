@@ -53,14 +53,14 @@ public class MovingBonus extends Creature implements Bonus {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private final int symbol;
+	private final byte symbol;
 	private final int points;
 	private long timer;
 	private BonusState state;
 	private final SingleEntityAnimation<Integer> jumpAnimation;
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
-	public MovingBonus(int symbol, int points) {
+	public MovingBonus(byte symbol, int points) {
 		super("MovingBonus");
 		this.symbol = symbol;
 		this.points = points;
@@ -93,7 +93,7 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public int symbol() {
+	public byte symbol() {
 		return symbol;
 	}
 

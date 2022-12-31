@@ -39,7 +39,7 @@ public interface Bonus {
 	/**
 	 * @return the symbol of this bonus.
 	 */
-	int symbol();
+	byte symbol();
 
 	/**
 	 * @return points earned when eating this bonus
