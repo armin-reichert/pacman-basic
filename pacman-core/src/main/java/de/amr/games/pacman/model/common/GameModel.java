@@ -272,6 +272,9 @@ public abstract class GameModel {
 	}
 
 	public void setLives(int lives) {
+		if (lives < 0) {
+			throw new IllegalArgumentException("Lives must not be negative but is: " + lives);
+		}
 		this.lives = lives;
 	}
 
