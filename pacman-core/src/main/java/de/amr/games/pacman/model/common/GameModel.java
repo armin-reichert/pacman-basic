@@ -104,6 +104,15 @@ public abstract class GameModel {
 	};
 //@formatter:on
 
+	protected int[] huntingDurations(int levelNumber) {
+		int index = switch (levelNumber) {
+		case 1 -> 0;
+		case 2, 3, 4 -> 1;
+		default -> 2;
+		};
+		return HUNTING_DURATIONS[index];
+	}
+
 	protected static int checkLevelNumber(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
@@ -206,15 +215,6 @@ public abstract class GameModel {
 		level.setHouseRules(createHouseRules(levelNumber));
 		level.setHuntingDurations(huntingDurations(levelNumber));
 		LOGGER.trace("Game level %d created. (%s game variant)", levelNumber, variant());
-	}
-
-	private int[] huntingDurations(int levelNumber) {
-		int index = switch (levelNumber) {
-		case 1 -> 0;
-		case 2, 3, 4 -> 1;
-		default -> 2;
-		};
-		return HUNTING_DURATIONS[index];
 	}
 
 	/**
