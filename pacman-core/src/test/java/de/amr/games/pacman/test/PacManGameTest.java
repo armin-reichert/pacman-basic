@@ -204,20 +204,6 @@ public class PacManGameTest {
 		assertEquals(0, game.gameScore().points());
 	}
 
-	@Test
-	public void testDisabledGameScore() {
-		game.enableScores(false);
-		game.scorePoints(42);
-		assertEquals(0, game.gameScore().points());
-	}
-
-	@Test
-	public void testEnabledGameScore() {
-		game.enableScores(true);
-		game.scorePoints(42);
-		assertEquals(42, game.gameScore().points());
-	}
-
 	@Test(expected = IllegalArgumentException.class)
 	public void testScoreNegativePoints() {
 		game.scorePoints(-42);
@@ -225,7 +211,6 @@ public class PacManGameTest {
 
 	@Test
 	public void testHighScore() {
-		game.enableScores(true);
 		assertEquals(0, game.highScore().points());
 		game.scorePoints(42);
 		assertEquals(42, game.highScore().points());

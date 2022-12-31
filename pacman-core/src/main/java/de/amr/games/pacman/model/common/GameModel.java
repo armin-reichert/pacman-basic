@@ -122,7 +122,7 @@ public abstract class GameModel {
 	protected final List<Integer> levelCounter = new LinkedList<>();
 	protected final Score gameScore = new Score("SCORE");
 	protected final Score highScore = new Score("HIGH SCORE");
-	protected boolean scoresEnabled;
+	protected boolean scoresEnabled = true;
 
 	/**
 	 * @return the game variant realized by this model
@@ -187,7 +187,7 @@ public abstract class GameModel {
 		lives = INITIAL_LIVES;
 		oneLessLifeDisplayed = false;
 		gameScore.reset();
-		enableScores(true);
+		scoresEnabled = true;
 		level = null;
 	}
 
@@ -238,7 +238,7 @@ public abstract class GameModel {
 		createLevel(1);
 		level.enter();
 		level.guys().forEach(Creature::show);
-		enableScores(false);
+		scoresEnabled = false;
 		gameScore.setShowContent(false);
 	}
 
@@ -297,10 +297,6 @@ public abstract class GameModel {
 
 	public Score highScore() {
 		return highScore;
-	}
-
-	public void enableScores(boolean enabled) {
-		this.scoresEnabled = enabled;
 	}
 
 	public void scorePoints(int points) {
