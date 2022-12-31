@@ -24,6 +24,8 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -66,6 +68,7 @@ public abstract class GameModel {
 	public static final short SCORE_EXTRA_LIFE = 10_000;
 	public static final short PELLETS_EATEN_BONUS1 = 70;
 	public static final short PELLETS_EATEN_BONUS2 = 170;
+	public static final short LEVEL_COUNTER_MAX_SYMBOLS = 7;
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
 
 	//@formatter:off
@@ -116,7 +119,7 @@ public abstract class GameModel {
 	protected boolean playing;
 	protected boolean immune; // extra
 	protected boolean autoControlled; // extra
-	protected final LevelCounter levelCounter = new LevelCounter();
+	protected final List<Integer> levelCounter = new LinkedList<>();
 	protected final Score gameScore = new Score("SCORE");
 	protected final Score highScore = new Score("HIGH SCORE");
 	protected boolean scoresEnabled;
@@ -226,7 +229,7 @@ public abstract class GameModel {
 		if (levelNumber == 1) {
 			levelCounter.clear();
 		}
-		levelCounter.addSymbol(level.bonus().symbol());
+		addLevelSymbol(level.bonus().symbol());
 		gameScore.setLevelNumber(levelNumber);
 	}
 
@@ -272,9 +275,20 @@ public abstract class GameModel {
 		this.lives = lives;
 	}
 
-	/** List of collected level symbols. */
-	public LevelCounter levelCounter() {
+	/** Collected level symbols. */
+	public Iterable<Integer> levelCounter() {
 		return levelCounter;
+	}
+
+	public void clearLevelCounter() {
+		levelCounter.clear();
+	}
+
+	public void addLevelSymbol(int symbol) {
+		if (levelCounter.size() == LEVEL_COUNTER_MAX_SYMBOLS) {
+			levelCounter.remove(0);
+		}
+		levelCounter.add(symbol);
 	}
 
 	public Score gameScore() {
