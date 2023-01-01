@@ -30,7 +30,6 @@ import java.time.LocalDate;
  * @author Armin Reichert
  */
 public class Score {
-	private boolean showContent;
 	private int points;
 	private int levelNumber;
 	private LocalDate date;
@@ -40,18 +39,9 @@ public class Score {
 	}
 
 	public void reset() {
-		showContent = true;
 		points = 0;
 		levelNumber = 1;
 		date = LocalDate.now();
-	}
-
-	public void setShowContent(boolean showContent) {
-		this.showContent = showContent;
-	}
-
-	public boolean isShowContent() {
-		return showContent;
 	}
 
 	public void setPoints(int points) {

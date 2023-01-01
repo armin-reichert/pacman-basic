@@ -43,8 +43,6 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 	START {
 		@Override
 		public void onEnter(PacManIntroData ctx) {
-			ctx.gameController.game().gameScore().setShowContent(false);
-			ctx.gameController.game().highScore().setShowContent(true);
 			ctx.ghostIndex = 0;
 			Arrays.fill(ctx.pictureVisible, false);
 			Arrays.fill(ctx.nicknameVisible, false);

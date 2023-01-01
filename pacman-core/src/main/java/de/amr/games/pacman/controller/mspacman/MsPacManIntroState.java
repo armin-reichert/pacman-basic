@@ -39,8 +39,6 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 	START {
 		@Override
 		public void onEnter(MsPacManIntroData ctx) {
-			ctx.game().gameScore().setShowContent(false);
-			ctx.game().highScore().setShowContent(true);
 			ctx.lightsTimer.restartIndefinitely();
 			ctx.pac.setPosition(t(34), ctx.turningPoint.y());
 			ctx.pac.setAbsSpeed(0);

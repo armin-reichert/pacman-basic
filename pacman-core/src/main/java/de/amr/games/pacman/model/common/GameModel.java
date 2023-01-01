@@ -132,6 +132,7 @@ public abstract class GameModel {
 	protected final Score gameScore = new Score();
 	protected final Score highScore = new Score();
 	protected boolean scoresEnabled = true;
+	protected boolean scoreContentShown;
 
 	/**
 	 * @return the game variant realized by this model
@@ -195,7 +196,6 @@ public abstract class GameModel {
 		playing = false;
 		lives = INITIAL_LIVES;
 		oneLessLifeDisplayed = false;
-		gameScore.reset();
 		scoresEnabled = true;
 		level = null;
 	}
@@ -239,7 +239,6 @@ public abstract class GameModel {
 		level.enter();
 		level.guys().forEach(Creature::show);
 		scoresEnabled = false;
-		gameScore.setShowContent(false);
 	}
 
 	/** Tells if the game play is running. */
@@ -296,6 +295,14 @@ public abstract class GameModel {
 
 	public Score gameScore() {
 		return gameScore;
+	}
+
+	public void setScoreContentShown(boolean scoreContentShown) {
+		this.scoreContentShown = scoreContentShown;
+	}
+
+	public boolean isScoreContentShown() {
+		return scoreContentShown;
 	}
 
 	public Score highScore() {

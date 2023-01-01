@@ -108,12 +108,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 	CREDIT {
 		@Override
-		public void onEnter(GameModel game) {
-			game.gameScore().setShowContent(false);
-			game.highScore().setShowContent(true);
-		}
-
-		@Override
 		public void onUpdate(GameModel context) {
 			// nothing to do here
 		}
@@ -144,6 +138,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			} else {
 				game.reset();
 				game.buildAndEnterLevel(1);
+				game.gameScore().reset();
+				game.setScoreContentShown(true);
 				gc.sounds().play(GameSound.GAME_READY);
 			}
 		}
