@@ -81,7 +81,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void selectGameVariant(GameVariant variant) {
-			gc.createGame(variant);
+			gc.selectGameVariant(variant);
 		}
 
 		@Override

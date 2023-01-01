@@ -95,6 +95,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		autopilot = new RuleBasedSteering();
 		sounds = GameSoundController.NO_SOUND;
 		createGame(variant);
+		restart(BOOT);
 	}
 
 	@Override
@@ -147,12 +148,19 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game().hasCredit() || state() == GameState.INTERMISSION_TEST ? sounds : GameSoundController.NO_SOUND;
 	}
 
+	public void selectGameVariant(GameVariant variant) {
+		boolean wasImmune = game.isImmune();
+		createGame(variant);
+		game.setImmune(wasImmune);
+		boot();
+	}
+
 	/**
 	 * Creates a new game model for the given variant and restarts in boot state.
 	 * 
 	 * @param variant game variant
 	 */
-	public void createGame(GameVariant variant) {
+	private void createGame(GameVariant variant) {
 		Objects.requireNonNull(variant, "Game variant must not be null");
 		game = switch (variant) {
 		case MS_PACMAN -> new MsPacManGame();
@@ -164,7 +172,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (variant == GameVariant.PACMAN) {
 			pacSteeringInAttractMode.setRoute(PacManGameAttractModeRoutes.PACMAN);
 		}
-		boot();
 	}
 
 	/**
