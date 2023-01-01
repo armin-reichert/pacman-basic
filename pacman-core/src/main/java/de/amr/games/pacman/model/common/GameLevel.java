@@ -34,7 +34,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -347,7 +346,7 @@ public class GameLevel {
 	}
 
 	public void setHuntingDurations(int[] huntingDurations) {
-		this.huntingDurations = Arrays.copyOf(huntingDurations, huntingDurations.length);
+		this.huntingDurations = huntingDurations;
 	}
 
 	/**
