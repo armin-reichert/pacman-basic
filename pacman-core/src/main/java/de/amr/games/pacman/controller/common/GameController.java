@@ -119,7 +119,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		autoControlled = !autoControlled;
 	}
 
-	public Steering steering(GameLevel level) {
+	public Steering steering() {
 		if (!game().hasCredit()) {
 			if (game().variant() == GameVariant.PACMAN) {
 				return pacSteeringInAttractMode;
@@ -133,7 +133,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void steerPac(GameLevel level) {
-		steering(level).steer(level, level.pac());
+		steering().steer(level, level.pac());
 	}
 
 	public void setNormalSteering(Steering steering) {
