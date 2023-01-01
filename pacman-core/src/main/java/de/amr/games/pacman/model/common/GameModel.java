@@ -128,7 +128,7 @@ public abstract class GameModel {
 	protected boolean playing;
 	protected boolean immune; // extra
 	protected boolean autoControlled; // extra
-	protected final List<Integer> levelCounter = new LinkedList<>();
+	protected final List<Byte> levelCounter = new LinkedList<>();
 	protected Score score;
 	protected final Score highScore = new Score();
 	protected boolean scoresEnabled = true;
@@ -204,7 +204,7 @@ public abstract class GameModel {
 		return Optional.ofNullable(level);
 	}
 
-	protected void createLevel(int levelNumber) {
+	protected void setLevel(int levelNumber) {
 		var pac = createPac();
 		var theGhosts = createGhosts();
 		var world = createWorld(levelNumber);
@@ -217,26 +217,35 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Builds and enters the given level.
+	 * Creates and enters the given level.
 	 * 
 	 * @param levelNumber 1-based level number
 	 */
-	public void buildAndEnterLevel(int levelNumber) {
+	public void enterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		createLevel(levelNumber);
+		setLevel(levelNumber);
 		level.enter();
 		if (levelNumber == 1) {
 			levelCounter.clear();
 		}
-		addLevelSymbol(level.bonus().symbol());
+		if (levelCounter.size() == LEVEL_COUNTER_MAX_SYMBOLS) {
+			levelCounter.remove(0);
+		}
+		levelCounter.add(level.bonus().symbol());
 		if (score != null) {
 			score.setLevelNumber(levelNumber);
 		}
 	}
 
+	public void nextLevel() {
+		if (level == null) {
+			throw new IllegalStateException("Cannot enter next level, no current level exists");
+		}
+		enterLevel(level.number() + 1);
+	}
+
 	public void enterDemoLevel() {
-		reset();
-		createLevel(1);
+		setLevel(1);
 		level.enter();
 		level.guys().forEach(Creature::show);
 		scoresEnabled = false;
@@ -279,19 +288,12 @@ public abstract class GameModel {
 	}
 
 	/** Collected level symbols. */
-	public Iterable<Integer> levelCounter() {
+	public Iterable<Byte> levelCounter() {
 		return levelCounter;
 	}
 
 	public void clearLevelCounter() {
 		levelCounter.clear();
-	}
-
-	public void addLevelSymbol(int symbol) {
-		if (levelCounter.size() == LEVEL_COUNTER_MAX_SYMBOLS) {
-			levelCounter.remove(0);
-		}
-		levelCounter.add(symbol);
 	}
 
 	public Optional<Score> score() {

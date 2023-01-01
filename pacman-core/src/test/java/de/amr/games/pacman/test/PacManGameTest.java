@@ -51,7 +51,7 @@ public class PacManGameTest {
 	@Before
 	public void setUp() {
 		game = new PacManGame();
-		game.buildAndEnterLevel(1);
+		game.enterLevel(1);
 	}
 
 	@Test

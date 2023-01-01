@@ -133,12 +133,13 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			gc.sounds().stopAll();
 			if (!game.hasCredit()) {
 				gc.pacSteeringInAttractMode.init();
+				game.reset();
 				game.enterDemoLevel();
 			} else if (game.isPlaying()) {
 				game.level().ifPresent(level -> level.letsGetReadyToRumbleAndShowGuys(true));
 			} else {
 				game.reset();
-				game.buildAndEnterLevel(1);
+				game.enterLevel(1);
 				game.newScore();
 				gc.sounds().play(GameSound.GAME_READY);
 			}
@@ -311,7 +312,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					} else if (level.params().intermissionNumber() > 0) {
 						gc.changeState(INTERMISSION); // play intermission scene
 					} else {
-						gc.changeState(LEVEL_STARTING); // next level
+						gc.changeState(CHANGING_TO_NEXT_LEVEL); // next level
 					}
 				} else {
 					level.world().levelCompleteAnimation().ifPresent(animation -> {
@@ -328,11 +329,11 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 	},
 
-	LEVEL_STARTING {
+	CHANGING_TO_NEXT_LEVEL {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.restartSeconds(1);
-			game.level().ifPresent(level -> game.buildAndEnterLevel(level.number() + 1));
+			game.nextLevel();
 			GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
 		}
 
@@ -452,7 +453,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				gc.changeState(!game.hasCredit() || !game.isPlaying() ? INTRO : LEVEL_STARTING);
+				gc.changeState(!game.hasCredit() || !game.isPlaying() ? INTRO : CHANGING_TO_NEXT_LEVEL);
 			}
 		}
 	},
