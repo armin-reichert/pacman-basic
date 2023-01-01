@@ -205,6 +205,7 @@ public class PacManGameTest {
 
 	@Test
 	public void testHighScore() {
+		game.newScore();
 		assertEquals(0, game.highScore().points());
 		game.scorePoints(42);
 		assertEquals(42, game.highScore().points());

@@ -229,7 +229,9 @@ public abstract class GameModel {
 			levelCounter.clear();
 		}
 		addLevelSymbol(level.bonus().symbol());
-		score.setLevelNumber(levelNumber);
+		if (score != null) {
+			score.setLevelNumber(levelNumber);
+		}
 	}
 
 	public void enterDemoLevel() {
