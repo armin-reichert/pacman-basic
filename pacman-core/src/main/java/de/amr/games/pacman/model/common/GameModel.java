@@ -129,7 +129,7 @@ public abstract class GameModel {
 	protected boolean immune; // extra
 	protected boolean autoControlled; // extra
 	protected final List<Integer> levelCounter = new LinkedList<>();
-	protected final Score gameScore = new Score();
+	protected final Score score = new Score();
 	protected final Score highScore = new Score();
 	protected boolean scoresEnabled = true;
 
@@ -229,7 +229,7 @@ public abstract class GameModel {
 			levelCounter.clear();
 		}
 		addLevelSymbol(level.bonus().symbol());
-		gameScore.setLevelNumber(levelNumber);
+		score.setLevelNumber(levelNumber);
 	}
 
 	public void enterDemoLevel() {
@@ -292,8 +292,8 @@ public abstract class GameModel {
 		levelCounter.add(symbol);
 	}
 
-	public Score gameScore() {
-		return gameScore;
+	public Score score() {
+		return score;
 	}
 
 	public Score highScore() {
@@ -307,9 +307,9 @@ public abstract class GameModel {
 		if (!scoresEnabled) {
 			return;
 		}
-		final int oldScore = gameScore.points();
+		final int oldScore = score.points();
 		final int newScore = oldScore + points;
-		gameScore.setPoints(newScore);
+		score.setPoints(newScore);
 		if (newScore > highScore.points()) {
 			highScore.setPoints(newScore);
 			highScore.setLevelNumber(level.number());
