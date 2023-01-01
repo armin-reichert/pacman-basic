@@ -34,7 +34,6 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.ScoreManager;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -54,7 +53,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.reset();
 			game.clearLevelCounter();
 			game.newScore();
-			ScoreManager.loadScore(game.highScore(), game.variant());
+			game.loadHiscore(game.highScore());
 		}
 
 		@Override
@@ -428,7 +427,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.restartSeconds(1.2);
 			gc.sounds().stopAll();
 			game.changeCredit(-1);
-			ScoreManager.saveHiscore(game.highScore(), game.variant());
+			game.saveHiscore();
 		}
 
 		@Override

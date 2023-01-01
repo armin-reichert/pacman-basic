@@ -23,10 +23,15 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
@@ -317,6 +322,52 @@ public abstract class GameModel {
 		if (oldScore < SCORE_EXTRA_LIFE && newScore >= SCORE_EXTRA_LIFE) {
 			setLives(lives + 1);
 			GameEvents.publish(GameEventType.PLAYER_GETS_EXTRA_LIFE, level.pac().tile());
+		}
+	}
+
+	private static File hiscoreFile(GameVariant variant) {
+		var dir = System.getProperty("user.home");
+		return switch (variant) {
+		case PACMAN -> new File(dir, "highscore-pacman.xml");
+		case MS_PACMAN -> new File(dir, "highscore-ms_pacman.xml");
+		};
+	}
+
+	public void loadHiscore(Score score) {
+		File file = hiscoreFile(variant());
+		try (var in = new FileInputStream(file)) {
+			var props = new Properties();
+			props.loadFromXML(in);
+			var points = Integer.parseInt(props.getProperty("points"));
+			var levelNumber = Integer.parseInt(props.getProperty("level"));
+			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
+			score.setPoints(points);
+			score.setLevelNumber(levelNumber);
+			score.setDate(date);
+			LOGGER.info("Highscore loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points(),
+					score.levelNumber());
+		} catch (Exception x) {
+			LOGGER.info("Highscore could not be loaded. File '%s' Reason: %s", file, x.getMessage());
+		}
+	}
+
+	public void saveHiscore() {
+		var file = hiscoreFile(variant());
+		Score oldHiscore = new Score();
+		loadHiscore(oldHiscore);
+		if (highScore.points() <= oldHiscore.points()) {
+			return;
+		}
+		var props = new Properties();
+		props.setProperty("points", String.valueOf(highScore.points()));
+		props.setProperty("level", String.valueOf(highScore.levelNumber()));
+		props.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
+		try (var out = new FileOutputStream(file)) {
+			props.storeToXML(out, "%s Hiscore".formatted(variant()));
+			LOGGER.info("Highscore saved. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), highScore.points(),
+					highScore.levelNumber());
+		} catch (Exception x) {
+			LOGGER.info("Highscore could not be saved. File '%s' Reason: %s", file, x.getMessage());
 		}
 	}
 
