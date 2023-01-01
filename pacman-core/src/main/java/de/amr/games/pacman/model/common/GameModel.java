@@ -132,7 +132,6 @@ public abstract class GameModel {
 	protected final Score gameScore = new Score();
 	protected final Score highScore = new Score();
 	protected boolean scoresEnabled = true;
-	protected boolean scoreContentShown;
 
 	/**
 	 * @return the game variant realized by this model
@@ -295,14 +294,6 @@ public abstract class GameModel {
 
 	public Score gameScore() {
 		return gameScore;
-	}
-
-	public void setScoreContentShown(boolean scoreContentShown) {
-		this.scoreContentShown = scoreContentShown;
-	}
-
-	public boolean isScoreContentShown() {
-		return scoreContentShown;
 	}
 
 	public Score highScore() {

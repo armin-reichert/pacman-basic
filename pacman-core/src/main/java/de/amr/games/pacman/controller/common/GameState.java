@@ -139,7 +139,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.reset();
 				game.buildAndEnterLevel(1);
 				game.gameScore().reset();
-				game.setScoreContentShown(true);
 				gc.sounds().play(GameSound.GAME_READY);
 			}
 		}
