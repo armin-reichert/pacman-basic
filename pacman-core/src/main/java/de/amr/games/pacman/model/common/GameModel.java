@@ -194,9 +194,9 @@ public abstract class GameModel {
 		LOGGER.trace("Reset game (%s)", variant());
 		playing = false;
 		lives = INITIAL_LIVES;
-		oneLessLifeDisplayed = false;
 		scoringEnabled = true;
 		level = null;
+		oneLessLifeDisplayed = false; // remove
 	}
 
 	/** Current level. */

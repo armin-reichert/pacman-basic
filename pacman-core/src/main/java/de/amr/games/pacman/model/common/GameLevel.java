@@ -476,6 +476,9 @@ public class GameLevel {
 		}
 	}
 
+	/**
+	 * Called by cheat action only.
+	 */
 	public void killAllPossibleGhosts() {
 		memo.edibleGhosts = ghosts(HUNTING_PAC, FRIGHTENED).toList();
 		setNumGhostsKilledByEnergizer(0);
@@ -485,8 +488,8 @@ public class GameLevel {
 	public void killEdibleGhosts() {
 		if (!memo.edibleGhosts.isEmpty()) {
 			memo.edibleGhosts.forEach(this::killGhost);
-			setNumGhostsKilledInLevel(numGhostsKilledInLevel() + memo.edibleGhosts.size());
-			if (numGhostsKilledInLevel() == 16) {
+			numGhostsKilledInLevel += memo.edibleGhosts.size();
+			if (numGhostsKilledInLevel == 16) {
 				game.scorePoints(GameModel.POINTS_ALL_GHOSTS_KILLED);
 				LOGGER.trace("All ghosts killed at level %d, %s wins %d points", number, pac.name(),
 						GameModel.POINTS_ALL_GHOSTS_KILLED);
@@ -495,9 +498,9 @@ public class GameLevel {
 	}
 
 	private void killGhost(Ghost ghost) {
-		ghost.setKilledIndex(numGhostsKilledByEnergizer());
+		ghost.setKilledIndex(numGhostsKilledByEnergizer);
 		ghost.enterStateEaten();
-		setNumGhostsKilledByEnergizer(numGhostsKilledByEnergizer() + 1);
+		numGhostsKilledByEnergizer += 1;
 		memo.killedGhosts.add(ghost);
 		int points = GameModel.POINTS_GHOSTS_SEQUENCE[ghost.killedIndex()];
 		game.scorePoints(points);
