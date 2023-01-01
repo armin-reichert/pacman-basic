@@ -53,7 +53,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.reset();
 			game.clearLevelCounter();
 			game.newScore();
-			game.loadHiscore(game.highScore());
+			game.loadHiscore();
 		}
 
 		@Override

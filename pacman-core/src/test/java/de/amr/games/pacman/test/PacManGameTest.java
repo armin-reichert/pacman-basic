@@ -206,13 +206,16 @@ public class PacManGameTest {
 	@Test
 	public void testHighScore() {
 		game.newScore();
-		assertEquals(0, game.highScore().points());
-		game.scorePoints(42);
-		assertEquals(42, game.highScore().points());
-		game.scorePoints(0);
-		assertEquals(42, game.highScore().points());
-		game.scorePoints(1);
-		assertEquals(43, game.highScore().points());
+		game.loadHiscore();
+		game.highScore().ifPresent(hiscore -> {
+			assertEquals(0, hiscore.points());
+			game.scorePoints(42);
+			assertEquals(42, hiscore.points());
+			game.scorePoints(0);
+			assertEquals(42, hiscore.points());
+			game.scorePoints(1);
+			assertEquals(43, hiscore.points());
+		});
 	}
 
 	@Test

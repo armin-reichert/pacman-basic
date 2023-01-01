@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
@@ -134,7 +135,7 @@ public abstract class GameModel {
 	protected boolean immune; // extra
 	protected final List<Byte> levelCounter = new LinkedList<>();
 	protected Score score;
-	protected final Score highScore = new Score();
+	protected Score highScore;
 	protected boolean scoringEnabled = true;
 
 	/**
@@ -300,8 +301,8 @@ public abstract class GameModel {
 		score = new Score();
 	}
 
-	public Score highScore() {
-		return highScore;
+	public Optional<Score> highScore() {
+		return Optional.ofNullable(highScore);
 	}
 
 	public void scorePoints(int points) {
@@ -326,35 +327,44 @@ public abstract class GameModel {
 	}
 
 	private static File hiscoreFile(GameVariant variant) {
+		Objects.requireNonNull(variant, "Game variant is null");
 		var dir = System.getProperty("user.home");
 		return switch (variant) {
 		case PACMAN -> new File(dir, "highscore-pacman.xml");
 		case MS_PACMAN -> new File(dir, "highscore-ms_pacman.xml");
+		default -> throw new IllegalArgumentException("Unknown game variant: '%s'".formatted(variant));
 		};
 	}
 
-	public void loadHiscore(Score score) {
-		File file = hiscoreFile(variant());
+	public static Optional<Score> loadHiscore(File file) {
+		Score result = new Score();
 		try (var in = new FileInputStream(file)) {
 			var props = new Properties();
 			props.loadFromXML(in);
 			var points = Integer.parseInt(props.getProperty("points"));
 			var levelNumber = Integer.parseInt(props.getProperty("level"));
 			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
-			score.setPoints(points);
-			score.setLevelNumber(levelNumber);
-			score.setDate(date);
-			LOGGER.info("Highscore loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points(),
-					score.levelNumber());
+			result.setPoints(points);
+			result.setLevelNumber(levelNumber);
+			result.setDate(date);
+			LOGGER.info("Highscore loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), result.points(),
+					result.levelNumber());
+			return Optional.of(result);
 		} catch (Exception x) {
 			LOGGER.info("Highscore could not be loaded. File '%s' Reason: %s", file, x.getMessage());
+			return Optional.of(new Score());
 		}
 	}
 
+	public void loadHiscore() {
+		highScore = loadHiscore(hiscoreFile(variant())).orElse(null);
+	}
+
 	public void saveHiscore() {
-		var file = hiscoreFile(variant());
-		Score oldHiscore = new Score();
-		loadHiscore(oldHiscore);
+		Score oldHiscore = loadHiscore(hiscoreFile(variant())).orElse(null);
+		if (oldHiscore == null) {
+			return;
+		}
 		if (highScore.points() <= oldHiscore.points()) {
 			return;
 		}
@@ -362,12 +372,13 @@ public abstract class GameModel {
 		props.setProperty("points", String.valueOf(highScore.points()));
 		props.setProperty("level", String.valueOf(highScore.levelNumber()));
 		props.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
-		try (var out = new FileOutputStream(file)) {
+		var highScoreFile = hiscoreFile(variant());
+		try (var out = new FileOutputStream(highScoreFile)) {
 			props.storeToXML(out, "%s Hiscore".formatted(variant()));
-			LOGGER.info("Highscore saved. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), highScore.points(),
-					highScore.levelNumber());
+			LOGGER.info("Highscore saved. File: '%s' Points: %d Level: %d", highScoreFile.getAbsolutePath(),
+					highScore.points(), highScore.levelNumber());
 		} catch (Exception x) {
-			LOGGER.info("Highscore could not be saved. File '%s' Reason: %s", file, x.getMessage());
+			LOGGER.info("Highscore could not be saved. File '%s' Reason: %s", highScoreFile, x.getMessage());
 		}
 	}
 
