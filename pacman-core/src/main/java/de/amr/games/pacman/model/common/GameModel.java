@@ -127,7 +127,6 @@ public abstract class GameModel {
 	protected int lives;
 	protected boolean playing;
 	protected boolean immune; // extra
-	protected boolean autoControlled; // extra
 	protected final List<Byte> levelCounter = new LinkedList<>();
 	protected Score score;
 	protected final Score highScore = new Score();
@@ -266,14 +265,6 @@ public abstract class GameModel {
 
 	public void setImmune(boolean immune) {
 		this.immune = immune;
-	}
-
-	public boolean isAutoControlled() {
-		return autoControlled;
-	}
-
-	public void setAutoControlled(boolean autoControlled) {
-		this.autoControlled = autoControlled;
 	}
 
 	public int lives() {

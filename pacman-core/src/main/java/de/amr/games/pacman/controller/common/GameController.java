@@ -76,6 +76,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private Steering normalSteering;
 	private GameSoundController sounds;
 
+	private boolean autoControlled;
 	public int intermissionTestNumber; // intermission test mode
 	public boolean levelTestMode = false; // level test mode
 	public int levelTestLastLevelNumber = 21; // level test mode
@@ -105,6 +106,18 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game;
 	}
 
+	public boolean isAutoControlled() {
+		return autoControlled;
+	}
+
+	public void setAutoControlled(boolean autoControlled) {
+		this.autoControlled = autoControlled;
+	}
+
+	public void toggleAutoControlled() {
+		autoControlled = !autoControlled;
+	}
+
 	public Steering steering(GameLevel level) {
 		if (!game().hasCredit()) {
 			if (game().variant() == GameVariant.PACMAN) {
@@ -112,7 +125,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			}
 			return autopilot;
 		}
-		if (game.isAutoControlled()) {
+		if (autoControlled) {
 			return autopilot;
 		}
 		return normalSteering;
