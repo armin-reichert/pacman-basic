@@ -129,7 +129,7 @@ public abstract class GameModel {
 	protected boolean immune; // extra
 	protected boolean autoControlled; // extra
 	protected final List<Integer> levelCounter = new LinkedList<>();
-	protected final Score score = new Score();
+	protected Score score;
 	protected final Score highScore = new Score();
 	protected boolean scoresEnabled = true;
 
@@ -292,8 +292,12 @@ public abstract class GameModel {
 		levelCounter.add(symbol);
 	}
 
-	public Score score() {
-		return score;
+	public Optional<Score> score() {
+		return Optional.ofNullable(score);
+	}
+
+	public void newScore() {
+		score = new Score();
 	}
 
 	public Score highScore() {

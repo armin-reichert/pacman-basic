@@ -59,7 +59,6 @@ public class PacManGameTest {
 		assertTrue(game.level().isPresent());
 		var level = game.level().get();
 		assertEquals(1, level.number());
-		assertEquals(1, game.score().levelNumber());
 		assertTrue(level.bonus() instanceof Bonus);
 		assertEquals(BonusState.INACTIVE, level.bonus().state());
 		assertEquals(0, level.numGhostsKilledInLevel());
@@ -197,11 +196,6 @@ public class PacManGameTest {
 		bonus = game.createBonus(12);
 		assertTrue(bonus instanceof StaticBonus);
 		assertEquals(3000, bonus.points());
-	}
-
-	@Test
-	public void testInitialScore() {
-		assertEquals(0, game.score().points());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
