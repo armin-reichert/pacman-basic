@@ -53,6 +53,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.restartIndefinitely();
 			game.reset();
 			game.clearLevelCounter();
+			game.gameScore().reset();
 			ScoreManager.loadScore(game.highScore(), game.variant());
 		}
 
