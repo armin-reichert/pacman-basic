@@ -129,8 +129,8 @@ public abstract class GameModel {
 	protected boolean immune; // extra
 	protected boolean autoControlled; // extra
 	protected final List<Integer> levelCounter = new LinkedList<>();
-	protected final Score gameScore = new Score("SCORE");
-	protected final Score highScore = new Score("HIGH SCORE");
+	protected final Score gameScore = new Score();
+	protected final Score highScore = new Score();
 	protected boolean scoresEnabled = true;
 
 	/**

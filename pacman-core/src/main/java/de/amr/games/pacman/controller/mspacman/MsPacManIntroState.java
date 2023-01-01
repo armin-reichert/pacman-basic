@@ -56,10 +56,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
-			if (timer.tick() == 1) {
-				ctx.game().gameScore().setVisible(true);
-				ctx.game().highScore().setVisible(true);
-			} else if (timer.tick() == 2) {
+			if (timer.tick() == 2) {
 				ctx.creditVisible = true;
 			} else if (timer.atSecond(1)) {
 				controller.changeState(MsPacManIntroState.GHOSTS);

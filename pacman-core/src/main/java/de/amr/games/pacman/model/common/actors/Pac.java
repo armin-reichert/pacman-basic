@@ -41,6 +41,8 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
+	public static final int REST_INDEFINITE = -1;
+
 	private final TickTimer powerTimer;
 	private int powerFadingTicks;
 	private boolean dead;
@@ -77,7 +79,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	private void updateAlive(GameLevel level) {
 		switch (restingTicks) {
 		case 0 -> {
-			var speed = powerTimer.isRunning() ? level.params().playerSpeedPowered() : level.params().playerSpeed();
+			var speed = powerTimer.isRunning() ? level.params().pacSpeedPowered() : level.params().pacSpeed();
 			setRelSpeed(speed);
 			tryMoving(level);
 			selectRunnableAnimation(AnimKeys.PAC_MUNCHING);
@@ -85,8 +87,8 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 				animate();
 			}
 		}
-		case Integer.MAX_VALUE -> {
-			// rest in peace
+		case REST_INDEFINITE -> {
+			// Warten auf Godot
 		}
 		default -> --restingTicks;
 		}
@@ -149,7 +151,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	public void rest(int ticks) {
-		if (ticks < 0) {
+		if (ticks != REST_INDEFINITE && ticks < 0) {
 			throw new IllegalArgumentException("Resting time cannot be negative, but is: %d".formatted(ticks));
 		}
 		restingTicks = ticks;

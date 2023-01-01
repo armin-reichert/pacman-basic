@@ -67,8 +67,8 @@ public class GameLevel {
 
 	public record Parameters(
 	//@formatter:off
-		/** Relative player speed in this level. */
-		float playerSpeed,
+		/** Relative Pac-Man speed in this level. */
+		float pacSpeed,
 		/** Relative ghost speed in this level. */
 		float ghostSpeed,
 		/** Relative ghost speed when inside tunnel in this level. */
@@ -81,8 +81,8 @@ public class GameLevel {
 		int elroy2DotsLeft,
 		/** Relative speed of player being "Cruise Elroy" with severity 2. */
 		float elroy2Speed,
-		/** Relative speed of player in power mode. */
-		float playerSpeedPowered,
+		/** Relative speed of Pac-Man in power mode. */
+		float pacSpeedPowered,
 		/** Relative speed of frightened ghost. */
 		float ghostSpeedFrightened,
 		/** Number of seconds Pac-Man gets power int this level. */
@@ -95,21 +95,21 @@ public class GameLevel {
 	{
 		public static Parameters createFromData(byte[] data) {
 			//@formatter:off
-			float playerSpeed          = data[0] / 100f;
+			float pacSpeed             = data[0] / 100f;
 			float ghostSpeed           = data[1] / 100f;
 			float ghostSpeedTunnel     = data[2] / 100f;
 			byte elroy1DotsLeft        = data[3];
 			float elroy1Speed          = data[4] / 100f;
 			byte elroy2DotsLeft        = data[5];
 			float elroy2Speed          = data[6] / 100f;
-			float playerSpeedPowered   = data[7] / 100f;
+			float pacSpeedPowered      = data[7] / 100f;
 			float ghostSpeedFrightened = data[8] / 100f;
 			byte pacPowerSeconds       = data[9];
 			byte numFlashes            = data[10];
 			byte intermissionNumber    = data[11];
 			//@formatter:on
-			return new Parameters(playerSpeed, ghostSpeed, ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft,
-					elroy2Speed, playerSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes, intermissionNumber);
+			return new Parameters(pacSpeed, ghostSpeed, ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft,
+					elroy2Speed, pacSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes, intermissionNumber);
 		}
 	}
 
@@ -337,7 +337,7 @@ public class GameLevel {
 
 	public void exit() {
 		LOGGER.trace("Exit level %d (%s)", number, game.variant());
-		pac.rest(Integer.MAX_VALUE);
+		pac.rest(Pac.REST_INDEFINITE);
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonus.setInactive();

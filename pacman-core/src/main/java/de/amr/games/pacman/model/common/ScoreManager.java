@@ -71,7 +71,7 @@ public class ScoreManager {
 
 	public static void saveHiscore(Score highScore, GameVariant variant) {
 		File file = hiscoreFile(variant);
-		Score existingHiscore = new Score("");
+		Score existingHiscore = new Score();
 		loadScore(existingHiscore, variant);
 		if (highScore.points() <= existingHiscore.points()) {
 			return;
