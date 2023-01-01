@@ -131,7 +131,7 @@ public abstract class GameModel {
 	protected final List<Byte> levelCounter = new LinkedList<>();
 	protected Score score;
 	protected final Score highScore = new Score();
-	protected boolean scoresEnabled = true;
+	protected boolean scoringEnabled = true;
 
 	/**
 	 * @return the game variant realized by this model
@@ -195,7 +195,7 @@ public abstract class GameModel {
 		playing = false;
 		lives = INITIAL_LIVES;
 		oneLessLifeDisplayed = false;
-		scoresEnabled = true;
+		scoringEnabled = true;
 		level = null;
 	}
 
@@ -248,7 +248,7 @@ public abstract class GameModel {
 		setLevel(1);
 		level.enter();
 		level.guys().forEach(Creature::show);
-		scoresEnabled = false;
+		scoringEnabled = false;
 	}
 
 	/** Tells if the game play is running. */
@@ -310,9 +310,9 @@ public abstract class GameModel {
 
 	public void scorePoints(int points) {
 		if (points < 0) {
-			throw new IllegalArgumentException("Scored points must not be negative but is: " + points);
+			throw new IllegalArgumentException("Scored points value must not be negative but is: " + points);
 		}
-		if (!scoresEnabled) {
+		if (!scoringEnabled) {
 			return;
 		}
 		final int oldScore = score.points();
