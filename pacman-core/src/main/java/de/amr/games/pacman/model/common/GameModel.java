@@ -336,32 +336,32 @@ public abstract class GameModel {
 		};
 	}
 
-	public static Optional<Score> loadHiscore(File file) {
-		Score result = new Score();
+	private static Score loadHiscore(File file) {
 		try (var in = new FileInputStream(file)) {
 			var props = new Properties();
 			props.loadFromXML(in);
 			var points = Integer.parseInt(props.getProperty("points"));
 			var levelNumber = Integer.parseInt(props.getProperty("level"));
 			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
-			result.setPoints(points);
-			result.setLevelNumber(levelNumber);
-			result.setDate(date);
-			LOGGER.info("Highscore loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), result.points(),
-					result.levelNumber());
-			return Optional.of(result);
+			Score scoreFromFile = new Score();
+			scoreFromFile.setPoints(points);
+			scoreFromFile.setLevelNumber(levelNumber);
+			scoreFromFile.setDate(date);
+			LOGGER.info("Highscore loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), scoreFromFile.points(),
+					scoreFromFile.levelNumber());
+			return scoreFromFile;
 		} catch (Exception x) {
 			LOGGER.info("Highscore could not be loaded. File '%s' Reason: %s", file, x.getMessage());
-			return Optional.of(new Score());
+			return new Score();
 		}
 	}
 
 	public void loadHiscore() {
-		highScore = loadHiscore(hiscoreFile(variant())).orElse(null);
+		highScore = loadHiscore(hiscoreFile(variant()));
 	}
 
 	public void saveHiscore() {
-		Score oldHiscore = loadHiscore(hiscoreFile(variant())).orElse(null);
+		var oldHiscore = loadHiscore(hiscoreFile(variant()));
 		if (oldHiscore == null) {
 			return;
 		}
