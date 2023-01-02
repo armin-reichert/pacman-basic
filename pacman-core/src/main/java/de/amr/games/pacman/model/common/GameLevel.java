@@ -131,13 +131,13 @@ public class GameLevel {
 
 	private final GameModel game;
 	private final int number;
-	private final Pac pac;
-	private final Ghost[] theGhosts;
-	private final World world;
+	private Pac pac;
+	private Ghost[] ghosts;
+	private World world;
+	private Bonus bonus;
+	private Parameters params;
 	private final Pulse energizerPulse;
-	private final Bonus bonus;
 	private final TickTimer huntingTimer;
-	private final Parameters params;
 	private final Memory memo;
 	private int[] huntingDurations;
 	private GhostHouseRules houseRules;
@@ -146,18 +146,12 @@ public class GameLevel {
 	private int numGhostsKilledByEnergizer;
 	private byte cruiseElroyState;
 
-	public GameLevel(GameModel game, int number, Pac pac, Ghost[] theGhosts, World world, Bonus bonus, byte[] data) {
+	public GameLevel(GameModel game, int number) {
 		this.game = game;
 		this.number = number;
-		this.pac = pac;
-		this.theGhosts = theGhosts;
-		this.world = world;
 		this.energizerPulse = new Pulse(10, true);
-		this.bonus = bonus;
 		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
-		this.params = Parameters.createFromData(data);
 		this.memo = new Memory();
-		defineGhostChasingBehavior();
 	}
 
 	/**
@@ -193,6 +187,14 @@ public class GameLevel {
 		return game;
 	}
 
+	public void setParams(Parameters params) {
+		this.params = params;
+	}
+
+	public void setWorld(World world) {
+		this.world = world;
+	}
+
 	public World world() {
 		return world;
 	}
@@ -201,13 +203,25 @@ public class GameLevel {
 		return energizerPulse;
 	}
 
+	public void setPac(Pac pac) {
+		this.pac = pac;
+	}
+
+	public void setGhosts(Ghost[] ghosts) {
+		this.ghosts = ghosts;
+	}
+
+	public void setBonus(Bonus bonus) {
+		this.bonus = bonus;
+	}
+
 	/**
 	 * @param id ghost ID, one of {@link Ghost#ID_RED_GHOST}, {@link Ghost#ID_PINK_GHOST}, {@value Ghost#ID_CYAN_GHOST},
 	 *           {@link Ghost#ID_ORANGE_GHOST}
 	 * @return the ghost with the given ID
 	 */
 	public Ghost ghost(int id) {
-		return theGhosts[checkGhostID(id)];
+		return ghosts[checkGhostID(id)];
 	}
 
 	/**
@@ -216,10 +230,10 @@ public class GameLevel {
 	 */
 	public Stream<Ghost> ghosts(GhostState... states) {
 		if (states.length > 0) {
-			return Stream.of(theGhosts).filter(ghost -> ghost.is(states));
+			return Stream.of(ghosts).filter(ghost -> ghost.is(states));
 		}
 		// when no states are given, return *all* ghosts (ghost.is() would return *no* ghosts!)
-		return Stream.of(theGhosts);
+		return Stream.of(ghosts);
 	}
 
 	/**
@@ -240,8 +254,7 @@ public class GameLevel {
 	 * @return Pac-Man and the ghosts in order RED, PINK, CYAN, ORANGE
 	 */
 	public Stream<Creature> guys() {
-		return Stream.of(pac, theGhosts[ID_RED_GHOST], theGhosts[ID_PINK_GHOST], theGhosts[ID_CYAN_GHOST],
-				theGhosts[ID_ORANGE_GHOST]);
+		return Stream.of(pac, ghosts[ID_RED_GHOST], ghosts[ID_PINK_GHOST], ghosts[ID_CYAN_GHOST], ghosts[ID_ORANGE_GHOST]);
 	}
 
 	/**
@@ -322,7 +335,7 @@ public class GameLevel {
 
 	public void enter() {
 		LOGGER.trace("Enter level %d (%s)", number, game.variant());
-		world.assignGhostPositions(theGhosts);
+		world.assignGhostPositions(ghosts);
 		houseRules.resetPrivateGhostDotCounters();
 		setCruiseElroyState(0);
 		letsGetReadyToRumbleAndShowGuys(false);

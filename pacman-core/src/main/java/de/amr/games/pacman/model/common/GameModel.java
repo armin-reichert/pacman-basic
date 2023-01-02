@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.model.common.GameLevel.Parameters;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -185,9 +186,10 @@ public abstract class GameModel {
 	 *         remain the same
 	 * @see {@link GameLevel.Parameters}
 	 */
-	protected byte[] levelParameters(int levelNumber) {
-		return levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
+	protected Parameters levelParameters(int levelNumber) {
+		var data = levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
+		return Parameters.createFromData(data);
 	}
 
 	/**
@@ -213,19 +215,20 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Creates the specified level and selects it
+	 * Creates the specified level and sets it as current level.
 	 * 
 	 * @param levelNumber level number (starting at 1)
 	 */
 	protected void setLevel(int levelNumber) {
-		var pac = createPac();
-		var ghosts = createGhosts();
-		var world = createWorld(levelNumber);
-		var bonus = createBonus(levelNumber);
-		var params = levelParameters(levelNumber);
-		level = new GameLevel(this, levelNumber, pac, ghosts, world, bonus, params);
+		level = new GameLevel(this, levelNumber);
+		level.setPac(createPac());
+		level.setGhosts(createGhosts());
+		level.setWorld(createWorld(levelNumber));
+		level.setBonus(createBonus(levelNumber));
 		level.setHouseRules(createHouseRules(levelNumber));
 		level.setHuntingDurations(huntingDurations(levelNumber));
+		level.setParams(levelParameters(levelNumber));
+		level.defineGhostChasingBehavior();
 		LOGGER.trace("Game level %d created. (%s)", levelNumber, variant());
 	}
 
