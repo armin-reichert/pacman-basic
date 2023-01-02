@@ -53,7 +53,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.reset();
 			game.clearLevelCounter();
 			game.newScore();
-			game.loadHiscore();
+			game.loadHighscore();
 		}
 
 		@Override
@@ -427,7 +427,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.restartSeconds(1.2);
 			gc.sounds().stopAll();
 			game.changeCredit(-1);
-			game.saveHiscore();
+			game.saveNewHighscore();
 		}
 
 		@Override

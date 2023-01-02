@@ -58,12 +58,13 @@ public abstract class GameModel {
 
 	/** Game loop speed in ticks/sec. */
 	public static final short FPS = 60;
-	/** Speed in pixels/tick at 100% relative speed. */
+	/** Move distance (pixels/tick) at 100% relative speed. */
 	public static final float SPEED_100_PERCENT_PX = 1.25f;
 	public static final float SPEED_GHOST_INSIDE_HOUSE_PX = 0.5f; // unsure
 	public static final float SPEED_GHOST_RETURNING_TO_HOUSE_PX = 2.0f; // unsure
 	public static final float SPEED_GHOST_ENTERING_HOUSE_PX = 1.25f; // unsure
 	public static final short MAX_CREDIT = 99;
+	public static final short LEVEL_COUNTER_MAX_SYMBOLS = 7;
 	public static final short INITIAL_LIVES = 3;
 	public static final short RESTING_TICKS_NORMAL_PELLET = 1;
 	public static final short RESTING_TICKS_ENERGIZER = 3;
@@ -74,7 +75,6 @@ public abstract class GameModel {
 	public static final short SCORE_EXTRA_LIFE = 10_000;
 	public static final short PELLETS_EATEN_BONUS1 = 70;
 	public static final short PELLETS_EATEN_BONUS2 = 170;
-	public static final short LEVEL_COUNTER_MAX_SYMBOLS = 7;
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
 
 	//@formatter:off
@@ -108,7 +108,7 @@ public abstract class GameModel {
 		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS,       1, -1 },
 		{ 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS,       1, -1 },
 	};
-//@formatter:on
+	//@formatter:on
 
 	protected int[] huntingDurations(int levelNumber) {
 		int index = switch (levelNumber) {
@@ -126,17 +126,15 @@ public abstract class GameModel {
 		return levelNumber;
 	}
 
-	// the game model ingredients
-
 	protected GameLevel level;
 	protected int credit;
 	protected int lives;
 	protected boolean playing;
-	protected boolean immune; // extra
 	protected final List<Byte> levelCounter = new LinkedList<>();
 	protected Score score;
 	protected Score highScore;
 	protected boolean scoringEnabled = true;
+	protected boolean immune; // extra feature
 
 	/**
 	 * @return the game variant realized by this model
@@ -149,31 +147,26 @@ public abstract class GameModel {
 	public abstract Pac createPac();
 
 	/**
-	 * @return a set of new ghosts
+	 * @return set of new ghosts
 	 */
 	public abstract Ghost[] createGhosts();
 
 	/**
-	 * 
-	 * @param levelNumber Level number (starting at 1)
-	 * @return world used in this level
+	 * @param levelNumber level number (starting at 1)
+	 * @return world used in specified level
 	 */
 	public abstract World createWorld(int levelNumber);
 
 	/**
-	 * 
-	 * @param levelNumber Level number (starting at 1)
-	 * @return bonus used in this level
+	 * @param levelNumber level number (starting at 1)
+	 * @return bonus used in specified level
 	 */
 	public abstract Bonus createBonus(int levelNumber);
 
 	/**
-	 * Called when the bonus gets activated.
-	 * 
-	 * @param bonus the bonus
+	 * @param levelNumber level number (starting at 1)
+	 * @return ghost house rules (dot counters etc.) used in specified level
 	 */
-	public abstract void onBonusReached();
-
 	protected GhostHouseRules createHouseRules(int levelNumber) {
 		var rules = new GhostHouseRules();
 		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 4 * FPS : 3 * FPS);
@@ -186,62 +179,84 @@ public abstract class GameModel {
 		return rules;
 	}
 
-	// from level 21 on, level parameters remain the same
+	/**
+	 * @param levelNumber level number (starting at 1)
+	 * @return parameter values (speed, pellet counts etc.) used in specified level. From level 21 on, level parameters
+	 *         remain the same
+	 * @see {@link GameLevel.Parameters}
+	 */
 	protected byte[] levelParameters(int levelNumber) {
 		return levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
 	}
 
 	/**
-	 * Resets the game to the initial state.
+	 * Called when the bonus gets activated.
+	 */
+	public abstract void onBonusReached();
+
+	/**
+	 * Resets the game. Credit and level counter stay unchanged.
 	 */
 	public void reset() {
 		LOGGER.trace("Reset game (%s)", variant());
+		level = null;
 		playing = false;
 		lives = INITIAL_LIVES;
 		scoringEnabled = true;
-		level = null;
 		oneLessLifeDisplayed = false; // remove
 	}
 
-	/** Current level. */
+	/** @return (optional) current game level. */
 	public Optional<GameLevel> level() {
 		return Optional.ofNullable(level);
 	}
 
+	/**
+	 * Creates the specified level and selects it
+	 * 
+	 * @param levelNumber level number (starting at 1)
+	 */
 	protected void setLevel(int levelNumber) {
 		var pac = createPac();
-		var theGhosts = createGhosts();
+		var ghosts = createGhosts();
 		var world = createWorld(levelNumber);
 		var bonus = createBonus(levelNumber);
 		var params = levelParameters(levelNumber);
-		level = new GameLevel(this, levelNumber, pac, theGhosts, world, bonus, params);
+		level = new GameLevel(this, levelNumber, pac, ghosts, world, bonus, params);
 		level.setHouseRules(createHouseRules(levelNumber));
 		level.setHuntingDurations(huntingDurations(levelNumber));
-		LOGGER.trace("Game level %d created. (%s game variant)", levelNumber, variant());
+		LOGGER.trace("Game level %d created. (%s)", levelNumber, variant());
 	}
 
 	/**
 	 * Creates and enters the given level.
 	 * 
-	 * @param levelNumber 1-based level number
+	 * @param levelNumber level number (starting at 1)
 	 */
 	public void enterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		setLevel(levelNumber);
 		level.enter();
-		if (levelNumber == 1) {
-			levelCounter.clear();
-		}
-		if (levelCounter.size() == LEVEL_COUNTER_MAX_SYMBOLS) {
-			levelCounter.remove(0);
-		}
-		levelCounter.add(level.bonus().symbol());
+		updateLevelCounter(levelNumber);
 		if (score != null) {
 			score.setLevelNumber(levelNumber);
 		}
 	}
 
+	private void updateLevelCounter(int levelNumber) {
+		if (levelNumber == 1) {
+			levelCounter.clear();
+		}
+		levelCounter.add(level.bonus().symbol());
+		if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
+			levelCounter.remove(0);
+		}
+	}
+
+	/**
+	 * Enters the next game level.
+	 */
 	public void nextLevel() {
 		if (level == null) {
 			throw new IllegalStateException("Cannot enter next level, no current level exists");
@@ -249,6 +264,9 @@ public abstract class GameModel {
 		enterLevel(level.number() + 1);
 	}
 
+	/**
+	 * Enters the demo game level ("attract mode").
+	 */
 	public void enterDemoLevel() {
 		setLevel(1);
 		level.enter();
@@ -256,7 +274,7 @@ public abstract class GameModel {
 		scoringEnabled = false;
 	}
 
-	/** Tells if the game play is running. */
+	/** @return tells if the game play is running. */
 	public boolean isPlaying() {
 		return playing;
 	}
@@ -265,6 +283,9 @@ public abstract class GameModel {
 		this.playing = playing;
 	}
 
+	/**
+	 * @return tells if Pac-Man can get killed by ghosts
+	 */
 	public boolean isImmune() {
 		return immune;
 	}
@@ -284,7 +305,7 @@ public abstract class GameModel {
 		this.lives = lives;
 	}
 
-	/** Collected level symbols. */
+	/** @return collected level symbols. */
 	public Iterable<Byte> levelCounter() {
 		return levelCounter;
 	}
@@ -309,6 +330,9 @@ public abstract class GameModel {
 		if (points < 0) {
 			throw new IllegalArgumentException("Scored points value must not be negative but is: " + points);
 		}
+		if (level == null) {
+			throw new IllegalStateException("Cannot score points: No game level selected");
+		}
 		if (!scoringEnabled) {
 			return;
 		}
@@ -321,12 +345,12 @@ public abstract class GameModel {
 			highScore.setDate(LocalDate.now());
 		}
 		if (oldScore < SCORE_EXTRA_LIFE && newScore >= SCORE_EXTRA_LIFE) {
-			setLives(lives + 1);
+			lives += 1;
 			GameEvents.publish(GameEventType.PLAYER_GETS_EXTRA_LIFE, level.pac().tile());
 		}
 	}
 
-	private static File hiscoreFile(GameVariant variant) {
+	private static File highscoreFile(GameVariant variant) {
 		Objects.requireNonNull(variant, "Game variant is null");
 		var dir = System.getProperty("user.home");
 		return switch (variant) {
@@ -336,7 +360,7 @@ public abstract class GameModel {
 		};
 	}
 
-	private static Score loadHiscore(File file) {
+	private static Score loadHighscore(File file) {
 		try (var in = new FileInputStream(file)) {
 			var props = new Properties();
 			props.loadFromXML(in);
@@ -356,15 +380,12 @@ public abstract class GameModel {
 		}
 	}
 
-	public void loadHiscore() {
-		highScore = loadHiscore(hiscoreFile(variant()));
+	public void loadHighscore() {
+		highScore = loadHighscore(highscoreFile(variant()));
 	}
 
-	public void saveHiscore() {
-		var oldHiscore = loadHiscore(hiscoreFile(variant()));
-		if (oldHiscore == null) {
-			return;
-		}
+	public void saveNewHighscore() {
+		var oldHiscore = loadHighscore(highscoreFile(variant()));
 		if (highScore.points() <= oldHiscore.points()) {
 			return;
 		}
@@ -372,7 +393,7 @@ public abstract class GameModel {
 		props.setProperty("points", String.valueOf(highScore.points()));
 		props.setProperty("level", String.valueOf(highScore.levelNumber()));
 		props.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
-		var highScoreFile = hiscoreFile(variant());
+		var highScoreFile = highscoreFile(variant());
 		try (var out = new FileOutputStream(highScoreFile)) {
 			props.storeToXML(out, "%s Hiscore".formatted(variant()));
 			LOGGER.info("Highscore saved. File: '%s' Points: %d Level: %d", highScoreFile.getAbsolutePath(),
@@ -382,7 +403,7 @@ public abstract class GameModel {
 		}
 	}
 
-	/** Number of coins inserted. */
+	/** @return number of coins inserted. */
 	public int credit() {
 		return credit;
 	}

@@ -65,6 +65,9 @@ public class GameLevel {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
+	/**
+	 * Individual settings used by a level.
+	 */
 	public record Parameters(
 	//@formatter:off
 		/** Relative Pac-Man speed in this level. */

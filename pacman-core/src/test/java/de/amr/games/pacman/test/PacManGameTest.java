@@ -206,7 +206,7 @@ public class PacManGameTest {
 	@Test
 	public void testHighScore() {
 		game.newScore();
-		game.loadHiscore();
+		game.loadHighscore();
 		game.highScore().ifPresent(hiscore -> {
 			assertEquals(0, hiscore.points());
 			game.scorePoints(42);
