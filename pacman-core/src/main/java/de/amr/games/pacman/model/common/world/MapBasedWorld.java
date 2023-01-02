@@ -25,12 +25,18 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
+import static de.amr.games.pacman.model.common.world.WorldMap.ENERGIZER;
+import static de.amr.games.pacman.model.common.world.WorldMap.ENERGIZER_EATEN;
+import static de.amr.games.pacman.model.common.world.WorldMap.PELLET;
+import static de.amr.games.pacman.model.common.world.WorldMap.PELLET_EATEN;
+import static de.amr.games.pacman.model.common.world.WorldMap.SPACE;
+import static de.amr.games.pacman.model.common.world.WorldMap.TUNNEL;
+import static de.amr.games.pacman.model.common.world.WorldMap.WALL;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.math.Vector2i;
 
 /**
@@ -38,26 +44,14 @@ import de.amr.games.pacman.lib.math.Vector2i;
  */
 public abstract class MapBasedWorld implements World {
 
-	//@formatter:off
-	public static final byte SPACE           = 0;
-	public static final byte WALL            = 1;
-	public static final byte TUNNEL          = 2;
-	public static final byte PELLET          = 3;
-	public static final byte ENERGIZER       = 4;
-	public static final byte PELLET_EATEN    = 5;
-	public static final byte ENERGIZER_EATEN = 6;
-	//@formatter:on
-
-	protected final Vector2i size;
-	protected final byte[][] map;
+	protected final WorldMap map;
 	protected final List<Portal> portals;
 	protected final List<Vector2i> energizerTiles;
 	protected final int totalFoodCount;
 	protected int foodRemaining;
 
-	protected MapBasedWorld(byte[][] mapData, int sizeX, int sizeY) {
-		map = U.copyByteArray2D(mapData);
-		size = v2i(sizeX, sizeY);
+	protected MapBasedWorld(byte[][] mapData) {
+		map = new WorldMap(mapData);
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
@@ -66,9 +60,9 @@ public abstract class MapBasedWorld implements World {
 
 	protected ArrayList<Portal> findPortals() {
 		var portalList = new ArrayList<Portal>();
-		for (int row = 0; row < size.y(); ++row) {
-			if (map[row][0] == TUNNEL && map[row][size.x() - 1] == TUNNEL) {
-				portalList.add(new HorizontalPortal(v2i(0, row), v2i(size.x() - 1, row)));
+		for (int row = 0; row < map.numRows(); ++row) {
+			if (map.get(row, 0) == TUNNEL && map.get(row, map.numCols() - 1) == TUNNEL) {
+				portalList.add(new HorizontalPortal(v2i(0, row), v2i(map.numCols() - 1, row)));
 			}
 		}
 		portalList.trimToSize();
@@ -76,17 +70,17 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	protected byte content(Vector2i tile) {
-		return insideMap(tile) ? map[tile.y()][tile.x()] : SPACE;
+		return map.get(tile.y(), tile.x(), SPACE);
 	}
 
 	@Override
 	public int numCols() {
-		return size.x();
+		return map.numCols();
 	}
 
 	@Override
 	public int numRows() {
-		return size.y();
+		return map.numRows();
 	}
 
 	@Override
@@ -130,10 +124,10 @@ public abstract class MapBasedWorld implements World {
 	public void removeFood(Vector2i tile) {
 		byte data = content(tile);
 		if (data == ENERGIZER) {
-			map[tile.y()][tile.x()] = ENERGIZER_EATEN;
+			map.set(tile.y(), tile.x(), ENERGIZER_EATEN);
 			--foodRemaining;
 		} else if (data == PELLET) {
-			map[tile.y()][tile.x()] = PELLET_EATEN;
+			map.set(tile.y(), tile.x(), PELLET_EATEN);
 			--foodRemaining;
 		}
 	}
@@ -162,12 +156,12 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public void resetFood() {
-		for (int row = 0; row < size.y(); ++row) {
-			for (int col = 0; col < size.x(); ++col) {
-				if (map[row][col] == PELLET_EATEN) {
-					map[row][col] = PELLET;
-				} else if (map[row][col] == ENERGIZER_EATEN) {
-					map[row][col] = ENERGIZER;
+		for (int row = 0; row < map.numRows(); ++row) {
+			for (int col = 0; col < map.numCols(); ++col) {
+				if (map.get(row, col) == PELLET_EATEN) {
+					map.set(row, col, PELLET);
+				} else if (map.get(row, col) == ENERGIZER_EATEN) {
+					map.set(row, col, ENERGIZER);
 				}
 			}
 		}

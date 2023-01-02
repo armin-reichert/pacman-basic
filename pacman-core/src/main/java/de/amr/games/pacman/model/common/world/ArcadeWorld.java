@@ -74,7 +74,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	private EntityAnimation levelCompleteAnimation;
 
 	public ArcadeWorld(byte[][] mapData) {
-		super(mapData, TILES_X, TILES_Y);
+		super(mapData);
 	}
 
 	/**

@@ -118,16 +118,16 @@ public interface World {
 
 	/**
 	 * @param tile a tile
-	 * @return tells if this tile is located inside the world bounds
+	 * @return tells if this tile location is inside the world bounds
 	 */
-	default boolean insideMap(Vector2i tile) {
+	default boolean insideBounds(Vector2i tile) {
 		return 0 <= tile.x() && tile.x() < numCols() && 0 <= tile.y() && tile.y() < numRows();
 	}
 
 	/**
 	 * @return tells if this position is located inside the world bounds
 	 */
-	default boolean insideMap(double x, double y) {
+	default boolean insideBounds(double x, double y) {
 		return 0 <= x && x < numCols() * TS && 0 <= y && y < numRows() * TS;
 	}
 

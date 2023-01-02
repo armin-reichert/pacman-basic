@@ -148,7 +148,7 @@ public class Creature extends Entity {
 	public boolean canAccessTile(Vector2i tile, GameLevel level) {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
-		if (level.world().insideMap(tile)) {
+		if (level.world().insideBounds(tile)) {
 			return !level.world().isWall(tile) && !level.world().ghostHouse().isDoorTile(tile);
 		}
 		return level.world().belongsToPortal(tile);
