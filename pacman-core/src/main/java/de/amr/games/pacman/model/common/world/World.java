@@ -227,11 +227,6 @@ public interface World {
 	int eatenFoodCount();
 
 	/**
-	 * Resets the food in this world.
-	 */
-	void resetFood();
-
-	/**
 	 * Assigns to each ghost its home position, revival position and scatter tile.
 	 * 
 	 * @param ghosts ghosts in order RED, PINK, CYAN, ORANGE

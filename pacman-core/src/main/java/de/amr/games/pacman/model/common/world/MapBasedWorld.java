@@ -34,6 +34,7 @@ import static de.amr.games.pacman.model.common.world.WorldMap.TUNNEL;
 import static de.amr.games.pacman.model.common.world.WorldMap.WALL;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -89,7 +90,7 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public List<Portal> portals() {
-		return portals;
+		return Collections.unmodifiableList(portals);
 	}
 
 	@Override
@@ -156,19 +157,5 @@ public abstract class MapBasedWorld implements World {
 	@Override
 	public int eatenFoodCount() {
 		return totalFoodCount - foodRemaining;
-	}
-
-	@Override
-	public void resetFood() {
-		for (int row = 0; row < map.numRows(); ++row) {
-			for (int col = 0; col < map.numCols(); ++col) {
-				if (map.get(row, col) == PELLET_EATEN) {
-					map.set(row, col, PELLET);
-				} else if (map.get(row, col) == ENERGIZER_EATEN) {
-					map.set(row, col, ENERGIZER);
-				}
-			}
-		}
-		foodRemaining = totalFoodCount;
 	}
 }
