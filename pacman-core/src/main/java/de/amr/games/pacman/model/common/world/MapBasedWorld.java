@@ -45,13 +45,17 @@ import de.amr.games.pacman.lib.math.Vector2i;
 public abstract class MapBasedWorld implements World {
 
 	protected final WorldMap map;
-	protected final List<Portal> portals;
-	protected final List<Vector2i> energizerTiles;
-	protected final int totalFoodCount;
+	protected List<Portal> portals;
+	protected List<Vector2i> energizerTiles;
+	protected int totalFoodCount;
 	protected int foodRemaining;
 
 	protected MapBasedWorld(byte[][] mapData) {
 		map = new WorldMap(mapData);
+		analyzeMap();
+	}
+
+	private void analyzeMap() {
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
