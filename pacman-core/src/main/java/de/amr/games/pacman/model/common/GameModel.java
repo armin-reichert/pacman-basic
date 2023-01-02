@@ -238,14 +238,14 @@ public abstract class GameModel {
 		checkLevelNumber(levelNumber);
 		setLevel(levelNumber);
 		level.enter();
-		updateLevelCounter(levelNumber);
+		incrementLevelCounter();
 		if (score != null) {
 			score.setLevelNumber(levelNumber);
 		}
 	}
 
-	private void updateLevelCounter(int levelNumber) {
-		if (levelNumber == 1) {
+	private void incrementLevelCounter() {
+		if (level.number() == 1) {
 			levelCounter.clear();
 		}
 		levelCounter.add(level.bonus().symbol());
