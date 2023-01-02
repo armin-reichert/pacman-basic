@@ -17,6 +17,22 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 
 public class WorldTest {
 
+	@Test(expected = NullPointerException.class)
+	public void testNullTileArg() {
+		var world = new ArcadeWorld(PacManGame.MAP);
+		world.index(null);
+		world.insideBounds(null);
+		world.belongsToPortal(null);
+		world.isIntersection(null);
+		world.isWall(null);
+		world.isTunnel(null);
+		world.isFoodTile(null);
+		world.isEnergizerTile(null);
+		world.removeFood(null);
+		world.containsFood(null);
+		world.containsEatenFood(null);
+	}
+
 	@Test
 	public void testTileCoordinates() {
 		Vector2f pos = new Vector2f(0, 0);
