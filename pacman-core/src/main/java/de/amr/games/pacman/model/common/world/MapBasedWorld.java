@@ -36,6 +36,7 @@ import static de.amr.games.pacman.model.common.world.WorldMap.WALL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -95,27 +96,32 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public boolean belongsToPortal(Vector2i tile) {
+		Objects.requireNonNull(tile);
 		return portals.stream().anyMatch(portal -> portal.contains(tile));
 	}
 
 	@Override
 	public boolean isWall(Vector2i tile) {
+		Objects.requireNonNull(tile);
 		return content(tile) == WALL;
 	}
 
 	@Override
 	public boolean isTunnel(Vector2i tile) {
+		Objects.requireNonNull(tile);
 		return content(tile) == TUNNEL;
 	}
 
 	@Override
 	public boolean isFoodTile(Vector2i tile) {
+		Objects.requireNonNull(tile);
 		byte data = content(tile);
 		return data == PELLET || data == PELLET_EATEN || data == ENERGIZER || data == ENERGIZER_EATEN;
 	}
 
 	@Override
 	public boolean isEnergizerTile(Vector2i tile) {
+		Objects.requireNonNull(tile);
 		byte data = content(tile);
 		return data == ENERGIZER || data == ENERGIZER_EATEN;
 	}
@@ -127,6 +133,7 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public void removeFood(Vector2i tile) {
+		Objects.requireNonNull(tile);
 		byte data = content(tile);
 		if (data == ENERGIZER) {
 			map.set(tile.y(), tile.x(), ENERGIZER_EATEN);
@@ -139,12 +146,14 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public boolean containsFood(Vector2i tile) {
+		Objects.requireNonNull(tile);
 		byte data = content(tile);
 		return data == PELLET || data == ENERGIZER;
 	}
 
 	@Override
 	public boolean containsEatenFood(Vector2i tile) {
+		Objects.requireNonNull(tile);
 		byte data = content(tile);
 		return data == PELLET_EATEN || data == ENERGIZER_EATEN;
 	}
