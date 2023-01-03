@@ -26,7 +26,6 @@ package de.amr.games.pacman.model.common.actors;
 import static de.amr.games.pacman.lib.steering.Direction.DOWN;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
-import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.EATEN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
@@ -69,6 +68,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final byte ID_PINK_GHOST = 1;
 	public static final byte ID_CYAN_GHOST = 2;
 	public static final byte ID_ORANGE_GHOST = 3;
+
+	public static final byte ACTION_SCATTER = 0;
+	public static final byte ACTION_CHASE = 1;
+	public static final byte ACTION_ROAM = 2;
 
 	private final byte id;
 	private Vector2f homePosition;
@@ -303,17 +306,23 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			setRelSpeed(level.params().ghostSpeed());
 		}
-		if (level.game().variant() == MS_PACMAN && level.huntingPhase() == 0
-				&& (id == ID_RED_GHOST || id == ID_PINK_GHOST)) {
+		switch (level.game().ghostHuntingAction(level, this)) {
+		case ACTION_ROAM -> {
 			roam(level);
-		} else if (level.chasingPhase().isPresent() || id == ID_RED_GHOST && level.cruiseElroyState() > 0) {
+		}
+		case ACTION_CHASE -> {
 			setTargetTile(fnChasingTarget.get());
 			navigateTowardsTarget(level);
 			tryMoving(level);
-		} else {
+		}
+		case ACTION_SCATTER -> {
 			setTargetTile(scatterTile);
 			navigateTowardsTarget(level);
 			tryMoving(level);
+		}
+		default -> {
+			// unknown action
+		}
 		}
 		if (animationSet != null) {
 			animationSet.select(AnimKeys.GHOST_COLOR);

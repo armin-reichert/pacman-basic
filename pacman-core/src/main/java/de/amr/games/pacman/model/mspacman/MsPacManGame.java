@@ -36,6 +36,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -325,5 +326,16 @@ public class MsPacManGame extends GameModel {
 		movingBonus.setMoveAndWishDir(orientation);
 		movingBonus.setEdible(TickTimer.INDEFINITE);
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
+	}
+
+	@Override
+	public byte ghostHuntingAction(GameLevel level, Ghost ghost) {
+		if (level.huntingPhase() == 0 && (ghost.id() == Ghost.ID_RED_GHOST || ghost.id() == Ghost.ID_PINK_GHOST)) {
+			return Ghost.ACTION_ROAM; // not sure
+		}
+		if (level.chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && level.cruiseElroyState() > 0) {
+			return Ghost.ACTION_CHASE;
+		}
+		return Ghost.ACTION_SCATTER;
 	}
 }

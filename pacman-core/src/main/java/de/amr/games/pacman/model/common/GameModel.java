@@ -277,6 +277,13 @@ public abstract class GameModel {
 		scoringEnabled = false;
 	}
 
+	public byte ghostHuntingAction(GameLevel level, Ghost ghost) {
+		if (level.chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && level.cruiseElroyState() > 0) {
+			return Ghost.ACTION_CHASE;
+		}
+		return Ghost.ACTION_SCATTER;
+	}
+
 	/** @return tells if the game play is running. */
 	public boolean isPlaying() {
 		return playing;
