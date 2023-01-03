@@ -86,7 +86,7 @@ public class WorldMap {
 	}
 
 	public byte get(int row, int col) {
-		if (0 <= row && row < numRows && 0 <= col && col <= numCols) {
+		if (0 <= row && row < numRows && 0 <= col && col < numCols) {
 			return mapData[row][col];
 		}
 		throw new IllegalArgumentException(
