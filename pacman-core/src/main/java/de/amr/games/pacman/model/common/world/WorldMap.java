@@ -101,6 +101,10 @@ public class WorldMap {
 	}
 
 	public void set(int row, int col, byte b) {
-		mapData[row][col] = b;
+		if (0 <= row && row < numRows && 0 <= col && col < numCols) {
+			mapData[row][col] = b;
+		}
+		throw new IllegalArgumentException(
+				"Coordinate (%d, %d) is outside of map bounds (%d rows, %d cols)".formatted(row, col, numRows, numCols));
 	}
 }
