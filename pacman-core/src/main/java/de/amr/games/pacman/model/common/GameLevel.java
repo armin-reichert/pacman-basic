@@ -239,9 +239,9 @@ public class GameLevel {
 	/**
 	 * @param ghost a ghost
 	 * @param dir   a direction
-	 * @return tells if the ghost can currently move towards the given direction
+	 * @return tells if the ghost can steer towards the given direction
 	 */
-	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
+	public boolean isSteeringAllowed(Ghost ghost, Direction dir) {
 		if (world instanceof ArcadeWorld arcadeWorld) {
 			boolean blocked = dir == Direction.UP && ghost.is(HUNTING_PAC)
 					&& arcadeWorld.upwardBlockedTiles().contains(ghost.tile());
