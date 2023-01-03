@@ -192,6 +192,26 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return U.oneOf(state, alternatives);
 	}
 
+	private void scatter(GameLevel level) {
+		setTargetTile(scatterTile);
+		navigateTowardsTarget(level);
+		tryMoving(level);
+	}
+
+	private void chase(GameLevel level) {
+		setTargetTile(fnChasingTarget.get());
+		navigateTowardsTarget(level);
+		tryMoving(level);
+	}
+
+	private void roam(GameLevel level) {
+		if (level.game().hasCredit()) {
+			moveRandomly(level);
+		} else {
+			movePseudoRandomly(level);
+		}
+	}
+
 	/**
 	 * Executes a single simulation step for this ghost in the specified game level.
 	 * 
@@ -303,21 +323,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			setRelSpeed(level.params().ghostSpeed());
 		}
 		switch (level.game().ghostHuntingAction(level, this)) {
-		case ACTION_ROAM -> {
-			roam(level);
-		}
-		case ACTION_CHASE -> {
-			setTargetTile(fnChasingTarget.get());
-			navigateTowardsTarget(level);
-			tryMoving(level);
-		}
-		case ACTION_SCATTER -> {
-			setTargetTile(scatterTile);
-			navigateTowardsTarget(level);
-			tryMoving(level);
-		}
-		default -> {
-			// unknown action
+		case ACTION_ROAM -> roam(level);
+		case ACTION_CHASE -> chase(level);
+		case ACTION_SCATTER -> scatter(level);
+		default -> { // unknown action
 		}
 		}
 		if (animationSet != null) {
@@ -352,14 +361,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		roam(level);
 		if (animationSet != null) {
 			updateColorOrBlueOrFlashingAnimation(level);
-		}
-	}
-
-	private void roam(GameLevel level) {
-		if (level.game().hasCredit()) {
-			moveRandomly(level);
-		} else {
-			movePseudoRandomly(level);
 		}
 	}
 
