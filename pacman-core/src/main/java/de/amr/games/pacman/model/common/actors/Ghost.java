@@ -291,10 +291,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * phase where the ghosts retreat to their maze corners. After some time they start chasing Pac-Man according to their
 	 * character ("Shadow", "Speedy", "Bashful", "Pokey"). The 4th hunting phase at each level has an "infinite" chasing
 	 * phase. <p>
-	 * 
-	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original intention
-	 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
-	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
 	private void updateStateHuntingPac(GameLevel level) {
 		if (level.world().isTunnel(tile())) {

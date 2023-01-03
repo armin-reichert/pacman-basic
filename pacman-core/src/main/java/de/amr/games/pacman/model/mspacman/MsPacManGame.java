@@ -330,6 +330,11 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public byte ghostHuntingAction(GameLevel level, Ghost ghost) {
+		/*
+		 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* hunting/scatter phase. Some say, the original
+		 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the
+		 * scatter target of Blinky and Pinky would have been affected. Who knows?
+		 */
 		if (level.huntingPhase() == 0 && (ghost.id() == Ghost.ID_RED_GHOST || ghost.id() == Ghost.ID_PINK_GHOST)) {
 			return Ghost.ACTION_ROAM; // not sure
 		}
