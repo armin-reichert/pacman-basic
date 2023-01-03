@@ -86,25 +86,32 @@ public class WorldMap {
 	}
 
 	public byte get(int row, int col) {
-		if (0 <= row && row < numRows && 0 <= col && col < numCols) {
-			return mapData[row][col];
+		if (!insideBounds(row, col)) {
+			throwOutOfBoundsError(row, col);
 		}
-		throw new IllegalArgumentException(
-				"Coordinate (%d, %d) is outside of map bounds (%d rows, %d cols)".formatted(row, col, numRows, numCols));
+		return mapData[row][col];
 	}
 
 	public byte get(int row, int col, byte defaultContent) {
-		if (0 <= row && row < numRows && 0 <= col && col < numCols) {
-			return mapData[row][col];
+		if (!insideBounds(row, col)) {
+			return defaultContent;
 		}
-		return defaultContent;
+		return mapData[row][col];
 	}
 
 	public void set(int row, int col, byte b) {
-		if (0 <= row && row < numRows && 0 <= col && col < numCols) {
-			mapData[row][col] = b;
+		if (!insideBounds(row, col)) {
+			throwOutOfBoundsError(row, col);
 		}
-		throw new IllegalArgumentException(
+		mapData[row][col] = b;
+	}
+
+	private boolean insideBounds(int row, int col) {
+		return 0 <= row && row < numRows && 0 <= col && col < numCols;
+	}
+
+	private void throwOutOfBoundsError(int row, int col) {
+		throw new IndexOutOfBoundsException(
 				"Coordinate (%d, %d) is outside of map bounds (%d rows, %d cols)".formatted(row, col, numRows, numCols));
 	}
 }
