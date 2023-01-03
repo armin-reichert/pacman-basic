@@ -94,7 +94,7 @@ public class WorldMap {
 	}
 
 	public byte get(int row, int col, byte defaultContent) {
-		if (0 <= row && row < numRows && 0 <= col && col <= numCols) {
+		if (0 <= row && row < numRows && 0 <= col && col < numCols) {
 			return mapData[row][col];
 		}
 		return defaultContent;
