@@ -45,6 +45,7 @@ public interface GameEventListener {
 		case GHOST_STARTS_LEAVING_HOUSE -> onGhostStartsLeavingHouse(event);
 		case GHOST_COMPLETES_LEAVING_HOUSE -> onGhostCompletesLeavingHouse(event);
 		case GHOST_STARTS_RETURNING_HOME -> onGhostStartsReturningHome(event);
+		case LEVEL_STARTING -> onLevelStarting(event);
 		case PAC_FINDS_FOOD -> onPlayerFindsFood(event);
 		case PLAYER_GETS_EXTRA_LIFE -> onPlayerGetsExtraLife(event);
 		case PAC_GETS_POWER -> onPlayerGetsPower(event);
@@ -80,6 +81,9 @@ public interface GameEventListener {
 	}
 
 	default void onGhostCompletesLeavingHouse(GameEvent e) {
+	}
+
+	default void onLevelStarting(GameEvent e) {
 	}
 
 	default void onPlayerFindsFood(GameEvent e) {

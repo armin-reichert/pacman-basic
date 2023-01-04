@@ -134,6 +134,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				gc.pacSteeringInAttractMode.init();
 				game.reset();
 				game.enterDemoLevel();
+				GameEvents.publish(GameEventType.LEVEL_STARTING, null);
 			} else if (game.isPlaying()) {
 				game.level().ifPresent(level -> level.letsGetReadyToRumbleAndShowGuys(true));
 			} else {
@@ -141,6 +142,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.enterLevel(1);
 				game.newScore();
 				gc.sounds().play(GameSound.GAME_READY);
+				GameEvents.publish(GameEventType.LEVEL_STARTING, null);
 			}
 		}
 
@@ -333,7 +335,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.restartSeconds(1);
 			game.nextLevel();
-			GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
+			GameEvents.publish(GameEventType.LEVEL_STARTING, null);
 		}
 
 		@Override
