@@ -73,7 +73,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final byte ACTION_ROAM = 2;
 
 	private final byte id;
-	private Vector2i scatterTile;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
 	private EntityAnimationSet<AnimKeys> animationSet;
@@ -106,14 +105,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		super.reset();
 		attractRouteIndex = 0;
 		killedIndex = -1;
-	}
-
-	public Vector2i scatterTile() {
-		return scatterTile;
-	}
-
-	public void setScatterTile(Vector2i scatterTile) {
-		this.scatterTile = scatterTile;
 	}
 
 	public void setChasingBehavior(Supplier<Vector2i> fnTargetTile) {
@@ -178,7 +169,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	private void scatter(GameLevel level) {
-		setTargetTile(scatterTile);
+		setTargetTile(level.world().ghostScatterTargetTile(id));
 		navigateTowardsTarget(level);
 		tryMoving(level);
 	}

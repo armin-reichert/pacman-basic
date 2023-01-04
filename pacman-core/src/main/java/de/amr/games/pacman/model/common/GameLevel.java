@@ -157,11 +157,11 @@ public class GameLevel {
 	/**
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
 	 */
-	public void defineGhostChasingBehavior() {
-		var redGhost = ghost(Ghost.ID_RED_GHOST);
-		var pinkGhost = ghost(Ghost.ID_PINK_GHOST);
-		var cyanGhost = ghost(Ghost.ID_CYAN_GHOST);
-		var orangeGhost = ghost(Ghost.ID_ORANGE_GHOST);
+	public void defineGhostChasingBehavior(World world) {
+		var redGhost = ghost(ID_RED_GHOST);
+		var pinkGhost = ghost(ID_PINK_GHOST);
+		var cyanGhost = ghost(ID_CYAN_GHOST);
+		var orangeGhost = ghost(ID_ORANGE_GHOST);
 
 		// Red ghost attacks Pac-Man directly
 		redGhost.setChasingBehavior(pac::tile);
@@ -175,7 +175,7 @@ public class GameLevel {
 		// Orange ghost attacks directly but retreats if too near
 		orangeGhost.setChasingBehavior( //
 				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? //
-						orangeGhost.scatterTile() : pac.tile());
+						world.ghostScatterTargetTile(ID_ORANGE_GHOST) : pac.tile());
 	}
 
 	/** @return Level number, starting with 1. */

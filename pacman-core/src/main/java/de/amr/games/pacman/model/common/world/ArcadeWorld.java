@@ -71,6 +71,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 	private Vector2f[] ghostInitialPositions;
 	private Vector2f[] ghostRevivalPositions;
+	private Vector2i[] ghostScatterTargetTiles;
 	private List<Vector2i> upwardBlockedTiles = List.of();
 	private EntityAnimation levelCompleteAnimation;
 
@@ -93,22 +94,23 @@ public class ArcadeWorld extends MapBasedWorld {
 	public void assignGhostPositions(Ghost[] ghosts) {
 		ghostInitialPositions = new Vector2f[4];
 		ghostRevivalPositions = new Vector2f[4];
+		ghostScatterTargetTiles = new Vector2i[4];
 
 		ghostInitialPositions[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
 		ghostRevivalPositions[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-		ghosts[ID_RED_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NE);
+		ghostScatterTargetTiles[ID_RED_GHOST] = ArcadeWorld.SCATTER_TILE_NE;
 
 		ghostInitialPositions[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 		ghostRevivalPositions[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-		ghosts[ID_PINK_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NW);
+		ghostScatterTargetTiles[ID_PINK_GHOST] = ArcadeWorld.SCATTER_TILE_NW;
 
 		ghostInitialPositions[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
 		ghostRevivalPositions[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
-		ghosts[ID_CYAN_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SE);
+		ghostScatterTargetTiles[ID_CYAN_GHOST] = ArcadeWorld.SCATTER_TILE_SE;
 
 		ghostInitialPositions[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
 		ghostRevivalPositions[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-		ghosts[ID_ORANGE_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SW);
+		ghostScatterTargetTiles[ID_ORANGE_GHOST] = ArcadeWorld.SCATTER_TILE_SW;
 	}
 
 	@Override
@@ -126,6 +128,12 @@ public class ArcadeWorld extends MapBasedWorld {
 	public Vector2f ghostRevivalPosition(byte ghostID) {
 		Ghost.checkID(ghostID);
 		return ghostRevivalPositions[ghostID];
+	}
+
+	@Override
+	public Vector2i ghostScatterTargetTile(byte ghostID) {
+		Ghost.checkID(ghostID);
+		return ghostScatterTargetTiles[ghostID];
 	}
 
 	@Override

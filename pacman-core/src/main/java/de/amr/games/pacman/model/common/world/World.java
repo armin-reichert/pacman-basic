@@ -233,6 +233,8 @@ public interface World {
 	 */
 	void assignGhostPositions(Ghost[] ghosts);
 
+	Vector2i ghostScatterTargetTile(byte ghostID);
+
 	Vector2f ghostInitialPosition(byte ghostID);
 
 	Vector2f ghostRevivalPosition(byte ghostID);
