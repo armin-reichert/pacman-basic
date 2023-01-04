@@ -75,7 +75,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	private final byte id;
 	private Vector2f homePosition;
-	private Vector2f revivalPosition;
 	private Vector2i scatterTile;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
@@ -83,12 +82,16 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private int killedIndex;
 	private int attractRouteIndex;
 
-	public Ghost(byte id, String name) {
-		super(name);
+	public static byte checkID(byte id) {
 		if (id < 0 || id > 3) {
 			throw new IllegalArgumentException("Ghost ID must be in range 0..3");
 		}
-		this.id = id;
+		return id;
+	}
+
+	public Ghost(byte id, String name) {
+		super(name);
+		this.id = checkID(id);
 		reset();
 	}
 
@@ -113,14 +116,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public void setHomePosition(Vector2f homePosition) {
 		this.homePosition = homePosition;
-	}
-
-	public Vector2f revivalPosition() {
-		return revivalPosition;
-	}
-
-	public void setRevivalPosition(Vector2f revivalPosition) {
-		this.revivalPosition = revivalPosition;
 	}
 
 	public Vector2i scatterTile() {
@@ -455,7 +450,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateEnteringHouse(GameLevel level) {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = ENTERING_HOUSE;
-		setTargetTile(tileAt(revivalPosition));
+		setTargetTile(tileAt(level.world().ghostRevivalPosition(id)));
 		GameEvents.publish(new GameEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 	}
 
@@ -467,7 +462,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	private void updateStateEnteringHouse(GameLevel level) {
 		setAbsSpeed(GameModel.SPEED_GHOST_ENTERING_HOUSE_PX);
-		boolean atRevivalTile = level.world().ghostHouse().leadGuyInside(this, revivalPosition);
+		boolean atRevivalTile = level.world().ghostHouse().leadGuyInside(this, level.world().ghostRevivalPosition(id));
 		if (atRevivalTile) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();

@@ -69,7 +69,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	public static final Vector2i SCATTER_TILE_SW = new Vector2i(0, 34);
 
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
-
+	private Vector2f[] ghostRevivalPositions;
 	private List<Vector2i> upwardBlockedTiles = List.of();
 	private EntityAnimation levelCompleteAnimation;
 
@@ -90,26 +90,34 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public void assignGhostPositions(Ghost[] ghosts) {
+		ghostRevivalPositions = new Vector2f[4];
+
 		ghosts[ID_RED_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE));
-		ghosts[ID_RED_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+		ghostRevivalPositions[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 		ghosts[ID_RED_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NE);
 
 		ghosts[ID_PINK_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
-		ghosts[ID_PINK_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER));
+		ghostRevivalPositions[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 		ghosts[ID_PINK_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_NW);
 
 		ghosts[ID_CYAN_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
-		ghosts[ID_CYAN_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT));
+		ghostRevivalPositions[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
 		ghosts[ID_CYAN_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SE);
 
 		ghosts[ID_ORANGE_GHOST].setHomePosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
-		ghosts[ID_ORANGE_GHOST].setRevivalPosition(halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT));
+		ghostRevivalPositions[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
 		ghosts[ID_ORANGE_GHOST].setScatterTile(ArcadeWorld.SCATTER_TILE_SW);
 	}
 
 	@Override
 	public Vector2f pacStartPosition() {
 		return new Vector2f(13 * TS + HTS, 26 * TS);
+	}
+
+	@Override
+	public Vector2f ghostRevivalPosition(byte ghostID) {
+		Ghost.checkID(ghostID);
+		return ghostRevivalPositions[ghostID];
 	}
 
 	@Override

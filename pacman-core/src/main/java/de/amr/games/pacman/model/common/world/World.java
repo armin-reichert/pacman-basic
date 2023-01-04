@@ -233,6 +233,8 @@ public interface World {
 	 */
 	void assignGhostPositions(Ghost[] ghosts);
 
+	Vector2f ghostRevivalPosition(byte ghostID);
+
 	/**
 	 * @return (optional) animation played when level ends
 	 */
