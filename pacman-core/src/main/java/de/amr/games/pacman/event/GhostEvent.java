@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Armin Reichert
+Copyright (c) 2022 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,30 +20,28 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
+*/
 package de.amr.games.pacman.event;
 
-import de.amr.games.pacman.controller.common.GameState;
+import java.util.Objects;
+
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
- * Event indicating a game state change.
- * 
  * @author Armin Reichert
  */
-public class GameStateChangeEvent extends GameEvent {
+public class GhostEvent extends GameEvent {
 
-	public final GameState oldGameState;
-	public final GameState newGameState;
+	public final Ghost ghost;
 
-	public GameStateChangeEvent(GameModel game, GameState oldGameState, GameState newGameState) {
-		super(game, GameEventType.GAME_STATE_CHANGED, null);
-		this.oldGameState = oldGameState;
-		this.newGameState = newGameState;
+	public GhostEvent(GameModel game, GameEventType type, Ghost ghost) {
+		super(game, type, ghost.tile());
+		this.ghost = Objects.requireNonNull(ghost);
 	}
 
 	@Override
 	public String toString() {
-		return "%s(%s->%s)".formatted(getClass().getSimpleName(), oldGameState, newGameState);
+		return "%s: tile %s, ghost %s".formatted(type, tile, ghost);
 	}
 }

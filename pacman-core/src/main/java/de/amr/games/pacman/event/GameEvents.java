@@ -65,6 +65,6 @@ public class GameEvents {
 	}
 
 	public static void publish(GameEventType type, Vector2i tile) {
-		publish(new GameEvent(IT.fnGame.get(), type, null, tile));
+		publish(new GameEvent(IT.fnGame.get(), type, tile));
 	}
 }

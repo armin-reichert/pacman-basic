@@ -40,9 +40,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
@@ -271,7 +271,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = LEAVING_HOUSE;
 		setAbsSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
-		GameEvents.publish(new GameEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
+		GameEvents.publish(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
 	}
 
 	/**
@@ -296,7 +296,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 				killedIndex = -1;
 				enterStateHuntingPac();
 			}
-			GameEvents.publish(new GameEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
+			GameEvents.publish(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
 		}
 	}
 
@@ -427,7 +427,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = ENTERING_HOUSE;
 		setTargetTile(tileAt(level.world().ghostRevivalPosition(id)));
-		GameEvents.publish(new GameEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+		GameEvents.publish(new GhostEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this));
 	}
 
 	/**
@@ -465,8 +465,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			animationSet().ifPresent(animations -> {
 				if (!animations.isSelected(AnimKeys.GHOST_FLASHING)) {
-					selectAndRunAnimation(AnimKeys.GHOST_FLASHING)
-							.ifPresent(flashing -> startFlashingAnimation(level, flashing));
+					selectAndRunAnimation(AnimKeys.GHOST_FLASHING).ifPresent(flashing -> startFlashingAnimation(level, flashing));
 				}
 			});
 		}

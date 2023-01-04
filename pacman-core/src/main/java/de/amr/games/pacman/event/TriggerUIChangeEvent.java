@@ -32,6 +32,6 @@ import de.amr.games.pacman.model.common.GameModel;
 public class TriggerUIChangeEvent extends GameEvent {
 
 	public TriggerUIChangeEvent(GameModel game) {
-		super(game, GameEventType.UI_FORCE_UPDATE, null, null);
+		super(game, GameEventType.UI_FORCE_UPDATE, null);
 	}
 }

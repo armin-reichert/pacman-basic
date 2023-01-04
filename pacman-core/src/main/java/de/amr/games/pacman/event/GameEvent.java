@@ -28,7 +28,6 @@ import java.util.Optional;
 
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * Base class for events fired during game play. This class is a kind of compromise between separate subclasses for each
@@ -40,20 +39,21 @@ public class GameEvent {
 
 	public final GameModel game;
 	public final GameEventType type;
-	public final Optional<Vector2i> tile; // the optional tile where this event occurred
-	public final Optional<Ghost> ghost; // the optional ghost this event relates to
+	public final Optional<Vector2i> tile;
 
-	public GameEvent(GameModel game, GameEventType type, Ghost ghost, Vector2i tile) {
+	/**
+	 * @param game game model
+	 * @param type event type, see {@link GameEventType}
+	 * @param tile tile related to event, may be {@code null}
+	 */
+	public GameEvent(GameModel game, GameEventType type, Vector2i tile) {
 		this.game = Objects.requireNonNull(game);
 		this.type = Objects.requireNonNull(type);
-		this.ghost = Optional.ofNullable(ghost);
 		this.tile = Optional.ofNullable(tile);
 	}
 
 	@Override
 	public String toString() {
-		return ghost.isEmpty() ? //
-				String.format("%s: tile %s", type, tile.orElse(null))
-				: String.format("%s: tile %s, ghost %s", type, tile.orElse(null), ghost.orElse(null));
+		return String.format("%s: tile %s", type, tile.orElse(null));
 	}
 }
