@@ -446,6 +446,22 @@ public class GameLevel {
 		energizerPulse().reset();
 	}
 
+	/**
+	 * @param ghost a ghost
+	 * @return relative speed of ghost when hunting
+	 */
+	public float huntingSpeed(Ghost ghost) {
+		if (world().isTunnel(ghost.tile())) {
+			return params().ghostSpeedTunnel();
+		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState() == 1) {
+			return params().elroy1Speed();
+		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState() == 2) {
+			return params().elroy2Speed();
+		} else {
+			return params().ghostSpeed();
+		}
+	}
+
 	private void checkIfBlinkyBecomesCruiseElroy() {
 		var foodRemaining = world.foodRemaining();
 		if (foodRemaining == params.elroy1DotsLeft()) {

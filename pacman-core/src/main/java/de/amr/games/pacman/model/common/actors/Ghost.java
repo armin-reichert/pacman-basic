@@ -313,15 +313,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * phase. <p>
 	 */
 	private void updateStateHuntingPac(GameLevel level) {
-		if (level.world().isTunnel(tile())) {
-			setRelSpeed(level.params().ghostSpeedTunnel());
-		} else if (id == ID_RED_GHOST && level.cruiseElroyState() == 1) {
-			setRelSpeed(level.params().elroy1Speed());
-		} else if (id == ID_RED_GHOST && level.cruiseElroyState() == 2) {
-			setRelSpeed(level.params().elroy2Speed());
-		} else {
-			setRelSpeed(level.params().ghostSpeed());
-		}
+		setRelSpeed(level.huntingSpeed(this));
 		level.game().doGhostHuntingAction(level, this);
 		selectColoredAnimation(level);
 	}
