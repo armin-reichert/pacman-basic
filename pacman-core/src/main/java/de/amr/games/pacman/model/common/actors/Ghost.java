@@ -262,7 +262,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			setAbsSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
 			move();
 		}
-		updateColorOrBlueOrFlashingAnimation(level);
+		selectColoredAnimation(level);
 	}
 
 	// --- LEAVING_HOUSE ---
@@ -285,7 +285,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param level the level
 	 */
 	private void updateStateLeavingHouse(GameLevel level) {
-		updateColorOrBlueOrFlashingAnimation(level);
+		selectColoredAnimation(level);
 		var outOfHouse = level.world().ghostHouse().leadGuyOutOfHouse(this);
 		if (outOfHouse) {
 			setNewTileEntered(false);
@@ -335,7 +335,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		default -> { // unknown action
 		}
 		}
-		updateColorOrBlueOrFlashingAnimation(level);
+		selectColoredAnimation(level);
 	}
 
 	// --- FRIGHTENED ---
@@ -363,7 +363,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		setRelSpeed(
 				level.world().isTunnel(tile()) ? level.params().ghostSpeedTunnel() : level.params().ghostSpeedFrightened());
 		roam(level);
-		updateColorOrBlueOrFlashingAnimation(level);
+		selectColoredAnimation(level);
 	}
 
 	private List<NavigationPoint> getAttractRoute(GameVariant variant) {
@@ -456,7 +456,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return Optional.ofNullable(animationSet);
 	}
 
-	private void updateColorOrBlueOrFlashingAnimation(GameLevel level) {
+	private void selectColoredAnimation(GameLevel level) {
 		var pac = level.pac();
 		if (!pac.powerTimer().isRunning()) {
 			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
