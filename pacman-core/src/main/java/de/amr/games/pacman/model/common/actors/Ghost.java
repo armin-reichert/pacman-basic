@@ -456,9 +456,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = ENTERING_HOUSE;
 		setTargetTile(tileAt(revivalPosition));
-		if (animationSet != null) {
-			animationSet.select(AnimKeys.GHOST_EYES);
-		}
 		GameEvents.publish(new GameEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 	}
 
