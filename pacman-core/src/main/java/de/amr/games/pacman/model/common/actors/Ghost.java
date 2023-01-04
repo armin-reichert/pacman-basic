@@ -480,7 +480,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		flashing.restart();
 	}
 
-	public void pauseFlashing(boolean paused) {
+	public void setFlashingPaused(boolean paused) {
 		animation(AnimKeys.GHOST_FLASHING).ifPresent(flashing -> {
 			if (paused) {
 				flashing.stop();
