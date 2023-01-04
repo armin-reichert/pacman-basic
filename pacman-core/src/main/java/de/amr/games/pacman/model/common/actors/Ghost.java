@@ -47,7 +47,6 @@ import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.anim.EntityAnimationSet;
-import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
@@ -74,7 +73,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final byte ACTION_ROAM = 2;
 
 	private final byte id;
-	private Vector2f homePosition;
 	private Vector2i scatterTile;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
@@ -108,14 +106,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		super.reset();
 		attractRouteIndex = 0;
 		killedIndex = -1;
-	}
-
-	public Vector2f homePosition() {
-		return homePosition;
-	}
-
-	public void setHomePosition(Vector2f homePosition) {
-		this.homePosition = homePosition;
 	}
 
 	public Vector2i scatterTile() {
@@ -245,10 +235,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param level the level
 	 */
 	private void updateStateLocked(GameLevel level) {
+		var initialPosition = level.world().ghostInitialPosition(id);
 		if (level.world().ghostHouse().contains(tile())) {
-			if (position.y() <= homePosition.y() - World.HTS) {
+			if (position.y() <= initialPosition.y() - World.HTS) {
 				setMoveAndWishDir(DOWN);
-			} else if (position.y() >= homePosition.y() + World.HTS) {
+			} else if (position.y() >= initialPosition.y() + World.HTS) {
 				setMoveAndWishDir(UP);
 			}
 			setAbsSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);

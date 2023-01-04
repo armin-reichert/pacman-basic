@@ -437,7 +437,7 @@ public class GameLevel {
 		var initialDirs = List.of(Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
-			ghost.setPosition(ghost.homePosition());
+			ghost.setPosition(world.ghostInitialPosition(ghost.id()));
 			ghost.setMoveAndWishDir(initialDirs.get(ghost.id()));
 			ghost.enterStateLocked();
 		});
