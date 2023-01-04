@@ -155,13 +155,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	public void roam(GameLevel level) {
-		if (level.game().hasCredit()) {
-			moveRandomly(level);
-		} else {
-			movePseudoRandomly(level);
-		}
+		moveRandomly(level);
 	}
 
+	@SuppressWarnings("unused")
+	// TODO not used yet
 	private void movePseudoRandomly(GameLevel level) {
 		var route = getAttractRoute(level.game().variant());
 		if (route.isEmpty()) {
