@@ -68,10 +68,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final byte ID_CYAN_GHOST = 2;
 	public static final byte ID_ORANGE_GHOST = 3;
 
-	public static final byte ACTION_SCATTER = 0;
-	public static final byte ACTION_CHASE = 1;
-	public static final byte ACTION_ROAM = 2;
-
 	private final byte id;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
@@ -146,19 +142,19 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 
-	private void scatter(GameLevel level) {
+	public void scatter(GameLevel level) {
 		setTargetTile(level.world().ghostScatterTargetTile(id));
 		navigateTowardsTarget(level);
 		tryMoving(level);
 	}
 
-	private void chase(GameLevel level) {
+	public void chase(GameLevel level) {
 		setTargetTile(fnChasingTarget.get());
 		navigateTowardsTarget(level);
 		tryMoving(level);
 	}
 
-	private void roam(GameLevel level) {
+	public void roam(GameLevel level) {
 		if (level.game().hasCredit()) {
 			moveRandomly(level);
 		} else {
@@ -326,13 +322,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			setRelSpeed(level.params().ghostSpeed());
 		}
-		switch (level.game().ghostHuntingAction(level, this)) {
-		case ACTION_ROAM -> roam(level);
-		case ACTION_CHASE -> chase(level);
-		case ACTION_SCATTER -> scatter(level);
-		default -> { // unknown action
-		}
-		}
+		level.game().ghostHuntingAction(level, this).accept(level);
 		selectColoredAnimation(level);
 	}
 
