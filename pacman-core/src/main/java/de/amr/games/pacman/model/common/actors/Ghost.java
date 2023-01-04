@@ -322,7 +322,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			setRelSpeed(level.params().ghostSpeed());
 		}
-		level.game().ghostHuntingAction(level, this).accept(level);
+		level.game().doGhostHuntingAction(level, this);
 		selectColoredAnimation(level);
 	}
 

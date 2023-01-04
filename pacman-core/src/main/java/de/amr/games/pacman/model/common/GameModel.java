@@ -34,7 +34,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
-import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -278,11 +277,12 @@ public abstract class GameModel {
 		scoringEnabled = false;
 	}
 
-	public Consumer<GameLevel> ghostHuntingAction(GameLevel level, Ghost ghost) {
+	public void doGhostHuntingAction(GameLevel level, Ghost ghost) {
 		if (level.chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && level.cruiseElroyState() > 0) {
-			return ghost::chase;
+			ghost.chase(level);
+		} else {
+			ghost.scatter(level);
 		}
-		return ghost::scatter;
 	}
 
 	/** @return tells if the game play is running. */

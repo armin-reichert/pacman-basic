@@ -30,7 +30,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -329,19 +328,19 @@ public class MsPacManGame extends GameModel {
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 	}
 
+	/**
+	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* hunting/scatter phase. Some say, the original
+	 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the
+	 * scatter target of Blinky and Pinky would have been affected. Who knows?
+	 */
 	@Override
-	public Consumer<GameLevel> ghostHuntingAction(GameLevel level, Ghost ghost) {
-		/*
-		 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* hunting/scatter phase. Some say, the original
-		 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the
-		 * scatter target of Blinky and Pinky would have been affected. Who knows?
-		 */
+	public void doGhostHuntingAction(GameLevel level, Ghost ghost) {
 		if (level.huntingPhase() == 0 && (ghost.id() == Ghost.ID_RED_GHOST || ghost.id() == Ghost.ID_PINK_GHOST)) {
-			return ghost::roam; // not sure
+			ghost.roam(level); // not sure
+		} else if (level.chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && level.cruiseElroyState() > 0) {
+			ghost.chase(level);
+		} else {
+			ghost.scatter(level);
 		}
-		if (level.chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && level.cruiseElroyState() > 0) {
-			return ghost::chase;
-		}
-		return ghost::scatter;
 	}
 }
