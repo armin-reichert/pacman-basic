@@ -114,8 +114,8 @@ public class GhostHouseRules {
 		if (ghost == null) {
 			return Optional.empty();
 		}
-		var outside = !level.world().ghostHouse().contains(ghost);
-		if (outside) {
+		var outsideHouse = !level.world().ghostHouse().contains(ghost);
+		if (outsideHouse) {
 			return unlockGhost(level, ghost, "Outside house");
 		}
 		// check private dot counter
@@ -139,12 +139,11 @@ public class GhostHouseRules {
 	}
 
 	private Optional<UnlockResult> unlockGhost(GameLevel level, Ghost ghost, String reason, Object... args) {
-		var outside = !level.world().ghostHouse().contains(ghost);
-		if (outside) {
+		var outsideHouse = !level.world().ghostHouse().contains(ghost);
+		if (outsideHouse) {
 			ghost.setMoveAndWishDir(LEFT);
 			ghost.enterStateHuntingPac();
 		} else {
-			// ghost inside house has to leave house first
 			ghost.enterStateLeavingHouse(level);
 		}
 		return Optional.of(new UnlockResult(ghost, reason.formatted(args)));

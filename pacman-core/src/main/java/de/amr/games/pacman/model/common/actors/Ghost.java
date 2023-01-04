@@ -307,9 +307,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	public void enterStateHuntingPac() {
 		state = HUNTING_PAC;
-		if (animationSet != null) {
-			animationSet.select(AnimKeys.GHOST_COLOR);
-		}
+		selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	/*
