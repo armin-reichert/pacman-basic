@@ -345,11 +345,12 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * <p>
 	 * Speed is about half of the normal speed.
 	 * 
-	 * @param game the game
+	 * @param level the game level
 	 */
 	private void updateStateFrightened(GameLevel level) {
-		setRelSpeed(
-				level.world().isTunnel(tile()) ? level.params().ghostSpeedTunnel() : level.params().ghostSpeedFrightened());
+		var speed = level.world().isTunnel(tile()) ? level.params().ghostSpeedTunnel()
+				: level.params().ghostSpeedFrightened();
+		setRelSpeed(speed);
 		roam(level);
 		selectColoredAnimation(level);
 	}
