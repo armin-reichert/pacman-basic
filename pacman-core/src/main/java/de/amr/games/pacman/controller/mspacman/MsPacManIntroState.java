@@ -66,7 +66,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 	GHOSTS {
 		@Override
 		public void onEnter(MsPacManIntroData ctx) {
-			ctx.ghosts.forEach(ghost -> ghost.selectRunnableAnimation(AnimKeys.GHOST_COLOR));
+			ctx.ghosts.forEach(ghost -> ghost.selectAndRunAnimation(AnimKeys.GHOST_COLOR));
 		}
 
 		@Override
@@ -93,7 +93,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		public void onEnter(MsPacManIntroData ctx) {
 			ctx.pac.setMoveDir(LEFT);
 			ctx.pac.setAbsSpeed(ctx.actorSpeed);
-			ctx.pac.selectRunnableAnimation(AnimKeys.PAC_MUNCHING);
+			ctx.pac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 			ctx.pac.show();
 		}
 

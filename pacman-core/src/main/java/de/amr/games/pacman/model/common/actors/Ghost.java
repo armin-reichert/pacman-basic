@@ -389,7 +389,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	public void enterStateEaten() {
 		state = EATEN;
-		selectRunnableAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
+		selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
 	}
 
 	private void updateStateEaten() {
@@ -402,7 +402,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = RETURNING_TO_HOUSE;
 		setTargetTile(level.world().ghostHouse().entryTile());
-		selectRunnableAnimation(AnimKeys.GHOST_EYES);
+		selectAndRunAnimation(AnimKeys.GHOST_EYES);
 	}
 
 	/**
@@ -457,25 +457,22 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	private void updateColorOrBlueOrFlashingAnimation(GameLevel level) {
-		if (animationSet == null) {
-			return;
-		}
 		var pac = level.pac();
 		if (!pac.powerTimer().isRunning()) {
-			selectRunnableAnimation(AnimKeys.GHOST_COLOR);
-			return;
-		}
-		if (pac.powerTimer().remaining() > pac.powerFadingTicks()) {
-			selectRunnableAnimation(AnimKeys.GHOST_BLUE);
+			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+		} else if (pac.powerTimer().remaining() > pac.powerFadingTicks()) {
+			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 		} else {
-			if (!animationSet.isSelected(AnimKeys.GHOST_FLASHING)) {
-				animationSet.select(AnimKeys.GHOST_FLASHING);
-				animationSet.selectedAnimation().ifPresent(flashing -> startFlashing(level, flashing));
-			}
+			animationSet().ifPresent(animations -> {
+				if (!animations.isSelected(AnimKeys.GHOST_FLASHING)) {
+					selectAndRunAnimation(AnimKeys.GHOST_FLASHING)
+							.ifPresent(flashing -> startFlashingAnimation(level, flashing));
+				}
+			});
 		}
 	}
 
-	private void startFlashing(GameLevel level, EntityAnimation flashing) {
+	private void startFlashingAnimation(GameLevel level, EntityAnimation flashing) {
 		int numFlashes = level.params().numFlashes();
 		long frameTicks = level.pac().powerFadingTicks() / (numFlashes * flashing.numFrames());
 		flashing.setFrameDuration(frameTicks);

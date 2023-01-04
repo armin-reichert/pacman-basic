@@ -109,14 +109,14 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 			ctx.pacMan.setMoveDir(Direction.LEFT);
 			ctx.pacMan.setAbsSpeed(PacManIntroData.CHASING_SPEED);
 			ctx.pacMan.show();
-			ctx.pacMan.selectRunnableAnimation(AnimKeys.PAC_MUNCHING);
+			ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 			for (Ghost ghost : ctx.ghosts) {
 				ghost.enterStateHuntingPac();
 				ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id() + 1), 0));
 				ghost.setMoveAndWishDir(Direction.LEFT);
 				ghost.setAbsSpeed(PacManIntroData.CHASING_SPEED);
 				ghost.show();
-				ghost.selectRunnableAnimation(AnimKeys.GHOST_COLOR);
+				ghost.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 			}
 		}
 
@@ -130,7 +130,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 			else if (ctx.pacMan.position().x() <= t(PacManIntroData.LEFT_TILE) + 4) {
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterStateFrightened();
-					ghost.selectRunnableAnimation(AnimKeys.GHOST_BLUE);
+					ghost.selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 					ghost.setMoveAndWishDir(Direction.RIGHT);
 					ghost.setAbsSpeed(0.6f);
 					ghost.move();
