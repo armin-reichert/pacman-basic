@@ -146,6 +146,26 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 
+	private void scatter(GameLevel level) {
+		setTargetTile(level.world().ghostScatterTargetTile(id));
+		navigateTowardsTarget(level);
+		tryMoving(level);
+	}
+
+	private void chase(GameLevel level) {
+		setTargetTile(fnChasingTarget.get());
+		navigateTowardsTarget(level);
+		tryMoving(level);
+	}
+
+	private void roam(GameLevel level) {
+		if (level.game().hasCredit()) {
+			moveRandomly(level);
+		} else {
+			movePseudoRandomly(level);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return "Ghost[%-6s %s tile=%s pos=%s offset=%s velocity=%s dir=%s wishDir=%s stuck=%s reverse=%s]".formatted(name(),
@@ -166,26 +186,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	public boolean is(GhostState... alternatives) {
 		return U.oneOf(state, alternatives);
-	}
-
-	private void scatter(GameLevel level) {
-		setTargetTile(level.world().ghostScatterTargetTile(id));
-		navigateTowardsTarget(level);
-		tryMoving(level);
-	}
-
-	private void chase(GameLevel level) {
-		setTargetTile(fnChasingTarget.get());
-		navigateTowardsTarget(level);
-		tryMoving(level);
-	}
-
-	private void roam(GameLevel level) {
-		if (level.game().hasCredit()) {
-			moveRandomly(level);
-		} else {
-			movePseudoRandomly(level);
-		}
 	}
 
 	/**
