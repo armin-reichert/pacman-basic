@@ -51,7 +51,7 @@ public interface GameEventListener {
 		case PAC_GETS_POWER -> onPlayerGetsPower(event);
 		case PAC_STARTS_LOSING_POWER -> onPlayerStartsLosingPower(event);
 		case PAC_LOSES_POWER -> onPlayerLosesPower(event);
-		case UI_FORCE_UPDATE -> onUIForceUpdate(event);
+		case UNSPECIFIED_CHANGE -> onUnspecifiedChange(event);
 		default -> throw new IllegalArgumentException("Unknown event type: " + event.type);
 		}
 	}
@@ -98,7 +98,7 @@ public interface GameEventListener {
 	default void onPlayerGetsPower(GameEvent e) {
 	}
 
-	default void onUIForceUpdate(GameEvent e) {
+	default void onUnspecifiedChange(GameEvent e) {
 	}
 
 }

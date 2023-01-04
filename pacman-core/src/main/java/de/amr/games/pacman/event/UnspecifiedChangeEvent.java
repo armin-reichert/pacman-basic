@@ -29,9 +29,9 @@ import de.amr.games.pacman.model.common.GameModel;
 /**
  * @author Armin Reichert
  */
-public class TriggerUIChangeEvent extends GameEvent {
+public class UnspecifiedChangeEvent extends GameEvent {
 
-	public TriggerUIChangeEvent(GameModel game) {
-		super(game, GameEventType.UI_FORCE_UPDATE, null);
+	public UnspecifiedChangeEvent(GameModel game) {
+		super(game, GameEventType.UNSPECIFIED_CHANGE, null);
 	}
 }

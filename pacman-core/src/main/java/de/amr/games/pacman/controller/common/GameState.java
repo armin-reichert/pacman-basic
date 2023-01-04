@@ -300,7 +300,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.restartSeconds(4);
 			gc.sounds().stopAll();
 			game.level().ifPresent(GameLevel::exit);
-			GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
+			GameEvents.publish(GameEventType.UNSPECIFIED_CHANGE, null);
 		}
 
 		@Override
@@ -471,7 +471,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				if (gc.intermissionTestNumber < 3) {
 					++gc.intermissionTestNumber;
 					timer.restartIndefinitely();
-					GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
+					GameEvents.publish(GameEventType.UNSPECIFIED_CHANGE, null);
 				} else {
 					gc.intermissionTestNumber = 1;
 					gc.changeState(INTRO);

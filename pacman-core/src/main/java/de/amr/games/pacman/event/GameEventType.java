@@ -45,6 +45,6 @@ public enum GameEventType {
 	PAC_GETS_POWER, 
 	PAC_STARTS_LOSING_POWER,
 	PAC_LOSES_POWER,
-	UI_FORCE_UPDATE;
+	UNSPECIFIED_CHANGE;
 	//@formatter:on
 }
