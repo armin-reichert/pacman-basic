@@ -158,6 +158,17 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		moveRandomly(level);
 	}
 
+	private void moveRandomly(GameLevel level) {
+		if (isNewTileEntered() || isStuck()) {
+			Direction.shuffled().stream()//
+					.filter(dir -> dir != moveDir().opposite())//
+					.filter(dir -> canAccessTile(tile().plus(dir.vec), level))//
+					.findAny()//
+					.ifPresent(this::setWishDir);
+		}
+		tryMoving(level);
+	}
+
 	@SuppressWarnings("unused")
 	// TODO not used yet
 	private void movePseudoRandomly(GameLevel level) {
@@ -178,15 +189,17 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		}
 	}
 
-	private void moveRandomly(GameLevel level) {
-		if (isNewTileEntered() || isStuck()) {
-			Direction.shuffled().stream()//
-					.filter(dir -> dir != moveDir().opposite())//
-					.filter(dir -> canAccessTile(tile().plus(dir.vec), level))//
-					.findAny()//
-					.ifPresent(this::setWishDir);
-		}
-		tryMoving(level);
+	private List<NavigationPoint> getAttractRoute(GameVariant variant) {
+		return switch (variant) {
+		case PACMAN -> switch (id) {
+		case ID_RED_GHOST -> PacManGameAttractModeRoutes.RED_GHOST;
+		case ID_PINK_GHOST -> PacManGameAttractModeRoutes.PINK_GHOST;
+		case ID_CYAN_GHOST -> PacManGameAttractModeRoutes.CYAN_GHOST;
+		case ID_ORANGE_GHOST -> PacManGameAttractModeRoutes.ORANGE_GHOST;
+		default -> throw new IllegalArgumentException();
+		};
+		case MS_PACMAN -> List.of();
+		};
 	}
 
 	@Override
@@ -343,19 +356,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		setRelSpeed(speed);
 		roam(level);
 		selectColoredAnimation(level);
-	}
-
-	private List<NavigationPoint> getAttractRoute(GameVariant variant) {
-		return switch (variant) {
-		case PACMAN -> switch (id) {
-		case ID_RED_GHOST -> PacManGameAttractModeRoutes.RED_GHOST;
-		case ID_PINK_GHOST -> PacManGameAttractModeRoutes.PINK_GHOST;
-		case ID_CYAN_GHOST -> PacManGameAttractModeRoutes.CYAN_GHOST;
-		case ID_ORANGE_GHOST -> PacManGameAttractModeRoutes.ORANGE_GHOST;
-		default -> throw new IllegalArgumentException();
-		};
-		case MS_PACMAN -> List.of();
-		};
 	}
 
 	// --- EATEN ---
