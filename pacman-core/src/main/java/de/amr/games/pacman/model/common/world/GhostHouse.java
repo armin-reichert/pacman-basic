@@ -52,9 +52,13 @@ public interface GhostHouse {
 				&& tile.y() <= bottomRight.y();
 	}
 
-	boolean atHouseEntry(Creature creature);
+	default boolean contains(Creature guest) {
+		return contains(guest.tile());
+	}
 
-	boolean leadGuyOutOfHouse(Creature guest);
+	boolean atDoor(Creature guest);
 
-	boolean leadGuyInside(Creature guest, Vector2f targetPosition);
+	boolean leadOut(Creature guest);
+
+	boolean leadInside(Creature guest, Vector2f targetPosition);
 }

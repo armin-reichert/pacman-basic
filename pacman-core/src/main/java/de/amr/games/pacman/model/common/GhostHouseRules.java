@@ -99,7 +99,7 @@ public class GhostHouseRules {
 			}
 		} else {
 			var house = level.world().ghostHouse();
-			var preferredGhost = level.ghosts(LOCKED).filter(ghost -> house.contains(ghost.tile())).findFirst();
+			var preferredGhost = level.ghosts(LOCKED).filter(house::contains).findFirst();
 			preferredGhost.ifPresent(this::increaseGhostDotCounter);
 		}
 	}
@@ -114,7 +114,7 @@ public class GhostHouseRules {
 		if (ghost == null) {
 			return Optional.empty();
 		}
-		var outside = !level.world().ghostHouse().contains(ghost.tile());
+		var outside = !level.world().ghostHouse().contains(ghost);
 		if (outside) {
 			return unlockGhost(level, ghost, "Outside house");
 		}
@@ -139,7 +139,7 @@ public class GhostHouseRules {
 	}
 
 	private Optional<UnlockResult> unlockGhost(GameLevel level, Ghost ghost, String reason, Object... args) {
-		var outside = !level.world().ghostHouse().contains(ghost.tile());
+		var outside = !level.world().ghostHouse().contains(ghost);
 		if (outside) {
 			ghost.setMoveAndWishDir(LEFT);
 			ghost.enterStateHuntingPac();

@@ -84,13 +84,13 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public boolean atHouseEntry(Creature guy) {
+	public boolean atDoor(Creature guy) {
 		var entryPos = World.halfTileRightOf(ENTRY_TILE);
 		return guy.tile().y() == ENTRY_TILE.y() && U.insideRange(guy.position().x(), entryPos.x(), 1);
 	}
 
 	@Override
-	public boolean leadGuyOutOfHouse(Creature guy) {
+	public boolean leadOut(Creature guy) {
 		var entryPos = World.halfTileRightOf(ENTRY_TILE);
 		if (guy.position().x() == entryPos.x() && guy.position().y() <= entryPos.y()) {
 			guy.setPosition(entryPos);
@@ -109,8 +109,8 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public boolean leadGuyInside(Creature guy, Vector2f targetPosition) {
-		if (atHouseEntry(guy)) {
+	public boolean leadInside(Creature guy, Vector2f targetPosition) {
+		if (atDoor(guy)) {
 			guy.setPosition(World.halfTileRightOf(DOOR_TILE_LEFT)); // align
 			guy.setMoveAndWishDir(Direction.DOWN);
 		}
