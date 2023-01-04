@@ -166,6 +166,35 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		}
 	}
 
+	private void movePseudoRandomly(GameLevel level) {
+		var route = getAttractRoute(level.game().variant());
+		if (route.isEmpty()) {
+			moveRandomly(level);
+		} else if (tile().equals(route.get(attractRouteIndex).tile())) {
+			var navPoint = route.get(attractRouteIndex);
+			if (atTurnPositionTo(navPoint.dir())) {
+				setWishDir(navPoint.dir());
+				LOGGER.trace("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
+				++attractRouteIndex;
+			}
+			tryMoving(level);
+		} else {
+			navigateTowardsTarget(level);
+			tryMoving(level);
+		}
+	}
+
+	private void moveRandomly(GameLevel level) {
+		if (isNewTileEntered() || isStuck()) {
+			Direction.shuffled().stream()//
+					.filter(dir -> dir != moveDir().opposite())//
+					.filter(dir -> canAccessTile(tile().plus(dir.vec), level))//
+					.findAny()//
+					.ifPresent(this::setWishDir);
+		}
+		tryMoving(level);
+	}
+
 	@Override
 	public String toString() {
 		return "Ghost[%-6s %s tile=%s pos=%s offset=%s velocity=%s dir=%s wishDir=%s stuck=%s reverse=%s]".formatted(name(),
@@ -205,10 +234,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		case ENTERING_HOUSE -> updateStateEnteringHouse(level);
 		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
-		animation().ifPresent(animation -> {
-			animation.ensureRunning();
-			animation.animate();
-		});
+		animate();
 	}
 
 	// --- LOCKED ---
@@ -309,6 +335,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		default -> { // unknown action
 		}
 		}
+		updateColorOrBlueOrFlashingAnimation(level);
 	}
 
 	// --- FRIGHTENED ---
@@ -336,9 +363,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		setRelSpeed(
 				level.world().isTunnel(tile()) ? level.params().ghostSpeedTunnel() : level.params().ghostSpeedFrightened());
 		roam(level);
-		if (animationSet != null) {
-			updateColorOrBlueOrFlashingAnimation(level);
-		}
+		updateColorOrBlueOrFlashingAnimation(level);
 	}
 
 	private List<NavigationPoint> getAttractRoute(GameVariant variant) {
@@ -352,35 +377,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		};
 		case MS_PACMAN -> List.of();
 		};
-	}
-
-	private void movePseudoRandomly(GameLevel level) {
-		var route = getAttractRoute(level.game().variant());
-		if (route.isEmpty()) {
-			moveRandomly(level);
-		} else if (tile().equals(route.get(attractRouteIndex).tile())) {
-			var navPoint = route.get(attractRouteIndex);
-			if (atTurnPositionTo(navPoint.dir())) {
-				setWishDir(navPoint.dir());
-				LOGGER.trace("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
-				++attractRouteIndex;
-			}
-			tryMoving(level);
-		} else {
-			navigateTowardsTarget(level);
-			tryMoving(level);
-		}
-	}
-
-	private void moveRandomly(GameLevel level) {
-		if (isNewTileEntered() || isStuck()) {
-			Direction.shuffled().stream()//
-					.filter(dir -> dir != moveDir().opposite())//
-					.filter(dir -> canAccessTile(tile().plus(dir.vec), level))//
-					.findAny()//
-					.ifPresent(this::setWishDir);
-		}
-		tryMoving(level);
 	}
 
 	// --- EATEN ---
@@ -406,9 +402,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = RETURNING_TO_HOUSE;
 		setTargetTile(level.world().ghostHouse().entryTile());
-		if (animationSet != null) {
-			animationSet.select(AnimKeys.GHOST_EYES);
-		}
+		selectRunnableAnimation(AnimKeys.GHOST_EYES);
 	}
 
 	/**
@@ -468,11 +462,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		}
 		var pac = level.pac();
 		if (!pac.powerTimer().isRunning()) {
-			animationSet.select(AnimKeys.GHOST_COLOR);
+			selectRunnableAnimation(AnimKeys.GHOST_COLOR);
 			return;
 		}
 		if (pac.powerTimer().remaining() > pac.powerFadingTicks()) {
-			animationSet.select(AnimKeys.GHOST_BLUE);
+			selectRunnableAnimation(AnimKeys.GHOST_BLUE);
 		} else {
 			if (!animationSet.isSelected(AnimKeys.GHOST_FLASHING)) {
 				animationSet.select(AnimKeys.GHOST_FLASHING);
