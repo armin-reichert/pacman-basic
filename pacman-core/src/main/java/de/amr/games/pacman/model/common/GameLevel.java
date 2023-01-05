@@ -307,16 +307,8 @@ public class GameLevel {
 		return numGhostsKilledInLevel;
 	}
 
-	public void setNumGhostsKilledInLevel(int number) {
-		this.numGhostsKilledInLevel = number;
-	}
-
 	public int numGhostsKilledByEnergizer() {
 		return numGhostsKilledByEnergizer;
-	}
-
-	public void setNumGhostsKilledByEnergizer(int number) {
-		this.numGhostsKilledByEnergizer = number;
 	}
 
 	public void enter() {
@@ -515,7 +507,7 @@ public class GameLevel {
 	 */
 	public void killAllPossibleGhosts() {
 		memo.edibleGhosts = ghosts(HUNTING_PAC, FRIGHTENED).toList();
-		setNumGhostsKilledByEnergizer(0);
+		numGhostsKilledByEnergizer = 0;
 		killEdibleGhosts();
 	}
 
@@ -594,7 +586,7 @@ public class GameLevel {
 		world.removeFood(tile);
 		pac.endStarving();
 		if (memo.energizerFound) {
-			setNumGhostsKilledByEnergizer(0);
+			numGhostsKilledByEnergizer = 0;
 			pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
 			game.scorePoints(GameModel.POINTS_ENERGIZER);
 		} else {
