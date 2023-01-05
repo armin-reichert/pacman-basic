@@ -24,10 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.Collections;
@@ -38,7 +34,6 @@ import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * Implements all stuff that is common to the original Arcade worlds like ghost house position, ghost and player start
@@ -69,10 +64,25 @@ public class ArcadeWorld extends MapBasedWorld {
 	/** Scatter target south-west corner. */
 	public static final Vector2i SCATTER_TILE_SW = new Vector2i(0, 34);
 
+	//@formatter:off
+	private static final Vector2f[] GHOST_INITIAL_POSITIONS = {
+			halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT)
+	};
+	private static final Vector2f[] GHOST_REVIVAL_POSITIONS = {
+			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT)
+	};
+	private static final Vector2i[] GHOST_SCATTER_TARGET_TILES = {
+			SCATTER_TILE_NE, SCATTER_TILE_NW, SCATTER_TILE_SE, SCATTER_TILE_SW
+	};
+	//@formatter:on
+
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
-	private Vector2f[] ghostInitialPositions;
-	private Vector2f[] ghostRevivalPositions;
-	private Vector2i[] ghostScatterTargetTiles;
 	private List<Vector2i> upwardBlockedTiles = List.of();
 	private EntityAnimation levelCompleteAnimation;
 
@@ -92,29 +102,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public void assignGhostPositions(Ghost[] ghosts) {
-		ghostInitialPositions = new Vector2f[4];
-		ghostRevivalPositions = new Vector2f[4];
-		ghostScatterTargetTiles = new Vector2i[4];
-
-		ghostInitialPositions[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
-		ghostRevivalPositions[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-		ghostScatterTargetTiles[ID_RED_GHOST] = ArcadeWorld.SCATTER_TILE_NE;
-
-		ghostInitialPositions[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-		ghostRevivalPositions[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-		ghostScatterTargetTiles[ID_PINK_GHOST] = ArcadeWorld.SCATTER_TILE_NW;
-
-		ghostInitialPositions[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
-		ghostRevivalPositions[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
-		ghostScatterTargetTiles[ID_CYAN_GHOST] = ArcadeWorld.SCATTER_TILE_SE;
-
-		ghostInitialPositions[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-		ghostRevivalPositions[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-		ghostScatterTargetTiles[ID_ORANGE_GHOST] = ArcadeWorld.SCATTER_TILE_SW;
-	}
-
-	@Override
 	public Vector2f pacStartPosition() {
 		return new Vector2f(13 * TS + HTS, 26 * TS);
 	}
@@ -122,19 +109,19 @@ public class ArcadeWorld extends MapBasedWorld {
 	@Override
 	public Vector2f ghostInitialPosition(byte ghostID) {
 		GameModel.checkGhostID(ghostID);
-		return ghostInitialPositions[ghostID];
+		return GHOST_INITIAL_POSITIONS[ghostID];
 	}
 
 	@Override
 	public Vector2f ghostRevivalPosition(byte ghostID) {
 		GameModel.checkGhostID(ghostID);
-		return ghostRevivalPositions[ghostID];
+		return GHOST_REVIVAL_POSITIONS[ghostID];
 	}
 
 	@Override
 	public Vector2i ghostScatterTargetTile(byte ghostID) {
 		GameModel.checkGhostID(ghostID);
-		return ghostScatterTargetTiles[ghostID];
+		return GHOST_SCATTER_TARGET_TILES[ghostID];
 	}
 
 	@Override

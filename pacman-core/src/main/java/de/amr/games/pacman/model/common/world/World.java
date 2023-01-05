@@ -31,7 +31,6 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * Interface for accessing the game world.
@@ -225,13 +224,6 @@ public interface World {
 	 * @return Number of pellets eaten.
 	 */
 	int eatenFoodCount();
-
-	/**
-	 * Assigns to each ghost its home position, revival position and scatter tile.
-	 * 
-	 * @param ghosts ghosts in order RED, PINK, CYAN, ORANGE
-	 */
-	void assignGhostPositions(Ghost[] ghosts);
 
 	Vector2i ghostScatterTargetTile(byte ghostID);
 

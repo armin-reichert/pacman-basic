@@ -313,7 +313,6 @@ public class GameLevel {
 
 	public void enter() {
 		LOGGER.trace("Enter level %d (%s)", number, game.variant());
-		world.assignGhostPositions(ghosts);
 		houseRules.resetPrivateGhostDotCounters();
 		setCruiseElroyState(0);
 		letsGetReadyToRumbleAndShowGuys(false);
