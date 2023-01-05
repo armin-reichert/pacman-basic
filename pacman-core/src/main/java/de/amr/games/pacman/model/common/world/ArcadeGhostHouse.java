@@ -49,10 +49,10 @@ public class ArcadeGhostHouse implements GhostHouse {
 	public static final Vector2i DOOR_TILE_LEFT = v2i(13, 15);
 	public static final Vector2i DOOR_TILE_RIGHT = v2i(14, 15);
 	public static final Vector2f DOOR_CENTER = World.halfTileRightOf(DOOR_TILE_LEFT).plus(0, HTS);
-	public static final Vector2i ENTRY_TILE = v2i(13, 14);
-	public static final Vector2i SEAT_TILE_LEFT = v2i(11, 17);
-	public static final Vector2i SEAT_TILE_CENTER = v2i(13, 17);
-	public static final Vector2i SEAT_TILE_RIGHT = v2i(15, 17);
+	public static final Vector2i ENTRY = v2i(13, 14);
+	public static final Vector2i SEAT_LEFT = v2i(11, 17);
+	public static final Vector2i SEAT_CENTER = v2i(13, 17);
+	public static final Vector2i SEAT_RIGHT = v2i(15, 17);
 
 	@Override
 	public Vector2i size() {
@@ -76,22 +76,22 @@ public class ArcadeGhostHouse implements GhostHouse {
 
 	@Override
 	public Vector2i entryTile() {
-		return ENTRY_TILE;
+		return ENTRY;
 	}
 
 	public Vector2f middleSeatCenterPosition() {
-		return World.halfTileRightOf(SEAT_TILE_CENTER).plus(0, HTS);
+		return World.halfTileRightOf(SEAT_CENTER).plus(0, HTS);
 	}
 
 	@Override
 	public boolean atDoor(Creature guy) {
-		var entryPos = World.halfTileRightOf(ENTRY_TILE);
-		return guy.tile().y() == ENTRY_TILE.y() && U.insideRange(guy.position().x(), entryPos.x(), 1);
+		var entryPos = World.halfTileRightOf(ENTRY);
+		return guy.tile().y() == ENTRY.y() && U.insideRange(guy.position().x(), entryPos.x(), 1);
 	}
 
 	@Override
 	public boolean leadOut(Creature guy) {
-		var entryPos = World.halfTileRightOf(ENTRY_TILE);
+		var entryPos = World.halfTileRightOf(ENTRY);
 		if (guy.position().x() == entryPos.x() && guy.position().y() <= entryPos.y()) {
 			guy.setPosition(entryPos);
 			return true;
@@ -114,7 +114,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 			guy.setPosition(World.halfTileRightOf(DOOR_TILE_LEFT)); // align
 			guy.setMoveAndWishDir(Direction.DOWN);
 		}
-		var middlePosition = World.halfTileRightOf(SEAT_TILE_CENTER);
+		var middlePosition = World.halfTileRightOf(SEAT_CENTER);
 		if (guy.position().y() >= middlePosition.y()) {
 			if (targetPosition.x() < middlePosition.x()) {
 				guy.setMoveAndWishDir(LEFT);

@@ -48,17 +48,17 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	//@formatter:off
 	private static final Vector2f[] GHOST_INITIAL_POSITIONS = {
-			halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT)
+			halfTileRightOf(ArcadeGhostHouse.ENTRY),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_CENTER),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_LEFT),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_RIGHT)
 	};
 	
 	private static final Vector2f[] GHOST_REVIVAL_POSITIONS = {
-			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT)
+			halfTileRightOf(ArcadeGhostHouse.SEAT_CENTER),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_CENTER),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_LEFT),
+			halfTileRightOf(ArcadeGhostHouse.SEAT_RIGHT)
 	};
 	
 	private static final Vector2i[] GHOST_SCATTER_TARGET_TILES = {
