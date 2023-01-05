@@ -71,12 +71,14 @@ public class ArcadeWorld extends MapBasedWorld {
 			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT),
 			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT)
 	};
+	
 	private static final Vector2f[] GHOST_REVIVAL_POSITIONS = {
 			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER),
 			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER),
 			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT),
 			halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT)
 	};
+	
 	private static final Vector2i[] GHOST_SCATTER_TARGET_TILES = {
 			SCATTER_TILE_NE, SCATTER_TILE_NW, SCATTER_TILE_SE, SCATTER_TILE_SW
 	};
