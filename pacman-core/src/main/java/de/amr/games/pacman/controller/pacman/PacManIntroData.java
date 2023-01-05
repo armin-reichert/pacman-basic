@@ -28,23 +28,29 @@ import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 
+/**
+ * @author Armin Reichert
+ */
 public class PacManIntroData {
 	public static final float CHASING_SPEED = 1.1f;
 	public static final int LEFT_TILE = 4;
 	public static final Pulse BLINKING = new Pulse(10, true);
-	public static final String[] NICKNAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
 	public static final String[] CHARACTERS = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
+	public final GameController gameController;
+	public final Pac pacMan = new Pac("Pac-Man");
+	public final Ghost[] ghosts = new Ghost[] { //
+			new Ghost(Ghost.ID_RED_GHOST, "Blinky"), //
+			new Ghost(Ghost.ID_PINK_GHOST, "Pinky"), //
+			new Ghost(Ghost.ID_CYAN_GHOST, "Inky"), //
+			new Ghost(Ghost.ID_ORANGE_GHOST, "Clyde"), //
+	};
 	public final boolean[] pictureVisible = { false, false, false, false };
 	public final boolean[] nicknameVisible = { false, false, false, false };
 	public final boolean[] characterVisible = { false, false, false, false };
 	public boolean creditVisible = false;
 	public boolean titleVisible = false;
-	public Pac pacMan;
-	public Ghost[] ghosts;
 	public int ghostIndex;
 	public long ghostKilledTime;
-
-	public final GameController gameController;
 
 	public PacManIntroData(GameController gameController) {
 		this.gameController = gameController;

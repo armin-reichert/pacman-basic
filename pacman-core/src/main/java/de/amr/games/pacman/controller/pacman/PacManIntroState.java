@@ -25,7 +25,6 @@ package de.amr.games.pacman.controller.pacman;
 
 import static de.amr.games.pacman.model.common.world.World.t;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameState;
@@ -36,26 +35,10 @@ import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
-import de.amr.games.pacman.model.common.actors.Pac;
 
 public enum PacManIntroState implements FsmState<PacManIntroData> {
 
 	START {
-		@Override
-		public void onEnter(PacManIntroData ctx) {
-			ctx.ghostIndex = 0;
-			Arrays.fill(ctx.pictureVisible, false);
-			Arrays.fill(ctx.nicknameVisible, false);
-			Arrays.fill(ctx.characterVisible, false);
-			ctx.pacMan = new Pac("Pac-Man");
-			ctx.ghosts = new Ghost[] { //
-					new Ghost(Ghost.ID_RED_GHOST, "Blinky"), //
-					new Ghost(Ghost.ID_PINK_GHOST, "Pinky"), //
-					new Ghost(Ghost.ID_CYAN_GHOST, "Inky"), //
-					new Ghost(Ghost.ID_ORANGE_GHOST, "Clyde"), //
-			};
-		}
-
 		@Override
 		public void onUpdate(PacManIntroData ctx) {
 			if (timer.tick() == 2) {
