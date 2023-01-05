@@ -229,10 +229,22 @@ public interface World {
 	 */
 	int eatenFoodCount();
 
+	/**
+	 * @param ghostID ghost ID
+	 * @return scatter target tile of ghost with given ID
+	 */
 	Vector2i ghostScatterTargetTile(byte ghostID);
 
+	/**
+	 * @param ghostID ghost ID
+	 * @return initial position of ghost with given ID
+	 */
 	Vector2f ghostInitialPosition(byte ghostID);
 
+	/**
+	 * @param ghostID ghost ID
+	 * @return revival position of ghost with given ID
+	 */
 	Vector2f ghostRevivalPosition(byte ghostID);
 
 	/**
