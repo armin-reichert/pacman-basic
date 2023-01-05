@@ -131,7 +131,7 @@ public class PacManGame extends GameModel {
 		default     -> new StaticBonus((byte)7, 5000); // Key
 		};
 		//@formatter:on
-		bonus.entity().setPosition(halfTileRightOf(v2i(13, 20)));
+		bonus.entity().setPosition(halfTileRightOf(13, 20));
 		return bonus;
 	}
 

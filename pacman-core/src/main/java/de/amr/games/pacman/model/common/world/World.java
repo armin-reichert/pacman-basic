@@ -78,8 +78,12 @@ public interface World {
 		return tile.scaled(TS).toFloatVec();
 	}
 
+	public static Vector2f halfTileRightOf(int tileX, int tileY) {
+		return new Vector2f(tileX * TS + HTS, tileY * TS);
+	}
+
 	public static Vector2f halfTileRightOf(Vector2i tile) {
-		return tile.scaled(TS).plus(HTS, 0).toFloatVec();
+		return halfTileRightOf(tile.x(), tile.y());
 	}
 
 	/**
