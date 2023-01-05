@@ -498,7 +498,7 @@ public class GameLevel {
 			return; // enter new game state
 		}
 
-		memo.pacPowerFading = pac.powerTimer().remaining() == pac.powerFadingTicks();
+		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
 		memo.pacPowerLost = pac.powerTimer().hasExpired();
 		if (memo.pacPowerFading) {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());

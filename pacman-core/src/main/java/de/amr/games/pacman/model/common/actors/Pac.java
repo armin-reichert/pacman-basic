@@ -44,7 +44,6 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	public static final int REST_INDEFINITE = -1;
 
 	private final TickTimer powerTimer;
-	private int powerFadingTicks;
 	private boolean dead;
 	private int restingTicks;
 	private int starvingTicks;
@@ -64,7 +63,6 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		starvingTicks = 0;
 		selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		powerTimer.reset(0);
-		powerFadingTicks = 2 * GameModel.FPS;
 	}
 
 	public void update(GameLevel level) {
@@ -106,13 +104,9 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		dead = true;
 	}
 
-	public int powerFadingTicks() {
-		return powerFadingTicks;
-	}
-
 	public boolean isPowerFading(GameLevel level) {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
-		return powerTimer.isRunning() && powerTimer.remaining() <= powerFadingTicks;
+		return powerTimer.isRunning() && powerTimer.remaining() <= GameModel.TICKS_PAC_POWER_FADES;
 	}
 
 	public boolean isMeetingKiller(GameLevel level) {

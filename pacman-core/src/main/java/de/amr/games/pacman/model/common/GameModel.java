@@ -77,6 +77,7 @@ public abstract class GameModel {
 	public static final short PELLETS_EATEN_BONUS1 = 70;
 	public static final short PELLETS_EATEN_BONUS2 = 170;
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
+	public static final short TICKS_PAC_POWER_FADES = 2 * FPS; // unsure
 
 	//@formatter:off
 	protected static final byte[][] LEVEL_PARAMETERS = {

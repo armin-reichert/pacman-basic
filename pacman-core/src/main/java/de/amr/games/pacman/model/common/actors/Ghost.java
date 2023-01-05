@@ -439,7 +439,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		var pac = level.pac();
 		if (!pac.powerTimer().isRunning()) {
 			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
-		} else if (pac.powerTimer().remaining() > pac.powerFadingTicks()) {
+		} else if (pac.powerTimer().remaining() > GameModel.TICKS_PAC_POWER_FADES) {
 			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 		} else {
 			animationSet().ifPresent(animations -> {
@@ -452,7 +452,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	private void startFlashingAnimation(GameLevel level, EntityAnimation flashing) {
 		int numFlashes = level.params().numFlashes();
-		long frameTicks = level.pac().powerFadingTicks() / (numFlashes * flashing.numFrames());
+		long frameTicks = GameModel.TICKS_PAC_POWER_FADES / (numFlashes * flashing.numFrames());
 		flashing.setFrameDuration(frameTicks);
 		flashing.setRepetitions(numFlashes);
 		flashing.restart();
