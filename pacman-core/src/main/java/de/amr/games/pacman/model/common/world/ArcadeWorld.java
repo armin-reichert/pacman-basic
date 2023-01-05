@@ -43,14 +43,8 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class ArcadeWorld extends MapBasedWorld {
 
-	/** Number of tiles in x-direction (horizontally. */
-	public static final int TILES_X = 28;
-
-	/** Number of tiles in y-direction (vertically. */
-	public static final int TILES_Y = 36;
-
-	/** Size of Arcade game world in pixels (28x8=224, 36x8=288). */
-	public static final Vector2i SIZE_PX = v2i(TILES_X * TS, TILES_Y * TS);
+	public static final Vector2i SIZE_TILES = v2i(28, 36);
+	public static final Vector2i SIZE_PX = SIZE_TILES.scaled(TS);
 
 	//@formatter:off
 	private static final Vector2f[] GHOST_INITIAL_POSITIONS = {
