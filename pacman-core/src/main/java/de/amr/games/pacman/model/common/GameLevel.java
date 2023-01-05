@@ -151,9 +151,7 @@ public class GameLevel {
 	/**
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
 	 */
-	public void defineGhostChasingBehavior(World world) {
-		Objects.requireNonNull(world);
-
+	public void defineGhostChasingBehavior() {
 		var redGhost = ghost(ID_RED_GHOST);
 		var pinkGhost = ghost(ID_PINK_GHOST);
 		var cyanGhost = ghost(ID_CYAN_GHOST);

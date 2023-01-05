@@ -236,7 +236,7 @@ public abstract class GameModel {
 		level.setHouseRules(createHouseRules(levelNumber));
 		level.setHuntingDurations(huntingDurations(levelNumber));
 		level.setParams(levelParameters(levelNumber));
-		level.defineGhostChasingBehavior(level.world());
+		level.defineGhostChasingBehavior();
 		LOGGER.trace("Game level %d created. (%s)", levelNumber, variant());
 	}
 
