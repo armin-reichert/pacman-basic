@@ -27,7 +27,6 @@ import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.t;
 
-import java.util.Arrays;
 import java.util.List;
 
 import de.amr.games.pacman.controller.common.GameController;
@@ -38,22 +37,36 @@ import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 
+/**
+ * @author Armin Reichert
+ */
 public class MsPacManIntroData extends SceneControllerContext {
-	public final Vector2i redGhostEndPosition = v2i(t(8), t(11));
-	public final Vector2i turningPoint = v2i(t(6), t(20)).plus(0, HTS);
-	public final int msPacManStopX = t(15);
-	public final Vector2i titlePosition = v2i(t(10), t(8));
+	public static final float GUYS_SPEED = 1.1f;
+	public static final Vector2i BLINKY_END_TILE = v2i(t(8), t(11));
+	public static final Vector2i TURNING_POSITION = v2i(t(6), t(20)).plus(0, HTS);
+	public static final int MS_PACMAN_STOP_X = t(15);
+	public static final Vector2i TITLE_TILE = v2i(t(10), t(8));
 	public final Pulse blinking = new Pulse(30, true);
 	public final TickTimer lightsTimer = new TickTimer("lights-timer");
-	public final float actorSpeed = 1.1f;
-	public final Pac pac;
-	public final List<Ghost> ghosts;
-	public int ghostIndex = 0;
-	public boolean creditVisible = false;
+	public final Pac msPacMan = new Pac("Ms. Pac-Man");
+	public final List<Ghost> ghosts = List.of( //
+			new Ghost(Ghost.ID_RED_GHOST, "Blinky"), //
+			new Ghost(Ghost.ID_PINK_GHOST, "Pinky"), //
+			new Ghost(Ghost.ID_CYAN_GHOST, "Inky"), //
+			new Ghost(Ghost.ID_ORANGE_GHOST, "Sue") //
+	);
+	int ghostIndex = 0;
+	boolean creditVisible = false;
 
 	public MsPacManIntroData(GameController gameController) {
 		super(gameController);
-		pac = gameController.game().createPac();
-		ghosts = Arrays.asList(gameController.game().createGhosts());
+	}
+
+	public int ghostIndex() {
+		return ghostIndex;
+	}
+
+	public boolean isCreditVisible() {
+		return creditVisible;
 	}
 }

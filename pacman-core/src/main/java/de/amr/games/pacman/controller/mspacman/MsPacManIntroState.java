@@ -23,6 +23,10 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller.mspacman;
 
+import static de.amr.games.pacman.controller.mspacman.MsPacManIntroData.BLINKY_END_TILE;
+import static de.amr.games.pacman.controller.mspacman.MsPacManIntroData.GUYS_SPEED;
+import static de.amr.games.pacman.controller.mspacman.MsPacManIntroData.MS_PACMAN_STOP_X;
+import static de.amr.games.pacman.controller.mspacman.MsPacManIntroData.TURNING_POSITION;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.t;
@@ -40,13 +44,13 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		@Override
 		public void onEnter(MsPacManIntroData ctx) {
 			ctx.lightsTimer.restartIndefinitely();
-			ctx.pac.setPosition(t(34), ctx.turningPoint.y());
-			ctx.pac.setAbsSpeed(0);
+			ctx.msPacMan.setPosition(t(34), TURNING_POSITION.y());
+			ctx.msPacMan.setAbsSpeed(0);
 			ctx.ghosts.forEach(ghost -> {
 				ghost.enterStateHuntingPac();
 				ghost.setMoveAndWishDir(LEFT);
-				ghost.setPosition(t(34), ctx.turningPoint.y());
-				ghost.setAbsSpeed(ctx.actorSpeed);
+				ghost.setPosition(t(34), TURNING_POSITION.y());
+				ghost.setAbsSpeed(GUYS_SPEED);
 				ghost.show();
 			});
 			ctx.ghostIndex = 0;
@@ -75,10 +79,10 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			Ghost ghost = ctx.ghosts.get(ctx.ghostIndex);
 			ghost.move();
 			ghost.animate();
-			if (ghost.position().x() <= ctx.turningPoint.x()) {
+			if (ghost.position().x() <= TURNING_POSITION.x()) {
 				ghost.setMoveAndWishDir(UP);
 			}
-			if (ghost.position().y() <= ctx.redGhostEndPosition.y() + ghost.id() * 18) {
+			if (ghost.position().y() <= BLINKY_END_TILE.y() + ghost.id() * 18) {
 				ghost.setAbsSpeed(0);
 				ghost.animation().ifPresent(EntityAnimation::stop);
 				if (++ctx.ghostIndex == 4) {
@@ -91,20 +95,20 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 	MSPACMAN {
 		@Override
 		public void onEnter(MsPacManIntroData ctx) {
-			ctx.pac.setMoveDir(LEFT);
-			ctx.pac.setAbsSpeed(ctx.actorSpeed);
-			ctx.pac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
-			ctx.pac.show();
+			ctx.msPacMan.setMoveDir(LEFT);
+			ctx.msPacMan.setAbsSpeed(GUYS_SPEED);
+			ctx.msPacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
+			ctx.msPacMan.show();
 		}
 
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
 			ctx.lightsTimer.advance();
-			ctx.pac.move();
-			ctx.pac.animate();
-			if (ctx.pac.position().x() <= ctx.msPacManStopX) {
-				ctx.pac.setAbsSpeed(0);
-				ctx.pac.animation().ifPresent(EntityAnimation::reset);
+			ctx.msPacMan.move();
+			ctx.msPacMan.animate();
+			if (ctx.msPacMan.position().x() <= MS_PACMAN_STOP_X) {
+				ctx.msPacMan.setAbsSpeed(0);
+				ctx.msPacMan.animation().ifPresent(EntityAnimation::reset);
 				controller.changeState(MsPacManIntroState.READY_TO_PLAY);
 			}
 		}
