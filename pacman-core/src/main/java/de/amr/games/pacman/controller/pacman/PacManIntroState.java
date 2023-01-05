@@ -90,14 +90,14 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 			timer.restartIndefinitely();
 			ctx.pacMan.setPosition(t(36), t(20));
 			ctx.pacMan.setMoveDir(Direction.LEFT);
-			ctx.pacMan.setAbsSpeed(PacManIntroData.CHASING_SPEED);
+			ctx.pacMan.setPixelSpeed(PacManIntroData.CHASING_SPEED);
 			ctx.pacMan.show();
 			ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 			for (Ghost ghost : ctx.ghosts) {
 				ghost.enterStateHuntingPac();
 				ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id() + 1), 0));
 				ghost.setMoveAndWishDir(Direction.LEFT);
-				ghost.setAbsSpeed(PacManIntroData.CHASING_SPEED);
+				ghost.setPixelSpeed(PacManIntroData.CHASING_SPEED);
 				ghost.show();
 				ghost.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 			}
@@ -115,7 +115,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 					ghost.enterStateFrightened();
 					ghost.selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 					ghost.setMoveAndWishDir(Direction.RIGHT);
-					ghost.setAbsSpeed(0.6f);
+					ghost.setPixelSpeed(0.6f);
 					ghost.move();
 					ghost.animate();
 				}
@@ -145,7 +145,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 			timer.restartIndefinitely();
 			ctx.ghostKilledTime = timer.tick();
 			ctx.pacMan.setMoveDir(Direction.RIGHT);
-			ctx.pacMan.setAbsSpeed(PacManIntroData.CHASING_SPEED);
+			ctx.pacMan.setPixelSpeed(PacManIntroData.CHASING_SPEED);
 		}
 
 		@Override
@@ -164,9 +164,9 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 				ctx.ghostKilledTime = timer.tick();
 				victim.enterStateEaten();
 				ctx.pacMan.hide();
-				ctx.pacMan.setAbsSpeed(0);
+				ctx.pacMan.setPixelSpeed(0);
 				Stream.of(ctx.ghosts).forEach(ghost -> {
-					ghost.setAbsSpeed(0);
+					ghost.setPixelSpeed(0);
 					ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(EntityAnimation::stop);
 				});
 			});
@@ -174,11 +174,11 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 			// After ??? sec, Pac-Man and the surviving ghosts get visible again and move on
 			if (timer.tick() - ctx.ghostKilledTime == timer.secToTicks(0.9)) {
 				ctx.pacMan.show();
-				ctx.pacMan.setAbsSpeed(PacManIntroData.CHASING_SPEED);
+				ctx.pacMan.setPixelSpeed(PacManIntroData.CHASING_SPEED);
 				for (Ghost ghost : ctx.ghosts) {
 					if (!ghost.is(GhostState.EATEN)) {
 						ghost.show();
-						ghost.setAbsSpeed(0.6f);
+						ghost.setPixelSpeed(0.6f);
 						ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(EntityAnimation::start);
 					} else {
 						ghost.hide();

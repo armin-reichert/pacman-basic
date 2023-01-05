@@ -143,10 +143,10 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 		CHASED_BY_GHOSTS {
 			@Override
 			public void onEnter(IntermissionData ctx) {
-				ctx.pacMan.setAbsSpeed(ctx.pacSpeedChased);
-				ctx.msPac.setAbsSpeed(ctx.pacSpeedChased);
-				ctx.inky.setAbsSpeed(ctx.ghostSpeedChasing);
-				ctx.pinky.setAbsSpeed(ctx.ghostSpeedChasing);
+				ctx.pacMan.setPixelSpeed(ctx.pacSpeedChased);
+				ctx.msPac.setPixelSpeed(ctx.pacSpeedChased);
+				ctx.inky.setPixelSpeed(ctx.ghostSpeedChasing);
+				ctx.pinky.setPixelSpeed(ctx.ghostSpeedChasing);
 			}
 
 			@Override
@@ -192,19 +192,19 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				else if (ctx.pacMan.moveDir() == Direction.LEFT
 						&& ctx.pacMan.position().x() - ctx.msPac.position().x() < t(2)) {
 					ctx.pacMan.setMoveDir(Direction.UP);
-					ctx.pacMan.setAbsSpeed(ctx.pacSpeedRising);
+					ctx.pacMan.setPixelSpeed(ctx.pacSpeedRising);
 					ctx.msPac.setMoveDir(Direction.UP);
-					ctx.msPac.setAbsSpeed(ctx.pacSpeedRising);
+					ctx.msPac.setPixelSpeed(ctx.pacSpeedRising);
 				}
 				// Inky and Pinky collide?
 				else if (ctx.inky.moveDir() == Direction.LEFT && ctx.inky.position().x() - ctx.pinky.position().x() < t(2)) {
 					ctx.inky.setMoveAndWishDir(Direction.RIGHT);
-					ctx.inky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
+					ctx.inky.setPixelSpeed(ctx.ghostSpeedAfterColliding);
 					ctx.inky.setVelocity(ctx.inky.velocity().minus(0, 2.0f));
 					ctx.inky.setAcceleration(0, 0.4f);
 
 					ctx.pinky.setMoveAndWishDir(Direction.LEFT);
-					ctx.pinky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
+					ctx.pinky.setPixelSpeed(ctx.ghostSpeedAfterColliding);
 					ctx.pinky.setVelocity(ctx.pinky.velocity().minus(0, 2.0f));
 					ctx.pinky.setAcceleration(0, 0.4f);
 				} else {
@@ -233,15 +233,15 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 			public void onEnter(IntermissionData ctx) {
 				timer.resetSeconds(3);
 				timer.start();
-				ctx.pacMan.setAbsSpeed(0);
+				ctx.pacMan.setPixelSpeed(0);
 				ctx.pacMan.setMoveDir(Direction.LEFT);
 				ctx.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
-				ctx.msPac.setAbsSpeed(0);
+				ctx.msPac.setPixelSpeed(0);
 				ctx.msPac.setMoveDir(Direction.RIGHT);
 				ctx.msPac.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
-				ctx.inky.setAbsSpeed(0);
+				ctx.inky.setPixelSpeed(0);
 				ctx.inky.hide();
-				ctx.pinky.setAbsSpeed(0);
+				ctx.pinky.setPixelSpeed(0);
 				ctx.pinky.hide();
 				ctx.heart.setPosition((ctx.pacMan.position().x() + ctx.msPac.position().x()) / 2,
 						ctx.pacMan.position().y() - t(2));

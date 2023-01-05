@@ -213,19 +213,19 @@ public class Creature extends Entity {
 		if (fraction < 0) {
 			throw new IllegalArgumentException("Negative speed fraction: " + fraction);
 		}
-		setAbsSpeed(fraction * GameModel.SPEED_100_PERCENT_PX);
+		setPixelSpeed(fraction * GameModel.SPEED_100_PERCENT_PX);
 	}
 
 	/**
 	 * Sets the absolute speed and updates the velocity vector.
 	 * 
-	 * @param speed speed in pixels per tick
+	 * @param pixels speed in pixels per tick
 	 */
-	public void setAbsSpeed(float speed) {
-		if (speed < 0) {
-			throw new IllegalArgumentException("Negative speed: " + speed);
+	public void setPixelSpeed(float pixels) {
+		if (pixels < 0) {
+			throw new IllegalArgumentException("Negative speed: " + pixels);
 		}
-		velocity = speed == 0 ? Vector2f.ZERO : moveDir.vec.toFloatVec().scaled(speed);
+		velocity = pixels == 0 ? Vector2f.ZERO : moveDir.vec.toFloatVec().scaled(pixels);
 	}
 
 	/**

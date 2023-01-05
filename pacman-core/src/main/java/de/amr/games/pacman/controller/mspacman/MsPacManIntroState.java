@@ -46,14 +46,14 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			ctx.lightsTimer.restartIndefinitely();
 			ctx.msPacMan.setPosition(t(34), TURNING_POSITION.y());
 			ctx.msPacMan.setMoveDir(LEFT);
-			ctx.msPacMan.setAbsSpeed(GUYS_SPEED);
+			ctx.msPacMan.setPixelSpeed(GUYS_SPEED);
 			ctx.msPacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 			ctx.msPacMan.show();
 			ctx.ghosts.forEach(ghost -> {
 				ghost.enterStateHuntingPac();
 				ghost.setPosition(t(34), TURNING_POSITION.y());
 				ghost.setMoveAndWishDir(LEFT);
-				ghost.setAbsSpeed(GUYS_SPEED);
+				ghost.setPixelSpeed(GUYS_SPEED);
 				ghost.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 				ghost.show();
 			});
@@ -82,7 +82,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 				ghost.setMoveAndWishDir(UP);
 			}
 			if (ghost.position().y() <= BLINKY_END_TILE.y() + ghost.id() * 18) {
-				ghost.setAbsSpeed(0);
+				ghost.setPixelSpeed(0);
 				ghost.animation().ifPresent(EntityAnimation::stop);
 				if (++ctx.ghostIndex == 4) {
 					intro.changeState(MsPacManIntroState.MSPACMAN);
@@ -98,7 +98,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			ctx.msPacMan.move();
 			ctx.msPacMan.animate();
 			if (ctx.msPacMan.position().x() <= MS_PACMAN_STOP_X) {
-				ctx.msPacMan.setAbsSpeed(0);
+				ctx.msPacMan.setPixelSpeed(0);
 				ctx.msPacMan.animation().ifPresent(EntityAnimation::reset);
 				intro.changeState(MsPacManIntroState.READY_TO_PLAY);
 			}

@@ -118,40 +118,40 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 				if (timer.atSecond(2.5)) {
 					ctx.pacMan.setPosition(-t(2), ctx.upperY);
 					ctx.pacMan.setMoveDir(Direction.RIGHT);
-					ctx.pacMan.setAbsSpeed(2.0f);
+					ctx.pacMan.setPixelSpeed(2.0f);
 					ctx.pacMan.show();
 					ctx.msPacMan.setPosition(-t(8), ctx.upperY);
 					ctx.msPacMan.setMoveDir(Direction.RIGHT);
-					ctx.msPacMan.setAbsSpeed(2.0f);
+					ctx.msPacMan.setPixelSpeed(2.0f);
 					ctx.msPacMan.show();
 				} else if (timer.atSecond(7)) {
 					ctx.pacMan.setPosition(t(36), ctx.lowerY);
 					ctx.pacMan.setMoveDir(Direction.LEFT);
-					ctx.pacMan.setAbsSpeed(2.0f);
+					ctx.pacMan.setPixelSpeed(2.0f);
 					ctx.msPacMan.setPosition(t(30), ctx.lowerY);
 					ctx.msPacMan.setMoveDir(Direction.LEFT);
-					ctx.msPacMan.setAbsSpeed(2.0f);
+					ctx.msPacMan.setPixelSpeed(2.0f);
 				} else if (timer.atSecond(11.5)) {
 					ctx.pacMan.setMoveDir(Direction.RIGHT);
-					ctx.pacMan.setAbsSpeed(2.0f);
+					ctx.pacMan.setPixelSpeed(2.0f);
 					ctx.msPacMan.setPosition(t(-8), ctx.middleY);
 					ctx.msPacMan.setMoveDir(Direction.RIGHT);
-					ctx.msPacMan.setAbsSpeed(2.0f);
+					ctx.msPacMan.setPixelSpeed(2.0f);
 					ctx.pacMan.setPosition(t(-2), ctx.middleY);
 				} else if (timer.atSecond(15.5)) {
 					ctx.pacMan.setPosition(t(42), ctx.upperY);
 					ctx.pacMan.setMoveDir(Direction.LEFT);
-					ctx.pacMan.setAbsSpeed(4.0f);
+					ctx.pacMan.setPixelSpeed(4.0f);
 					ctx.msPacMan.setPosition(t(30), ctx.upperY);
 					ctx.msPacMan.setMoveDir(Direction.LEFT);
-					ctx.msPacMan.setAbsSpeed(4.0f);
+					ctx.msPacMan.setPixelSpeed(4.0f);
 				} else if (timer.atSecond(16.5)) {
 					ctx.pacMan.setPosition(t(-2), ctx.lowerY);
 					ctx.pacMan.setMoveDir(Direction.RIGHT);
-					ctx.pacMan.setAbsSpeed(4.0f);
+					ctx.pacMan.setPixelSpeed(4.0f);
 					ctx.msPacMan.setPosition(t(-14), ctx.lowerY);
 					ctx.msPacMan.setMoveDir(Direction.RIGHT);
-					ctx.msPacMan.setAbsSpeed(4.0f);
+					ctx.msPacMan.setPixelSpeed(4.0f);
 				} else if (timer.atSecond(21)) {
 					ctx.gameController().terminateCurrentState();
 					return;
