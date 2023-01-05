@@ -172,7 +172,7 @@ public interface World {
 	/**
 	 * @return start position of Pac-Man in this world
 	 */
-	Vector2f pacStartPosition();
+	Vector2f pacInitialPosition();
 
 	/**
 	 * @return the ghost house in this world

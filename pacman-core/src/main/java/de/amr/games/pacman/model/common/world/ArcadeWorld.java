@@ -46,6 +46,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	public static final Vector2i SIZE_TILES = v2i(28, 36);
 	public static final Vector2i SIZE_PX = SIZE_TILES.scaled(TS);
 
+	private static final Vector2f PAC_INITIAL_POSITION = new Vector2f(13 * TS + HTS, 26 * TS);
+
 	//@formatter:off
 	private static final Vector2f[] GHOST_INITIAL_POSITIONS = {
 			halfTileRightOf(ArcadeGhostHouse.ENTRY),
@@ -86,8 +88,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public Vector2f pacStartPosition() {
-		return new Vector2f(13 * TS + HTS, 26 * TS);
+	public Vector2f pacInitialPosition() {
+		return PAC_INITIAL_POSITION;
 	}
 
 	@Override

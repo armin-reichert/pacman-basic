@@ -425,7 +425,7 @@ public class GameLevel {
 	 */
 	public void letsGetReadyToRumbleAndShowGuys(boolean guysVisible) {
 		pac.reset();
-		pac.setPosition(world.pacStartPosition());
+		pac.setPosition(world.pacInitialPosition());
 		pac.setMoveAndWishDir(Direction.LEFT);
 		var initialDirs = List.of(Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP);
 		ghosts().forEach(ghost -> {
