@@ -40,7 +40,7 @@ public class MsPacManIntroController extends Fsm<MsPacManIntroState, MsPacManInt
 	public MsPacManIntroController(GameController gameController) {
 		states = MsPacManIntroState.values();
 		for (var state : states) {
-			state.controller = this;
+			state.intro = this;
 		}
 		introData = new MsPacManIntroData(gameController);
 	}

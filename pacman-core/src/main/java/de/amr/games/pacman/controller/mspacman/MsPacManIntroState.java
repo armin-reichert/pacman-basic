@@ -45,11 +45,14 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		public void onEnter(MsPacManIntroData ctx) {
 			ctx.lightsTimer.restartIndefinitely();
 			ctx.msPacMan.setPosition(t(34), TURNING_POSITION.y());
-			ctx.msPacMan.setAbsSpeed(0);
+			ctx.msPacMan.setMoveDir(LEFT);
+			ctx.msPacMan.setAbsSpeed(GUYS_SPEED);
+			ctx.msPacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
+			ctx.msPacMan.show();
 			ctx.ghosts.forEach(ghost -> {
 				ghost.enterStateHuntingPac();
-				ghost.setMoveAndWishDir(LEFT);
 				ghost.setPosition(t(34), TURNING_POSITION.y());
+				ghost.setMoveAndWishDir(LEFT);
 				ghost.setAbsSpeed(GUYS_SPEED);
 				ghost.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 				ghost.show();
@@ -62,7 +65,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			if (timer.tick() == 2) {
 				ctx.creditVisible = true;
 			} else if (timer.atSecond(1)) {
-				controller.changeState(MsPacManIntroState.GHOSTS);
+				intro.changeState(MsPacManIntroState.GHOSTS);
 			}
 			ctx.lightsTimer.advance();
 		}
@@ -82,21 +85,13 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 				ghost.setAbsSpeed(0);
 				ghost.animation().ifPresent(EntityAnimation::stop);
 				if (++ctx.ghostIndex == 4) {
-					controller.changeState(MsPacManIntroState.MSPACMAN);
+					intro.changeState(MsPacManIntroState.MSPACMAN);
 				}
 			}
 		}
 	},
 
 	MSPACMAN {
-		@Override
-		public void onEnter(MsPacManIntroData ctx) {
-			ctx.msPacMan.setMoveDir(LEFT);
-			ctx.msPacMan.setAbsSpeed(GUYS_SPEED);
-			ctx.msPacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
-			ctx.msPacMan.show();
-		}
-
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
 			ctx.lightsTimer.advance();
@@ -105,7 +100,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			if (ctx.msPacMan.position().x() <= MS_PACMAN_STOP_X) {
 				ctx.msPacMan.setAbsSpeed(0);
 				ctx.msPacMan.animation().ifPresent(EntityAnimation::reset);
-				controller.changeState(MsPacManIntroState.READY_TO_PLAY);
+				intro.changeState(MsPacManIntroState.READY_TO_PLAY);
 			}
 		}
 	},
@@ -127,7 +122,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		}
 	};
 
-	MsPacManIntroController controller;
+	MsPacManIntroController intro;
 	final TickTimer timer = new TickTimer("Timer-" + name());
 
 	@Override
