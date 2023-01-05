@@ -444,25 +444,25 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			animationSet().ifPresent(animations -> {
 				if (!animations.isSelected(AnimKeys.GHOST_FLASHING)) {
-					selectAndRunAnimation(AnimKeys.GHOST_FLASHING).ifPresent(flashing -> startFlashingAnimation(level, flashing));
+					selectAndRunAnimation(AnimKeys.GHOST_FLASHING)
+							.ifPresent(flashing -> startFlashing(level.params().numFlashes(), flashing));
 				}
 			});
 		}
 	}
 
-	private void startFlashingAnimation(GameLevel level, EntityAnimation flashing) {
-		int numFlashes = level.params().numFlashes();
+	private void startFlashing(int numFlashes, EntityAnimation flashing) {
 		long frameTicks = GameModel.TICKS_PAC_POWER_FADES / (numFlashes * flashing.numFrames());
 		flashing.setFrameDuration(frameTicks);
 		flashing.setRepetitions(numFlashes);
 		flashing.restart();
 	}
 
-	public void setFlashingPaused(boolean paused) {
+	public void stopFlashing(boolean stopped) {
 		animation(AnimKeys.GHOST_FLASHING).ifPresent(flashing -> {
-			if (paused) {
+			if (stopped) {
 				flashing.stop();
-				// this is dependent on the animation implementation: display white with red eyes
+				// TODO: this is dependent on the animation implementation: display white ghost with red eyes
 				flashing.setFrameIndex(2);
 			} else {
 				flashing.start();
