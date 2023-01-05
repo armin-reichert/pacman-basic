@@ -121,7 +121,14 @@ public abstract class GameModel {
 		return HUNTING_DURATIONS[index];
 	}
 
-	protected static int checkLevelNumber(int levelNumber) {
+	public static int checkGhostID(int id) {
+		if (id < 0 || id > 3) {
+			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
+		}
+		return id;
+	}
+
+	public static int checkLevelNumber(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}

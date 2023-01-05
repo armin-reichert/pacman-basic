@@ -35,6 +35,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
@@ -116,13 +117,6 @@ public class GameLevel {
 		}
 	}
 
-	protected static int checkGhostID(int id) {
-		if (id < 0 || id > 3) {
-			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
-		}
-		return id;
-	}
-
 	// simulates the overflow bug from the original Arcade version
 	protected static Vector2i tilesAhead(Creature guy, int n) {
 		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
@@ -131,9 +125,9 @@ public class GameLevel {
 
 	private final GameModel game;
 	private final int number;
+	private World world;
 	private Pac pac;
 	private Ghost[] ghosts;
-	private World world;
 	private Bonus bonus;
 	private Parameters params;
 	private final Pulse energizerPulse;
@@ -147,8 +141,8 @@ public class GameLevel {
 	private byte cruiseElroyState;
 
 	public GameLevel(GameModel game, int number) {
-		this.game = game;
-		this.number = number;
+		this.game = Objects.requireNonNull(game);
+		this.number = GameModel.checkLevelNumber(number);
 		this.energizerPulse = new Pulse(10, true);
 		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
 		this.memo = new Memory();
@@ -158,6 +152,8 @@ public class GameLevel {
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
 	 */
 	public void defineGhostChasingBehavior(World world) {
+		Objects.requireNonNull(world);
+
 		var redGhost = ghost(ID_RED_GHOST);
 		var pinkGhost = ghost(ID_PINK_GHOST);
 		var cyanGhost = ghost(ID_CYAN_GHOST);
@@ -178,41 +174,32 @@ public class GameLevel {
 						world.ghostScatterTargetTile(ID_ORANGE_GHOST) : pac.tile());
 	}
 
-	/** @return Level number, starting with 1. */
-	public int number() {
-		return number;
-	}
-
 	public GameModel game() {
 		return game;
 	}
 
-	public void setParams(Parameters params) {
-		this.params = params;
-	}
-
-	public void setWorld(World world) {
-		this.world = world;
+	/** @return level number, starting with 1. */
+	public int number() {
+		return number;
 	}
 
 	public World world() {
 		return world;
 	}
 
-	public Pulse energizerPulse() {
-		return energizerPulse;
+	public void setWorld(World world) {
+		this.world = Objects.requireNonNull(world);
+	}
+
+	/**
+	 * @return Pac-Man or Ms. Pac-Man
+	 */
+	public Pac pac() {
+		return pac;
 	}
 
 	public void setPac(Pac pac) {
-		this.pac = pac;
-	}
-
-	public void setGhosts(Ghost[] ghosts) {
-		this.ghosts = ghosts;
-	}
-
-	public void setBonus(Bonus bonus) {
-		this.bonus = bonus;
+		this.pac = Objects.requireNonNull(pac);
 	}
 
 	/**
@@ -221,7 +208,8 @@ public class GameLevel {
 	 * @return the ghost with the given ID
 	 */
 	public Ghost ghost(int id) {
-		return ghosts[checkGhostID(id)];
+		GameModel.checkGhostID(id);
+		return ghosts[id];
 	}
 
 	/**
@@ -236,18 +224,11 @@ public class GameLevel {
 		return Stream.of(ghosts);
 	}
 
-	/**
-	 * @param ghost a ghost
-	 * @param dir   a direction
-	 * @return tells if the ghost can steer towards the given direction
-	 */
-	public boolean isSteeringAllowed(Ghost ghost, Direction dir) {
-		if (world instanceof ArcadeWorld arcadeWorld) {
-			boolean blocked = dir == Direction.UP && ghost.is(HUNTING_PAC)
-					&& arcadeWorld.upwardBlockedTiles().contains(ghost.tile());
-			return !blocked;
+	public void setGhosts(Ghost[] ghosts) {
+		this.ghosts = Objects.requireNonNull(ghosts);
+		if (ghosts.length != 4) {
+			throw new IllegalArgumentException("There must be exactly 4 ghosts");
 		}
-		return true;
 	}
 
 	/**
@@ -257,23 +238,28 @@ public class GameLevel {
 		return Stream.of(pac, ghosts[ID_RED_GHOST], ghosts[ID_PINK_GHOST], ghosts[ID_CYAN_GHOST], ghosts[ID_ORANGE_GHOST]);
 	}
 
-	/**
-	 * @return Pac-Man or Ms. Pac-Man
-	 */
-	public Pac pac() {
-		return pac;
-	}
-
 	public Bonus bonus() {
 		return bonus;
 	}
 
-	public TickTimer huntingTimer() {
-		return huntingTimer;
+	public void setBonus(Bonus bonus) {
+		this.bonus = Objects.requireNonNull(bonus);
 	}
 
 	public Parameters params() {
 		return params;
+	}
+
+	public void setParams(Parameters params) {
+		this.params = Objects.requireNonNull(params);
+	}
+
+	public Pulse energizerPulse() {
+		return energizerPulse;
+	}
+
+	public TickTimer huntingTimer() {
+		return huntingTimer;
 	}
 
 	public GhostHouseRules houseRules() {
@@ -281,7 +267,7 @@ public class GameLevel {
 	}
 
 	public void setHouseRules(GhostHouseRules houseRules) {
-		this.houseRules = houseRules;
+		this.houseRules = Objects.requireNonNull(houseRules);
 	}
 
 	/**
@@ -359,6 +345,22 @@ public class GameLevel {
 		bonus.setInactive();
 		energizerPulse.reset();
 		huntingTimer.stop();
+	}
+
+	/**
+	 * @param ghost a ghost
+	 * @param dir   a direction
+	 * @return tells if the ghost can steer towards the given direction
+	 */
+	public boolean isSteeringAllowed(Ghost ghost, Direction dir) {
+		Objects.requireNonNull(ghost);
+		Objects.requireNonNull(dir);
+		if (world instanceof ArcadeWorld arcadeWorld) {
+			boolean blocked = dir == Direction.UP && ghost.is(HUNTING_PAC)
+					&& arcadeWorld.upwardBlockedTiles().contains(ghost.tile());
+			return !blocked;
+		}
+		return true;
 	}
 
 	public void setHuntingDurations(int[] huntingDurations) {
