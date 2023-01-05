@@ -37,6 +37,7 @@ import java.util.Optional;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
@@ -120,19 +121,19 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Vector2f ghostInitialPosition(byte ghostID) {
-		Ghost.checkID(ghostID);
+		GameModel.checkGhostID(ghostID);
 		return ghostInitialPositions[ghostID];
 	}
 
 	@Override
 	public Vector2f ghostRevivalPosition(byte ghostID) {
-		Ghost.checkID(ghostID);
+		GameModel.checkGhostID(ghostID);
 		return ghostRevivalPositions[ghostID];
 	}
 
 	@Override
 	public Vector2i ghostScatterTargetTile(byte ghostID) {
-		Ghost.checkID(ghostID);
+		GameModel.checkGhostID(ghostID);
 		return ghostScatterTargetTiles[ghostID];
 	}
 

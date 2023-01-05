@@ -121,7 +121,7 @@ public abstract class GameModel {
 		return HUNTING_DURATIONS[index];
 	}
 
-	public static int checkGhostID(int id) {
+	public static byte checkGhostID(byte id) {
 		if (id < 0 || id > 3) {
 			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
 		}

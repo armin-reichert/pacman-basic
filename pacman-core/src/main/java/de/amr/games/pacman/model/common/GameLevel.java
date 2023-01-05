@@ -207,7 +207,7 @@ public class GameLevel {
 	 *           {@link Ghost#ID_ORANGE_GHOST}
 	 * @return the ghost with the given ID
 	 */
-	public Ghost ghost(int id) {
+	public Ghost ghost(byte id) {
 		GameModel.checkGhostID(id);
 		return ghosts[id];
 	}

@@ -75,16 +75,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private int killedIndex;
 	private int attractRouteIndex;
 
-	public static byte checkID(byte id) {
-		if (id < 0 || id > 3) {
-			throw new IllegalArgumentException("Ghost ID must be in range 0..3");
-		}
-		return id;
-	}
-
 	public Ghost(byte id, String name) {
 		super(name);
-		this.id = checkID(id);
+		this.id = GameModel.checkGhostID(id);
 		reset();
 	}
 
@@ -143,18 +136,21 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	public void scatter(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		setTargetTile(level.world().ghostScatterTargetTile(id));
 		navigateTowardsTarget(level);
 		tryMoving(level);
 	}
 
 	public void chase(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		setTargetTile(fnChasingTarget.get());
 		navigateTowardsTarget(level);
 		tryMoving(level);
 	}
 
 	public void roam(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		moveRandomly(level);
 	}
 
