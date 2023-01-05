@@ -52,18 +52,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	/** Size of Arcade game world in pixels (28x8=224, 36x8=288). */
 	public static final Vector2i SIZE_PX = v2i(TILES_X * TS, TILES_Y * TS);
 
-	/** Scatter target north-west corner. */
-	public static final Vector2i SCATTER_TILE_NW = new Vector2i(2, 0);
-
-	/** Scatter target north-east corner. */
-	public static final Vector2i SCATTER_TILE_NE = new Vector2i(25, 0);
-
-	/** Scatter target south-east corner. */
-	public static final Vector2i SCATTER_TILE_SE = new Vector2i(27, 34);
-
-	/** Scatter target south-west corner. */
-	public static final Vector2i SCATTER_TILE_SW = new Vector2i(0, 34);
-
 	//@formatter:off
 	private static final Vector2f[] GHOST_INITIAL_POSITIONS = {
 			halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE),
@@ -80,7 +68,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	};
 	
 	private static final Vector2i[] GHOST_SCATTER_TARGET_TILES = {
-			SCATTER_TILE_NE, SCATTER_TILE_NW, SCATTER_TILE_SE, SCATTER_TILE_SW
+			v2i(25, 0), v2i(2, 0), v2i(27, 34), v2i(0, 34)
 	};
 	//@formatter:on
 
