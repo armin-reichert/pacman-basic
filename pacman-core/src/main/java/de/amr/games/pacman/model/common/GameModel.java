@@ -145,6 +145,9 @@ public abstract class GameModel {
 	protected boolean scoringEnabled = true;
 	protected boolean immune; // extra feature
 
+	protected GameModel() {
+	}
+
 	/**
 	 * @return the game variant realized by this model
 	 */
@@ -153,24 +156,24 @@ public abstract class GameModel {
 	/**
 	 * @return new Pac-Man or Ms. Pac-Man
 	 */
-	public abstract Pac createPac();
+	protected abstract Pac createPac();
 
 	/**
 	 * @return set of new ghosts
 	 */
-	public abstract Ghost[] createGhosts();
+	protected abstract Ghost[] createGhosts();
 
 	/**
 	 * @param levelNumber level number (starting at 1)
 	 * @return world used in specified level
 	 */
-	public abstract World createWorld(int levelNumber);
+	protected abstract World createWorld(int levelNumber);
 
 	/**
 	 * @param levelNumber level number (starting at 1)
 	 * @return bonus used in specified level
 	 */
-	public abstract Bonus createBonus(int levelNumber);
+	protected abstract Bonus createBonus(int levelNumber);
 
 	/**
 	 * @param levelNumber level number (starting at 1)

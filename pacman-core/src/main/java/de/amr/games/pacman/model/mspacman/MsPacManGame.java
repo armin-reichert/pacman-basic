@@ -220,12 +220,12 @@ public class MsPacManGame extends GameModel {
 	//@formatter:on
 
 	@Override
-	public Pac createPac() {
+	protected Pac createPac() {
 		return new Pac("Ms. Pac-Man");
 	}
 
 	@Override
-	public Ghost[] createGhosts() {
+	protected Ghost[] createGhosts() {
 		return new Ghost[] { //
 				new Ghost(ID_RED_GHOST, "Blinky"), //
 				new Ghost(ID_PINK_GHOST, "Pinky"), //
@@ -235,7 +235,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public ArcadeWorld createWorld(int levelNumber) {
+	protected ArcadeWorld createWorld(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		int mapNumber = mapNumber(levelNumber);
 		var map = switch (mapNumber) {
@@ -250,7 +250,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public Bonus createBonus(int levelNumber) {
+	protected Bonus createBonus(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
 		return switch (n) {

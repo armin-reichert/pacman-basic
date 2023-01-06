@@ -94,12 +94,12 @@ public class PacManGame extends GameModel {
 	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
 	@Override
-	public Pac createPac() {
+	protected Pac createPac() {
 		return new Pac("Pac-Man");
 	}
 
 	@Override
-	public Ghost[] createGhosts() {
+	protected Ghost[] createGhosts() {
 		return new Ghost[] { //
 				new Ghost(ID_RED_GHOST, "Blinky"), //
 				new Ghost(ID_PINK_GHOST, "Pinky"), //
@@ -109,7 +109,7 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public ArcadeWorld createWorld(int levelNumber) {
+	protected ArcadeWorld createWorld(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		var world = new ArcadeWorld(MAP);
 		world.setUpwardBlockedTiles(RED_ZONE);
@@ -117,7 +117,7 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public Bonus createBonus(int levelNumber) {
+	protected Bonus createBonus(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		//@formatter:off
 		var bonus = switch (levelNumber) {
