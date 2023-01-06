@@ -139,13 +139,27 @@ public abstract class GameModel {
 	protected int credit;
 	protected int lives;
 	protected boolean playing;
-	protected final List<Byte> levelCounter = new LinkedList<>();
+	protected final List<Byte> levelCounter;
 	protected Score score;
 	protected Score highScore;
-	protected boolean scoringEnabled = true;
+	protected boolean scoringEnabled;
 	protected boolean immune; // extra feature
 
 	protected GameModel() {
+		levelCounter = new LinkedList<>();
+		init();
+	}
+
+	/**
+	 * Initializes the game. Credit and level counter stay unchanged.
+	 */
+	public void init() {
+		LOGGER.trace("Init game (%s)", variant());
+		level = null;
+		playing = false;
+		lives = INITIAL_LIVES;
+		scoringEnabled = true;
+		oneLessLifeDisplayed = false; // remove
 	}
 
 	/**
@@ -207,18 +221,6 @@ public abstract class GameModel {
 	 * Called when the bonus gets activated.
 	 */
 	public abstract void onBonusReached();
-
-	/**
-	 * Resets the game. Credit and level counter stay unchanged.
-	 */
-	public void reset() {
-		LOGGER.trace("Reset game (%s)", variant());
-		level = null;
-		playing = false;
-		lives = INITIAL_LIVES;
-		scoringEnabled = true;
-		oneLessLifeDisplayed = false; // remove
-	}
 
 	/** @return (optional) current game level. */
 	public Optional<GameLevel> level() {

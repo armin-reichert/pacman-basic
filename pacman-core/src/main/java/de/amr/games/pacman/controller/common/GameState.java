@@ -50,7 +50,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.restartIndefinitely();
-			game.reset();
+			game.init();
 			game.clearLevelCounter();
 			game.newScore();
 			game.loadHighscore();
@@ -132,15 +132,15 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			gc.sounds().stopAll();
 			if (!game.hasCredit()) {
 				gc.pacSteeringInAttractMode.init();
-				game.reset();
+				game.init();
 				game.enterDemoLevel();
 				GameEvents.publish(GameEventType.LEVEL_STARTING, null);
 			} else if (game.isPlaying()) {
 				game.level().ifPresent(level -> level.letsGetReadyToRumbleAndShowGuys(true));
 			} else {
-				game.reset();
-				game.enterLevel(1);
+				game.init();
 				game.newScore();
+				game.enterLevel(1);
 				gc.sounds().play(GameSound.GAME_READY);
 				GameEvents.publish(GameEventType.LEVEL_STARTING, null);
 			}
