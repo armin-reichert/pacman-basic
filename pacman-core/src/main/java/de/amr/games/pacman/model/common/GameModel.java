@@ -40,7 +40,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.model.common.GameLevel.Parameters;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -457,10 +456,4 @@ public abstract class GameModel {
 	public void setOneLessLifeDisplayed(boolean value) {
 		this.oneLessLifeDisplayed = value;
 	}
-
-	// experimental zone:
-
-	public abstract List<NavigationPoint> getDemoLevelPacRoute();
-
-	public abstract List<NavigationPoint> getDemoLevelGhostRoute(byte ghostID);
 }

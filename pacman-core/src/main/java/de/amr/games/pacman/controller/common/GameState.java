@@ -131,7 +131,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			gc.sounds().stopAll();
 			if (!game.hasCredit()) {
-				gc.pacDemoModeSteering.init();
 				game.init();
 				game.enterDemoLevel();
 				GameEvents.publish(GameEventType.LEVEL_STARTING, null);

@@ -30,7 +30,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -355,13 +354,4 @@ public class MsPacManGame extends GameModel {
 		LOGGER.info("Ms. Pac-Man demo level entered");
 	}
 
-	@Override
-	public List<NavigationPoint> getDemoLevelPacRoute() {
-		return List.of(); // TODO implement
-	}
-
-	@Override
-	public List<NavigationPoint> getDemoLevelGhostRoute(byte ghostID) {
-		return List.of(); // TODO implement
-	}
 }

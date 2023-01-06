@@ -35,7 +35,6 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
-import de.amr.games.pacman.lib.steering.RouteBasedSteering;
 import de.amr.games.pacman.lib.steering.RuleBasedSteering;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -79,7 +78,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public int intermissionTestNumber; // intermission test mode
 	public boolean levelTestMode = false; // level test mode
 	public int levelTestLastLevelNumber = 21; // level test mode
-	public RouteBasedSteering pacDemoModeSteering = new RouteBasedSteering(); // experimental
 
 	public GameController(GameVariant variant) {
 		states = GameState.values();
@@ -120,9 +118,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public Steering steering() {
 		if (!game().hasCredit()) {
-			if (game().variant() == GameVariant.PACMAN) {
-				return pacDemoModeSteering;
-			}
 			return autopilot;
 		}
 		if (autoControlled) {
@@ -167,11 +162,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(variant));
 		};
 		LOGGER.info("New game: %s", game);
-
-		// experimental
-		if (variant == GameVariant.PACMAN) {
-			pacDemoModeSteering.setRoute(game.getDemoLevelPacRoute());
-		}
 	}
 
 	/**

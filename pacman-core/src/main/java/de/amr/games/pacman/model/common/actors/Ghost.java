@@ -162,23 +162,23 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	@SuppressWarnings("unused")
-	private void movePseudoRandomly(GameLevel level) {
-		var route = level.game().getDemoLevelGhostRoute(id);
-		if (route.isEmpty()) {
-			moveRandomly(level);
-		} else if (tile().equals(route.get(attractRouteIndex).tile())) {
-			var navPoint = route.get(attractRouteIndex);
-			if (atTurnPositionTo(navPoint.dir())) {
-				setWishDir(navPoint.dir());
-				LOGGER.trace("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
-				++attractRouteIndex;
-			}
-			tryMoving(level);
-		} else {
-			navigateTowardsTarget(level);
-			tryMoving(level);
-		}
-	}
+//	private void movePseudoRandomly(GameLevel level) {
+//		var route = level.game().getDemoLevelGhostRoute(id);
+//		if (route.isEmpty()) {
+//			moveRandomly(level);
+//		} else if (tile().equals(route.get(attractRouteIndex).tile())) {
+//			var navPoint = route.get(attractRouteIndex);
+//			if (atTurnPositionTo(navPoint.dir())) {
+//				setWishDir(navPoint.dir());
+//				LOGGER.trace("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
+//				++attractRouteIndex;
+//			}
+//			tryMoving(level);
+//		} else {
+//			navigateTowardsTarget(level);
+//			tryMoving(level);
+//		}
+//	}
 
 	@Override
 	public String toString() {
