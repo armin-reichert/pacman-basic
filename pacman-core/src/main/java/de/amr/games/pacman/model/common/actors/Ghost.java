@@ -162,7 +162,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	@SuppressWarnings("unused")
-	// TODO not used yet
 	private void movePseudoRandomly(GameLevel level) {
 		var route = level.game().getDemoLevelGhostRoute(id);
 		if (route.isEmpty()) {
