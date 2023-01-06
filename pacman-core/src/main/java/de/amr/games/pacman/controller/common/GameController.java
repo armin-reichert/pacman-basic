@@ -36,7 +36,6 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.steering.RuleBasedSteering;
-import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -71,7 +70,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	private GameModel game;
 	private Steering autopilot;
-	private Steering normalSteering;
+	private Steering normalPacSteering;
 	private GameSoundController sounds;
 
 	private boolean autoControlled;
@@ -123,15 +122,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (autoControlled) {
 			return autopilot;
 		}
-		return normalSteering;
+		return normalPacSteering;
 	}
 
-	public void steerPac(GameLevel level) {
-		steering().steer(level, level.pac());
-	}
-
-	public void setNormalSteering(Steering steering) {
-		this.normalSteering = Objects.requireNonNull(steering);
+	public void setNormalPacSteering(Steering steering) {
+		this.normalPacSteering = Objects.requireNonNull(steering);
 	}
 
 	public void setSounds(GameSoundController sounds) {

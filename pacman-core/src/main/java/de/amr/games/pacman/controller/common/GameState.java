@@ -199,7 +199,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					return;
 				}
 
-				gc.steerPac(level);
+				gc.steering().steer(level, level.pac());
 				level.update();
 
 				level.checkIfPacFoundFood();
@@ -362,7 +362,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				gc.resumePreviousState();
 			} else {
 				game.level().ifPresent(level -> {
-					gc.steerPac(level);
+					gc.steering().steer(level, level.pac());
 					level.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
 							.forEach(ghost -> ghost.update(level));
 					level.energizerPulse().animate();
