@@ -41,6 +41,7 @@ import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -97,12 +98,12 @@ public class PacManGame extends GameModel {
 	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
 	@Override
-	protected Pac createPac() {
+	public Pac createPac() {
 		return new Pac("Pac-Man");
 	}
 
 	@Override
-	protected Ghost[] createGhosts() {
+	public Ghost[] createGhosts() {
 		return new Ghost[] { //
 				new Ghost(ID_RED_GHOST, "Blinky"), //
 				new Ghost(ID_PINK_GHOST, "Pinky"), //
@@ -112,7 +113,7 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	protected ArcadeWorld createWorld(int levelNumber) {
+	public ArcadeWorld createWorld(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		var world = new ArcadeWorld(MAP);
 		world.setUpwardBlockedTiles(RED_ZONE);
@@ -120,7 +121,7 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	protected Bonus createBonus(int levelNumber) {
+	public Bonus createBonus(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		//@formatter:off
 		var bonus = switch (levelNumber) {
@@ -153,6 +154,15 @@ public class PacManGame extends GameModel {
 	}
 
 	// experimental zone:
+
+	@Override
+	public void enterDemoLevel() {
+		level = new PacManGameDemoLevel(this);
+		level.enter();
+		level.guys().forEach(Creature::show);
+		scoringEnabled = false;
+		LOGGER.info("Pac-Man demo level entered");
+	}
 
 	private static final List<NavigationPoint> PACMAN_DEMO_LEVEL_ROUTE = List.of(np(12, 26), np(9, 26), np(12, 32),
 			np(15, 32), np(24, 29), np(21, 23), np(18, 23), np(18, 20), np(18, 17), np(15, 14), np(12, 14), np(9, 17),

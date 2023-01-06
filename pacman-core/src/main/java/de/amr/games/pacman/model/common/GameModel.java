@@ -43,7 +43,6 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.model.common.GameLevel.Parameters;
 import de.amr.games.pacman.model.common.actors.Bonus;
-import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
@@ -113,7 +112,7 @@ public abstract class GameModel {
 	};
 	//@formatter:on
 
-	protected int[] huntingDurations(int levelNumber) {
+	public int[] huntingDurations(int levelNumber) {
 		int index = switch (levelNumber) {
 		case 1 -> 0;
 		case 2, 3, 4 -> 1;
@@ -171,30 +170,30 @@ public abstract class GameModel {
 	/**
 	 * @return new Pac-Man or Ms. Pac-Man
 	 */
-	protected abstract Pac createPac();
+	public abstract Pac createPac();
 
 	/**
 	 * @return set of new ghosts
 	 */
-	protected abstract Ghost[] createGhosts();
+	public abstract Ghost[] createGhosts();
 
 	/**
 	 * @param levelNumber level number (starting at 1)
 	 * @return world used in specified level
 	 */
-	protected abstract World createWorld(int levelNumber);
+	public abstract World createWorld(int levelNumber);
 
 	/**
 	 * @param levelNumber level number (starting at 1)
 	 * @return bonus used in specified level
 	 */
-	protected abstract Bonus createBonus(int levelNumber);
+	public abstract Bonus createBonus(int levelNumber);
 
 	/**
 	 * @param levelNumber level number (starting at 1)
 	 * @return ghost house rules (dot counters etc.) used in specified level
 	 */
-	protected GhostHouseRules createHouseRules(int levelNumber) {
+	public GhostHouseRules createHouseRules(int levelNumber) {
 		var rules = new GhostHouseRules();
 		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 4 * FPS : 3 * FPS);
 		rules.setGlobalGhostDotLimits(GhostHouseRules.NO_LIMIT, 7, 17, GhostHouseRules.NO_LIMIT);
@@ -212,7 +211,7 @@ public abstract class GameModel {
 	 *         remain the same
 	 * @see {@link GameLevel.Parameters}
 	 */
-	protected Parameters levelParameters(int levelNumber) {
+	public Parameters levelParameters(int levelNumber) {
 		var data = levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
 		return Parameters.createFromData(data);
@@ -286,12 +285,7 @@ public abstract class GameModel {
 	/**
 	 * Enters the demo game level ("attract mode").
 	 */
-	public void enterDemoLevel() {
-		setLevel(1);
-		level.enter();
-		level.guys().forEach(Creature::show);
-		scoringEnabled = false;
-	}
+	public abstract void enterDemoLevel();
 
 	public void doGhostHuntingAction(GameLevel level, Ghost ghost) {
 		if (level.chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && level.cruiseElroyState() > 0) {

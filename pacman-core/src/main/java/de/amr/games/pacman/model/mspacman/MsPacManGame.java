@@ -41,6 +41,7 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -221,12 +222,12 @@ public class MsPacManGame extends GameModel {
 	//@formatter:on
 
 	@Override
-	protected Pac createPac() {
+	public Pac createPac() {
 		return new Pac("Ms. Pac-Man");
 	}
 
 	@Override
-	protected Ghost[] createGhosts() {
+	public Ghost[] createGhosts() {
 		return new Ghost[] { //
 				new Ghost(ID_RED_GHOST, "Blinky"), //
 				new Ghost(ID_PINK_GHOST, "Pinky"), //
@@ -236,7 +237,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected ArcadeWorld createWorld(int levelNumber) {
+	public ArcadeWorld createWorld(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		int mapNumber = mapNumber(levelNumber);
 		var map = switch (mapNumber) {
@@ -251,7 +252,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected Bonus createBonus(int levelNumber) {
+	public Bonus createBonus(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
 		return switch (n) {
@@ -343,6 +344,15 @@ public class MsPacManGame extends GameModel {
 		} else {
 			ghost.scatter(level);
 		}
+	}
+
+	@Override
+	public void enterDemoLevel() {
+		level = new MsPacManGameDemoLevel(this);
+		level.enter();
+		level.guys().forEach(Creature::show);
+		scoringEnabled = false;
+		LOGGER.info("Ms. Pac-Man demo level entered");
 	}
 
 	@Override
