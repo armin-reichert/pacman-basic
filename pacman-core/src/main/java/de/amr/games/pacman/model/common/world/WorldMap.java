@@ -23,8 +23,6 @@ SOFTWARE.
 */
 package de.amr.games.pacman.model.common.world;
 
-import de.amr.games.pacman.lib.U;
-
 /**
  * @author Armin Reichert
  */
@@ -35,8 +33,6 @@ public class WorldMap {
 	public static final byte TUNNEL          = 2;
 	public static final byte PELLET          = 3;
 	public static final byte ENERGIZER       = 4;
-	public static final byte PELLET_EATEN    = 5;
-	public static final byte ENERGIZER_EATEN = 6;
 	//@formatter:on
 
 	private final byte[][] mapData;
@@ -45,7 +41,8 @@ public class WorldMap {
 
 	public WorldMap(byte[][] mapData) {
 		validateMapData(mapData);
-		this.mapData = U.copyByteArray2D(mapData);
+//		this.mapData = U.copyByteArray2D(mapData);
+		this.mapData = mapData;
 		this.numRows = mapData.length;
 		this.numCols = mapData[0].length;
 	}

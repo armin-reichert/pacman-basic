@@ -26,14 +26,13 @@ package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.model.common.world.WorldMap.ENERGIZER;
-import static de.amr.games.pacman.model.common.world.WorldMap.ENERGIZER_EATEN;
 import static de.amr.games.pacman.model.common.world.WorldMap.PELLET;
-import static de.amr.games.pacman.model.common.world.WorldMap.PELLET_EATEN;
 import static de.amr.games.pacman.model.common.world.WorldMap.SPACE;
 import static de.amr.games.pacman.model.common.world.WorldMap.TUNNEL;
 import static de.amr.games.pacman.model.common.world.WorldMap.WALL;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -51,10 +50,12 @@ public abstract class MapBasedWorld implements World {
 	protected List<Vector2i> energizerTiles;
 	protected int totalFoodCount;
 	protected int foodRemaining;
+	private final BitSet eatenSet;
 
 	protected MapBasedWorld(byte[][] mapData) {
 		map = new WorldMap(mapData);
 		analyzeMap();
+		eatenSet = new BitSet(numRows() * numCols());
 	}
 
 	private void analyzeMap() {
@@ -102,28 +103,24 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public boolean isWall(Vector2i tile) {
-		Objects.requireNonNull(tile);
-		return content(tile) == WALL;
+		return content(Objects.requireNonNull(tile)) == WALL;
 	}
 
 	@Override
 	public boolean isTunnel(Vector2i tile) {
-		Objects.requireNonNull(tile);
-		return content(tile) == TUNNEL;
+		return content(Objects.requireNonNull(tile)) == TUNNEL;
 	}
 
 	@Override
 	public boolean isFoodTile(Vector2i tile) {
-		Objects.requireNonNull(tile);
-		byte data = content(tile);
-		return data == PELLET || data == PELLET_EATEN || data == ENERGIZER || data == ENERGIZER_EATEN;
+		byte data = content(Objects.requireNonNull(tile));
+		return data == PELLET || data == ENERGIZER;
 	}
 
 	@Override
 	public boolean isEnergizerTile(Vector2i tile) {
-		Objects.requireNonNull(tile);
-		byte data = content(tile);
-		return data == ENERGIZER || data == ENERGIZER_EATEN;
+		byte data = content(Objects.requireNonNull(tile));
+		return data == ENERGIZER;
 	}
 
 	@Override
@@ -134,12 +131,8 @@ public abstract class MapBasedWorld implements World {
 	@Override
 	public void removeFood(Vector2i tile) {
 		Objects.requireNonNull(tile);
-		byte data = content(tile);
-		if (data == ENERGIZER) {
-			map.set(tile.y(), tile.x(), ENERGIZER_EATEN);
-			--foodRemaining;
-		} else if (data == PELLET) {
-			map.set(tile.y(), tile.x(), PELLET_EATEN);
+		if (insideBounds(tile) && containsFood(tile)) {
+			eatenSet.set(index(tile));
 			--foodRemaining;
 		}
 	}
@@ -147,15 +140,20 @@ public abstract class MapBasedWorld implements World {
 	@Override
 	public boolean containsFood(Vector2i tile) {
 		Objects.requireNonNull(tile);
-		byte data = content(tile);
-		return data == PELLET || data == ENERGIZER;
+		if (insideBounds(tile)) {
+			byte data = content(tile);
+			return (data == PELLET || data == ENERGIZER) && !eatenSet.get(index(tile));
+		}
+		return false;
 	}
 
 	@Override
 	public boolean containsEatenFood(Vector2i tile) {
 		Objects.requireNonNull(tile);
-		byte data = content(tile);
-		return data == PELLET_EATEN || data == ENERGIZER_EATEN;
+		if (insideBounds(tile)) {
+			return eatenSet.get(index(tile));
+		}
+		return false;
 	}
 
 	@Override
