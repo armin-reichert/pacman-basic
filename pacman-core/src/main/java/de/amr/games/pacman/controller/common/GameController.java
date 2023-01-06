@@ -42,7 +42,6 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
-import de.amr.games.pacman.model.pacman.PacManGameAttractModeRoutes;
 
 /**
  * Controller (in the sense of MVC) for both (Pac-Man, Ms. Pac-Man) game variants.
@@ -80,7 +79,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public int intermissionTestNumber; // intermission test mode
 	public boolean levelTestMode = false; // level test mode
 	public int levelTestLastLevelNumber = 21; // level test mode
-	public RouteBasedSteering pacSteeringInAttractMode = new RouteBasedSteering(); // experimental
+	public RouteBasedSteering pacDemoModeSteering = new RouteBasedSteering(); // experimental
 
 	public GameController(GameVariant variant) {
 		states = GameState.values();
@@ -122,7 +121,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public Steering steering() {
 		if (!game().hasCredit()) {
 			if (game().variant() == GameVariant.PACMAN) {
-				return pacSteeringInAttractMode;
+				return pacDemoModeSteering;
 			}
 			return autopilot;
 		}
@@ -168,9 +167,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(variant));
 		};
 		LOGGER.info("New game: %s", game);
+
 		// experimental
 		if (variant == GameVariant.PACMAN) {
-			pacSteeringInAttractMode.setRoute(PacManGameAttractModeRoutes.PACMAN);
+			pacDemoModeSteering.setRoute(game.getDemoLevelPacRoute());
 		}
 	}
 

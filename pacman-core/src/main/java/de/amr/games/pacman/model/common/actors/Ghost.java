@@ -35,7 +35,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -49,12 +48,9 @@ import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.anim.EntityAnimationSet;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.world.World;
-import de.amr.games.pacman.model.pacman.PacManGameAttractModeRoutes;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -168,7 +164,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	@SuppressWarnings("unused")
 	// TODO not used yet
 	private void movePseudoRandomly(GameLevel level) {
-		var route = getAttractRoute(level.game().variant());
+		var route = level.game().getDemoLevelGhostRoute(id);
 		if (route.isEmpty()) {
 			moveRandomly(level);
 		} else if (tile().equals(route.get(attractRouteIndex).tile())) {
@@ -183,19 +179,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			navigateTowardsTarget(level);
 			tryMoving(level);
 		}
-	}
-
-	private List<NavigationPoint> getAttractRoute(GameVariant variant) {
-		return switch (variant) {
-		case PACMAN -> switch (id) {
-		case ID_RED_GHOST -> PacManGameAttractModeRoutes.RED_GHOST;
-		case ID_PINK_GHOST -> PacManGameAttractModeRoutes.PINK_GHOST;
-		case ID_CYAN_GHOST -> PacManGameAttractModeRoutes.CYAN_GHOST;
-		case ID_ORANGE_GHOST -> PacManGameAttractModeRoutes.ORANGE_GHOST;
-		default -> throw new IllegalArgumentException();
-		};
-		case MS_PACMAN -> List.of();
-		};
 	}
 
 	@Override
