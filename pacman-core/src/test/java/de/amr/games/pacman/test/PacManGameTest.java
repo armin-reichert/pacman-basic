@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.amr.games.pacman.lib.math.Vector2f;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
@@ -151,56 +152,56 @@ public class PacManGameTest {
 	}
 
 	@Test
-	public void testBonus() {
-		Bonus bonus = null;
+	public void testPacManGameBonus() {
+		GameLevel level = null;
 
-		bonus = game.createBonus(1);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(100, bonus.points());
+		level = game.enterLevel(1);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(100, level.bonus().points());
 
-		bonus = game.createBonus(2);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(300, bonus.points());
+		level = game.enterLevel(2);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(300, level.bonus().points());
 
-		bonus = game.createBonus(3);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(500, bonus.points());
+		level = game.enterLevel(3);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(500, level.bonus().points());
 
-		bonus = game.createBonus(4);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(500, bonus.points());
+		level = game.enterLevel(4);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(500, level.bonus().points());
 
-		bonus = game.createBonus(5);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(700, bonus.points());
+		level = game.enterLevel(5);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(700, level.bonus().points());
 
-		bonus = game.createBonus(6);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(700, bonus.points());
+		level = game.enterLevel(6);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(700, level.bonus().points());
 
-		bonus = game.createBonus(7);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(1000, bonus.points());
+		level = game.enterLevel(7);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(1000, level.bonus().points());
 
-		bonus = game.createBonus(8);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(1000, bonus.points());
+		level = game.enterLevel(8);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(1000, level.bonus().points());
 
-		bonus = game.createBonus(9);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(2000, bonus.points());
+		level = game.enterLevel(9);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(2000, level.bonus().points());
 
-		bonus = game.createBonus(10);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(2000, bonus.points());
+		level = game.enterLevel(10);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(2000, level.bonus().points());
 
-		bonus = game.createBonus(11);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(3000, bonus.points());
+		level = game.enterLevel(11);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(3000, level.bonus().points());
 
-		bonus = game.createBonus(12);
-		assertTrue(bonus instanceof StaticBonus);
-		assertEquals(3000, bonus.points());
+		level = game.enterLevel(12);
+		assertTrue(level.bonus() instanceof StaticBonus);
+		assertEquals(3000, level.bonus().points());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -227,10 +228,15 @@ public class PacManGameTest {
 	public void testLegalCruiseElroyState() {
 		var level = game.level().get();
 		level.setCruiseElroyState(-2);
+		assertEquals(-2, level.cruiseElroyState());
 		level.setCruiseElroyState(-1);
+		assertEquals(-1, level.cruiseElroyState());
 		level.setCruiseElroyState(0);
+		assertEquals(0, level.cruiseElroyState());
 		level.setCruiseElroyState(1);
+		assertEquals(1, level.cruiseElroyState());
 		level.setCruiseElroyState(2);
+		assertEquals(2, level.cruiseElroyState());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

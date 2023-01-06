@@ -247,8 +247,9 @@ public abstract class GameModel {
 	 * Creates and enters the given level.
 	 * 
 	 * @param levelNumber level number (starting at 1)
+	 * @return the game level entered
 	 */
-	public void enterLevel(int levelNumber) {
+	public GameLevel enterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		setLevel(levelNumber);
 		level.enter();
@@ -256,6 +257,7 @@ public abstract class GameModel {
 		if (score != null) {
 			score.setLevelNumber(levelNumber);
 		}
+		return level;
 	}
 
 	private void incrementLevelCounter() {
