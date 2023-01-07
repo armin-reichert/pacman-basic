@@ -70,7 +70,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	private GameModel game;
 	private Steering autopilot;
-	private Steering normalPacSteering;
+	private Steering manualPacSteering;
 	private GameSoundController sounds;
 
 	private boolean autoControlled;
@@ -116,14 +116,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public Steering steering() {
-		if (autoControlled) {
-			return autopilot;
-		}
-		return normalPacSteering;
+		return autoControlled ? autopilot : manualPacSteering;
 	}
 
-	public void setNormalPacSteering(Steering steering) {
-		this.normalPacSteering = Objects.requireNonNull(steering);
+	public void setManualPacSteering(Steering steering) {
+		this.manualPacSteering = Objects.requireNonNull(steering);
 	}
 
 	public void setSounds(GameSoundController sounds) {
