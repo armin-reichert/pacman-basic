@@ -56,9 +56,6 @@ public class PacManGameDemoLevel extends GameLevel {
 			np(99, 99, Direction.DOWN) //
 	);
 
-	/**
-	 * @param game
-	 */
 	public PacManGameDemoLevel(GameModel game) {
 		super(game, 1);
 		var pacSteering = new RouteBasedSteering();

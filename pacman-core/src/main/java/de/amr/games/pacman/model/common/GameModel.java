@@ -182,6 +182,8 @@ public abstract class GameModel {
 	 */
 	public abstract World createWorld(int levelNumber);
 
+	public abstract int mazeNumber(int levelNumber);
+
 	/**
 	 * @param levelNumber level number (starting at 1)
 	 * @return bonus used in specified level

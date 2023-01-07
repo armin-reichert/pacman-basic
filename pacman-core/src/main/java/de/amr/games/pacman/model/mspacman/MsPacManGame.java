@@ -286,6 +286,7 @@ public class MsPacManGame extends GameModel {
 	 * @param levelNumber level number (starting at 1)
 	 * @return number (starting at 1) of maze used in this level
 	 */
+	@Override
 	public int mazeNumber(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		return switch (levelNumber) {
@@ -353,5 +354,4 @@ public class MsPacManGame extends GameModel {
 		scoringEnabled = false;
 		LOGGER.info("Ms. Pac-Man demo level entered");
 	}
-
 }

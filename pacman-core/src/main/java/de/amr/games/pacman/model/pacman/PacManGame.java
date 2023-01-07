@@ -118,6 +118,11 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
+	public int mazeNumber(int levelNumber) {
+		return 1;
+	}
+
+	@Override
 	public Bonus createBonus(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		//@formatter:off
