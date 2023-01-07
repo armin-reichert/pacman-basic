@@ -232,7 +232,6 @@ public abstract class GameModel {
 	 * @param levelNumber level number (starting at 1)
 	 */
 	public void enterLevel(int levelNumber) {
-		checkLevelNumber(levelNumber);
 		level = new GameLevel(this, levelNumber);
 		level.setPac(createPac());
 		level.setGhosts(createGhosts());
