@@ -233,15 +233,6 @@ public abstract class GameModel {
 	 */
 	public void enterLevel(int levelNumber) {
 		level = new GameLevel(this, levelNumber);
-		level.setPac(createPac());
-		level.setGhosts(createGhosts());
-		level.setWorld(createWorld(levelNumber));
-		level.setBonus(createBonus(levelNumber));
-		level.setHouseRules(createHouseRules(levelNumber));
-		level.setHuntingDurations(huntingDurations(levelNumber));
-		level.setParams(levelParameters(levelNumber));
-		level.defineGhostChasingBehavior();
-		LOGGER.trace("Game level %d created. (%s)", levelNumber, variant());
 		level.enter();
 		incrementLevelCounter();
 		if (score != null) {

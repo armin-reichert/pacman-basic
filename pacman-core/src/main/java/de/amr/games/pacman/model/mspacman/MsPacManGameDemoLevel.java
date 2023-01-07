@@ -37,14 +37,6 @@ public class MsPacManGameDemoLevel extends GameLevel {
 	 */
 	public MsPacManGameDemoLevel(GameModel game) {
 		super(game, 1);
-		setPac(game.createPac());
-		setGhosts(game.createGhosts());
-		setWorld(game.createWorld(number()));
-		setBonus(game.createBonus(number()));
-		setHouseRules(game.createHouseRules(number()));
-		setHuntingDurations(game.huntingDurations(number()));
-		setParams(game.levelParameters(number()));
-		defineGhostChasingBehavior();
 		setPacSteering(new RuleBasedSteering());
 	}
 }

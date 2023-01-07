@@ -145,9 +145,18 @@ public class GameLevel {
 	public GameLevel(GameModel game, int number) {
 		this.game = Objects.requireNonNull(game);
 		this.number = GameModel.checkLevelNumber(number);
-		this.energizerPulse = new Pulse(10, true);
-		this.huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
-		this.memo = new Memory();
+		energizerPulse = new Pulse(10, true);
+		huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
+		memo = new Memory();
+		setPac(game.createPac());
+		setGhosts(game.createGhosts());
+		setWorld(game.createWorld(number()));
+		setBonus(game.createBonus(number()));
+		setHouseRules(game.createHouseRules(number()));
+		setHuntingDurations(game.huntingDurations(number()));
+		setParams(game.levelParameters(number()));
+		defineGhostChasingBehavior();
+		LOGGER.trace("Game level %d created. (%s)", number, game.variant());
 	}
 
 	/**

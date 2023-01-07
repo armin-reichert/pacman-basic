@@ -57,14 +57,6 @@ public class PacManGameDemoLevel extends GameLevel {
 	 */
 	public PacManGameDemoLevel(GameModel game) {
 		super(game, 1);
-		setPac(game.createPac());
-		setGhosts(game.createGhosts());
-		setWorld(game.createWorld(number()));
-		setBonus(game.createBonus(number()));
-		setHouseRules(game.createHouseRules(number()));
-		setHuntingDurations(game.huntingDurations(number()));
-		setParams(game.levelParameters(number()));
-		defineGhostChasingBehavior();
 		var pacSteering = new RouteBasedSteering();
 		pacSteering.setRoute(PACMAN_ROUTE);
 		pacSteering.init();
