@@ -37,7 +37,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.amr.games.pacman.lib.math.Vector2f;
-import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
@@ -153,55 +152,77 @@ public class PacManGameTest {
 
 	@Test
 	public void testPacManGameBonus() {
-		GameLevel level = null;
+		game.enterLevel(1);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(100, level.bonus().points());
+		});
 
-		level = game.enterLevel(1);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(100, level.bonus().points());
+		game.enterLevel(2);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(300, level.bonus().points());
+		});
 
-		level = game.enterLevel(2);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(300, level.bonus().points());
+		game.enterLevel(3);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(500, level.bonus().points());
+		});
 
-		level = game.enterLevel(3);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(500, level.bonus().points());
+		game.enterLevel(4);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(500, level.bonus().points());
+		});
 
-		level = game.enterLevel(4);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(500, level.bonus().points());
+		game.enterLevel(5);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(700, level.bonus().points());
+		});
 
-		level = game.enterLevel(5);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(700, level.bonus().points());
+		game.enterLevel(6);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(700, level.bonus().points());
+		});
 
-		level = game.enterLevel(6);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(700, level.bonus().points());
+		game.enterLevel(7);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(1000, level.bonus().points());
+		});
 
-		level = game.enterLevel(7);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(1000, level.bonus().points());
+		game.enterLevel(8);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(1000, level.bonus().points());
+		});
 
-		level = game.enterLevel(8);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(1000, level.bonus().points());
+		game.enterLevel(9);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(2000, level.bonus().points());
+		});
 
-		level = game.enterLevel(9);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(2000, level.bonus().points());
+		game.enterLevel(10);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(2000, level.bonus().points());
+		});
 
-		level = game.enterLevel(10);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(2000, level.bonus().points());
+		game.enterLevel(11);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(3000, level.bonus().points());
+		});
 
-		level = game.enterLevel(11);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(3000, level.bonus().points());
-
-		level = game.enterLevel(12);
-		assertTrue(level.bonus() instanceof StaticBonus);
-		assertEquals(3000, level.bonus().points());
+		game.enterLevel(12);
+		game.level().ifPresent(level -> {
+			assertTrue(level.bonus() instanceof StaticBonus);
+			assertEquals(3000, level.bonus().points());
+		});
 	}
 
 	@Test(expected = IllegalArgumentException.class)

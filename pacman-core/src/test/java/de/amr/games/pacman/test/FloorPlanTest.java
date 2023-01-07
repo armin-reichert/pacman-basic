@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -31,8 +31,19 @@ public class FloorPlanTest {
 	private static final String PACMAN_PATTERN = "fp-pacman-map%d-res-%d.txt";
 	private static final String MS_PACMAN_PATTERN = "fp-mspacman-map%d-res-%d.txt";
 
-	@Before
-	public void setUp() {
+	@AfterClass
+	public static void cleanUp() {
+		List.of(8, 4, 2, 1).forEach(res -> {
+			deleteFile(PACMAN_PATTERN, 1, res);
+			deleteFile(MS_PACMAN_PATTERN, 1, res);
+			deleteFile(MS_PACMAN_PATTERN, 2, res);
+			deleteFile(MS_PACMAN_PATTERN, 3, res);
+			deleteFile(MS_PACMAN_PATTERN, 4, res);
+		});
+	}
+
+	@Test
+	public void test() {
 		List.of(8, 4, 2, 1).forEach(res -> {
 			createFloorPlan(new ArcadeWorld(PacManGame.MAP), file(PACMAN_PATTERN, 1, res), res);
 			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP1), file(MS_PACMAN_PATTERN, 1, res), res);
@@ -40,10 +51,6 @@ public class FloorPlanTest {
 			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP3), file(MS_PACMAN_PATTERN, 3, res), res);
 			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP4), file(MS_PACMAN_PATTERN, 4, res), res);
 		});
-	}
-
-	@Test
-	public void test() {
 		List.of(8, 4, 2, 1).forEach(res -> {
 			assertTrue(file(PACMAN_PATTERN, 1, res).exists());
 			assertTrue(file(MS_PACMAN_PATTERN, 1, res).exists());
@@ -53,11 +60,17 @@ public class FloorPlanTest {
 		});
 	}
 
-	private File file(String pattern, int mapNumber, int resolution) {
+	private static File file(String pattern, int mapNumber, int resolution) {
 		return new File(DIR, String.format(pattern, mapNumber, resolution));
 	}
 
-	private void createFloorPlan(World world, File file, int resolution) {
+	private static void deleteFile(String pattern, int mapNumber, int res) {
+		var file = file(pattern, mapNumber, res);
+		file.delete();
+		LOGGER.info("Deleted file %s", file);
+	}
+
+	private static void createFloorPlan(World world, File file, int resolution) {
 		long time = System.nanoTime();
 		var floorPlan = new FloorPlan(world, resolution);
 		time = System.nanoTime() - time;

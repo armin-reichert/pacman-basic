@@ -227,11 +227,12 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Creates the specified level and sets it as current level.
+	 * Creates and enters the given level.
 	 * 
 	 * @param levelNumber level number (starting at 1)
 	 */
-	protected void setLevel(int levelNumber) {
+	public void enterLevel(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		level = new GameLevel(this, levelNumber);
 		level.setPac(createPac());
 		level.setGhosts(createGhosts());
@@ -242,23 +243,11 @@ public abstract class GameModel {
 		level.setParams(levelParameters(levelNumber));
 		level.defineGhostChasingBehavior();
 		LOGGER.trace("Game level %d created. (%s)", levelNumber, variant());
-	}
-
-	/**
-	 * Creates and enters the given level.
-	 * 
-	 * @param levelNumber level number (starting at 1)
-	 * @return the game level entered
-	 */
-	public GameLevel enterLevel(int levelNumber) {
-		checkLevelNumber(levelNumber);
-		setLevel(levelNumber);
 		level.enter();
 		incrementLevelCounter();
 		if (score != null) {
 			score.setLevelNumber(levelNumber);
 		}
-		return level;
 	}
 
 	/**
