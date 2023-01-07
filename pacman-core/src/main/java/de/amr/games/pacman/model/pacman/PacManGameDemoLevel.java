@@ -38,7 +38,7 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class PacManGameDemoLevel extends GameLevel {
 
-	private static final List<NavigationPoint> PACMAN_DEMO_LEVEL_ROUTE = List.of(np(12, 26), np(9, 26), np(12, 32),
+	private static final List<NavigationPoint> PACMAN_ROUTE = List.of(np(12, 26), np(9, 26), np(12, 32),
 			np(15, 32), np(24, 29), np(21, 23), np(18, 23), np(18, 20), np(18, 17), np(15, 14), np(12, 14), np(9, 17),
 			np(6, 17), np(6, 11), np(6, 8), np(6, 4), np(1, 8), np(6, 8), np(9, 8), np(12, 8), np(6, 4), np(6, 8), np(6, 11),
 			np(1, 8), np(6, 8), np(9, 8), np(12, 14), np(9, 17), np(6, 17), np(0, 17), np(21, 17), np(21, 23), np(21, 26),
@@ -46,7 +46,7 @@ public class PacManGameDemoLevel extends GameLevel {
 			np(12, 26), np(15, 26), np(18, 23), np(21, 23), np(24, 29), /* avoid moving up: */ np(26, 29), np(15, 32),
 			np(12, 32), np(3, 29), np(6, 23));
 
-	private static final List<NavigationPoint> GHOST_0_DEMO_LEVEL_ROUTE = List.of(np(21, 4, Direction.DOWN),
+	private static final List<NavigationPoint> GHOST_0_ROUTE = List.of(np(21, 4, Direction.DOWN),
 			np(21, 8, Direction.DOWN), np(21, 11, Direction.RIGHT), np(26, 8, Direction.LEFT), np(21, 8, Direction.DOWN),
 			np(26, 8, Direction.UP), np(26, 8, Direction.DOWN), np(21, 11, Direction.DOWN), np(21, 17, Direction.RIGHT), // enters
 
@@ -66,7 +66,7 @@ public class PacManGameDemoLevel extends GameLevel {
 		setParams(game.levelParameters(1));
 		defineGhostChasingBehavior();
 		var pacSteering = new RouteBasedSteering();
-		pacSteering.setRoute(PACMAN_DEMO_LEVEL_ROUTE);
+		pacSteering.setRoute(PACMAN_ROUTE);
 		pacSteering.init();
 		setPacSteering(pacSteering);
 	}
