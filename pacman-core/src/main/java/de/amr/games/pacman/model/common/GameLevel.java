@@ -44,6 +44,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.controller.common.GameSoundController;
+import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.Pulse;
@@ -127,6 +128,7 @@ public class GameLevel {
 	private final int number;
 	private World world;
 	private Pac pac;
+	private Steering pacSteering;
 	private Ghost[] ghosts;
 	private Bonus bonus;
 	private Parameters params;
@@ -198,6 +200,14 @@ public class GameLevel {
 
 	public void setPac(Pac pac) {
 		this.pac = Objects.requireNonNull(pac);
+	}
+
+	public Optional<Steering> pacSteering() {
+		return Optional.ofNullable(pacSteering);
+	}
+
+	public void setPacSteering(Steering pacSteering) {
+		this.pacSteering = pacSteering;
 	}
 
 	/**

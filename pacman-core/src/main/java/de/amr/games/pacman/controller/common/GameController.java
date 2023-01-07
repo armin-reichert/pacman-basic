@@ -116,9 +116,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public Steering steering() {
-		if (!game().hasCredit()) {
-			return autopilot;
-		}
 		if (autoControlled) {
 			return autopilot;
 		}

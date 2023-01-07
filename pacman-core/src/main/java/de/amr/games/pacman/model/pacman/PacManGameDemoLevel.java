@@ -52,8 +52,6 @@ public class PacManGameDemoLevel extends GameLevel {
 
 			np(99, 99, Direction.DOWN));
 
-	private RouteBasedSteering pacSteering;
-
 	/**
 	 * @param game
 	 */
@@ -67,9 +65,9 @@ public class PacManGameDemoLevel extends GameLevel {
 		setHuntingDurations(game.huntingDurations(1));
 		setParams(game.levelParameters(1));
 		defineGhostChasingBehavior();
-		pacSteering = new RouteBasedSteering();
+		var pacSteering = new RouteBasedSteering();
 		pacSteering.setRoute(PACMAN_DEMO_LEVEL_ROUTE);
 		pacSteering.init();
+		setPacSteering(pacSteering);
 	}
-
 }

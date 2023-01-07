@@ -41,7 +41,6 @@ public class WorldMap {
 
 	public WorldMap(byte[][] mapData) {
 		validateMapData(mapData);
-//		this.mapData = U.copyByteArray2D(mapData);
 		this.mapData = mapData;
 		this.numRows = mapData.length;
 		this.numCols = mapData[0].length;
