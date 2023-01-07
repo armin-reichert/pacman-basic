@@ -23,6 +23,7 @@ SOFTWARE.
 */
 package de.amr.games.pacman.model.mspacman;
 
+import de.amr.games.pacman.lib.steering.RuleBasedSteering;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 
@@ -38,11 +39,12 @@ public class MsPacManGameDemoLevel extends GameLevel {
 		super(game, 1);
 		setPac(game.createPac());
 		setGhosts(game.createGhosts());
-		setWorld(game.createWorld(1));
-		setBonus(game.createBonus(1));
-		setHouseRules(game.createHouseRules(1));
-		setHuntingDurations(game.huntingDurations(1));
-		setParams(game.levelParameters(1));
+		setWorld(game.createWorld(number()));
+		setBonus(game.createBonus(number()));
+		setHouseRules(game.createHouseRules(number()));
+		setHuntingDurations(game.huntingDurations(number()));
+		setParams(game.levelParameters(number()));
 		defineGhostChasingBehavior();
+		setPacSteering(new RuleBasedSteering());
 	}
 }
