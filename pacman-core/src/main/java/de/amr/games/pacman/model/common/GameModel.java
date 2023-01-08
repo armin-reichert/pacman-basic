@@ -134,11 +134,11 @@ public abstract class GameModel {
 		return levelNumber;
 	}
 
-	protected GameLevel level;
 	protected int credit;
 	protected int lives;
-	protected boolean playing;
 	protected final List<Byte> levelCounter;
+	protected GameLevel level;
+	protected boolean playing;
 	protected Score score;
 	protected Score highScore;
 	protected boolean scoringEnabled;
@@ -154,11 +154,11 @@ public abstract class GameModel {
 	 */
 	public void init() {
 		LOGGER.trace("Init game (%s)", variant());
-		level = null;
 		playing = false;
 		lives = INITIAL_LIVES;
+		level = null;
 		scoringEnabled = true;
-		oneLessLifeDisplayed = false; // remove
+		oneLessLifeDisplayed = false; // @remove
 	}
 
 	/**
