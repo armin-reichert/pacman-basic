@@ -155,32 +155,21 @@ public class GameLevel {
 		setHouseRules(game.createHouseRules(number()));
 		setHuntingDurations(game.huntingDurations(number()));
 		setParams(game.levelParameters(number()));
-		defineGhostChasingBehavior();
+		defineChasingBehavior();
 		letsGetReadyToRumbleAndShowGuys(false);
 		LOGGER.trace("Game level %d created. (%s)", number, game.variant());
 	}
 
-	/**
-	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
-	 */
-	protected void defineGhostChasingBehavior() {
-		var redGhost = ghost(ID_RED_GHOST);
-		var pinkGhost = ghost(ID_PINK_GHOST);
-		var cyanGhost = ghost(ID_CYAN_GHOST);
-		var orangeGhost = ghost(ID_ORANGE_GHOST);
-
+	public void defineChasingBehavior() {
 		// Red ghost attacks Pac-Man directly
-		redGhost.setChasingBehavior(pac::tile);
-
+		ghost(ID_RED_GHOST).setChasingTarget(pac::tile);
 		// Pink ghost ambushes Pac-Man
-		pinkGhost.setChasingBehavior(() -> tilesAhead(pac, 4));
-
+		ghost(ID_PINK_GHOST).setChasingTarget(() -> tilesAhead(pac, 4));
 		// Cyan ghost attacks from opposite side than red ghost
-		cyanGhost.setChasingBehavior(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
-
+		ghost(ID_CYAN_GHOST).setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(ghost(ID_RED_GHOST).tile()));
 		// Orange ghost attacks directly but retreats if too near
-		orangeGhost.setChasingBehavior( //
-				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? //
+		ghost(ID_ORANGE_GHOST).setChasingTarget( //
+				() -> ghost(ID_ORANGE_GHOST).tile().euclideanDistance(pac.tile()) < 8 ? //
 						world.ghostScatterTargetTile(ID_ORANGE_GHOST) : pac.tile());
 	}
 

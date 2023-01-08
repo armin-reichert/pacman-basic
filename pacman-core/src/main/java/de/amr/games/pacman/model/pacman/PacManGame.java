@@ -155,8 +155,6 @@ public class PacManGame extends GameModel {
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 	}
 
-	// experimental zone:
-
 	@Override
 	public void enterDemoLevel() {
 		level = new PacManGameDemoLevel(this);

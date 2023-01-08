@@ -92,7 +92,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		killedIndex = -1;
 	}
 
-	public void setChasingBehavior(Supplier<Vector2i> fnTargetTile) {
+	public void setChasingTarget(Supplier<Vector2i> fnTargetTile) {
 		this.fnChasingTarget = Objects.requireNonNull(fnTargetTile);
 	}
 
