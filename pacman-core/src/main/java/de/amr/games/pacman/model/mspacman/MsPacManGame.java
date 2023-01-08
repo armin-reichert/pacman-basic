@@ -349,7 +349,6 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public void enterDemoLevel() {
 		level = new MsPacManGameDemoLevel(this);
-		level.enter();
 		level.guys().forEach(Creature::show);
 		scoringEnabled = false;
 		LOGGER.info("Ms. Pac-Man demo level entered");

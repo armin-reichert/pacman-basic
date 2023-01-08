@@ -156,13 +156,14 @@ public class GameLevel {
 		setHuntingDurations(game.huntingDurations(number()));
 		setParams(game.levelParameters(number()));
 		defineGhostChasingBehavior();
+		letsGetReadyToRumbleAndShowGuys(false);
 		LOGGER.trace("Game level %d created. (%s)", number, game.variant());
 	}
 
 	/**
 	 * Defines the ghost "AI": each ghost has a different way of computing his target tile when chasing Pac-Man.
 	 */
-	public void defineGhostChasingBehavior() {
+	protected void defineGhostChasingBehavior() {
 		var redGhost = ghost(ID_RED_GHOST);
 		var pinkGhost = ghost(ID_PINK_GHOST);
 		var cyanGhost = ghost(ID_CYAN_GHOST);
@@ -181,6 +182,26 @@ public class GameLevel {
 		orangeGhost.setChasingBehavior( //
 				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? //
 						world.ghostScatterTargetTile(ID_ORANGE_GHOST) : pac.tile());
+	}
+
+	public void update() {
+		memo.forgetEverything(); // ich scholze jetzt
+		pac.update(this);
+		checkIfGhostCanGetUnlocked();
+		ghosts().forEach(ghost -> ghost.update(this));
+		bonus.update(this);
+		energizerPulse.animate();
+		updateHunting();
+	}
+
+	public void exit() {
+		LOGGER.trace("Exit level %d (%s)", number, game.variant());
+		pac.rest(Pac.REST_INDEFINITE);
+		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+		ghosts().forEach(Ghost::hide);
+		bonus.setInactive();
+		energizerPulse.reset();
+		huntingTimer.stop();
 	}
 
 	public GameModel game() {
@@ -326,33 +347,6 @@ public class GameLevel {
 
 	public int numGhostsKilledByEnergizer() {
 		return numGhostsKilledByEnergizer;
-	}
-
-	public void enter() {
-		LOGGER.trace("Enter level %d (%s)", number, game.variant());
-		houseRules.resetPrivateGhostDotCounters();
-		setCruiseElroyState(0);
-		letsGetReadyToRumbleAndShowGuys(false);
-	}
-
-	public void update() {
-		memo.forgetEverything(); // ich scholze jetzt
-		pac.update(this);
-		checkIfGhostCanGetUnlocked();
-		ghosts().forEach(ghost -> ghost.update(this));
-		bonus.update(this);
-		energizerPulse.animate();
-		updateHunting();
-	}
-
-	public void exit() {
-		LOGGER.trace("Exit level %d (%s)", number, game.variant());
-		pac.rest(Pac.REST_INDEFINITE);
-		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
-		ghosts().forEach(Ghost::hide);
-		bonus.setInactive();
-		energizerPulse.reset();
-		huntingTimer.stop();
 	}
 
 	/**

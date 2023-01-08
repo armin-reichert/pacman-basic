@@ -235,7 +235,6 @@ public abstract class GameModel {
 	 */
 	public void enterLevel(int levelNumber) {
 		level = new GameLevel(this, levelNumber);
-		level.enter();
 		incrementLevelCounter();
 		if (score != null) {
 			score.setLevelNumber(levelNumber);

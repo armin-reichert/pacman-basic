@@ -160,7 +160,6 @@ public class PacManGame extends GameModel {
 	@Override
 	public void enterDemoLevel() {
 		level = new PacManGameDemoLevel(this);
-		level.enter();
 		level.guys().forEach(Creature::show);
 		scoringEnabled = false;
 		LOGGER.info("Pac-Man demo level entered");

@@ -28,7 +28,6 @@ import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -77,10 +76,6 @@ public class GhostHouseRules {
 		privateGhostDotLimits[Ghost.ID_PINK_GHOST] = (byte) pinkGhostLimit;
 		privateGhostDotLimits[Ghost.ID_CYAN_GHOST] = (byte) cyanGhostLimit;
 		privateGhostDotLimits[Ghost.ID_ORANGE_GHOST] = (byte) orangeGhostLimit;
-	}
-
-	public void resetPrivateGhostDotCounters() {
-		Arrays.fill(ghostDotCounters, 0);
 	}
 
 	public void resetGlobalDotCounterAndSetEnabled(boolean enabled) {
