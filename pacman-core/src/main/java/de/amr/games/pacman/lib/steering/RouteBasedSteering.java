@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
- * Pac-Man steering based on a defined route.
+ * Steering of a creature based on a route.
  * 
  * @author Armin Reichert
  */
@@ -46,13 +46,16 @@ public class RouteBasedSteering implements Steering {
 	private int targetIndex;
 	private boolean complete;
 
+	public RouteBasedSteering() {
+	}
+
+	public RouteBasedSteering(List<NavigationPoint> route) {
+		setRoute(route);
+	}
+
 	public void setRoute(List<NavigationPoint> route) {
 		this.route = route;
 		init();
-	}
-
-	public boolean isComplete() {
-		return complete;
 	}
 
 	@Override
@@ -75,6 +78,10 @@ public class RouteBasedSteering implements Steering {
 			LOGGER.trace("New target tile for %s=%s", guy.name(), guy.targetTile().get());
 		}
 		LOGGER.trace("Current wish dir for %s: %s (tile: %s)", guy.name(), guy.wishDir(), guy.tile());
+	}
+
+	public boolean isComplete() {
+		return complete;
 	}
 
 	private void nextTarget(GameLevel level, Creature guy) {

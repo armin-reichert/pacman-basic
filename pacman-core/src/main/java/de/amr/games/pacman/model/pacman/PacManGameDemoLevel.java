@@ -58,9 +58,6 @@ public class PacManGameDemoLevel extends GameLevel {
 
 	public PacManGameDemoLevel(GameModel game) {
 		super(game, 1);
-		var pacSteering = new RouteBasedSteering();
-		pacSteering.setRoute(PACMAN_ROUTE);
-		pacSteering.init();
-		setPacSteering(pacSteering);
+		setPacSteering(new RouteBasedSteering(PACMAN_ROUTE));
 	}
 }
