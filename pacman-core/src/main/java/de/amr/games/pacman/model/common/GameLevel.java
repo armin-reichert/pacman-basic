@@ -34,7 +34,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -426,12 +425,11 @@ public class GameLevel {
 	public void letsGetReadyToRumbleAndShowGuys(boolean guysVisible) {
 		pac.reset();
 		pac.setPosition(world.pacInitialPosition());
-		pac.setMoveAndWishDir(Direction.LEFT);
-		var initialDirs = List.of(Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP);
+		pac.setMoveAndWishDir(world.pacInitialDirection());
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setPosition(world.ghostInitialPosition(ghost.id()));
-			ghost.setMoveAndWishDir(initialDirs.get(ghost.id()));
+			ghost.setMoveAndWishDir(world.ghostInitialDirection(ghost.id()));
 			ghost.enterStateLocked();
 		});
 		guys().forEach(guy -> guy.setVisible(guysVisible));
@@ -446,9 +444,9 @@ public class GameLevel {
 	public float huntingSpeed(Ghost ghost) {
 		if (world.isTunnel(ghost.tile())) {
 			return params.ghostSpeedTunnel();
-		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState() == 1) {
+		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState == 1) {
 			return params.elroy1Speed();
-		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState() == 2) {
+		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState == 2) {
 			return params.elroy2Speed();
 		} else {
 			return params.ghostSpeed();

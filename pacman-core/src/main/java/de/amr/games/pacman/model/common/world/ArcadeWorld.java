@@ -33,6 +33,7 @@ import java.util.Optional;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -47,6 +48,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	public static final Vector2i SIZE_PX = SIZE_TILES.scaled(TS);
 
 	private static final Vector2f PAC_INITIAL_POSITION = halfTileRightOf(13, 26);
+	private static final Direction PAC_INITIAL_DIRECTION = Direction.LEFT;
 
 	//@formatter:off
 	private static final Vector2f[] GHOST_INITIAL_POSITIONS = {
@@ -54,6 +56,10 @@ public class ArcadeWorld extends MapBasedWorld {
 			halfTileRightOf(ArcadeGhostHouse.SEAT_CENTER),
 			halfTileRightOf(ArcadeGhostHouse.SEAT_LEFT),
 			halfTileRightOf(ArcadeGhostHouse.SEAT_RIGHT)
+	};
+	
+	private static final Direction[] GHOST_INITIAL_DIRECTIONS = {
+			Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP	
 	};
 	
 	private static final Vector2f[] GHOST_REVIVAL_POSITIONS = {
@@ -93,9 +99,20 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
+	public Direction pacInitialDirection() {
+		return PAC_INITIAL_DIRECTION;
+	}
+
+	@Override
 	public Vector2f ghostInitialPosition(byte ghostID) {
 		GameModel.checkGhostID(ghostID);
 		return GHOST_INITIAL_POSITIONS[ghostID];
+	}
+
+	@Override
+	public Direction ghostInitialDirection(byte ghostID) {
+		GameModel.checkGhostID(ghostID);
+		return GHOST_INITIAL_DIRECTIONS[ghostID];
 	}
 
 	@Override

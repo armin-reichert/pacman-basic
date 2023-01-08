@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.steering.Direction;
 
 /**
  * Interface for accessing the game world.
@@ -179,6 +180,11 @@ public interface World {
 	Vector2f pacInitialPosition();
 
 	/**
+	 * @return start direction of Pac-Man in this world
+	 */
+	Direction pacInitialDirection();
+
+	/**
 	 * @return the ghost house in this world
 	 */
 	GhostHouse ghostHouse();
@@ -240,6 +246,12 @@ public interface World {
 	 * @return initial position of ghost with given ID
 	 */
 	Vector2f ghostInitialPosition(byte ghostID);
+
+	/**
+	 * @param ghostID ghost ID
+	 * @return initial direction of ghost with given ID
+	 */
+	Direction ghostInitialDirection(byte ghostID);
 
 	/**
 	 * @param ghostID ghost ID
