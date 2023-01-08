@@ -444,14 +444,14 @@ public class GameLevel {
 	 * @return relative speed of ghost when hunting
 	 */
 	public float huntingSpeed(Ghost ghost) {
-		if (world().isTunnel(ghost.tile())) {
-			return params().ghostSpeedTunnel();
+		if (world.isTunnel(ghost.tile())) {
+			return params.ghostSpeedTunnel();
 		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState() == 1) {
-			return params().elroy1Speed();
+			return params.elroy1Speed();
 		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState() == 2) {
-			return params().elroy2Speed();
+			return params.elroy2Speed();
 		} else {
-			return params().ghostSpeed();
+			return params.ghostSpeed();
 		}
 	}
 
