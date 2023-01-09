@@ -182,6 +182,10 @@ public abstract class GameModel {
 	 */
 	public abstract World createWorld(int levelNumber);
 
+	/**
+	 * @param levelNumber level number (starting at 1)
+	 * @return number of maze used in specified level
+	 */
 	public abstract int mazeNumber(int levelNumber);
 
 	/**
@@ -213,7 +217,8 @@ public abstract class GameModel {
 	 * @see {@link GameLevel.Parameters}
 	 */
 	public Parameters levelParameters(int levelNumber) {
-		var data = levelNumber <= LEVEL_PARAMETERS.length ? LEVEL_PARAMETERS[levelNumber - 1]
+		var data = levelNumber <= LEVEL_PARAMETERS.length //
+				? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
 		return Parameters.createFromData(data);
 	}
