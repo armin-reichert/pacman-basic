@@ -164,7 +164,7 @@ public class Creature extends Entity {
 		if (moveDir != dir) {
 			moveDir = dir;
 			LOGGER.trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
-			velocity = moveDir.vec.toFloatVec().scaled(velocity.length());
+			velocity = moveDir.vector().toFloatVec().scaled(velocity.length());
 		}
 	}
 
@@ -225,7 +225,7 @@ public class Creature extends Entity {
 		if (pixels < 0) {
 			throw new IllegalArgumentException("Negative speed: " + pixels);
 		}
-		velocity = pixels == 0 ? Vector2f.ZERO : moveDir.vec.toFloatVec().scaled(pixels);
+		velocity = pixels == 0 ? Vector2f.ZERO : moveDir.vector().toFloatVec().scaled(pixels);
 	}
 
 	/**
@@ -258,7 +258,7 @@ public class Creature extends Entity {
 			if (dir == moveDir.opposite()) {
 				continue; // reversing the move direction is not allowed
 			}
-			var neighborTile = currentTile.plus(dir.vec);
+			var neighborTile = currentTile.plus(dir.vector());
 			if (canAccessTile(neighborTile, level)) {
 				float distance = neighborTile.euclideanDistance(targetTile);
 				if (distance < minDistance) {
@@ -316,7 +316,7 @@ public class Creature extends Entity {
 
 	private MoveResult tryMoving(Direction dir, GameLevel level) {
 		var aroundCorner = !dir.sameOrientation(moveDir);
-		var dirVector = dir.vec.toFloatVec();
+		var dirVector = dir.vector().toFloatVec();
 		var newVelocity = dirVector.scaled(velocity.length());
 		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
 		var touchedTile = tileAt(touchPosition);

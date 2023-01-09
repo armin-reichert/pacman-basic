@@ -69,7 +69,7 @@ public record Vector2i(int x, int y) {
 	}
 
 	public Stream<Vector2i> neighbors() {
-		return Stream.of(Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT).map(dir -> this.plus(dir.vec));
+		return Stream.of(Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT).map(dir -> this.plus(dir.vector()));
 	}
 
 	@Override

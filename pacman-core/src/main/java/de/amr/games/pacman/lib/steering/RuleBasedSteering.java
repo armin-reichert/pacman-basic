@@ -168,15 +168,15 @@ public class RuleBasedSteering implements Steering {
 		Vector2i pacManTile = pac.tile();
 		boolean energizerFound = false;
 		for (int i = 1; i <= CollectedData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
-			Vector2i ahead = pacManTile.plus(pac.moveDir().vec.scaled(i));
+			Vector2i ahead = pacManTile.plus(pac.moveDir().vector().scaled(i));
 			if (!pac.canAccessTile(ahead, level)) {
 				break;
 			}
 			if (level.world().isEnergizerTile(ahead) && !level.world().containsEatenFood(ahead)) {
 				energizerFound = true;
 			}
-			Vector2i aheadLeft = ahead.plus(pac.moveDir().succAntiClockwise().vec);
-			Vector2i aheadRight = ahead.plus(pac.moveDir().succClockwise().vec);
+			Vector2i aheadLeft = ahead.plus(pac.moveDir().succAntiClockwise().vector());
+			Vector2i aheadRight = ahead.plus(pac.moveDir().succClockwise().vector());
 			for (Ghost ghost : level.ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
 					if (energizerFound) {
@@ -194,7 +194,7 @@ public class RuleBasedSteering implements Steering {
 		var pac = level.pac();
 		Vector2i pacManTile = pac.tile();
 		for (int i = 1; i <= CollectedData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
-			Vector2i behind = pacManTile.plus(pac.moveDir().opposite().vec.scaled(i));
+			Vector2i behind = pacManTile.plus(pac.moveDir().opposite().vector().scaled(i));
 			if (!pac.canAccessTile(behind, level)) {
 				break;
 			}
@@ -215,13 +215,13 @@ public class RuleBasedSteering implements Steering {
 			if (forbidden.contains(dir)) {
 				continue;
 			}
-			Vector2i neighbor = pacManTile.plus(dir.vec);
+			Vector2i neighbor = pacManTile.plus(dir.vector());
 			if (pac.canAccessTile(neighbor, level)) {
 				escapes.add(dir);
 			}
 		}
 		for (Direction escape : escapes) {
-			Vector2i escapeTile = pacManTile.plus(escape.vec);
+			Vector2i escapeTile = pacManTile.plus(escape.vector());
 			if (level.world().isTunnel(escapeTile)) {
 				return escape;
 			}

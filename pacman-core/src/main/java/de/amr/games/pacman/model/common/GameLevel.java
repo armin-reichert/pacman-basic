@@ -119,7 +119,7 @@ public class GameLevel {
 
 	// simulates the overflow bug from the original Arcade version
 	protected static Vector2i tilesAhead(Creature guy, int n) {
-		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
+		var ahead = guy.tile().plus(guy.moveDir().vector().scaled(n));
 		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
 

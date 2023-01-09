@@ -116,7 +116,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		var currentTile = tile();
-		if (tile.equals(currentTile.plus(UP.vec)) && !level.isSteeringAllowed(this, UP)) {
+		if (tile.equals(currentTile.plus(UP.vector())) && !level.isSteeringAllowed(this, UP)) {
 			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
 			return false;
 		}
@@ -154,7 +154,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (isNewTileEntered() || isStuck()) {
 			Direction.shuffled().stream()//
 					.filter(dir -> dir != moveDir().opposite())//
-					.filter(dir -> canAccessTile(tile().plus(dir.vec), level))//
+					.filter(dir -> canAccessTile(tile().plus(dir.vector()), level))//
 					.findAny()//
 					.ifPresent(this::setWishDir);
 		}
