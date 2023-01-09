@@ -177,6 +177,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 */
 	public void boot() {
 		sounds().stopAll();
+		game.setCredit(0);
 		restart(BOOT);
 	}
 }
