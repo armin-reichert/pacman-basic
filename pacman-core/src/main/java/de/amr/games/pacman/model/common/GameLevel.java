@@ -149,11 +149,11 @@ public class GameLevel {
 		memo = new Memory();
 		setPac(game.createPac());
 		setGhosts(game.createGhosts());
-		setWorld(game.createWorld(number()));
-		setBonus(game.createBonus(number()));
-		setHouseRules(game.createHouseRules(number()));
-		setHuntingDurations(game.huntingDurations(number()));
-		setParams(game.levelParameters(number()));
+		setWorld(game.createWorld(number));
+		setBonus(game.createBonus(number));
+		setHouseRules(game.createHouseRules(number));
+		setHuntingDurations(game.huntingDurations(number));
+		setParams(game.levelParameters(number));
 		defineChasingBehavior();
 		letsGetReadyToRumbleAndShowGuys(false);
 		LOGGER.trace("Game level %d created. (%s)", number, game.variant());
@@ -435,7 +435,7 @@ public class GameLevel {
 			ghost.enterStateLocked();
 		});
 		bonus.setInactive();
-		energizerPulse().reset();
+		energizerPulse.reset();
 	}
 
 	/**
@@ -542,7 +542,7 @@ public class GameLevel {
 
 	private void onPacPowerBegin() {
 		LOGGER.trace("%s power begins", pac.name());
-		huntingTimer().stop();
+		huntingTimer.stop();
 		pac.powerTimer().restartSeconds(params().pacPowerSeconds());
 		LOGGER.trace("Timer started: %s", pac.powerTimer());
 		ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
@@ -552,7 +552,7 @@ public class GameLevel {
 
 	private void onPacPowerEnd() {
 		LOGGER.trace("%s power ends", pac.name());
-		huntingTimer().start();
+		huntingTimer.start();
 		pac.powerTimer().stop();
 		pac.powerTimer().resetIndefinitely();
 		LOGGER.trace("Timer stopped: %s", pac.powerTimer());
