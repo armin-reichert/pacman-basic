@@ -251,7 +251,7 @@ public abstract class GameModel {
 	 */
 	public abstract void enterDemoLevel();
 
-	private void incrementLevelCounter() {
+	public void incrementLevelCounter() {
 		if (level.number() == 1) {
 			levelCounter.clear();
 		}

@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.anim.EntityAnimation;
+import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -76,7 +76,7 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 	private List<Vector2i> upwardBlockedTiles = List.of();
-	private EntityAnimation levelCompleteAnimation;
+	private SingleEntityAnimation<?> flashingAnimation;
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData);
@@ -134,17 +134,17 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	/**
-	 * @return (optional) animation played when level has been completed
+	 * @return (optional) flashing animation played when level has been completed
 	 */
 	@Override
-	public Optional<EntityAnimation> levelCompleteAnimation() {
-		return Optional.ofNullable(levelCompleteAnimation);
+	public Optional<SingleEntityAnimation<?>> flashingAnimation() {
+		return Optional.ofNullable(flashingAnimation);
 	}
 
 	/**
 	 * @param animation animation played when level has been completed
 	 */
-	public void setLevelCompleteAnimation(EntityAnimation animation) {
-		this.levelCompleteAnimation = animation;
+	public void setFlashingAnimation(SingleEntityAnimation<?> animation) {
+		this.flashingAnimation = animation;
 	}
 }

@@ -316,7 +316,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 						gc.changeState(CHANGING_TO_NEXT_LEVEL); // next level
 					}
 				} else {
-					level.world().levelCompleteAnimation().ifPresent(animation -> {
+					level.world().flashingAnimation().ifPresent(animation -> {
 						if (timer.atSecond(1)) {
 							animation.setRepetitions(level.params().numFlashes());
 							animation.restart();

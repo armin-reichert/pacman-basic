@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.anim.EntityAnimation;
+import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -262,5 +262,5 @@ public interface World {
 	/**
 	 * @return (optional) animation played when level ends
 	 */
-	public Optional<EntityAnimation> levelCompleteAnimation();
+	Optional<SingleEntityAnimation<?>> flashingAnimation();
 }
