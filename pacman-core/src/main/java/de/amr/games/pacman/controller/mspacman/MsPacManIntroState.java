@@ -38,6 +38,11 @@ import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
+/**
+ * States of Ms. Pac-Man intro scene.
+ * 
+ * @author Armin Reichert
+ */
 public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 
 	START {
@@ -50,11 +55,10 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			ctx.msPacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 			ctx.msPacMan.show();
 			ctx.ghosts.forEach(ghost -> {
-				ghost.enterStateHuntingPac();
 				ghost.setPosition(t(34), TURNING_POSITION.y());
 				ghost.setMoveAndWishDir(LEFT);
 				ghost.setPixelSpeed(GUYS_SPEED);
-				ghost.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+				ghost.enterStateHuntingPac();
 				ghost.show();
 			});
 			ctx.ghostIndex = 0;
@@ -83,7 +87,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			}
 			if (ghost.position().y() <= BLINKY_END_TILE.y() + ghost.id() * 18) {
 				ghost.setPixelSpeed(0);
-				ghost.animation().ifPresent(EntityAnimation::stop);
+				ghost.animation().ifPresent(EntityAnimation::reset);
 				if (++ctx.ghostIndex == 4) {
 					intro.changeState(MsPacManIntroState.MSPACMAN);
 				}
@@ -110,11 +114,11 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		public void onUpdate(MsPacManIntroData ctx) {
 			if (timer.atSecond(2.0) && !ctx.game().hasCredit()) {
 				ctx.gameController().changeState(GameState.READY);
-				// show play scene in attract mode
+				// go into demo mode
 				return;
 			}
 			if (timer.atSecond(5)) {
-				ctx.gameController().boot();
+				ctx.gameController().changeState(GameState.CREDIT);
 				return;
 			}
 			ctx.lightsTimer.advance();

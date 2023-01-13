@@ -206,7 +206,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 				}
 			}
 			if (timer.atSecond(5)) {
-				ctx.gameController.boot();
+				ctx.gameController.changeState(GameState.CREDIT);
 			}
 		}
 	};
