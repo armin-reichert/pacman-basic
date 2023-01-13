@@ -33,12 +33,12 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  */
-public class EntityAnimationSet<K> {
+public class EntityAnimationMap<K> {
 
 	private final Map<K, EntityAnimation> animationsByKey;
 	protected K selectedKey;
 
-	public EntityAnimationSet(int initialSize) {
+	public EntityAnimationMap(int initialSize) {
 		animationsByKey = new HashMap<>(initialSize);
 	}
 

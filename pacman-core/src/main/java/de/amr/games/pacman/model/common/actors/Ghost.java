@@ -45,7 +45,7 @@ import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
-import de.amr.games.pacman.lib.anim.EntityAnimationSet;
+import de.amr.games.pacman.lib.anim.EntityAnimationMap;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -67,7 +67,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private final byte id;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
-	private EntityAnimationSet<AnimKeys> animationSet;
+	private EntityAnimationMap<AnimKeys> animationSet;
 	private int killedIndex;
 	private int attractRouteIndex;
 
@@ -404,12 +404,12 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	// Animations
 
-	public void setAnimationSet(EntityAnimationSet<AnimKeys> animationSet) {
+	public void setAnimationSet(EntityAnimationMap<AnimKeys> animationSet) {
 		this.animationSet = animationSet;
 	}
 
 	@Override
-	public Optional<EntityAnimationSet<AnimKeys>> animationSet() {
+	public Optional<EntityAnimationMap<AnimKeys>> animationSet() {
 		return Optional.ofNullable(animationSet);
 	}
 

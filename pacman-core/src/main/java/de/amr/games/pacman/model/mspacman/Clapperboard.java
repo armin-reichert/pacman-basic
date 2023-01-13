@@ -26,7 +26,7 @@ package de.amr.games.pacman.model.mspacman;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
-import de.amr.games.pacman.lib.anim.EntityAnimationSet;
+import de.amr.games.pacman.lib.anim.EntityAnimationMap;
 import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
@@ -38,19 +38,19 @@ public class Clapperboard extends Entity implements AnimatedEntity<Integer> {
 
 	public final int sceneNumber;
 	public final String sceneTitle;
-	private EntityAnimationSet<Integer> animationSet;
+	private EntityAnimationMap<Integer> animationSet;
 
 	public Clapperboard(int sceneNumber, String sceneTitle) {
 		this.sceneNumber = sceneNumber;
 		this.sceneTitle = sceneTitle;
 	}
 
-	public void setAnimationSet(EntityAnimationSet<Integer> animationSet) {
+	public void setAnimationSet(EntityAnimationMap<Integer> animationSet) {
 		this.animationSet = animationSet;
 	}
 
 	@Override
-	public Optional<EntityAnimationSet<Integer>> animationSet() {
+	public Optional<EntityAnimationMap<Integer>> animationSet() {
 		return Optional.ofNullable(animationSet);
 	}
 }

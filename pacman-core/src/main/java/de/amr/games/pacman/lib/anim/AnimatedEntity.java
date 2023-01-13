@@ -34,7 +34,7 @@ import java.util.Optional;
  */
 public interface AnimatedEntity<K> {
 
-	public Optional<EntityAnimationSet<K>> animationSet();
+	public Optional<EntityAnimationMap<K>> animationSet();
 
 	/**
 	 * @param key key identifying animation in set
