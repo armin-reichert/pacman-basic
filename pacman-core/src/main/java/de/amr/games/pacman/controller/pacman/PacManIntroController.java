@@ -36,18 +36,18 @@ import de.amr.games.pacman.lib.fsm.Fsm;
  */
 public class PacManIntroController extends Fsm<PacManIntroState, PacManIntroData> {
 
-	private final PacManIntroData ctx;
+	private final PacManIntroData introData;
 
 	public PacManIntroController(GameController gameController) {
 		states = PacManIntroState.values();
 		for (var state : states) {
 			state.controller = this;
 		}
-		ctx = new PacManIntroData(gameController);
+		introData = new PacManIntroData(gameController);
 	}
 
 	@Override
 	public PacManIntroData context() {
-		return ctx;
+		return introData;
 	}
 }
