@@ -50,7 +50,7 @@ public class Clapperboard extends Entity implements AnimatedEntity<Integer> {
 	}
 
 	@Override
-	public Optional<EntityAnimationMap<Integer>> animationSet() {
+	public Optional<EntityAnimationMap<Integer>> animations() {
 		return Optional.ofNullable(animationSet);
 	}
 }

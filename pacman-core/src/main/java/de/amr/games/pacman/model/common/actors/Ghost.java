@@ -426,7 +426,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	@Override
-	public Optional<EntityAnimationMap<AnimKeys>> animationSet() {
+	public Optional<EntityAnimationMap<AnimKeys>> animations() {
 		return Optional.ofNullable(animations);
 	}
 
@@ -443,8 +443,8 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (level.pac().powerTimer().remaining() > GameModel.TICKS_PAC_POWER_FADES) {
 			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 		} else {
-			animationSet().ifPresent(animations -> {
-				if (!animations.isSelected(AnimKeys.GHOST_FLASHING)) {
+			animations().ifPresent(anims -> {
+				if (!anims.isSelected(AnimKeys.GHOST_FLASHING)) {
 					selectAndRunAnimation(AnimKeys.GHOST_FLASHING)
 							.ifPresent(flashing -> startFlashing(level.params().numFlashes(), flashing));
 				}

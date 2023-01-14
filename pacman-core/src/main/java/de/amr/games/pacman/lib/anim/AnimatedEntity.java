@@ -29,28 +29,26 @@ import java.util.Optional;
 /**
  * Mix-in with useful methods for an animated entity.
  * 
- * @param <K> key type of animation set, most probably an enumeration type
+ * @param <K> key type of animation map, most probably an enumeration type
  * @author Armin Reichert
  */
 public interface AnimatedEntity<K> {
 
-	public Optional<EntityAnimationMap<K>> animationSet();
+	public Optional<EntityAnimationMap<K>> animations();
 
 	/**
 	 * @param key key identifying animation in set
 	 * @return (optional) animation specified by given key
 	 */
 	default Optional<EntityAnimation> animation(K key) {
-		var animSet = animationSet();
-		return animSet.isPresent() ? animSet.get().animation(key) : Optional.empty();
+		return animations().flatMap(am -> am.animation(key));
 	}
 
 	/**
 	 * @return (optional) selected animation
 	 */
 	default Optional<EntityAnimation> animation() {
-		var animSet = animationSet();
-		return animSet.isPresent() ? animSet.get().selectedAnimation() : Optional.empty();
+		return animations().flatMap(EntityAnimationMap::selectedAnimation);
 	}
 
 	/**
@@ -60,7 +58,7 @@ public interface AnimatedEntity<K> {
 	 * @return (optional) selected animation
 	 */
 	default Optional<EntityAnimation> selectAndRunAnimation(K key) {
-		animationSet().ifPresent(animSet -> {
+		animations().ifPresent(animSet -> {
 			animSet.select(key);
 			animSet.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
 		});
@@ -74,7 +72,7 @@ public interface AnimatedEntity<K> {
 	 * @return (optional) selected animation
 	 */
 	default Optional<EntityAnimation> selectAndResetAnimation(K key) {
-		animationSet().ifPresent(animSet -> {
+		animations().ifPresent(animSet -> {
 			animSet.select(key);
 			animSet.selectedAnimation().ifPresent(EntityAnimation::reset);
 		});

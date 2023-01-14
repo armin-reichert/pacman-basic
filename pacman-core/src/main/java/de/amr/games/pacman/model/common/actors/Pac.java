@@ -127,7 +127,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	@Override
-	public Optional<EntityAnimationMap<AnimKeys>> animationSet() {
+	public Optional<EntityAnimationMap<AnimKeys>> animations() {
 		return Optional.ofNullable(animationSet);
 	}
 
