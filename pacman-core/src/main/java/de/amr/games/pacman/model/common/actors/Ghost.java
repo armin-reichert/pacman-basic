@@ -87,7 +87,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	@Override
 	public void reset() {
 		super.reset();
-		killedIndex = -1;
+		setKilledIndex(-1);
 	}
 
 	/**
@@ -107,11 +107,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return killedIndex;
 	}
 
-	public void setKilledIndex(int killedIndex) {
-		if (killedIndex < -1 || killedIndex > 3) {
-			throw new IllegalArgumentException("Killed index must be one of -1, 0, 1, 2, 3, but is: " + killedIndex);
+	public void setKilledIndex(int index) {
+		if (index < -1 || index > 3) {
+			throw new IllegalArgumentException("Killed index must be one of -1, 0, 1, 2, 3, but is: " + index);
 		}
-		this.killedIndex = killedIndex;
+		this.killedIndex = index;
 	}
 
 	@Override
@@ -265,7 +265,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
 			move();
 		}
-		selectColoredAnimation(level);
+		updateColoredAnimation(level);
 	}
 
 	// --- LEAVING_HOUSE ---
@@ -288,16 +288,17 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param level the level
 	 */
 	private void updateStateLeavingHouse(GameLevel level) {
-		selectColoredAnimation(level);
+		updateColoredAnimation(level);
 		var outOfHouse = level.world().ghostHouse().leadOut(this);
 		if (outOfHouse) {
 			setNewTileEntered(false);
 			setMoveAndWishDir(LEFT);
 			if (level.pac().powerTimer().isRunning() && killedIndex == -1) {
 				enterStateFrightened();
+				LOGGER.info("Ghost %s leaves house frightened", name());
 			} else {
-				setKilledIndex(-1);
 				enterStateHuntingPac();
+				LOGGER.info("Ghost %s leaves house hunting", name());
 			}
 			GameEvents.publish(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
 		}
@@ -322,7 +323,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private void updateStateHuntingPac(GameLevel level) {
 		setRelSpeed(level.huntingSpeed(this));
 		level.game().doGhostHuntingAction(level, this);
-		selectColoredAnimation(level);
+		updateColoredAnimation(level);
 	}
 
 	// --- FRIGHTENED ---
@@ -332,6 +333,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	public void enterStateFrightened() {
 		state = FRIGHTENED;
+		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 	}
 
 	/**
@@ -350,7 +352,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 				: level.params().ghostSpeedFrightened();
 		setRelSpeed(speed);
 		roam(level);
-		selectColoredAnimation(level);
+		updateFrightenedAnimation(level);
 	}
 
 	// --- EATEN ---
@@ -430,16 +432,16 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return Optional.ofNullable(animations);
 	}
 
-	private void selectColoredAnimation(GameLevel level) {
+	private void updateColoredAnimation(GameLevel level) {
 		var pac = level.pac();
-		if (!pac.powerTimer().isRunning()) {
+		if (!pac.powerTimer().isRunning() || pac.powerTimer().isRunning() && killedIndex != -1) {
 			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 		} else {
-			selectFrightenedAnimation(level);
+			updateFrightenedAnimation(level);
 		}
 	}
 
-	private void selectFrightenedAnimation(GameLevel level) {
+	private void updateFrightenedAnimation(GameLevel level) {
 		if (level.pac().powerTimer().remaining() > GameModel.TICKS_PAC_POWER_FADES) {
 			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 		} else {
