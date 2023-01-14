@@ -69,6 +69,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.restartIndefinitely();
 			game.setPlaying(false);
+			game.removeLevel();
 		}
 
 		@Override
@@ -415,7 +416,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					level.pac().hide();
 				} else if (timer.hasExpired()) {
 					if (!game.hasCredit()) {
-						game.removeLevel();
 						gc.changeState(INTRO);
 					} else {
 						gc.changeState(game.lives() == 0 ? GAME_OVER : READY);
@@ -444,7 +444,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onExit(GameModel game) {
 			game.setPlaying(false);
-			game.removeLevel();
 		}
 	},
 
