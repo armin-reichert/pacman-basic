@@ -58,9 +58,9 @@ public interface AnimatedEntity<K> {
 	 * @return (optional) selected animation
 	 */
 	default Optional<EntityAnimation> selectAndRunAnimation(K key) {
-		animations().ifPresent(animSet -> {
-			animSet.select(key);
-			animSet.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
+		animations().ifPresent(anims -> {
+			anims.select(key);
+			anims.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
 		});
 		return animation();
 	}
@@ -72,9 +72,9 @@ public interface AnimatedEntity<K> {
 	 * @return (optional) selected animation
 	 */
 	default Optional<EntityAnimation> selectAndResetAnimation(K key) {
-		animations().ifPresent(animSet -> {
-			animSet.select(key);
-			animSet.selectedAnimation().ifPresent(EntityAnimation::reset);
+		animations().ifPresent(anims -> {
+			anims.select(key);
+			anims.selectedAnimation().ifPresent(EntityAnimation::reset);
 		});
 		return animation();
 	}
