@@ -271,6 +271,10 @@ public abstract class GameModel {
 		enterLevel(level.number() + 1);
 	}
 
+	public void removeLevel() {
+		level = null;
+	}
+
 	public void doGhostHuntingAction(GameLevel level, Ghost ghost) {
 		if (level.chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && level.cruiseElroyState() > 0) {
 			ghost.chase(level);
