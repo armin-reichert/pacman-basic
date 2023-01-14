@@ -67,9 +67,8 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private final byte id;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
-	private EntityAnimationMap<AnimKeys> animationSet;
+	private EntityAnimationMap<AnimKeys> animations;
 	private int killedIndex;
-	private int attractRouteIndex;
 
 	public Ghost(byte id, String name) {
 		super(name);
@@ -88,17 +87,21 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	@Override
 	public void reset() {
 		super.reset();
-		attractRouteIndex = 0;
 		killedIndex = -1;
 	}
 
-	public void setChasingTarget(Supplier<Vector2i> fnTargetTile) {
-		this.fnChasingTarget = Objects.requireNonNull(fnTargetTile);
+	/**
+	 * Sets the function that provides the target tile of this ghost when chasing Pac-Man.
+	 * 
+	 * @param fnChasingTarget function providing the chasing target tile
+	 */
+	public void setChasingTarget(Supplier<Vector2i> fnChasingTarget) {
+		this.fnChasingTarget = Objects.requireNonNull(fnChasingTarget);
 	}
 
 	/**
-	 * @return Order in which ghost was killed using the same energizer (power pill). First killed ghost has index 0,
-	 *         second 1 and so on. If not killed, value is -1.
+	 * @return Index <code>(0,1,2,3)</code> telling when this ghost was killed during Pac-Man power phase. If not killed,
+	 *         value is -1.
 	 */
 	public int killedIndex() {
 		return killedIndex;
@@ -131,6 +134,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 
+	/**
+	 * While "scattering", a ghost aims to "his" corner in the maze and circles around the wall block in that corner
+	 * 
+	 * @param level game level
+	 */
 	public void scatter(GameLevel level) {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		setTargetTile(level.world().ghostScatterTargetTile(id));
@@ -138,6 +146,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		tryMoving(level);
 	}
 
+	/**
+	 * While chasing Pac-Man, a ghost aims toward his chasing target tile
+	 * 
+	 * @param level game level
+	 */
 	public void chase(GameLevel level) {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		setTargetTile(fnChasingTarget.get());
@@ -145,6 +158,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		tryMoving(level);
 	}
 
+	/**
+	 * While frightened, a ghost walks randomly through the maze.
+	 * 
+	 * @param level game level
+	 */
 	public void roam(GameLevel level) {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		moveRandomly(level);
@@ -152,10 +170,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	private void moveRandomly(GameLevel level) {
 		if (isNewTileEntered() || isStuck()) {
-			Direction.shuffled().stream()//
-					.filter(dir -> dir != moveDir().opposite())//
-					.filter(dir -> canAccessTile(tile().plus(dir.vector()), level))//
-					.findAny()//
+			Direction.shuffled().stream() //
+					.filter(dir -> dir != moveDir().opposite()) //
+					.filter(dir -> canAccessTile(tile().plus(dir.vector()), level)) //
+					.findAny() //
 					.ifPresent(this::setWishDir);
 		}
 		tryMoving(level);
@@ -314,7 +332,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	public void enterStateFrightened() {
 		state = FRIGHTENED;
-		attractRouteIndex = 0;
 	}
 
 	/**
@@ -405,19 +422,25 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	// Animations
 
 	public void setAnimationSet(EntityAnimationMap<AnimKeys> animationSet) {
-		this.animationSet = animationSet;
+		this.animations = animationSet;
 	}
 
 	@Override
 	public Optional<EntityAnimationMap<AnimKeys>> animationSet() {
-		return Optional.ofNullable(animationSet);
+		return Optional.ofNullable(animations);
 	}
 
 	private void selectColoredAnimation(GameLevel level) {
 		var pac = level.pac();
 		if (!pac.powerTimer().isRunning()) {
 			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
-		} else if (pac.powerTimer().remaining() > GameModel.TICKS_PAC_POWER_FADES) {
+		} else {
+			selectFrightenedAnimation(level);
+		}
+	}
+
+	private void selectFrightenedAnimation(GameLevel level) {
+		if (level.pac().powerTimer().remaining() > GameModel.TICKS_PAC_POWER_FADES) {
 			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 		} else {
 			animationSet().ifPresent(animations -> {
