@@ -444,6 +444,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onExit(GameModel game) {
 			game.setPlaying(false);
+			game.removeLevel();
 		}
 	},
 
