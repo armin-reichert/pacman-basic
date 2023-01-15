@@ -85,13 +85,12 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 		// map "state change" events to "game state change" events
 		addStateChangeListener(
-				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(context(), oldState, newState)));
+				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(game(), oldState, newState)));
 		GameEvents.setGame(this::game);
 
 		autopilot = new RuleBasedSteering();
 		sounds = GameSoundController.NO_SOUND;
 		createGame(variant);
-		restart(BOOT);
 	}
 
 	@Override
