@@ -109,7 +109,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 	CREDIT {
 		@Override
-		public void onUpdate(GameModel context) {
+		public void onUpdate(GameModel game) {
 			// nothing to do here
 		}
 
