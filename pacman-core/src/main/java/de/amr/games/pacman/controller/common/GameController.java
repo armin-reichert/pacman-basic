@@ -118,6 +118,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return autoControlled ? autopilot : manualPacSteering;
 	}
 
+	public Steering manualPacSteering() {
+		return manualPacSteering;
+	}
+
 	public void setManualPacSteering(Steering steering) {
 		this.manualPacSteering = Objects.requireNonNull(steering);
 	}
