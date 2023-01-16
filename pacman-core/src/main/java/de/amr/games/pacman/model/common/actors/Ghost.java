@@ -423,7 +423,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	// Animations
 
-	public void setAnimationSet(EntityAnimationMap<AnimKeys> animationSet) {
+	public void setAnimations(EntityAnimationMap<AnimKeys> animationSet) {
 		this.animations = animationSet;
 	}
 

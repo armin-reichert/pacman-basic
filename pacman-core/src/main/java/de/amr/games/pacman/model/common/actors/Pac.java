@@ -131,7 +131,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		return Optional.ofNullable(animationSet);
 	}
 
-	public void setAnimationSet(EntityAnimationMap<AnimKeys> animationSet) {
+	public void setAnimations(EntityAnimationMap<AnimKeys> animationSet) {
 		this.animationSet = animationSet;
 	}
 
