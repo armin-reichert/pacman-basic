@@ -53,6 +53,7 @@ public abstract class MapBasedWorld implements World {
 	private final BitSet eatenSet;
 
 	protected MapBasedWorld(byte[][] mapData) {
+		Objects.requireNonNull(mapData);
 		map = new WorldMap(mapData);
 		analyzeMap();
 		eatenSet = new BitSet(numRows() * numCols());

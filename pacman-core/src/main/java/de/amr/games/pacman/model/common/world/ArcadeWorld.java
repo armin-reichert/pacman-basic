@@ -28,6 +28,7 @@ import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
@@ -37,8 +38,9 @@ import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
- * Implements all stuff that is common to the original Arcade worlds like ghost house position, ghost and player start
- * positions and direction etc.
+ * The world used in the Arcade versions of Pac-Man and Ms. Pac-Man. Maze structure varies but ghost house
+ * structure/position, ghost starting positions/directions and Pac-Man starting position/direction are the same for each
+ * world.
  * 
  * @author Armin Reichert
  */
@@ -83,12 +85,15 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	/**
-	 * @param upwardBlockedTiles the upwardBlockedTiles to set
+	 * @param tiles list of all tiles where chasing ghosts cannot move upwards
 	 */
-	public void setUpwardBlockedTiles(List<Vector2i> upwardBlockedTiles) {
-		this.upwardBlockedTiles = upwardBlockedTiles;
+	public void setUpwardBlockedTiles(List<Vector2i> tiles) {
+		this.upwardBlockedTiles = Objects.requireNonNull(tiles);
 	}
 
+	/**
+	 * @return list of all tiles where chasing ghosts cannot move upwards
+	 */
 	public List<Vector2i> upwardBlockedTiles() {
 		return Collections.unmodifiableList(upwardBlockedTiles);
 	}
@@ -136,7 +141,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	/**
 	 * @return (optional) flashing animation played when level has been completed
 	 */
-	@Override
 	public Optional<SingleEntityAnimation<?>> flashingAnimation() {
 		return Optional.ofNullable(flashingAnimation);
 	}

@@ -24,11 +24,9 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -51,8 +49,8 @@ public interface World {
 	 * @return pixels corresponding to the given number of tiles
 	 */
 	public static int t(int numTiles) {
-		if (numTiles <= 0) {
-			throw new IllegalArgumentException();
+		if (numTiles < 0) {
+			throw new IllegalArgumentException("Number of tiles must not be negative, but is %d".formatted(numTiles));
 		}
 		return numTiles * TS;
 	}
@@ -270,9 +268,4 @@ public interface World {
 	 * @return number of eaten pellets
 	 */
 	int eatenFoodCount();
-
-	/**
-	 * @return (optional) flashing animation played when level ends
-	 */
-	Optional<SingleEntityAnimation<?>> flashingAnimation();
 }
