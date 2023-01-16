@@ -48,15 +48,18 @@ public interface World {
 
 	/**
 	 * @param numTiles number of tiles
-	 * @return Pixels corresponding to the given number of tiles.
+	 * @return pixels corresponding to the given number of tiles
 	 */
 	public static int t(int numTiles) {
+		if (numTiles <= 0) {
+			throw new IllegalArgumentException();
+		}
 		return numTiles * TS;
 	}
 
 	/**
 	 * @param position a position
-	 * @return Tile containing given position.
+	 * @return tile containing given position
 	 */
 	public static Vector2i tileAt(Vector2f position) {
 		return tileAt(position.x(), position.y());
@@ -65,7 +68,7 @@ public interface World {
 	/**
 	 * @param x x position
 	 * @param y y position
-	 * @return Tile containing given position.
+	 * @return tile containing given position
 	 */
 	public static Vector2i tileAt(double x, double y) {
 		return new Vector2i((int) x / TS, (int) y / TS);
@@ -73,32 +76,41 @@ public interface World {
 
 	/**
 	 * @param tile a tile
-	 * @return Position of the left-upper corner of given tile.
+	 * @return position of the left-upper corner of given tile
 	 */
 	public static Vector2f originOfTile(Vector2i tile) {
 		return tile.scaled(TS).toFloatVec();
 	}
 
+	/**
+	 * @param tileX tile x coordinate
+	 * @param tileY tile y coordinate
+	 * @return position half tile right of tile origin
+	 */
 	public static Vector2f halfTileRightOf(int tileX, int tileY) {
 		return new Vector2f(tileX * TS + HTS, tileY * TS);
 	}
 
+	/**
+	 * @param tile tile
+	 * @return position half tile right of tile origin
+	 */
 	public static Vector2f halfTileRightOf(Vector2i tile) {
 		return halfTileRightOf(tile.x(), tile.y());
 	}
 
 	/**
-	 * @return Number of tiles in horizontal direction.
+	 * @return world size (number of tiles) in horizontal direction
 	 */
 	int numCols();
 
 	/**
-	 * @return Number of tiles in vertical direction.
+	 * @return world size (number of tiles) in vertical direction
 	 */
 	int numRows();
 
 	/**
-	 * @return All tiles in the world in order top-to-bottom, left-to-right.
+	 * @return tiles in order top-to-bottom, left-to-right
 	 */
 	default Stream<Vector2i> tiles() {
 		return IntStream.range(0, numCols() * numRows()).mapToObj(this::tile);
@@ -106,7 +118,7 @@ public interface World {
 
 	/**
 	 * @param tile a tile
-	 * @return Tile index in order top-to-bottom, left-to-right.
+	 * @return tile index in order top-to-bottom, left-to-right
 	 */
 	default int index(Vector2i tile) {
 		return numCols() * tile.y() + tile.x();
@@ -114,7 +126,7 @@ public interface World {
 
 	/**
 	 * @param index tile index in order top-to-bottom, left-to-right
-	 * @return tile as vector
+	 * @return tile with given index
 	 */
 	default Vector2i tile(int index) {
 		return new Vector2i(index % numCols(), index / numCols());
@@ -122,33 +134,33 @@ public interface World {
 
 	/**
 	 * @param tile a tile
-	 * @return tells if this tile location is inside the world bounds
+	 * @return if this tile is located inside the world bounds
 	 */
 	default boolean insideBounds(Vector2i tile) {
 		return 0 <= tile.x() && tile.x() < numCols() && 0 <= tile.y() && tile.y() < numRows();
 	}
 
 	/**
-	 * @return tells if this position is located inside the world bounds
+	 * @return if this position is located inside the world bounds
 	 */
 	default boolean insideBounds(double x, double y) {
 		return 0 <= x && x < numCols() * TS && 0 <= y && y < numRows() * TS;
 	}
 
 	/**
-	 * @return portals inside this world
+	 * @return list of all portals in this world
 	 */
 	List<Portal> portals();
 
 	/**
 	 * @param tile a tile
-	 * @return Tells if the tile is part of a portal.
+	 * @return if the tile is part of a portal
 	 */
 	boolean belongsToPortal(Vector2i tile);
 
 	/**
 	 * @param tile a tile
-	 * @return Tells if the tile is an intersection (waypoint).
+	 * @return if the tile is an intersection (waypoint)
 	 */
 	default boolean isIntersection(Vector2i tile) {
 		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
@@ -164,13 +176,13 @@ public interface World {
 
 	/**
 	 * @param tile a tile
-	 * @return Tells if the tile is a wall.
+	 * @return if the tile is a wall
 	 */
 	boolean isWall(Vector2i tile);
 
 	/**
 	 * @param tile a tile
-	 * @return Tells if the tile is part of a tunnel.
+	 * @return if the tile is part of a tunnel
 	 */
 	boolean isTunnel(Vector2i tile);
 
@@ -188,52 +200,6 @@ public interface World {
 	 * @return the ghost house in this world
 	 */
 	GhostHouse ghostHouse();
-
-	/**
-	 * @param tile a tile
-	 * @return Tells if the tile contains food initially.
-	 */
-	boolean isFoodTile(Vector2i tile);
-
-	/**
-	 * @param tile a tile
-	 * @return Tells if the tile contains an energizer initially.
-	 */
-	boolean isEnergizerTile(Vector2i tile);
-
-	/**
-	 * @return All tiles containing an energizer initially.
-	 */
-	Stream<Vector2i> energizerTiles();
-
-	/**
-	 * Removes food at given tile.
-	 * 
-	 * @param tile some tile
-	 */
-	void removeFood(Vector2i tile);
-
-	/**
-	 * @param tile some tile
-	 * @return Return {@code true} if there is food at the given tile.
-	 */
-	boolean containsFood(Vector2i tile);
-
-	/**
-	 * @param tile some tile
-	 * @return Returns {@code true} if there is eaten food at the given tile.
-	 */
-	boolean containsEatenFood(Vector2i tile);
-
-	/**
-	 * @return Number of uneaten pellets remaining
-	 */
-	int foodRemaining();
-
-	/**
-	 * @return Number of pellets eaten.
-	 */
-	int eatenFoodCount();
 
 	/**
 	 * @param ghostID ghost ID
@@ -260,7 +226,53 @@ public interface World {
 	Vector2f ghostRevivalPosition(byte ghostID);
 
 	/**
-	 * @return (optional) animation played when level ends
+	 * @param tile a tile
+	 * @return tells if the tile contains food initially
+	 */
+	boolean isFoodTile(Vector2i tile);
+
+	/**
+	 * @param tile a tile
+	 * @return if the tile contains an energizer initially
+	 */
+	boolean isEnergizerTile(Vector2i tile);
+
+	/**
+	 * @return all tiles containing an energizer initially
+	 */
+	Stream<Vector2i> energizerTiles();
+
+	/**
+	 * Removes food at given tile.
+	 * 
+	 * @param tile some tile
+	 */
+	void removeFood(Vector2i tile);
+
+	/**
+	 * @param tile some tile
+	 * @return if there is food at the given tile
+	 */
+	boolean containsFood(Vector2i tile);
+
+	/**
+	 * @param tile some tile
+	 * @return if there is eaten food at the given tile
+	 */
+	boolean containsEatenFood(Vector2i tile);
+
+	/**
+	 * @return number of uneaten pellets
+	 */
+	int foodRemaining();
+
+	/**
+	 * @return number of eaten pellets
+	 */
+	int eatenFoodCount();
+
+	/**
+	 * @return (optional) flashing animation played when level ends
 	 */
 	Optional<SingleEntityAnimation<?>> flashingAnimation();
 }
