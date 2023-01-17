@@ -160,6 +160,7 @@ public class PacManGame extends GameModel {
 		level = new PacManGameDemoLevel(this);
 		level.guys().forEach(Creature::show);
 		scoringEnabled = false;
+		incrementLevelCounter();
 		LOGGER.info("Pac-Man demo level entered");
 	}
 }
