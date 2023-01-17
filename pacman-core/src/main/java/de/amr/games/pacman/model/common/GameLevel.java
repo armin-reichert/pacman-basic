@@ -46,7 +46,6 @@ import de.amr.games.pacman.controller.common.GameSoundController;
 import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -131,7 +130,6 @@ public class GameLevel {
 	private Ghost[] ghosts;
 	private Bonus bonus;
 	private Parameters params;
-	private final Pulse energizerPulse;
 	private final TickTimer huntingTimer;
 	private final Memory memo;
 	private int[] huntingDurations;
@@ -144,7 +142,6 @@ public class GameLevel {
 	public GameLevel(GameModel game, int number) {
 		this.game = Objects.requireNonNull(game);
 		this.number = GameModel.checkLevelNumber(number);
-		energizerPulse = new Pulse(10, true);
 		huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
 		memo = new Memory();
 		setPac(game.createPac());
@@ -178,7 +175,9 @@ public class GameLevel {
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus.update(this);
-		energizerPulse.animate();
+		if (world instanceof ArcadeWorld arcadeWorld) {
+			arcadeWorld.energizerPulse().animate();
+		}
 		updateHunting();
 	}
 
@@ -188,7 +187,9 @@ public class GameLevel {
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonus.setInactive();
-		energizerPulse.reset();
+		if (world instanceof ArcadeWorld arcadeWorld) {
+			arcadeWorld.energizerPulse().reset();
+		}
 		huntingTimer.stop();
 	}
 
@@ -278,10 +279,6 @@ public class GameLevel {
 
 	public void setParams(Parameters params) {
 		this.params = Objects.requireNonNull(params);
-	}
-
-	public Pulse energizerPulse() {
-		return energizerPulse;
 	}
 
 	public TickTimer huntingTimer() {
@@ -435,7 +432,9 @@ public class GameLevel {
 			ghost.enterStateLocked();
 		});
 		bonus.setInactive();
-		energizerPulse.reset();
+		if (world instanceof ArcadeWorld arcadeWorld) {
+			arcadeWorld.energizerPulse().reset();
+		}
 	}
 
 	/**

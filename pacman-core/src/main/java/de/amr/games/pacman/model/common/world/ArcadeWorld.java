@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -78,10 +79,12 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 	private List<Vector2i> upwardBlockedTiles = List.of();
+	private final Pulse energizerPulse;
 	private SingleEntityAnimation<?> flashingAnimation;
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData);
+		energizerPulse = new Pulse(10, true);
 	}
 
 	/**
@@ -136,6 +139,10 @@ public class ArcadeWorld extends MapBasedWorld {
 	public ArcadeGhostHouse ghostHouse() {
 		// WTF! I learned today, 2022-05-27, that Java allows co-variant return types since JDK 5.0!
 		return house;
+	}
+
+	public Pulse energizerPulse() {
+		return energizerPulse;
 	}
 
 	/**
