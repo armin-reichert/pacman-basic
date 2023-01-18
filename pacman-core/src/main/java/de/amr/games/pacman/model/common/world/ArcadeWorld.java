@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.common.world;
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -91,7 +92,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	 * @param tiles list of all tiles where chasing ghosts cannot move upwards
 	 */
 	public void setUpwardBlockedTiles(List<Vector2i> tiles) {
-		this.upwardBlockedTiles = Objects.requireNonNull(tiles);
+		Objects.requireNonNull(tiles);
+		upwardBlockedTiles = new ArrayList<>(tiles);
 	}
 
 	/**
