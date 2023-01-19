@@ -49,9 +49,6 @@ public interface World {
 	 * @return pixels corresponding to the given number of tiles
 	 */
 	public static int t(int numTiles) {
-		if (numTiles < 0) {
-			throw new IllegalArgumentException("Number of tiles must not be negative, but is %d".formatted(numTiles));
-		}
 		return numTiles * TS;
 	}
 
