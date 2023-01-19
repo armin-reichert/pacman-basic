@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
+import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.Collection;
@@ -38,7 +39,6 @@ import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.model.common.GameModel;
 
 /**
  * The world used in the Arcade versions of Pac-Man and Ms. Pac-Man. Maze structure varies but ghost house
@@ -79,18 +79,20 @@ public class ArcadeWorld extends MapBasedWorld {
 	};
 	//@formatter:on
 
-	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
-	private Set<Vector2i> upwardBlockedTiles = Collections.emptySet();
+	private final ArcadeGhostHouse house;
 	private final Pulse energizerPulse;
+	private Set<Vector2i> upwardBlockedTiles;
 	private SingleEntityAnimation<?> flashingAnimation;
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData);
+		house = new ArcadeGhostHouse();
 		energizerPulse = new Pulse(10, true);
+		upwardBlockedTiles = Collections.emptySet();
 	}
 
 	/**
-	 * @param tiles list of all tiles where chasing ghosts cannot move upwards
+	 * @param tiles tiles where chasing ghosts cannot move upwards
 	 */
 	public void setUpwardBlockedTiles(Collection<Vector2i> tiles) {
 		Objects.requireNonNull(tiles);
@@ -98,7 +100,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	/**
-	 * @return list of all tiles where chasing ghosts cannot move upwards
+	 * @return tiles where chasing ghosts cannot move upwards
 	 */
 	public Collection<Vector2i> upwardBlockedTiles() {
 		return Collections.unmodifiableSet(upwardBlockedTiles);
@@ -116,26 +118,22 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Vector2f ghostInitialPosition(byte ghostID) {
-		GameModel.checkGhostID(ghostID);
-		return GHOST_INITIAL_POSITIONS[ghostID];
+		return GHOST_INITIAL_POSITIONS[checkGhostID(ghostID)];
 	}
 
 	@Override
 	public Direction ghostInitialDirection(byte ghostID) {
-		GameModel.checkGhostID(ghostID);
-		return GHOST_INITIAL_DIRECTIONS[ghostID];
+		return GHOST_INITIAL_DIRECTIONS[checkGhostID(ghostID)];
 	}
 
 	@Override
 	public Vector2f ghostRevivalPosition(byte ghostID) {
-		GameModel.checkGhostID(ghostID);
-		return GHOST_REVIVAL_POSITIONS[ghostID];
+		return GHOST_REVIVAL_POSITIONS[checkGhostID(ghostID)];
 	}
 
 	@Override
 	public Vector2i ghostScatterTargetTile(byte ghostID) {
-		GameModel.checkGhostID(ghostID);
-		return GHOST_SCATTER_TARGET_TILES[ghostID];
+		return GHOST_SCATTER_TARGET_TILES[checkGhostID(ghostID)];
 	}
 
 	@Override
@@ -151,14 +149,15 @@ public class ArcadeWorld extends MapBasedWorld {
 	/**
 	 * @return (optional) flashing animation played when level has been completed
 	 */
-	public Optional<SingleEntityAnimation<?>> flashingAnimation() {
-		return Optional.ofNullable(flashingAnimation);
+	@SuppressWarnings("unchecked")
+	public <T> Optional<SingleEntityAnimation<T>> flashingAnimation() {
+		return Optional.ofNullable((SingleEntityAnimation<T>) flashingAnimation);
 	}
 
 	/**
 	 * @param animation animation played when level has been completed
 	 */
-	public void setFlashingAnimation(SingleEntityAnimation<?> animation) {
+	public <T> void setFlashingAnimation(SingleEntityAnimation<T> animation) {
 		this.flashingAnimation = animation;
 	}
 }
