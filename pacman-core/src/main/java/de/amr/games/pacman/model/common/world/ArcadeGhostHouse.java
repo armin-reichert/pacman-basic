@@ -28,6 +28,7 @@ import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.stream.Stream;
 
@@ -46,13 +47,13 @@ public class ArcadeGhostHouse implements GhostHouse {
 
 	public static final Vector2i SIZE_TILES = v2i(7, 4);
 	public static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
-	public static final Vector2i DOOR_TILE_LEFT = v2i(13, 15);
-	public static final Vector2i DOOR_TILE_RIGHT = v2i(14, 15);
-	public static final Vector2f DOOR_CENTER = World.halfTileRightOf(13, 15).plus(0, HTS);
-	public static final Vector2i ENTRY = v2i(13, 14);
-	public static final Vector2i SEAT_LEFT = v2i(11, 17);
-	public static final Vector2i SEAT_CENTER = v2i(13, 17);
-	public static final Vector2i SEAT_RIGHT = v2i(15, 17);
+	public static final Vector2i DOOR_LEFT_TILE = v2i(13, 15);
+	public static final Vector2i DOOR_RIGHT_TILE = v2i(14, 15);
+	public static final Vector2f DOOR_CENTER_POSITION = halfTileRightOf(DOOR_LEFT_TILE).plus(0, HTS);
+	public static final Vector2i ENTRY_TILE = v2i(13, 14);
+	public static final Vector2i SEAT_LEFT_TILE = v2i(11, 17);
+	public static final Vector2i SEAT_CENTER_TILE = v2i(13, 17);
+	public static final Vector2i SEAT_RIGHT_TILE = v2i(15, 17);
 
 	@Override
 	public Vector2i size() {
@@ -66,32 +67,32 @@ public class ArcadeGhostHouse implements GhostHouse {
 
 	@Override
 	public Stream<Vector2i> doorTiles() {
-		return Stream.of(DOOR_TILE_LEFT, DOOR_TILE_RIGHT);
+		return Stream.of(DOOR_LEFT_TILE, DOOR_RIGHT_TILE);
 	}
 
 	@Override
 	public boolean isDoorTile(Vector2i tile) {
-		return tile.equals(DOOR_TILE_LEFT) || tile.equals(DOOR_TILE_RIGHT);
+		return doorTiles().anyMatch(door -> door.equals(tile));
 	}
 
 	@Override
 	public Vector2i entryTile() {
-		return ENTRY;
+		return ENTRY_TILE;
 	}
 
 	public Vector2f middleSeatCenterPosition() {
-		return World.halfTileRightOf(SEAT_CENTER).plus(0, HTS);
+		return halfTileRightOf(SEAT_CENTER_TILE).plus(0, HTS);
 	}
 
 	@Override
 	public boolean atDoor(Creature guy) {
-		var entryPos = World.halfTileRightOf(ENTRY);
-		return guy.tile().y() == ENTRY.y() && U.insideRange(guy.position().x(), entryPos.x(), 1);
+		var entryPos = halfTileRightOf(ENTRY_TILE);
+		return guy.tile().y() == ENTRY_TILE.y() && U.insideRange(guy.position().x(), entryPos.x(), 1);
 	}
 
 	@Override
 	public boolean leadOut(Creature guy) {
-		var entryPos = World.halfTileRightOf(ENTRY);
+		var entryPos = halfTileRightOf(ENTRY_TILE);
 		if (guy.position().x() == entryPos.x() && guy.position().y() <= entryPos.y()) {
 			guy.setPosition(entryPos);
 			return true;
@@ -111,10 +112,10 @@ public class ArcadeGhostHouse implements GhostHouse {
 	@Override
 	public boolean leadInside(Creature guy, Vector2f targetPosition) {
 		if (atDoor(guy)) {
-			guy.setPosition(World.halfTileRightOf(DOOR_TILE_LEFT)); // align
+			guy.setPosition(halfTileRightOf(DOOR_LEFT_TILE)); // align
 			guy.setMoveAndWishDir(Direction.DOWN);
 		}
-		var middlePosition = World.halfTileRightOf(SEAT_CENTER);
+		var middlePosition = halfTileRightOf(SEAT_CENTER_TILE);
 		if (guy.position().y() >= middlePosition.y()) {
 			if (targetPosition.x() < middlePosition.x()) {
 				guy.setMoveAndWishDir(LEFT);
