@@ -152,7 +152,6 @@ public class GameLevel {
 		setHuntingDurations(game.huntingDurations(number));
 		setParams(game.levelParameters(number));
 		defineChasingBehavior();
-		letsGetReadyToRumbleAndShowGuys(false);
 		LOGGER.trace("Game level %d created. (%s)", number, game.variant());
 	}
 

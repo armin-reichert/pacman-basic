@@ -240,6 +240,7 @@ public abstract class GameModel {
 	 */
 	public void enterLevel(int levelNumber) {
 		level = new GameLevel(this, levelNumber);
+		level.letsGetReadyToRumbleAndShowGuys(false);
 		incrementLevelCounter();
 		if (score != null) {
 			score.setLevelNumber(levelNumber);

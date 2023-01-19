@@ -40,7 +40,6 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
-import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -349,7 +348,7 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public void enterDemoLevel() {
 		level = new MsPacManGameDemoLevel(this);
-		level.guys().forEach(Creature::show);
+		level.letsGetReadyToRumbleAndShowGuys(true);
 		scoringEnabled = false;
 		incrementLevelCounter();
 		LOGGER.info("Ms. Pac-Man demo level entered");
