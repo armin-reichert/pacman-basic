@@ -25,6 +25,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.steering.Direction.UP;
+import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
@@ -116,12 +117,6 @@ public class GameLevel {
 		}
 	}
 
-	// simulates the overflow bug from the original Arcade version
-	protected static Vector2i tilesAhead(Creature guy, int n) {
-		var ahead = guy.tile().plus(guy.moveDir().vector().scaled(n));
-		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
-	}
-
 	private final GameModel game;
 	private final int number;
 	private World world;
@@ -155,7 +150,13 @@ public class GameLevel {
 		LOGGER.trace("Game level %d created. (%s)", number, game.variant());
 	}
 
-	public void defineChasingBehavior() {
+	// simulates the overflow bug from the original Arcade version
+	protected Vector2i tilesAhead(Creature guy, int n) {
+		var ahead = guy.tile().plus(guy.moveDir().vector().scaled(n));
+		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
+	}
+
+	protected void defineChasingBehavior() {
 		// Red ghost attacks Pac-Man directly
 		ghost(ID_RED_GHOST).setChasingTarget(pac::tile);
 		// Pink ghost ambushes Pac-Man
@@ -234,8 +235,7 @@ public class GameLevel {
 	 * @return the ghost with the given ID
 	 */
 	public Ghost ghost(byte id) {
-		GameModel.checkGhostID(id);
-		return ghosts[id];
+		return ghosts[checkGhostID(id)];
 	}
 
 	/**
@@ -349,8 +349,8 @@ public class GameLevel {
 		return true;
 	}
 
-	public void setHuntingDurations(int[] huntingDurations) {
-		this.huntingDurations = huntingDurations;
+	public void setHuntingDurations(int[] durations) {
+		huntingDurations = Objects.requireNonNull(durations);
 	}
 
 	/**
