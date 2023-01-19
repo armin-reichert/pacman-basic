@@ -18,7 +18,7 @@
  */
 module de.amr.games.pacman {
 
-	requires org.apache.logging.log4j;
+	requires transitive org.apache.logging.log4j;
 
 	exports de.amr.games.pacman.controller.common;
 	exports de.amr.games.pacman.controller.mspacman;

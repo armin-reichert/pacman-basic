@@ -70,7 +70,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	private GameModel game;
 	private Steering autopilot;
-	private Steering manualPacSteering;
+	private Steering manualPacSteering = Steering.NONE;
 	private GameSoundController sounds;
 
 	private boolean autoControlled;

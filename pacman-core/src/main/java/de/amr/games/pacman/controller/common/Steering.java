@@ -31,6 +31,12 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public interface Steering {
 
+	public static final Steering NONE = new Steering() {
+		@Override
+		public void steer(GameLevel level, Creature guy) {
+		}
+	};
+
 	void steer(GameLevel level, Creature guy);
 
 	default void init() {
