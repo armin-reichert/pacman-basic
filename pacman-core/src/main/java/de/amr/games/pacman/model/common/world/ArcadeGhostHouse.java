@@ -27,8 +27,6 @@ import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
-import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.math.Vector2f;
@@ -69,10 +67,6 @@ public class ArcadeGhostHouse implements GhostHouse {
 	@Override
 	public Door door() {
 		return door;
-	}
-
-	public Vector2f middleSeatCenterPosition() {
-		return halfTileRightOf(SEAT_CENTER_TILE).plus(0, HTS);
 	}
 
 	@Override
