@@ -37,8 +37,6 @@ public interface GhostHouse {
 
 	Vector2i size();
 
-	Vector2i entryTile();
-
 	Door door();
 
 	default boolean contains(Vector2i tile) {

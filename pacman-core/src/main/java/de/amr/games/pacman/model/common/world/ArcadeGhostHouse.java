@@ -71,11 +71,6 @@ public class ArcadeGhostHouse implements GhostHouse {
 		return door;
 	}
 
-	@Override
-	public Vector2i entryTile() {
-		return door.leftUpperTile().plus(door.getSizeInTiles() / 2, 0);
-	}
-
 	public Vector2f middleSeatCenterPosition() {
 		return halfTileRightOf(SEAT_CENTER_TILE).plus(0, HTS);
 	}

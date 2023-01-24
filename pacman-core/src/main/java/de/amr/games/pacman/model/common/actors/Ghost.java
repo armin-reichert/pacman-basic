@@ -377,7 +377,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateReturningToHouse(GameLevel level) {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = RETURNING_TO_HOUSE;
-		setTargetTile(level.world().ghostHouse().entryTile());
+		setTargetTile(level.world().ghostHouse().door().entryTile());
 		selectAndRunAnimation(AnimKeys.GHOST_EYES);
 	}
 

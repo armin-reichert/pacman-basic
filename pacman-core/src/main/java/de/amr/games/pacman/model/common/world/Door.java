@@ -52,7 +52,7 @@ public class Door {
 		return leftUpperTile;
 	}
 
-	public int getSizeInTiles() {
+	public int sizeInTiles() {
 		return sizeInTiles;
 	}
 
@@ -73,6 +73,10 @@ public class Door {
 		var x = leftUpperTile.x() * TS + sizeInTiles * HTS;
 		var y = leftUpperTile.y() * TS + HTS;
 		return new Vector2f(x, y);
+	}
+
+	public Vector2i entryTile() {
+		return leftUpperTile.plus(sizeInTiles / 2, 0);
 	}
 
 	public Vector2f entryPosition() {

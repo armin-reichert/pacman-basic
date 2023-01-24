@@ -313,7 +313,7 @@ public class MsPacManGame extends GameModel {
 		var exitPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
 		var orientation = RND.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		var start = orientation == Direction.RIGHT ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
-		var houseEntry = level.world().ghostHouse().entryTile();
+		var houseEntry = level.world().ghostHouse().door().entryTile();
 		int houseHeight = level.world().ghostHouse().size().y();
 		var route = new ArrayList<NavigationPoint>();
 		route.add(np(houseEntry));
