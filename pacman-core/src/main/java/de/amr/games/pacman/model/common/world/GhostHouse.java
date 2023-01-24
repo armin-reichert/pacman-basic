@@ -52,8 +52,6 @@ public interface GhostHouse {
 		return contains(guest.tile());
 	}
 
-	boolean atDoor(Creature guest);
-
 	boolean leadOut(Creature guest);
 
 	boolean leadInside(Creature guest, Vector2f targetPosition);

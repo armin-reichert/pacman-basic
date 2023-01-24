@@ -83,25 +83,19 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public boolean atDoor(Creature guy) {
-		var entryPos = halfTileRightOf(ENTRY_TILE);
-		return guy.tile().y() == ENTRY_TILE.y() && U.insideRange(guy.position().x(), entryPos.x(), 1);
-	}
-
-	@Override
 	public boolean leadOut(Creature guy) {
-		var entryPos = halfTileRightOf(ENTRY_TILE);
-		if (guy.position().x() == entryPos.x() && guy.position().y() <= entryPos.y()) {
-			guy.setPosition(entryPos);
+		var centerX = door.entryPosition().x() - World.HTS;
+		if (guy.position().x() == centerX && guy.position().y() <= door.entryPosition().y()) {
+			guy.setPosition(centerX, door.entryPosition().y());
 			return true;
 		}
-		var center = middleSeatCenterPosition();
-		if (U.insideRange(guy.position().x(), center.x(), 1)) {
-			// center horizontally before rising
-			guy.setPosition(center.x(), guy.position().y());
+		if (U.insideRange(guy.position().x(), centerX, 1)) {
+			// center horizontally and rise
+			guy.setPosition(centerX, guy.position().y());
 			guy.setMoveAndWishDir(UP);
 		} else {
-			guy.setMoveAndWishDir(guy.position().x() < center.x() ? RIGHT : LEFT);
+			// move sidewards
+			guy.setMoveAndWishDir(guy.position().x() < centerX ? RIGHT : LEFT);
 		}
 		guy.move();
 		return false;
@@ -109,15 +103,16 @@ public class ArcadeGhostHouse implements GhostHouse {
 
 	@Override
 	public boolean leadInside(Creature guy, Vector2f targetPosition) {
-		if (atDoor(guy)) {
-			guy.setPosition(halfTileRightOf(DOOR_LEFT_TILE)); // align
+		var entryPosition = door.entryPosition().minus(HTS, 0);
+		if (door().atEntry(guy) && guy.moveDir() != Direction.DOWN) {
+			guy.setPosition(entryPosition);
 			guy.setMoveAndWishDir(Direction.DOWN);
 		}
-		var middlePosition = halfTileRightOf(SEAT_CENTER_TILE);
-		if (guy.position().y() >= middlePosition.y()) {
-			if (targetPosition.x() < middlePosition.x()) {
+		var bottomY = SEAT_CENTER_TILE.y() * World.TS + World.HTS;
+		if (guy.position().y() >= bottomY) {
+			if (targetPosition.x() < entryPosition.x()) {
 				guy.setMoveAndWishDir(LEFT);
-			} else if (targetPosition.x() > middlePosition.x()) {
+			} else if (targetPosition.x() > entryPosition.x()) {
 				guy.setMoveAndWishDir(RIGHT);
 			}
 		}

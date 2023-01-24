@@ -24,10 +24,15 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.model.common.world.World.TS;
+
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.U;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
  * @author Armin Reichert
@@ -61,5 +66,16 @@ public class Door {
 			}
 		}
 		return false;
+	}
+
+	public Vector2f entryPosition() {
+		var entryX = leftUpperTile.x() * TS + 0.5f * sizeInTiles * TS;
+		var entryY = (leftUpperTile.y() - 1) * TS;
+		return new Vector2f(entryX, entryY);
+	}
+
+	public boolean atEntry(Entity guy) {
+		var entryPos = entryPosition();
+		return guy.tile().y() == leftUpperTile.y() - 1 && U.insideRange(guy.position().x(), entryPos.x(), 1);
 	}
 }

@@ -388,7 +388,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateReturningToHouse(GameLevel level) {
-		if (level.world().ghostHouse().atDoor(this)) {
+		if (level.world().ghostHouse().door().atEntry(this)) {
 			enterStateEnteringHouse(level);
 		} else {
 			setPixelSpeed(GameModel.SPEED_GHOST_RETURNING_TO_HOUSE_PX);
