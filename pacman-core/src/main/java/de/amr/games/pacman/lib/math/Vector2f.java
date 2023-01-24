@@ -75,7 +75,7 @@ public record Vector2f(float x, float y) {
 	}
 
 	public boolean almostEquals(Vector2f v, float dx, float dy) {
-		return U.insideRange(x, v.x, dx) && U.insideRange(y, v.y, dy);
+		return U.differsAtMost(dx, x, v.x) && U.differsAtMost(dy, y, v.y);
 	}
 
 	@Override

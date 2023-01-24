@@ -77,7 +77,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 			guy.setPosition(middleX, entryY);
 			return true;
 		}
-		if (U.insideRange(guy.position().x(), middleX, 1)) {
+		if (U.differsAtMost(1, guy.position().x(), middleX)) {
 			// center horizontally and rise
 			guy.setPosition(middleX, guy.position().y());
 			guy.setMoveAndWishDir(UP);
@@ -105,7 +105,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 			}
 		}
 		guy.move();
-		boolean reachedTarget = U.insideRange(guy.position().x(), targetPosition.x(), 1)
+		boolean reachedTarget = U.differsAtMost(1, guy.position().x(), targetPosition.x())
 				&& guy.position().y() >= targetPosition.y();
 		if (reachedTarget) {
 			guy.setPosition(targetPosition);
