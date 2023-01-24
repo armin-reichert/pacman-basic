@@ -57,7 +57,7 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	//@formatter:off
 	private static final Vector2f[] GHOST_INITIAL_POSITIONS = {
-			halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE),
+			halfTileRightOf(ArcadeGhostHouse.DOOR_LEFT_TILE).minus(0, TS),
 			halfTileRightOf(ArcadeGhostHouse.SEAT_CENTER_TILE),
 			halfTileRightOf(ArcadeGhostHouse.SEAT_LEFT_TILE),
 			halfTileRightOf(ArcadeGhostHouse.SEAT_RIGHT_TILE)

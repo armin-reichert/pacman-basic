@@ -46,15 +46,14 @@ public class ArcadeGhostHouse implements GhostHouse {
 	public static final Vector2i SIZE_TILES = v2i(7, 4);
 	public static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
 	public static final Vector2i DOOR_LEFT_TILE = v2i(13, 15);
-	public static final Vector2i ENTRY_TILE = v2i(13, 14);
 	public static final Vector2i SEAT_LEFT_TILE = v2i(11, 17);
 	public static final Vector2i SEAT_CENTER_TILE = v2i(13, 17);
 	public static final Vector2i SEAT_RIGHT_TILE = v2i(15, 17);
 
-	private Door door;
+	private final Door door;
 
 	public ArcadeGhostHouse() {
-		door = new Door(v2i(13, 15), 2);
+		door = new Door(DOOR_LEFT_TILE, 2);
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 
 	@Override
 	public Vector2i entryTile() {
-		return ENTRY_TILE;
+		return door.leftUpperTile().plus(door.getSizeInTiles() / 2, 0);
 	}
 
 	public Vector2f middleSeatCenterPosition() {
