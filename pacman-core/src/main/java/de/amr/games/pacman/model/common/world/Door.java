@@ -24,6 +24,9 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 import de.amr.games.pacman.lib.math.Vector2i;
 
 /**
@@ -47,9 +50,13 @@ public class Door {
 		return sizeInTiles;
 	}
 
+	public Stream<Vector2i> tiles() {
+		return IntStream.range(0, sizeInTiles).mapToObj(x -> leftUpperTile.plus(x, 0));
+	}
+
 	public boolean contains(Vector2i tile) {
-		for (int i = 0; i < sizeInTiles; ++i) {
-			if (tile.equals(leftUpperTile.plus(i, 0))) {
+		for (int x = 0; x < sizeInTiles; ++x) {
+			if (tile.equals(leftUpperTile.plus(x, 0))) {
 				return true;
 			}
 		}

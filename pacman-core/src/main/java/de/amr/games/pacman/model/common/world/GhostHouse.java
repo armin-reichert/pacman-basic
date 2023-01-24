@@ -24,8 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
-import java.util.stream.Stream;
-
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -40,8 +38,6 @@ public interface GhostHouse {
 	Vector2i size();
 
 	Vector2i entryTile();
-
-	Stream<Vector2i> doorTiles();
 
 	Door door();
 
