@@ -46,7 +46,6 @@ public class ArcadeGhostHouse implements GhostHouse {
 	public static final Vector2i SIZE_TILES = v2i(7, 4);
 	public static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
 	public static final Vector2i DOOR_LEFT_TILE = v2i(13, 15);
-	public static final Vector2f DOOR_CENTER_POSITION = halfTileRightOf(DOOR_LEFT_TILE).plus(0, HTS);
 	public static final Vector2i ENTRY_TILE = v2i(13, 14);
 	public static final Vector2i SEAT_LEFT_TILE = v2i(11, 17);
 	public static final Vector2i SEAT_CENTER_TILE = v2i(13, 17);

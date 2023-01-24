@@ -69,6 +69,12 @@ public class Door {
 		return false;
 	}
 
+	public Vector2f centerPosition() {
+		var x = leftUpperTile.x() * TS + sizeInTiles * HTS;
+		var y = leftUpperTile.y() * TS + HTS;
+		return new Vector2f(x, y);
+	}
+
 	public Vector2f entryPosition() {
 		var x = leftUpperTile.x() * TS + sizeInTiles * HTS - HTS;
 		var y = leftUpperTile.y() * TS - TS; // one tile above door
