@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib.math;
 
+import de.amr.games.pacman.lib.U;
+
 /**
  * Immutable 2D vector with float precision. Component values are treated as equal if they differ less than
  * {@link #EPSILON}.
@@ -70,6 +72,10 @@ public record Vector2f(float x, float y) {
 
 	public float euclideanDistance(Vector2f v) {
 		return this.minus(v).length();
+	}
+
+	public boolean almostEquals(Vector2f v, float dx, float dy) {
+		return U.insideRange(x, v.x, dx) && U.insideRange(y, v.y, dy);
 	}
 
 	@Override

@@ -71,19 +71,19 @@ public class ArcadeGhostHouse implements GhostHouse {
 
 	@Override
 	public boolean leadOut(Creature guy) {
-		var entryX = door.entryPosition().x();
+		var middleX = door.entryPosition().x();
 		var entryY = door.entryPosition().y();
-		if (guy.position().x() == entryX && guy.position().y() <= entryY) {
-			guy.setPosition(entryX, entryY);
+		if (guy.position().x() == middleX && guy.position().y() <= entryY) {
+			guy.setPosition(middleX, entryY);
 			return true;
 		}
-		if (U.insideRange(guy.position().x(), entryX, 1)) {
+		if (U.insideRange(guy.position().x(), middleX, 1)) {
 			// center horizontally and rise
-			guy.setPosition(entryX, guy.position().y());
+			guy.setPosition(middleX, guy.position().y());
 			guy.setMoveAndWishDir(UP);
 		} else {
 			// move sidewards
-			guy.setMoveAndWishDir(guy.position().x() < entryX ? RIGHT : LEFT);
+			guy.setMoveAndWishDir(guy.position().x() < middleX ? RIGHT : LEFT);
 		}
 		guy.move();
 		return false;
@@ -92,7 +92,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 	@Override
 	public boolean leadInside(Creature guy, Vector2f targetPosition) {
 		var entryPosition = door.entryPosition();
-		if (door().atEntry(guy) && guy.moveDir() != Direction.DOWN) {
+		if (door().reachedBy(guy) && guy.moveDir() != Direction.DOWN) {
 			guy.setPosition(entryPosition);
 			guy.setMoveAndWishDir(Direction.DOWN);
 		}

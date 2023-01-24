@@ -30,7 +30,6 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -69,24 +68,17 @@ public class Door {
 		return false;
 	}
 
-	public Vector2f centerPosition() {
-		var x = leftUpperTile.x() * TS + sizeInTiles * HTS;
-		var y = leftUpperTile.y() * TS + HTS;
+	public boolean reachedBy(Entity guy) {
+		return guy.position().almostEquals(entryPosition(), 1, 0);
+	}
+
+	public Vector2f entryPosition() {
+		var x = leftUpperTile.x() * TS + HTS;
+		var y = (leftUpperTile.y() - 1) * TS;
 		return new Vector2f(x, y);
 	}
 
 	public Vector2i entryTile() {
 		return leftUpperTile.plus(sizeInTiles / 2, 0);
-	}
-
-	public Vector2f entryPosition() {
-		var x = leftUpperTile.x() * TS + sizeInTiles * HTS - HTS;
-		var y = leftUpperTile.y() * TS - TS; // one tile above door
-		return new Vector2f(x, y);
-	}
-
-	public boolean atEntry(Entity guy) {
-		var entryPos = entryPosition();
-		return guy.position().y() == entryPos.y() && U.insideRange(guy.position().x(), entryPos.x(), 1);
 	}
 }
