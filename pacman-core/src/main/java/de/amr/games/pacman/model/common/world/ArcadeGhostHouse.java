@@ -41,7 +41,7 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class ArcadeGhostHouse implements GhostHouse {
 
-	public static final Vector2i SIZE_TILES = v2i(7, 4);
+	public static final Vector2i SIZE_TILES = v2i(8, 5);
 	public static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
 	public static final Vector2i DOOR_LEFT_TILE = v2i(13, 15);
 	public static final Vector2i SEAT_LEFT_TILE = v2i(11, 17);
@@ -55,7 +55,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public Vector2i size() {
+	public Vector2i sizeInTiles() {
 		return SIZE_TILES;
 	}
 

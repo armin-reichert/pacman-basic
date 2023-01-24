@@ -35,15 +35,15 @@ public interface GhostHouse {
 
 	Vector2i topLeftTile();
 
-	Vector2i size();
+	Vector2i sizeInTiles();
 
 	Door door();
 
 	default boolean contains(Vector2i tile) {
 		Vector2i topLeft = topLeftTile();
-		Vector2i bottomRight = topLeft.plus(size());
-		return tile.x() >= topLeft.x() && tile.x() <= bottomRight.x() && tile.y() >= topLeft.y()
-				&& tile.y() <= bottomRight.y();
+		Vector2i bottomRightOutside = topLeft.plus(sizeInTiles());
+		return tile.x() >= topLeft.x() && tile.x() < bottomRightOutside.x() //
+				&& tile.y() >= topLeft.y() && tile.y() < bottomRightOutside.y();
 	}
 
 	default boolean contains(Creature guest) {
