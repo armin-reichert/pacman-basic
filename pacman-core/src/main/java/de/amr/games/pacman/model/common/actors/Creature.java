@@ -149,7 +149,7 @@ public class Creature extends Entity {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		if (level.world().insideBounds(tile)) {
-			return !level.world().isWall(tile) && !level.world().ghostHouse().isDoorTile(tile);
+			return !level.world().isWall(tile) && !level.world().ghostHouse().door().contains(tile);
 		}
 		return level.world().belongsToPortal(tile);
 	}

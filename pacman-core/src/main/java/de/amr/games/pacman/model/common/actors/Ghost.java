@@ -123,7 +123,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
 			return false;
 		}
-		if (level.world().ghostHouse().isDoorTile(tile)) {
+		if (level.world().ghostHouse().door().contains(tile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile, level);

@@ -55,6 +55,12 @@ public class ArcadeGhostHouse implements GhostHouse {
 	public static final Vector2i SEAT_CENTER_TILE = v2i(13, 17);
 	public static final Vector2i SEAT_RIGHT_TILE = v2i(15, 17);
 
+	private Door door;
+
+	public ArcadeGhostHouse() {
+		door = new Door(v2i(13, 15), 2);
+	}
+
 	@Override
 	public Vector2i size() {
 		return SIZE_TILES;
@@ -66,13 +72,13 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public Stream<Vector2i> doorTiles() {
-		return Stream.of(DOOR_LEFT_TILE, DOOR_RIGHT_TILE);
+	public Door door() {
+		return door;
 	}
 
 	@Override
-	public boolean isDoorTile(Vector2i tile) {
-		return doorTiles().anyMatch(door -> door.equals(tile));
+	public Stream<Vector2i> doorTiles() {
+		return Stream.of(DOOR_LEFT_TILE, DOOR_RIGHT_TILE);
 	}
 
 	@Override

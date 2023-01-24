@@ -24,41 +24,35 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
-import java.util.stream.Stream;
-
-import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
  * @author Armin Reichert
  */
-public interface GhostHouse {
+public class Door {
 
-	Vector2i topLeftTile();
+	private Vector2i leftUpperTile;
+	private int sizeInTiles;
 
-	Vector2i size();
-
-	Vector2i entryTile();
-
-	Stream<Vector2i> doorTiles();
-
-	Door door();
-
-	default boolean contains(Vector2i tile) {
-		Vector2i topLeft = topLeftTile();
-		Vector2i bottomRight = topLeft.plus(size());
-		return tile.x() >= topLeft.x() && tile.x() <= bottomRight.x() && tile.y() >= topLeft.y()
-				&& tile.y() <= bottomRight.y();
+	public Door(Vector2i leftUpperTile, int sizeInTiles) {
+		this.leftUpperTile = leftUpperTile;
+		this.sizeInTiles = sizeInTiles;
 	}
 
-	default boolean contains(Creature guest) {
-		return contains(guest.tile());
+	public Vector2i leftUpperTile() {
+		return leftUpperTile;
 	}
 
-	boolean atDoor(Creature guest);
+	public int getSizeInTiles() {
+		return sizeInTiles;
+	}
 
-	boolean leadOut(Creature guest);
-
-	boolean leadInside(Creature guest, Vector2f targetPosition);
+	public boolean contains(Vector2i tile) {
+		for (int i = 0; i < sizeInTiles; ++i) {
+			if (tile.equals(leftUpperTile.plus(i, 0))) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

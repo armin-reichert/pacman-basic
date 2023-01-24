@@ -165,7 +165,7 @@ public interface World {
 			return false;
 		}
 		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
-		long numDoorNeighbors = tile.neighbors().filter(ghostHouse()::isDoorTile).count();
+		long numDoorNeighbors = tile.neighbors().filter(ghostHouse().door()::contains).count();
 		return numWallNeighbors + numDoorNeighbors < 2;
 	}
 
