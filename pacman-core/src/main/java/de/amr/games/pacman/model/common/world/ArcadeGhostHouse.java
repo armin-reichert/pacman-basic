@@ -84,7 +84,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 
 	@Override
 	public boolean leadOut(Creature guy) {
-		var centerX = door.entryPosition().x() - World.HTS;
+		var centerX = door.entryPosition().x();
 		if (guy.position().x() == centerX && guy.position().y() <= door.entryPosition().y()) {
 			guy.setPosition(centerX, door.entryPosition().y());
 			return true;
@@ -103,7 +103,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 
 	@Override
 	public boolean leadInside(Creature guy, Vector2f targetPosition) {
-		var entryPosition = door.entryPosition().minus(HTS, 0);
+		var entryPosition = door.entryPosition();
 		if (door().atEntry(guy) && guy.moveDir() != Direction.DOWN) {
 			guy.setPosition(entryPosition);
 			guy.setMoveAndWishDir(Direction.DOWN);

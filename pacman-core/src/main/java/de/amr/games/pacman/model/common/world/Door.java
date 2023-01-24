@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.util.stream.IntStream;
@@ -69,13 +70,13 @@ public class Door {
 	}
 
 	public Vector2f entryPosition() {
-		var entryX = leftUpperTile.x() * TS + 0.5f * sizeInTiles * TS;
-		var entryY = (leftUpperTile.y() - 1) * TS;
-		return new Vector2f(entryX, entryY);
+		var x = leftUpperTile.x() * TS + sizeInTiles * HTS - HTS;
+		var y = leftUpperTile.y() * TS - TS; // one tile above door
+		return new Vector2f(x, y);
 	}
 
 	public boolean atEntry(Entity guy) {
 		var entryPos = entryPosition();
-		return guy.tile().y() == leftUpperTile.y() - 1 && U.insideRange(guy.position().x(), entryPos.x(), 1);
+		return guy.position().y() == entryPos.y() && U.insideRange(guy.position().x(), entryPos.x(), 1);
 	}
 }
