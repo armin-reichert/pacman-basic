@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.lib.U.differsAtMost;
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
@@ -69,24 +70,27 @@ public class ArcadeGhostHouse implements GhostHouse {
 		return door;
 	}
 
+	/**
+	 * Ghosts are first moved to the horizontal center, then they raise until the entry position outside is reached.
+	 */
 	@Override
-	public boolean leadOut(Creature guy) {
-		var middleX = door.entryPosition().x();
-		var entryY = door.entryPosition().y();
-		if (guy.position().x() == middleX && guy.position().y() <= entryY) {
-			guy.setPosition(middleX, entryY);
-			return true;
-		}
-		if (U.differsAtMost(1, guy.position().x(), middleX)) {
-			// center horizontally and rise
-			guy.setPosition(middleX, guy.position().y());
-			guy.setMoveAndWishDir(UP);
+	public boolean leadOut(Creature ghost) {
+		var reachedExit = false;
+		var entryPosition = door.entryPosition();
+		if (ghost.position().almostEquals(entryPosition, 0, 1)) {
+			ghost.setPosition(entryPosition);
+			reachedExit = true;
+		} else if (differsAtMost(1, ghost.position().x(), entryPosition.x())) {
+			// horizontal center reached: rise
+			ghost.setPosition(entryPosition.x(), ghost.position().y());
+			ghost.setMoveAndWishDir(UP);
+			ghost.move();
 		} else {
-			// move sidewards
-			guy.setMoveAndWishDir(guy.position().x() < middleX ? RIGHT : LEFT);
+			// move sidewards until middle axis is reached
+			ghost.setMoveAndWishDir(ghost.position().x() < entryPosition.x() ? RIGHT : LEFT);
+			ghost.move();
 		}
-		guy.move();
-		return false;
+		return reachedExit;
 	}
 
 	@Override

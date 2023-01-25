@@ -46,11 +46,11 @@ public interface GhostHouse {
 				&& tile.y() >= topLeft.y() && tile.y() < bottomRightOutside.y();
 	}
 
-	default boolean contains(Creature guest) {
-		return contains(guest.tile());
+	default boolean contains(Creature ghost) {
+		return contains(ghost.tile());
 	}
 
-	boolean leadOut(Creature guest);
+	boolean leadOut(Creature ghost);
 
-	boolean leadInside(Creature guest, Vector2f targetPosition);
+	boolean leadInside(Creature ghost, Vector2f targetPosition);
 }
