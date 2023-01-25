@@ -24,6 +24,8 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
+import java.util.List;
+
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -38,6 +40,8 @@ public interface GhostHouse {
 	Vector2i sizeInTiles();
 
 	Door door();
+
+	List<Vector2f> seatPositions();
 
 	default boolean contains(Vector2i tile) {
 		Vector2i topLeft = topLeftTile();

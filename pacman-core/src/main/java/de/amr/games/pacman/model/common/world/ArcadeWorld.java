@@ -39,6 +39,7 @@ import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * The world used in the Arcade versions of Pac-Man and Ms. Pac-Man. Maze structure varies but ghost house
@@ -56,22 +57,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	private static final Direction PAC_INITIAL_DIRECTION = Direction.LEFT;
 
 	//@formatter:off
-	private static final Vector2f[] GHOST_INITIAL_POSITIONS = {
-			halfTileRightOf(ArcadeGhostHouse.DOOR_LEFT_TILE).minus(0, TS),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_CENTER_TILE),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_LEFT_TILE),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_RIGHT_TILE)
-	};
-	
 	private static final Direction[] GHOST_INITIAL_DIRECTIONS = {
 			Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP	
-	};
-	
-	private static final Vector2f[] GHOST_REVIVAL_POSITIONS = {
-			halfTileRightOf(ArcadeGhostHouse.SEAT_CENTER_TILE),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_CENTER_TILE),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_LEFT_TILE),
-			halfTileRightOf(ArcadeGhostHouse.SEAT_RIGHT_TILE)
 	};
 	
 	private static final Vector2i[] GHOST_SCATTER_TARGET_TILES = {
@@ -118,7 +105,13 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Vector2f ghostInitialPosition(byte ghostID) {
-		return GHOST_INITIAL_POSITIONS[checkGhostID(ghostID)];
+		return switch (checkGhostID(ghostID)) {
+		case Ghost.ID_RED_GHOST -> ghostHouse().door().entryPosition();
+		case Ghost.ID_CYAN_GHOST -> ghostHouse().seatPositions().get(0);
+		case Ghost.ID_PINK_GHOST -> ghostHouse().seatPositions().get(1);
+		case Ghost.ID_ORANGE_GHOST -> ghostHouse().seatPositions().get(2);
+		default -> throw new IllegalArgumentException();
+		};
 	}
 
 	@Override
@@ -128,7 +121,8 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Vector2f ghostRevivalPosition(byte ghostID) {
-		return GHOST_REVIVAL_POSITIONS[checkGhostID(ghostID)];
+		return checkGhostID(ghostID) == Ghost.ID_RED_GHOST ? ghostHouse().seatPositions().get(1)
+				: ghostInitialPosition(ghostID);
 	}
 
 	@Override

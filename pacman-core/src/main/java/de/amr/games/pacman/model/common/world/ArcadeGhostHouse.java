@@ -28,6 +28,11 @@ import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
+import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.TS;
+import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
+
+import java.util.List;
 
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.math.Vector2f;
@@ -42,12 +47,12 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class ArcadeGhostHouse implements GhostHouse {
 
-	public static final Vector2i SIZE_TILES = v2i(8, 5);
-	public static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
-	public static final Vector2i DOOR_LEFT_TILE = v2i(13, 15);
-	public static final Vector2i SEAT_LEFT_TILE = v2i(11, 17);
-	public static final Vector2i SEAT_CENTER_TILE = v2i(13, 17);
-	public static final Vector2i SEAT_RIGHT_TILE = v2i(15, 17);
+	private static final Vector2i SIZE_TILES = v2i(8, 5);
+	private static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
+	private static final Vector2i DOOR_LEFT_TILE = v2i(13, 15);
+	private static final List<Vector2f> SEAT_POSITIONS = List.of(//
+			halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
+	private static final int GROUND_Y = 17 * TS + HTS;
 
 	private final Door door;
 
@@ -68,6 +73,11 @@ public class ArcadeGhostHouse implements GhostHouse {
 	@Override
 	public Door door() {
 		return door;
+	}
+
+	@Override
+	public List<Vector2f> seatPositions() {
+		return SEAT_POSITIONS;
 	}
 
 	/**
@@ -105,8 +115,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 			ghost.setPosition(entryPosition);
 			ghost.setMoveAndWishDir(Direction.DOWN);
 		}
-		var bottomY = SEAT_CENTER_TILE.y() * World.TS + World.HTS;
-		if (ghost.position().y() >= bottomY) {
+		if (ghost.position().y() >= GROUND_Y) {
 			if (targetPosition.x() < entryPosition.x()) {
 				ghost.setMoveAndWishDir(LEFT);
 			} else if (targetPosition.x() > entryPosition.x()) {
