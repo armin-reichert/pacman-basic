@@ -289,7 +289,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	private void updateStateLeavingHouse(GameLevel level) {
 		updateColoredAnimation(level);
-		var outOfHouse = level.world().ghostHouse().leadOut(this);
+		var outOfHouse = level.world().ghostHouse().leadOutside(this);
 		if (outOfHouse) {
 			setNewTileEntered(false);
 			setMoveAndWishDir(LEFT);
@@ -388,7 +388,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateReturningToHouse(GameLevel level) {
-		if (level.world().ghostHouse().door().reachedBy(this)) {
+		var houseEntry = level.world().ghostHouse().door().entryPosition();
+		if (position().almostEquals(houseEntry, 1, 0)) {
+			setPosition(houseEntry);
 			enterStateEnteringHouse(level);
 		} else {
 			setPixelSpeed(GameModel.SPEED_GHOST_RETURNING_TO_HOUSE_PX);

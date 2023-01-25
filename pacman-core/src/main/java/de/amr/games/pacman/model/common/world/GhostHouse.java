@@ -50,7 +50,7 @@ public interface GhostHouse {
 		return contains(ghost.tile());
 	}
 
-	boolean leadOut(Creature ghost);
+	boolean leadOutside(Creature ghost);
 
 	boolean leadInside(Creature ghost, Vector2f targetPosition);
 }

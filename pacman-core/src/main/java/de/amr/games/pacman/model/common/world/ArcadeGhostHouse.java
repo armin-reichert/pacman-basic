@@ -74,7 +74,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 	 * Ghosts are first moved to the horizontal center, then they raise until the entry position outside is reached.
 	 */
 	@Override
-	public boolean leadOut(Creature ghost) {
+	public boolean leadOutside(Creature ghost) {
 		var reachedExit = false;
 		var entryPosition = door.entryPosition();
 		if (ghost.position().almostEquals(entryPosition, 0, 1)) {
@@ -93,26 +93,31 @@ public class ArcadeGhostHouse implements GhostHouse {
 		return reachedExit;
 	}
 
+	/**
+	 * Ghosts move down on the vertical center axis until they either reach the middle seat or move sidewards to the left
+	 * or right seat.
+	 */
 	@Override
-	public boolean leadInside(Creature guy, Vector2f targetPosition) {
+	public boolean leadInside(Creature ghost, Vector2f targetPosition) {
 		var entryPosition = door.entryPosition();
-		if (door().reachedBy(guy) && guy.moveDir() != Direction.DOWN) {
-			guy.setPosition(entryPosition);
-			guy.setMoveAndWishDir(Direction.DOWN);
+		if (ghost.position().almostEquals(entryPosition, 1, 0) && ghost.moveDir() != Direction.DOWN) {
+			// just reached door, start sinking
+			ghost.setPosition(entryPosition);
+			ghost.setMoveAndWishDir(Direction.DOWN);
 		}
 		var bottomY = SEAT_CENTER_TILE.y() * World.TS + World.HTS;
-		if (guy.position().y() >= bottomY) {
+		if (ghost.position().y() >= bottomY) {
 			if (targetPosition.x() < entryPosition.x()) {
-				guy.setMoveAndWishDir(LEFT);
+				ghost.setMoveAndWishDir(LEFT);
 			} else if (targetPosition.x() > entryPosition.x()) {
-				guy.setMoveAndWishDir(RIGHT);
+				ghost.setMoveAndWishDir(RIGHT);
 			}
 		}
-		guy.move();
-		boolean reachedTarget = U.differsAtMost(1, guy.position().x(), targetPosition.x())
-				&& guy.position().y() >= targetPosition.y();
+		ghost.move();
+		boolean reachedTarget = U.differsAtMost(1, ghost.position().x(), targetPosition.x())
+				&& ghost.position().y() >= targetPosition.y();
 		if (reachedTarget) {
-			guy.setPosition(targetPosition);
+			ghost.setPosition(targetPosition);
 		}
 		return reachedTarget;
 	}

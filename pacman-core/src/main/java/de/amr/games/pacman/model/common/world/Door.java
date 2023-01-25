@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
  * @author Armin Reichert
@@ -66,10 +65,6 @@ public class Door {
 			}
 		}
 		return false;
-	}
-
-	public boolean reachedBy(Entity guy) {
-		return guy.position().almostEquals(entryPosition(), 1, 0);
 	}
 
 	public Vector2f entryPosition() {
