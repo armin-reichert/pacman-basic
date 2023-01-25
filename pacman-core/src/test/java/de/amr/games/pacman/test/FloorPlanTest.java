@@ -26,6 +26,10 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class FloorPlanTest {
 
+	public static void main(String[] args) {
+		new FloorPlanTest().test();
+	}
+
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 	private static final File DIR = new File(System.getProperty("user.dir"));
 	private static final String PACMAN_PATTERN = "fp-pacman-map%d-res-%d.txt";
