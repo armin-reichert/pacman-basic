@@ -103,18 +103,18 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	/**
-	 * Ghosts move down on the vertical center axis until they either reach the middle seat or move sidewards to the left
-	 * or right seat.
+	 * Ghost moves down on the vertical axis to the center, then returns or moves sidewards to its seat.
 	 */
 	@Override
 	public boolean leadInside(Creature ghost, Vector2f targetPosition) {
 		var entryPosition = door.entryPosition();
-		if (ghost.position().almostEquals(entryPosition, 1, 0) && ghost.moveDir() != Direction.DOWN) {
+		if (ghost.position().almostEquals(entryPosition, ghost.velocity().length() / 2, 0)
+				&& ghost.moveDir() != Direction.DOWN) {
 			// just reached door, start sinking
 			ghost.setPosition(entryPosition);
 			ghost.setMoveAndWishDir(Direction.DOWN);
-		}
-		if (ghost.position().y() >= GROUND_Y) {
+		} else if (ghost.position().y() >= GROUND_Y) {
+			ghost.setPosition(ghost.position().x(), GROUND_Y);
 			if (targetPosition.x() < entryPosition.x()) {
 				ghost.setMoveAndWishDir(LEFT);
 			} else if (targetPosition.x() > entryPosition.x()) {
