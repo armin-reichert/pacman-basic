@@ -24,9 +24,11 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -265,4 +267,9 @@ public interface World {
 	 * @return number of eaten pellets
 	 */
 	int eatenFoodCount();
+
+	/**
+	 * @return map of animations used by this world like flashing, energizer animation.
+	 */
+	Map<String, EntityAnimation> animations();
 }

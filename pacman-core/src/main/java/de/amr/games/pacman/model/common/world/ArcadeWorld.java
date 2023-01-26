@@ -29,11 +29,14 @@ import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
@@ -67,15 +70,16 @@ public class ArcadeWorld extends MapBasedWorld {
 	//@formatter:on
 
 	private final ArcadeGhostHouse house;
-	private final Pulse energizerPulse;
 	private Set<Vector2i> upwardBlockedTiles;
 	private SingleEntityAnimation<?> flashingAnimation;
+	private Map<String, EntityAnimation> animationMap;
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData);
 		house = new ArcadeGhostHouse();
-		energizerPulse = new Pulse(10, true);
 		upwardBlockedTiles = Collections.emptySet();
+		animationMap = new HashMap<>(2);
+		animationMap.put("energizerPulse", new Pulse(10, true));
 	}
 
 	/**
@@ -136,8 +140,9 @@ public class ArcadeWorld extends MapBasedWorld {
 		return house;
 	}
 
-	public Pulse energizerPulse() {
-		return energizerPulse;
+	@Override
+	public Map<String, EntityAnimation> animations() {
+		return Collections.unmodifiableMap(animationMap);
 	}
 
 	/**
