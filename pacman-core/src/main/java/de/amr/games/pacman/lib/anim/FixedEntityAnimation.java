@@ -109,6 +109,10 @@ public class FixedEntityAnimation<T> implements EntityAnimation {
 
 	@Override
 	public void setFrameIndex(int i) {
+		if (i < 0 || i >= things.length) {
+			throw new IllegalArgumentException(
+					"Illegal frame index: %d. Index must be from interval 0..%d".formatted(i, things.length - 1));
+		}
 		frameIndex = i;
 	}
 
