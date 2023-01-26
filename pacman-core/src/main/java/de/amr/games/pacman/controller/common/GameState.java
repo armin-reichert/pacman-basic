@@ -38,7 +38,6 @@ import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
  * Rule of thumb: here, specify "what" and "when", not "how" (this should be implemented in the model).
@@ -318,15 +317,14 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 						gc.changeState(CHANGING_TO_NEXT_LEVEL); // next level
 					}
 				} else {
-					if (level.world() instanceof ArcadeWorld arcadeWorld) {
-						arcadeWorld.flashingAnimation().ifPresent(flashing -> {
-							if (timer.atSecond(1)) {
-								flashing.setRepetitions(level.params().numFlashes());
-								flashing.restart();
-							} else {
-								flashing.animate();
-							}
-						});
+					var flashing = level.world().animations().get("flashing");
+					if (flashing != null) {
+						if (timer.atSecond(1)) {
+							flashing.setRepetitions(level.params().numFlashes());
+							flashing.restart();
+						} else {
+							flashing.animate();
+						}
 					}
 					level.pac().update(level);
 				}

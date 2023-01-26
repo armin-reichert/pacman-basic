@@ -33,12 +33,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.anim.Pulse;
-import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -70,9 +68,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	//@formatter:on
 
 	private final ArcadeGhostHouse house;
+	private final Map<String, EntityAnimation> animationMap;
 	private Set<Vector2i> upwardBlockedTiles;
-	private SingleEntityAnimation<?> flashingAnimation;
-	private Map<String, EntityAnimation> animationMap;
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData);
@@ -142,21 +139,6 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	@Override
 	public Map<String, EntityAnimation> animations() {
-		return Collections.unmodifiableMap(animationMap);
-	}
-
-	/**
-	 * @return (optional) flashing animation played when level has been completed
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> Optional<SingleEntityAnimation<T>> flashingAnimation() {
-		return Optional.ofNullable((SingleEntityAnimation<T>) flashingAnimation);
-	}
-
-	/**
-	 * @param animation animation played when level has been completed
-	 */
-	public <T> void setFlashingAnimation(SingleEntityAnimation<T> animation) {
-		this.flashingAnimation = animation;
+		return animationMap;
 	}
 }
