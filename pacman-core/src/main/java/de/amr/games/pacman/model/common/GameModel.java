@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -316,8 +317,8 @@ public abstract class GameModel {
 	}
 
 	/** @return collected level symbols. */
-	public Iterable<Byte> levelCounter() {
-		return levelCounter;
+	public List<Byte> levelCounter() {
+		return Collections.unmodifiableList(levelCounter);
 	}
 
 	public void clearLevelCounter() {
