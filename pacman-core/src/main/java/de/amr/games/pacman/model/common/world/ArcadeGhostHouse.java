@@ -81,26 +81,25 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	/**
-	 * Ghosts are first moved to the horizontal center, then they raise until the entry position outside is reached.
+	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
 	 */
 	@Override
 	public boolean leadOutside(Creature ghost) {
-		var reachedExit = false;
-		var entryPosition = door.entryPosition();
-		if (ghost.position().almostEquals(entryPosition, 0, 1)) {
-			ghost.setPosition(entryPosition);
-			reachedExit = true;
-		} else if (differsAtMost(1, ghost.position().x(), entryPosition.x())) {
-			// horizontal center reached: rise
-			ghost.setPosition(entryPosition.x(), ghost.position().y());
+		var exitPosition = door.entryPosition();
+		if (ghost.position().y() <= exitPosition.y()) {
+			ghost.setPosition(exitPosition);
+			return true;
+		}
+		if (differsAtMost(ghost.velocity().length() / 2, ghost.position().x(), exitPosition.x())) {
+			// center reached: start rising
+			ghost.setPosition(exitPosition.x(), ghost.position().y());
 			ghost.setMoveAndWishDir(UP);
-			ghost.move();
 		} else {
 			// move sidewards until middle axis is reached
-			ghost.setMoveAndWishDir(ghost.position().x() < entryPosition.x() ? RIGHT : LEFT);
-			ghost.move();
+			ghost.setMoveAndWishDir(ghost.position().x() < exitPosition.x() ? RIGHT : LEFT);
 		}
-		return reachedExit;
+		ghost.move();
+		return false;
 	}
 
 	/**
