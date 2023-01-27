@@ -188,7 +188,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					int sirenIndex = level.huntingPhase() / 2;
 					gc.sounds().ensureSirenStarted(sirenIndex);
 				}
-				level.world().animations().get("energizerPulse").restart();
+				level.world().animation("energizerPulse").ifPresent(EntityAnimation::restart);
 			});
 		}
 
@@ -235,7 +235,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		private void runLevelTestMode(GameLevel level) {
 			if (level.number() <= gc.levelTestLastLevelNumber) {
-				var timer = gc.state().timer();
 				// activate bonus for one second, then eat it / show won points
 				if (timer.atSecond(0.0)) {
 					level.game().onBonusReached();
@@ -266,10 +265,11 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void cheatEatAllPellets(GameModel game) {
 			if (game.isPlaying()) {
-				var level = game.level().get();
-				var world = level.world();
-				world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
-				GameEvents.publish(GameEventType.PAC_FINDS_FOOD, null);
+				game.level().ifPresent(level -> {
+					var world = level.world();
+					world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
+					GameEvents.publish(GameEventType.PAC_FINDS_FOOD, null);
+				});
 			}
 		}
 
@@ -317,15 +317,14 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 						gc.changeState(CHANGING_TO_NEXT_LEVEL); // next level
 					}
 				} else {
-					var flashing = level.world().animations().get("flashing");
-					if (flashing != null) {
+					level.world().animation("flashing").ifPresent(flashing -> {
 						if (timer.atSecond(1)) {
 							flashing.setRepetitions(level.params().numFlashes());
 							flashing.restart();
 						} else {
 							flashing.animate();
 						}
-					}
+					});
 					level.pac().update(level);
 				}
 			});
@@ -369,7 +368,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					steering.steer(level, level.pac());
 					level.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
 							.forEach(ghost -> ghost.update(level));
-					level.world().animations().get("energizerPulse").animate();
+					level.world().animation("energizerPulse").ifPresent(EntityAnimation::animate);
 				});
 			}
 		}
@@ -398,7 +397,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
-				level.world().animations().get("energizerPulse").animate();
+				level.world().animation("energizerPulse").ifPresent(EntityAnimation::animate);
 				level.pac().update(level);
 				if (timer.betweenSeconds(0, 1)) {
 					level.ghosts().forEach(Ghost::animate);
@@ -411,7 +410,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				} else if (timer.atSecond(3.0)) {
 					game.setLives(game.lives() - 1);
 					if (game.lives() == 0) {
-						level.world().animations().get("energizerPulse").stop();
+						level.world().animation("energizerPulse").ifPresent(EntityAnimation::stop);
 						game.setOneLessLifeDisplayed(false);
 					}
 					level.pac().hide();

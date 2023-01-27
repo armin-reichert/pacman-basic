@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import de.amr.games.pacman.lib.anim.EntityAnimation;
@@ -138,7 +139,12 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public Map<String, EntityAnimation> animations() {
-		return animationMap;
+	public void addAnimation(String key, EntityAnimation animation) {
+		animationMap.put(key, animation);
+	}
+
+	@Override
+	public Optional<EntityAnimation> animation(String key) {
+		return Optional.ofNullable(animationMap.get(key));
 	}
 }

@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -269,7 +269,16 @@ public interface World {
 	int eatenFoodCount();
 
 	/**
-	 * @return map of animations used by this world like flashing, energizer animation.
+	 * Adds an animation to this world like flashing, energizer animation.
+	 * 
+	 * @param key       animation key
+	 * @param animation animation
 	 */
-	Map<String, EntityAnimation> animations();
+	void addAnimation(String key, EntityAnimation animation);
+
+	/**
+	 * @param key animation key
+	 * @return (optional)animation stored under this key
+	 */
+	Optional<EntityAnimation> animation(String key);
 }

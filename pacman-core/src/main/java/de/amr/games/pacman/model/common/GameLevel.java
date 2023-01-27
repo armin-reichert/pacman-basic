@@ -47,6 +47,7 @@ import de.amr.games.pacman.controller.common.GameSoundController;
 import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -175,7 +176,7 @@ public class GameLevel {
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus.update(this);
-		world.animations().get("energizerPulse").animate();
+		world.animation("energizerPulse").ifPresent(EntityAnimation::animate);
 		updateHunting();
 	}
 
@@ -185,7 +186,7 @@ public class GameLevel {
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonus.setInactive();
-		world.animations().get("energizerPulse").reset();
+		world.animation("energizerPulse").ifPresent(EntityAnimation::reset);
 		huntingTimer.stop();
 	}
 
@@ -427,7 +428,7 @@ public class GameLevel {
 			ghost.enterStateLocked();
 		});
 		bonus.setInactive();
-		world.animations().get("energizerPulse").reset();
+		world.animation("energizerPulse").ifPresent(EntityAnimation::reset);
 	}
 
 	/**
