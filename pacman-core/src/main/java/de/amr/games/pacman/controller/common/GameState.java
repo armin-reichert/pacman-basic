@@ -188,7 +188,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					int sirenIndex = level.huntingPhase() / 2;
 					gc.sounds().ensureSirenStarted(sirenIndex);
 				}
-				level.world().animation("energizerPulse").ifPresent(EntityAnimation::restart);
+				level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::restart);
 			});
 		}
 
@@ -368,7 +368,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					steering.steer(level, level.pac());
 					level.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
 							.forEach(ghost -> ghost.update(level));
-					level.world().animation("energizerPulse").ifPresent(EntityAnimation::animate);
+					level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
 				});
 			}
 		}
@@ -397,7 +397,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
-				level.world().animation("energizerPulse").ifPresent(EntityAnimation::animate);
+				level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
 				level.pac().update(level);
 				if (timer.betweenSeconds(0, 1)) {
 					level.ghosts().forEach(Ghost::animate);
@@ -410,7 +410,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				} else if (timer.atSecond(3.0)) {
 					game.setLives(game.lives() - 1);
 					if (game.lives() == 0) {
-						level.world().animation("energizerPulse").ifPresent(EntityAnimation::stop);
+						level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::stop);
 						game.setOneLessLifeDisplayed(false);
 					}
 					level.pac().hide();
@@ -483,6 +483,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 	};
 
+	private static final String ENERGIZER_PULSE = "energizerPulse";
 	/* package */ GameController gc;
 	/* package */ final TickTimer timer = new TickTimer("Timer-" + name());
 

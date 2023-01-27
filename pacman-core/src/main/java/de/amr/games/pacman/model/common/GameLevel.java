@@ -65,6 +65,7 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class GameLevel {
 
+	private static final String ENERGIZER_PULSE = "energizerPulse";
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	/**
@@ -176,7 +177,7 @@ public class GameLevel {
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonus.update(this);
-		world.animation("energizerPulse").ifPresent(EntityAnimation::animate);
+		world.animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
 		updateHunting();
 	}
 
@@ -186,7 +187,7 @@ public class GameLevel {
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonus.setInactive();
-		world.animation("energizerPulse").ifPresent(EntityAnimation::reset);
+		world.animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::reset);
 		huntingTimer.stop();
 	}
 
@@ -428,7 +429,7 @@ public class GameLevel {
 			ghost.enterStateLocked();
 		});
 		bonus.setInactive();
-		world.animation("energizerPulse").ifPresent(EntityAnimation::reset);
+		world.animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::reset);
 	}
 
 	/**
