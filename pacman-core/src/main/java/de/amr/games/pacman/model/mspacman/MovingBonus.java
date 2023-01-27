@@ -164,6 +164,7 @@ public class MovingBonus extends Creature implements Bonus {
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
+		default -> throw new IllegalStateException();
 		}
 	}
 }
