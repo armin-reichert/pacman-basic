@@ -228,9 +228,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onExit(GameModel game) {
-			game.level().ifPresent(level -> {
-				level.renderSound(gc.sounds());
-			});
+			game.level().ifPresent(level -> level.renderSound(gc.sounds()));
 		}
 
 		private void runLevelTestMode(GameLevel level) {
