@@ -135,6 +135,7 @@ public class StaticBonus extends Entity implements Bonus {
 				--timer;
 			}
 		}
+		default -> throw new IllegalStateException();
 		}
 	}
 }
