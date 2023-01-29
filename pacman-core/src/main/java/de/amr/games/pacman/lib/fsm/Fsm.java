@@ -50,7 +50,7 @@ import de.amr.games.pacman.lib.timer.TickTimer.State;
  */
 public abstract class Fsm<S extends FsmState<C>, C> {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private final List<BiConsumer<S, S>> subscribers = new ArrayList<>();
 	protected S[] states;
@@ -141,14 +141,14 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		C context = context();
 		if (currentState != null) {
 			currentState.onExit(context);
-			LOGGER.trace("Exit  state %s timer=%s", currentState, currentState.timer());
+			LOG.trace("Exit  state %s timer=%s", currentState, currentState.timer());
 		}
 		prevState = currentState;
 		currentState = newState;
 		currentState.timer().resetIndefinitely();
-		LOGGER.trace("Enter state %s timer=%s", currentState, currentState.timer());
+		LOG.trace("Enter state %s timer=%s", currentState, currentState.timer());
 		currentState.onEnter(context);
-		LOGGER.trace("After Enter state %s timer=%s", currentState, currentState.timer());
+		LOG.trace("After Enter state %s timer=%s", currentState, currentState.timer());
 		subscribers.forEach(listener -> listener.accept(prevState, currentState));
 	}
 
@@ -159,7 +159,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		if (prevState == null) {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
-		LOGGER.trace("Resume state %s, timer= %s", prevState, prevState.timer());
+		LOG.trace("Resume state %s, timer= %s", prevState, prevState.timer());
 		changeState(prevState);
 	}
 
@@ -172,7 +172,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		try {
 			currentState.onUpdate(context());
 		} catch (Exception x) {
-			LOGGER.trace("Error updating state %s, timer=%s", currentState, currentState.timer());
+			LOG.trace("Error updating state %s, timer=%s", currentState, currentState.timer());
 			x.printStackTrace();
 		}
 		if (currentState.timer().state() == State.READY) {

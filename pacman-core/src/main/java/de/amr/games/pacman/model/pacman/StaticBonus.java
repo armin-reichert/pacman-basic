@@ -41,7 +41,7 @@ import de.amr.games.pacman.model.common.actors.Entity;
  */
 public class StaticBonus extends Entity implements Bonus {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private final byte symbol;
 	private final int points;
@@ -102,13 +102,13 @@ public class StaticBonus extends Entity implements Bonus {
 	public void eat() {
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
 		state = BonusState.EATEN;
-		LOGGER.info("Bonus eaten: %s", this);
+		LOG.info("Bonus eaten: %s", this);
 		GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 	}
 
 	private void expire() {
 		setInactive();
-		LOGGER.info("Bonus expired: %s", this);
+		LOG.info("Bonus expired: %s", this);
 		GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 	}
 

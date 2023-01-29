@@ -66,7 +66,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private GameModel game;
 	private Steering autopilot;
@@ -153,7 +153,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		case PACMAN -> new PacManGame();
 		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(variant));
 		};
-		LOGGER.info("New game: %s", game);
+		LOG.info("New game: %s", game);
 	}
 
 	/**

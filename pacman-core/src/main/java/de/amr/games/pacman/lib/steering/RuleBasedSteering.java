@@ -47,7 +47,7 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class RuleBasedSteering implements Steering {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private static class CollectedData {
 
@@ -100,7 +100,7 @@ public class RuleBasedSteering implements Steering {
 		}
 		var data = collectData(level);
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
-			LOGGER.trace("%n%s", data);
+			LOG.trace("%n%s", data);
 		}
 		takeAction(level, data);
 	}
@@ -131,10 +131,10 @@ public class RuleBasedSteering implements Steering {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
 				escapeDir = findEscapeDirectionExcluding(level, EnumSet.of(pac.moveDir(), pac.moveDir().opposite()));
-				LOGGER.trace("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name(), escapeDir);
+				LOG.trace("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name(), escapeDir);
 			} else {
 				escapeDir = findEscapeDirectionExcluding(level, EnumSet.of(pac.moveDir()));
-				LOGGER.trace("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name(), escapeDir);
+				LOG.trace("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name(), escapeDir);
 			}
 			if (escapeDir != null) {
 				pac.setWishDir(escapeDir);
@@ -148,13 +148,13 @@ public class RuleBasedSteering implements Steering {
 
 		if (!data.frightenedGhosts.isEmpty() && pac.powerTimer().remaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
-			LOGGER.trace("Detected frightened ghost %s %.0g tiles away", prey.name(),
+			LOG.trace("Detected frightened ghost %s %.0g tiles away", prey.name(),
 					prey.tile().manhattanDistance(pac.tile()));
 			pac.setTargetTile(prey.tile());
 		} else if (level.bonus() != null && level.bonus().state() == BonusState.EDIBLE
 				&& World.tileAt(level.bonus().entity().position())
 						.manhattanDistance(pac.tile()) <= CollectedData.MAX_BONUS_HARVEST_DIST) {
-			LOGGER.trace("Detected active bonus");
+			LOG.trace("Detected active bonus");
 			pac.setTargetTile(World.tileAt(level.bonus().entity().position()));
 		} else {
 			Vector2i foodTile = findTileFarestFromGhosts(level, findNearestFoodTiles(level));
@@ -180,7 +180,7 @@ public class RuleBasedSteering implements Steering {
 			for (Ghost ghost : level.ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
 					if (energizerFound) {
-						LOGGER.trace("Ignore hunting ghost ahead, energizer comes first!");
+						LOG.trace("Ignore hunting ghost ahead, energizer comes first!");
 						return null;
 					}
 					return ghost;
@@ -256,9 +256,9 @@ public class RuleBasedSteering implements Steering {
 			}
 		}
 		time = System.nanoTime() - time;
-		LOGGER.trace("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
+		LOG.trace("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
 		for (Vector2i t : foodTiles) {
-			LOGGER.trace("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t,
+			LOG.trace("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t,
 					t.manhattanDistance(pacManTile), minDistanceFromGhosts(level));
 		}
 		return foodTiles;

@@ -150,7 +150,7 @@ public class PacManGame extends GameModel {
 		var bonus = level.bonus();
 		int ticks = 10 * FPS - RND.nextInt(FPS); // between 9 and 10 seconds
 		bonus.setEdible(ticks);
-		LOGGER.info("Bonus activated for %d ticks (%.2f seconds): %s", ticks, (float) ticks / FPS, bonus);
+		LOG.info("Bonus activated for %d ticks (%.2f seconds): %s", ticks, (float) ticks / FPS, bonus);
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 	}
 
@@ -160,6 +160,6 @@ public class PacManGame extends GameModel {
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		scoringEnabled = false;
 		incrementLevelCounter();
-		LOGGER.info("Pac-Man demo level entered");
+		LOG.info("Pac-Man demo level entered");
 	}
 }

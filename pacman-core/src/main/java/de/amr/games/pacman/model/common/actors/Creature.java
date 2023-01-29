@@ -50,7 +50,7 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class Creature extends Entity {
 
-	protected static final Logger LOGGER = LogManager.getFormatterLogger();
+	protected static final Logger LOG = LogManager.getFormatterLogger();
 
 	protected static final String MSG_GAME_NULL = "Game must not be null";
 	protected static final String MSG_LEVEL_NULL = "Game level must not be null";
@@ -163,7 +163,7 @@ public class Creature extends Entity {
 		Objects.requireNonNull(dir, MSG_DIR_NULL);
 		if (moveDir != dir) {
 			moveDir = dir;
-			LOGGER.trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
+			LOG.trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
 			velocity = moveDir.vector().toFloatVec().scaled(velocity.length());
 		}
 	}
@@ -177,7 +177,7 @@ public class Creature extends Entity {
 		Objects.requireNonNull(dir, MSG_DIR_NULL);
 		if (wishDir != dir) {
 			wishDir = dir;
-			LOGGER.trace("%-6s: New wishDir: %s. %s", name, wishDir, this);
+			LOG.trace("%-6s: New wishDir: %s. %s", name, wishDir, this);
 		}
 	}
 
@@ -193,7 +193,7 @@ public class Creature extends Entity {
 
 	public void reverseDirectionASAP() {
 		shouldReverse = true;
-		LOGGER.trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
+		LOG.trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
 	}
 
 	/**
@@ -310,7 +310,7 @@ public class Creature extends Entity {
 		stuck = !mr.moved();
 		newTileEntered = !tileBeforeMove.equals(tile());
 		if (mr.moved()) {
-			LOGGER.trace("%-6s: %s %s", name, mr.message(), this);
+			LOG.trace("%-6s: %s %s", name, mr.message(), this);
 		}
 	}
 

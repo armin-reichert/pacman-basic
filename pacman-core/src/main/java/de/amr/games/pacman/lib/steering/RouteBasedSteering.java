@@ -40,7 +40,7 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class RouteBasedSteering implements Steering {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private List<NavigationPoint> route = List.of();
 	private int targetIndex;
@@ -72,12 +72,12 @@ public class RouteBasedSteering implements Steering {
 		} else if (guy.targetTile().isEmpty()) {
 			guy.setTargetTile(currentTarget().tile());
 			guy.navigateTowardsTarget(level);
-			LOGGER.trace("New target tile for %s=%ss", guy.name(), guy.targetTile().get());
+			LOG.trace("New target tile for %s=%ss", guy.name(), guy.targetTile().get());
 		} else if (guy.tile().equals(currentTarget().tile())) {
 			nextTarget(level, guy);
-			LOGGER.trace("New target tile for %s=%s", guy.name(), guy.targetTile().get());
+			LOG.trace("New target tile for %s=%s", guy.name(), guy.targetTile().get());
 		}
-		LOGGER.trace("Current wish dir for %s: %s (tile: %s)", guy.name(), guy.wishDir(), guy.tile());
+		LOG.trace("Current wish dir for %s: %s (tile: %s)", guy.name(), guy.wishDir(), guy.tile());
 	}
 
 	public boolean isComplete() {

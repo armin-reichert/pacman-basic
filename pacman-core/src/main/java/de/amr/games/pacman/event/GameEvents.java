@@ -38,7 +38,7 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class GameEvents {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 	private static final GameEvents IT = new GameEvents();
 
 	private Supplier<GameModel> fnGame;
@@ -60,7 +60,7 @@ public class GameEvents {
 	}
 
 	public static void publish(GameEvent event) {
-		LOGGER.trace("Game event: %s", event);
+		LOG.trace("Game event: %s", event);
 		IT.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 

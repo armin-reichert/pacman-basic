@@ -44,7 +44,7 @@ import de.amr.games.pacman.lib.timer.TickTimerEvent.Type;
  */
 public class TickTimer {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	public enum State {
 		READY, RUNNING, STOPPED, EXPIRED;
@@ -115,7 +115,7 @@ public class TickTimer {
 		duration = ticks;
 		tick = 0;
 		state = READY;
-		LOGGER.trace("%s reset", this);
+		LOG.trace("%s reset", this);
 		fireEvent(new TickTimerEvent(Type.RESET, ticks));
 	}
 
@@ -142,14 +142,14 @@ public class TickTimer {
 	public void start() {
 		switch (state) {
 		case RUNNING -> {
-			LOGGER.trace("Timer %s not started, already running", this);
+			LOG.trace("Timer %s not started, already running", this);
 		}
 		case EXPIRED -> {
-			LOGGER.trace("Timer %s not started, has expired", this);
+			LOG.trace("Timer %s not started, has expired", this);
 		}
 		default -> {
 			state = RUNNING;
-			LOGGER.trace("%s started", this);
+			LOG.trace("%s started", this);
 			fireEvent(new TickTimerEvent(Type.STARTED));
 		}
 		}
@@ -180,17 +180,17 @@ public class TickTimer {
 		switch (state) {
 		case RUNNING -> {
 			state = STOPPED;
-			LOGGER.trace("%s stopped", this);
+			LOG.trace("%s stopped", this);
 			fireEvent(new TickTimerEvent(Type.STOPPED));
 		}
 		case STOPPED -> {
-			LOGGER.trace("%s already stopped", this);
+			LOG.trace("%s already stopped", this);
 		}
 		case READY -> {
-			LOGGER.trace("%s not stopped, was not running", this);
+			LOG.trace("%s not stopped, was not running", this);
 		}
 		case EXPIRED -> {
-			LOGGER.trace("%s not stopped, has expired", this);
+			LOG.trace("%s not stopped, has expired", this);
 		}
 		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
@@ -215,7 +215,7 @@ public class TickTimer {
 	public void expire() {
 		if (state != EXPIRED) {
 			state = EXPIRED;
-			LOGGER.trace("%s expired", this);
+			LOG.trace("%s expired", this);
 			fireEvent(new TickTimerEvent(Type.EXPIRED, tick));
 		}
 	}

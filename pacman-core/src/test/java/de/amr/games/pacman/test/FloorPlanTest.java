@@ -30,7 +30,7 @@ public class FloorPlanTest {
 		new FloorPlanTest().test();
 	}
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 	private static final File DIR = new File(System.getProperty("user.dir"));
 	private static final String PACMAN_PATTERN = "fp-pacman-map%d-res-%d.txt";
 	private static final String MS_PACMAN_PATTERN = "fp-mspacman-map%d-res-%d.txt";
@@ -71,7 +71,7 @@ public class FloorPlanTest {
 	private static void deleteFile(String pattern, int mapNumber, int res) {
 		var file = file(pattern, mapNumber, res);
 		file.delete();
-		LOGGER.info("Deleted file %s", file);
+		LOG.info("Deleted file %s", file);
 	}
 
 	private static void createFloorPlan(World world, File file, int resolution) {
@@ -81,7 +81,7 @@ public class FloorPlanTest {
 		var timeLog = "%.2f millis".formatted(time / 1e6);
 		try (var w = new FileWriter(file, StandardCharsets.UTF_8)) {
 			floorPlan.print(w, true);
-			LOGGER.info("Created file %s (%s)", file.getAbsolutePath(), timeLog);
+			LOG.info("Created file %s (%s)", file.getAbsolutePath(), timeLog);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

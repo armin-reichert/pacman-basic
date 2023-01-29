@@ -120,7 +120,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		var currentTile = tile();
 		if (tile.equals(currentTile.plus(UP.vector())) && !level.isSteeringAllowed(this, UP)) {
-			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
+			LOG.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
 			return false;
 		}
 		if (level.world().ghostHouse().door().contains(tile)) {
@@ -188,7 +188,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 //			var navPoint = route.get(attractRouteIndex);
 //			if (atTurnPositionTo(navPoint.dir())) {
 //				setWishDir(navPoint.dir());
-//				LOGGER.trace("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
+//				LOG.trace("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
 //				++attractRouteIndex;
 //			}
 //			tryMoving(level);
@@ -295,10 +295,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			setMoveAndWishDir(LEFT);
 			if (level.pac().powerTimer().isRunning() && killedIndex == -1) {
 				enterStateFrightened();
-				LOGGER.info("Ghost %s leaves house frightened", name());
+				LOG.info("Ghost %s leaves house frightened", name());
 			} else {
 				enterStateHuntingPac();
-				LOGGER.info("Ghost %s leaves house hunting", name());
+				LOG.info("Ghost %s leaves house hunting", name());
 			}
 			GameEvents.publish(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
 		}

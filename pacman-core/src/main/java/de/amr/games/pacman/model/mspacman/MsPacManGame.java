@@ -320,7 +320,7 @@ public class MsPacManGame extends GameModel {
 		route.add(np(houseEntry.plus(0, houseHeight + 2)));
 		route.add(np(houseEntry));
 		route.add(orientation == Direction.RIGHT ? np(exitPortal.rightTunnelEnd()) : np(exitPortal.leftTunnelEnd()));
-		LOGGER.trace("Bonus route: %s, orientation: %s", route, orientation);
+		LOG.trace("Bonus route: %s, orientation: %s", route, orientation);
 		var movingBonus = (MovingBonus) level.bonus();
 		movingBonus.setRoute(route);
 		movingBonus.placeAtTile(start.tile(), 0, 0);
@@ -351,6 +351,6 @@ public class MsPacManGame extends GameModel {
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		scoringEnabled = false;
 		incrementLevelCounter();
-		LOGGER.info("Ms. Pac-Man demo level entered");
+		LOG.info("Ms. Pac-Man demo level entered");
 	}
 }

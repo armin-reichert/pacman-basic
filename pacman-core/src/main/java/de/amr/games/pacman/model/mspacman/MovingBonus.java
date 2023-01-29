@@ -51,7 +51,7 @@ import de.amr.games.pacman.model.common.actors.Entity;
  */
 public class MovingBonus extends Creature implements Bonus {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private final byte symbol;
 	private final int points;
@@ -74,7 +74,7 @@ public class MovingBonus extends Creature implements Bonus {
 
 	public void setRoute(List<NavigationPoint> route) {
 		steering.setRoute(route);
-		LOGGER.info("New route of moving bonus: %s", route);
+		LOG.info("New route of moving bonus: %s", route);
 	}
 
 	@Override
@@ -119,14 +119,14 @@ public class MovingBonus extends Creature implements Bonus {
 		jumpAnimation.restart();
 		setPixelSpeed(0.5f); // how fast in the original game?
 		setTargetTile(null);
-		LOGGER.info("Bonus gets edible: %s", this);
+		LOG.info("Bonus gets edible: %s", this);
 	}
 
 	@Override
 	public void eat() {
 		state = BonusState.EATEN;
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
-		LOGGER.info("Bonus eaten: %s", this);
+		LOG.info("Bonus eaten: %s", this);
 		jumpAnimation.stop();
 		GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 	}
@@ -148,7 +148,7 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 			steering.steer(level, this);
 			if (steering.isComplete()) {
-				LOGGER.info("Bonus reached target: %s", this);
+				LOG.info("Bonus reached target: %s", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
@@ -160,7 +160,7 @@ public class MovingBonus extends Creature implements Bonus {
 		case EATEN -> {
 			if (--timer == 0) {
 				setInactive();
-				LOGGER.info("Bonus expired: %s", this);
+				LOG.info("Bonus expired: %s", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}

@@ -54,7 +54,7 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public abstract class GameModel {
 
-	protected static final Logger LOGGER = LogManager.getFormatterLogger();
+	protected static final Logger LOG = LogManager.getFormatterLogger();
 	protected static final Random RND = new Random();
 
 	/** Game loop speed in ticks/sec. */
@@ -154,7 +154,7 @@ public abstract class GameModel {
 	 * Initializes the game. Credit and level counter stay unchanged.
 	 */
 	public void init() {
-		LOGGER.trace("Init game (%s)", variant());
+		LOG.trace("Init game (%s)", variant());
 		playing = false;
 		lives = INITIAL_LIVES;
 		level = null;
@@ -382,11 +382,11 @@ public abstract class GameModel {
 			scoreFromFile.setPoints(points);
 			scoreFromFile.setLevelNumber(levelNumber);
 			scoreFromFile.setDate(date);
-			LOGGER.info("Highscore loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), scoreFromFile.points(),
+			LOG.info("Highscore loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), scoreFromFile.points(),
 					scoreFromFile.levelNumber());
 			return scoreFromFile;
 		} catch (Exception x) {
-			LOGGER.info("Highscore could not be loaded. File '%s' Reason: %s", file, x.getMessage());
+			LOG.info("Highscore could not be loaded. File '%s' Reason: %s", file, x.getMessage());
 			return new Score();
 		}
 	}
@@ -407,10 +407,10 @@ public abstract class GameModel {
 		var highScoreFile = highscoreFile(variant());
 		try (var out = new FileOutputStream(highScoreFile)) {
 			props.storeToXML(out, "%s Hiscore".formatted(variant()));
-			LOGGER.info("Highscore saved. File: '%s' Points: %d Level: %d", highScoreFile.getAbsolutePath(),
+			LOG.info("Highscore saved. File: '%s' Points: %d Level: %d", highScoreFile.getAbsolutePath(),
 					highScore.points(), highScore.levelNumber());
 		} catch (Exception x) {
-			LOGGER.info("Highscore could not be saved. File '%s' Reason: %s", highScoreFile, x.getMessage());
+			LOG.info("Highscore could not be saved. File '%s' Reason: %s", highScoreFile, x.getMessage());
 		}
 	}
 

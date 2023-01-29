@@ -43,7 +43,7 @@ public class GhostHouseRules {
 	public record UnlockResult(Ghost ghost, String reason) {
 	}
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	public static final int NO_LIMIT = -1;
 
@@ -81,13 +81,13 @@ public class GhostHouseRules {
 	public void resetGlobalDotCounterAndSetEnabled(boolean enabled) {
 		globalDotCounter = 0;
 		globalDotCounterEnabled = enabled;
-		LOGGER.trace("Global dot counter reset to 0 and %s", enabled ? "enabled" : "disabled");
+		LOG.trace("Global dot counter reset to 0 and %s", enabled ? "enabled" : "disabled");
 	}
 
 	public void updateGhostDotCounters(GameLevel level) {
 		if (globalDotCounterEnabled) {
 			if (level.ghost(ID_ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
-				LOGGER.trace("%s inside house when counter reached 32", level.ghost(ID_ORANGE_GHOST).name());
+				LOG.trace("%s inside house when counter reached 32", level.ghost(ID_ORANGE_GHOST).name());
 				resetGlobalDotCounterAndSetEnabled(false);
 			} else {
 				globalDotCounter++;
@@ -101,7 +101,7 @@ public class GhostHouseRules {
 
 	private void increaseGhostDotCounter(Ghost ghost) {
 		ghostDotCounters[ghost.id()]++;
-		LOGGER.trace("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id()]);
+		LOG.trace("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id()]);
 	}
 
 	public Optional<UnlockResult> checkIfGhostUnlocked(GameLevel level) {
@@ -126,7 +126,7 @@ public class GhostHouseRules {
 		// check Pac-Man starving reaches limit
 		if (level.pac().starvingTicks() >= pacStarvingTimeLimit) {
 			level.pac().endStarving();
-			LOGGER.trace("Pac-Man starving timer reset to 0");
+			LOG.trace("Pac-Man starving timer reset to 0");
 			return unlockGhost(level, ghost, "%s reached starving limit (%d ticks)", level.pac().name(),
 					pacStarvingTimeLimit);
 		}
