@@ -136,8 +136,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void selectGameVariant(GameVariant variant) {
 		boolean wasImmune = game.isImmune();
+		int oldCredit = game.credit();
 		createGame(variant);
 		game.setImmune(wasImmune);
+		game.setCredit(oldCredit);
 		boot();
 	}
 
@@ -180,7 +182,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 */
 	public void boot() {
 		sounds().stopAll();
-		game.setCredit(0);
 		restart(BOOT);
 	}
 }
