@@ -69,27 +69,24 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private GameModel game;
-	private Steering autopilot;
+	private Steering autopilot = new RuleBasedSteering();
 	private Steering manualPacSteering = Steering.NONE;
-	private GameSoundController sounds;
-
+	private GameSoundController sounds = GameSoundController.NO_SOUND;
 	private boolean autoControlled;
 	public int intermissionTestNumber; // intermission test mode
 	public boolean levelTestMode = false; // level test mode
 	public int levelTestLastLevelNumber = 21; // level test mode
 
 	public GameController(GameVariant variant) {
+		Objects.requireNonNull(variant);
 		states = GameState.values();
 		for (var state : states) {
 			state.gc = this;
 		}
-		// map "state change" events to "game state change" events
+		// map FSM state change events to "game state change" events
 		addStateChangeListener(
-				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(game(), oldState, newState)));
+				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(game, oldState, newState)));
 		GameEvents.setGame(this::game);
-
-		autopilot = new RuleBasedSteering();
-		sounds = GameSoundController.NO_SOUND;
 		createGame(variant);
 	}
 
@@ -130,10 +127,18 @@ public class GameController extends Fsm<GameState, GameModel> {
 		this.sounds = Objects.requireNonNull(sounds);
 	}
 
+	/**
+	 * @return sounds for current game
+	 */
 	public GameSoundController sounds() {
 		return game().hasCredit() || state() == GameState.INTERMISSION_TEST ? sounds : GameSoundController.NO_SOUND;
 	}
 
+	/**
+	 * Selects the game specified by the given variant.
+	 * 
+	 * @param variant Pac-Man or Ms. Pac-Man
+	 */
 	public void selectGameVariant(GameVariant variant) {
 		boolean wasImmune = game.isImmune();
 		int oldCredit = game.credit();
@@ -146,10 +151,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 	/**
 	 * Creates a new game model for the given variant and restarts in boot state.
 	 * 
-	 * @param variant game variant
+	 * @param variant Pac-Man or Ms. Pac-Man
 	 */
 	private void createGame(GameVariant variant) {
-		Objects.requireNonNull(variant, "Game variant must not be null");
 		game = switch (variant) {
 		case MS_PACMAN -> new MsPacManGame();
 		case PACMAN -> new PacManGame();
