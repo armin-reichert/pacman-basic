@@ -90,6 +90,33 @@ public class GameController extends Fsm<GameState, GameModel> {
 		createGame(variant);
 	}
 
+	/**
+	 * Creates a new game model for the given variant and restarts in boot state.
+	 * 
+	 * @param variant Pac-Man or Ms. Pac-Man
+	 */
+	private void createGame(GameVariant variant) {
+		game = switch (variant) {
+		case MS_PACMAN -> new MsPacManGame();
+		case PACMAN -> new PacManGame();
+		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(variant));
+		};
+		LOG.info("New game: %s", game);
+	}
+
+	/**
+	 * Selects the game specified by the given variant.
+	 * 
+	 * @param variant Pac-Man or Ms. Pac-Man
+	 */
+	public void selectGameVariant(GameVariant variant) {
+		boolean immune = game.isImmune();
+		int credit = game.credit();
+		createGame(variant);
+		game.setImmune(immune);
+		game.setCredit(credit);
+	}
+
 	@Override
 	public GameModel context() {
 		return game();
@@ -132,34 +159,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 */
 	public GameSoundController sounds() {
 		return game().hasCredit() || state() == GameState.INTERMISSION_TEST ? sounds : GameSoundController.NO_SOUND;
-	}
-
-	/**
-	 * Selects the game specified by the given variant.
-	 * 
-	 * @param variant Pac-Man or Ms. Pac-Man
-	 */
-	public void selectGameVariant(GameVariant variant) {
-		boolean wasImmune = game.isImmune();
-		int oldCredit = game.credit();
-		createGame(variant);
-		game.setImmune(wasImmune);
-		game.setCredit(oldCredit);
-		boot();
-	}
-
-	/**
-	 * Creates a new game model for the given variant and restarts in boot state.
-	 * 
-	 * @param variant Pac-Man or Ms. Pac-Man
-	 */
-	private void createGame(GameVariant variant) {
-		game = switch (variant) {
-		case MS_PACMAN -> new MsPacManGame();
-		case PACMAN -> new PacManGame();
-		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(variant));
-		};
-		LOG.info("New game: %s", game);
 	}
 
 	/**

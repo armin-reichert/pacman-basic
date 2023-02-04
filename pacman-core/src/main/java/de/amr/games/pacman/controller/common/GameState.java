@@ -82,6 +82,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void selectGameVariant(GameVariant variant) {
 			gc.selectGameVariant(variant);
+			gc.boot();
 		}
 
 		@Override
