@@ -38,7 +38,7 @@ import de.amr.games.pacman.lib.math.Vector2i;
 /**
  * @author Armin Reichert
  */
-public abstract class MapBasedWorld implements World {
+public abstract class TileMapWorld implements World {
 
 	//@formatter:off
 	public static final byte SPACE           = 0;
@@ -48,16 +48,16 @@ public abstract class MapBasedWorld implements World {
 	public static final byte ENERGIZER       = 4;
 	//@formatter:on
 
-	protected final WorldMap map;
+	protected final TileMap tileMap;
 	protected List<Portal> portals;
 	protected List<Vector2i> energizerTiles;
 	protected int totalFoodCount;
 	protected int foodRemaining;
 	private final BitSet eatenSet;
 
-	protected MapBasedWorld(byte[][] mapData) {
-		Objects.requireNonNull(mapData);
-		map = new WorldMap(mapData);
+	protected TileMapWorld(byte[][] tileMapData) {
+		Objects.requireNonNull(tileMapData);
+		tileMap = new TileMap(tileMapData);
 		analyzeMap();
 		eatenSet = new BitSet(numRows() * numCols());
 	}
@@ -71,9 +71,9 @@ public abstract class MapBasedWorld implements World {
 
 	protected ArrayList<Portal> findPortals() {
 		var portalList = new ArrayList<Portal>();
-		for (int row = 0; row < map.numRows(); ++row) {
-			if (map.get(row, 0) == TUNNEL && map.get(row, map.numCols() - 1) == TUNNEL) {
-				portalList.add(new HorizontalPortal(v2i(0, row), v2i(map.numCols() - 1, row)));
+		for (int row = 0; row < tileMap.numRows(); ++row) {
+			if (tileMap.get(row, 0) == TUNNEL && tileMap.get(row, tileMap.numCols() - 1) == TUNNEL) {
+				portalList.add(new HorizontalPortal(v2i(0, row), v2i(tileMap.numCols() - 1, row)));
 			}
 		}
 		portalList.trimToSize();
@@ -81,17 +81,17 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	protected byte content(Vector2i tile) {
-		return map.get(tile.y(), tile.x(), SPACE);
+		return tileMap.get(tile.y(), tile.x(), SPACE);
 	}
 
 	@Override
 	public int numCols() {
-		return map.numCols();
+		return tileMap.numCols();
 	}
 
 	@Override
 	public int numRows() {
-		return map.numRows();
+		return tileMap.numRows();
 	}
 
 	@Override

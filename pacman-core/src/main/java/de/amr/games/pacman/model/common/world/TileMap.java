@@ -26,19 +26,19 @@ package de.amr.games.pacman.model.common.world;
 /**
  * @author Armin Reichert
  */
-public class WorldMap {
-	private final byte[][] mapData;
+public class TileMap {
+	private final byte[][] tileData;
 	private final int numRows;
 	private final int numCols;
 
-	public WorldMap(byte[][] mapData) {
-		validateMapData(mapData);
-		this.mapData = mapData;
-		this.numRows = mapData.length;
-		this.numCols = mapData[0].length;
+	public TileMap(byte[][] tileData) {
+		validateTileData(tileData);
+		this.tileData = tileData;
+		this.numRows = tileData.length;
+		this.numCols = tileData[0].length;
 	}
 
-	private void validateMapData(byte[][] mapData) {
+	private void validateTileData(byte[][] mapData) {
 		if (mapData == null) {
 			throw new IllegalArgumentException("Map is null");
 		}
@@ -77,21 +77,21 @@ public class WorldMap {
 		if (!insideBounds(row, col)) {
 			throwOutOfBoundsError(row, col);
 		}
-		return mapData[row][col];
+		return tileData[row][col];
 	}
 
 	public byte get(int row, int col, byte defaultContent) {
 		if (!insideBounds(row, col)) {
 			return defaultContent;
 		}
-		return mapData[row][col];
+		return tileData[row][col];
 	}
 
 	public void set(int row, int col, byte b) {
 		if (!insideBounds(row, col)) {
 			throwOutOfBoundsError(row, col);
 		}
-		mapData[row][col] = b;
+		tileData[row][col] = b;
 	}
 
 	private boolean insideBounds(int row, int col) {

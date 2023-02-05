@@ -50,7 +50,7 @@ import de.amr.games.pacman.model.common.actors.Ghost;
  * 
  * @author Armin Reichert
  */
-public class ArcadeWorld extends MapBasedWorld {
+public class ArcadeWorld extends TileMapWorld {
 
 	public static final Vector2i SIZE_TILES = v2i(28, 36);
 	public static final Vector2i SIZE_PX = SIZE_TILES.scaled(TS);
