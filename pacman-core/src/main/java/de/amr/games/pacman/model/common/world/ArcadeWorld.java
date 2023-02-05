@@ -72,8 +72,8 @@ public class ArcadeWorld extends TileMapWorld {
 	private final Map<String, EntityAnimation> animationMap;
 	private Set<Vector2i> upwardBlockedTiles;
 
-	public ArcadeWorld(byte[][] mapData) {
-		super(mapData);
+	public ArcadeWorld(byte[][] tileMapData) {
+		super(tileMapData);
 		house = new ArcadeGhostHouse();
 		upwardBlockedTiles = Collections.emptySet();
 		animationMap = new HashMap<>(2);
