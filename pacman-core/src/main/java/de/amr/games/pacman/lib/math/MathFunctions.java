@@ -30,14 +30,14 @@ import java.util.Random;
  */
 public class MathFunctions {
 
-	public static final Random rnd = new Random();
+	public static final Random RND = new Random();
 
 	public static int randomInt(int left, int right) {
-		return left + rnd.nextInt(right - left);
+		return left + RND.nextInt(right - left);
 	}
 
 	public static double randomDouble(double left, double right) {
-		return left + rnd.nextDouble() * (right - left);
+		return left + RND.nextDouble() * (right - left);
 	}
 
 	/**
@@ -96,5 +96,4 @@ public class MathFunctions {
 		}
 		return value >= (target - difference) && value <= (target + difference);
 	}
-
 }
