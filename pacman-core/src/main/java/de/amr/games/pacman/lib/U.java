@@ -25,7 +25,6 @@ SOFTWARE.
 package de.amr.games.pacman.lib;
 
 import java.util.Arrays;
-import java.util.Random;
 import java.util.stream.Stream;
 
 /**
@@ -38,16 +37,6 @@ public class U {
 
 	public static byte[][] copyByteArray2D(byte[][] array) {
 		return Arrays.stream(array).map(byte[]::clone).toArray(byte[][]::new);
-	}
-
-	public static final Random rnd = new Random();
-
-	public static int randomInt(int left, int right) {
-		return left + rnd.nextInt(right - left);
-	}
-
-	public static double randomDouble(double left, double right) {
-		return left + rnd.nextDouble() * (right - left);
 	}
 
 	public static String yesNo(boolean b) {
@@ -67,60 +56,4 @@ public class U {
 		};
 	}
 
-	/**
-	 * @param value1 value1
-	 * @param value2 value2
-	 * @param t      "time" between 0 and 1
-	 * @return linear interpolation between {@code value1} and {@code value2} values
-	 */
-	public static double lerp(double value1, double value2, double t) {
-		return (1 - t) * value1 + t * value2;
-	}
-
-	/**
-	 * @param value some value
-	 * @param min   lower bound of interval
-	 * @param max   upper bound of interval
-	 * @return the value if inside the interval, the lower bound if the value is smaller, the upper bound if the value is
-	 *         larger
-	 */
-	public static double clamp(double value, double min, double max) {
-		if (value < min) {
-			return min;
-		}
-		if (value > max) {
-			return max;
-		}
-		return value;
-	}
-
-	/**
-	 * @param value some value
-	 * @param min   lower bound of interval
-	 * @param max   upper bound of interval
-	 * @return the value if inside the interval, the lower bound if the value is smaller, the upper bound if the value is
-	 *         larger
-	 */
-	public static int clamp(int value, int min, int max) {
-		if (value < min) {
-			return min;
-		}
-		if (value > max) {
-			return max;
-		}
-		return value;
-	}
-
-	/**
-	 * @param difference maximum allowed deviation
-	 * @param value      value
-	 * @param target     target value
-	 * @return {@code true} if the given values differ at most by the given difference
-	 */
-	public static boolean differsAtMost(double difference, double value, double target) {
-		if (difference < 0) {
-			throw new IllegalArgumentException("Difference must be positive but is %f".formatted(difference));
-		}
-		return value >= (target - difference) && value <= (target + difference);
-	}
 }

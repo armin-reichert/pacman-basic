@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib.math;
 
-import de.amr.games.pacman.lib.U;
+import static de.amr.games.pacman.lib.math.MathFunctions.differsAtMost;
 
 /**
  * Immutable 2D vector with float precision. Component values are treated as equal if they differ less than
@@ -75,7 +75,7 @@ public record Vector2f(float x, float y) {
 	}
 
 	public boolean almostEquals(Vector2f v, float dx, float dy) {
-		return U.differsAtMost(dx, x, v.x) && U.differsAtMost(dy, y, v.y);
+		return differsAtMost(dx, x, v.x) && differsAtMost(dy, y, v.y);
 	}
 
 	@Override

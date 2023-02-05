@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.lib.U.differsAtMost;
+import static de.amr.games.pacman.lib.math.MathFunctions.differsAtMost;
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
@@ -34,7 +34,6 @@ import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.List;
 
-import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -122,7 +121,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 			}
 		}
 		ghost.move();
-		boolean reachedTarget = U.differsAtMost(1, ghost.position().x(), targetPosition.x())
+		boolean reachedTarget = differsAtMost(1, ghost.position().x(), targetPosition.x())
 				&& ghost.position().y() >= targetPosition.y();
 		if (reachedTarget) {
 			ghost.setPosition(targetPosition);

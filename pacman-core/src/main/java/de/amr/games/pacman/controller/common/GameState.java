@@ -482,9 +482,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 	};
 
-	private static final String ENERGIZER_PULSE = "energizerPulse";
-	/* package */ GameController gc;
-	/* package */ final TickTimer timer = new TickTimer("Timer-" + name());
+	static final String ENERGIZER_PULSE = "energizerPulse";
+	GameController gc;
+	final TickTimer timer = new TickTimer("Timer-" + name());
 
 	@Override
 	public TickTimer timer() {
