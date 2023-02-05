@@ -25,11 +25,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
-import static de.amr.games.pacman.model.common.world.WorldMap.ENERGIZER;
-import static de.amr.games.pacman.model.common.world.WorldMap.PELLET;
-import static de.amr.games.pacman.model.common.world.WorldMap.SPACE;
-import static de.amr.games.pacman.model.common.world.WorldMap.TUNNEL;
-import static de.amr.games.pacman.model.common.world.WorldMap.WALL;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -44,6 +39,14 @@ import de.amr.games.pacman.lib.math.Vector2i;
  * @author Armin Reichert
  */
 public abstract class MapBasedWorld implements World {
+
+	//@formatter:off
+	public static final byte SPACE           = 0;
+	public static final byte WALL            = 1;
+	public static final byte TUNNEL          = 2;
+	public static final byte PELLET          = 3;
+	public static final byte ENERGIZER       = 4;
+	//@formatter:on
 
 	protected final WorldMap map;
 	protected List<Portal> portals;

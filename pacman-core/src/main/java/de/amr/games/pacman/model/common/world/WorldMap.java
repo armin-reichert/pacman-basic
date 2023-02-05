@@ -27,14 +27,6 @@ package de.amr.games.pacman.model.common.world;
  * @author Armin Reichert
  */
 public class WorldMap {
-	//@formatter:off
-	public static final byte SPACE           = 0;
-	public static final byte WALL            = 1;
-	public static final byte TUNNEL          = 2;
-	public static final byte PELLET          = 3;
-	public static final byte ENERGIZER       = 4;
-	//@formatter:on
-
 	private final byte[][] mapData;
 	private final int numRows;
 	private final int numCols;
