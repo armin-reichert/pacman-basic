@@ -41,11 +41,11 @@ import de.amr.games.pacman.lib.math.Vector2i;
 public abstract class TileMapWorld implements World {
 
 	//@formatter:off
-	public static final byte SPACE           = 0;
-	public static final byte WALL            = 1;
-	public static final byte TUNNEL          = 2;
-	public static final byte PELLET          = 3;
-	public static final byte ENERGIZER       = 4;
+	private static final byte TILE_SPACE           = 0;
+	private static final byte TILE_WALL            = 1;
+	private static final byte TILE_TUNNEL          = 2;
+	private static final byte TILE_PELLET          = 3;
+	private static final byte TILE_ENERGIZER       = 4;
 	//@formatter:on
 
 	protected final TileMap tileMap;
@@ -72,7 +72,7 @@ public abstract class TileMapWorld implements World {
 	protected ArrayList<Portal> findPortals() {
 		var portalList = new ArrayList<Portal>();
 		for (int row = 0; row < tileMap.numRows(); ++row) {
-			if (tileMap.get(row, 0) == TUNNEL && tileMap.get(row, tileMap.numCols() - 1) == TUNNEL) {
+			if (tileMap.get(row, 0) == TILE_TUNNEL && tileMap.get(row, tileMap.numCols() - 1) == TILE_TUNNEL) {
 				portalList.add(new HorizontalPortal(v2i(0, row), v2i(tileMap.numCols() - 1, row)));
 			}
 		}
@@ -81,7 +81,7 @@ public abstract class TileMapWorld implements World {
 	}
 
 	protected byte content(Vector2i tile) {
-		return tileMap.get(tile.y(), tile.x(), SPACE);
+		return tileMap.get(tile.y(), tile.x(), TILE_SPACE);
 	}
 
 	@Override
@@ -107,24 +107,24 @@ public abstract class TileMapWorld implements World {
 
 	@Override
 	public boolean isWall(Vector2i tile) {
-		return content(Objects.requireNonNull(tile)) == WALL;
+		return content(Objects.requireNonNull(tile)) == TILE_WALL;
 	}
 
 	@Override
 	public boolean isTunnel(Vector2i tile) {
-		return content(Objects.requireNonNull(tile)) == TUNNEL;
+		return content(Objects.requireNonNull(tile)) == TILE_TUNNEL;
 	}
 
 	@Override
 	public boolean isFoodTile(Vector2i tile) {
 		byte data = content(Objects.requireNonNull(tile));
-		return data == PELLET || data == ENERGIZER;
+		return data == TILE_PELLET || data == TILE_ENERGIZER;
 	}
 
 	@Override
 	public boolean isEnergizerTile(Vector2i tile) {
 		byte data = content(Objects.requireNonNull(tile));
-		return data == ENERGIZER;
+		return data == TILE_ENERGIZER;
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public abstract class TileMapWorld implements World {
 		Objects.requireNonNull(tile);
 		if (insideBounds(tile)) {
 			byte data = content(tile);
-			return (data == PELLET || data == ENERGIZER) && !eatenSet.get(index(tile));
+			return (data == TILE_PELLET || data == TILE_ENERGIZER) && !eatenSet.get(index(tile));
 		}
 		return false;
 	}
