@@ -48,50 +48,96 @@ public abstract class TileMapWorld implements World {
 	private static final byte TILE_ENERGIZER       = 4;
 	//@formatter:on
 
-	protected final TileMap tileMap;
+	private final byte[][] tileMap;
 	protected List<Portal> portals;
 	protected List<Vector2i> energizerTiles;
 	protected int totalFoodCount;
 	protected int foodRemaining;
 	private final BitSet eatenSet;
 
-	protected TileMapWorld(byte[][] tileMapData) {
-		Objects.requireNonNull(tileMapData);
-		tileMap = new TileMap(tileMapData);
-		analyzeMap();
-		eatenSet = new BitSet(numRows() * numCols());
-	}
-
-	private void analyzeMap() {
+	protected TileMapWorld(byte[][] tileMap) {
+		this.tileMap = validateTileMapData(tileMap);
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
 		portals = findPortals();
+		eatenSet = new BitSet(numRows() * numCols());
+	}
+
+	private byte[][] validateTileMapData(byte[][] data) {
+		if (data == null) {
+			throw new IllegalArgumentException("Map is null");
+		}
+		if (data.length == 0) {
+			throw new IllegalArgumentException("Map has no rows");
+		}
+		var firstRow = data[0];
+		if (firstRow.length == 0) {
+			throw new IllegalArgumentException("Map has no columns");
+		}
+		for (int i = 0; i < data.length; ++i) {
+			if (data[i].length != firstRow.length) {
+				throw new IllegalArgumentException("Map has differently sized rows");
+			}
+		}
+		for (int i = 0; i < data.length; ++i) {
+			for (int j = 0; j < firstRow.length; ++j) {
+				byte content = data[i][j];
+				if (content < TILE_SPACE || content > TILE_ENERGIZER) {
+					throw new IllegalArgumentException(
+							"Map has invalid content '%s' at row %d column %d".formatted(content, i, j));
+				}
+			}
+		}
+		return data;
 	}
 
 	protected ArrayList<Portal> findPortals() {
 		var portalList = new ArrayList<Portal>();
-		for (int row = 0; row < tileMap.numRows(); ++row) {
-			if (tileMap.get(row, 0) == TILE_TUNNEL && tileMap.get(row, tileMap.numCols() - 1) == TILE_TUNNEL) {
-				portalList.add(new HorizontalPortal(v2i(0, row), v2i(tileMap.numCols() - 1, row)));
+		for (int row = 0; row < numRows(); ++row) {
+			if (get(row, 0) == TILE_TUNNEL && get(row, numCols() - 1) == TILE_TUNNEL) {
+				portalList.add(new HorizontalPortal(v2i(0, row), v2i(numCols() - 1, row)));
 			}
 		}
 		portalList.trimToSize();
 		return portalList;
 	}
 
-	protected byte content(Vector2i tile) {
-		return tileMap.get(tile.y(), tile.x(), TILE_SPACE);
+	public byte getOrDefault(Vector2i tile) {
+		return get(tile.y(), tile.x(), TILE_SPACE);
+	}
+
+	public byte get(int row, int col) {
+		if (!insideBounds(row, col)) {
+			throwOutOfBoundsError(row, col);
+		}
+		return tileMap[row][col];
+	}
+
+	public byte get(int row, int col, byte defaultContent) {
+		if (!insideBounds(row, col)) {
+			return defaultContent;
+		}
+		return tileMap[row][col];
+	}
+
+	private boolean insideBounds(int row, int col) {
+		return 0 <= row && row < numRows() && 0 <= col && col < numCols();
+	}
+
+	private void throwOutOfBoundsError(int row, int col) {
+		throw new IndexOutOfBoundsException(
+				"Coordinate (%d, %d) is outside of map bounds (%d rows, %d cols)".formatted(row, col, numRows(), numCols()));
 	}
 
 	@Override
 	public int numCols() {
-		return tileMap.numCols();
+		return tileMap[0].length;
 	}
 
 	@Override
 	public int numRows() {
-		return tileMap.numRows();
+		return tileMap.length;
 	}
 
 	@Override
@@ -107,23 +153,23 @@ public abstract class TileMapWorld implements World {
 
 	@Override
 	public boolean isWall(Vector2i tile) {
-		return content(Objects.requireNonNull(tile)) == TILE_WALL;
+		return getOrDefault(Objects.requireNonNull(tile)) == TILE_WALL;
 	}
 
 	@Override
 	public boolean isTunnel(Vector2i tile) {
-		return content(Objects.requireNonNull(tile)) == TILE_TUNNEL;
+		return getOrDefault(Objects.requireNonNull(tile)) == TILE_TUNNEL;
 	}
 
 	@Override
 	public boolean isFoodTile(Vector2i tile) {
-		byte data = content(Objects.requireNonNull(tile));
+		byte data = getOrDefault(Objects.requireNonNull(tile));
 		return data == TILE_PELLET || data == TILE_ENERGIZER;
 	}
 
 	@Override
 	public boolean isEnergizerTile(Vector2i tile) {
-		byte data = content(Objects.requireNonNull(tile));
+		byte data = getOrDefault(Objects.requireNonNull(tile));
 		return data == TILE_ENERGIZER;
 	}
 
@@ -145,7 +191,7 @@ public abstract class TileMapWorld implements World {
 	public boolean containsFood(Vector2i tile) {
 		Objects.requireNonNull(tile);
 		if (insideBounds(tile)) {
-			byte data = content(tile);
+			byte data = getOrDefault(tile);
 			return (data == TILE_PELLET || data == TILE_ENERGIZER) && !eatenSet.get(index(tile));
 		}
 		return false;
