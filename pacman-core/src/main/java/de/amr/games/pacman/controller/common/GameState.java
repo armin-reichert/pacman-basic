@@ -398,13 +398,12 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.level().ifPresent(level -> {
 				level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
 				level.pac().update(level);
-				if (timer.betweenSeconds(0, 1)) {
-					level.ghosts().forEach(Ghost::animate);
-				} else if (timer.atSecond(1)) {
+				level.ghosts().forEach(Ghost::animate);
+				if (timer.atSecond(1)) {
 					level.pac().selectAndResetAnimation(AnimKeys.PAC_DYING);
 					level.ghosts().forEach(Ghost::hide);
 				} else if (timer.atSecond(1.4)) {
-					level.pac().animation().ifPresent(EntityAnimation::start);
+					level.pac().startAnimation();
 					gc.sounds().play(GameSound.PACMAN_DEATH);
 				} else if (timer.atSecond(3.0)) {
 					game.setLives(game.lives() - 1);

@@ -86,6 +86,10 @@ public interface AnimatedEntity<K> {
 		animation().ifPresent(EntityAnimation::animate);
 	}
 
+	default void startAnimation() {
+		animation().ifPresent(EntityAnimation::start);
+	}
+
 	default void stopAnimation() {
 		animation().ifPresent(EntityAnimation::stop);
 	}
