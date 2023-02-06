@@ -396,9 +396,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
-				level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
-				level.pac().update(level);
-				level.ghosts().forEach(Ghost::animate);
 				if (timer.atSecond(1)) {
 					level.pac().selectAndResetAnimation(AnimKeys.PAC_DYING);
 					level.ghosts().forEach(Ghost::hide);
@@ -406,18 +403,22 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					level.pac().startAnimation();
 					gc.sounds().play(GameSound.PACMAN_DEATH);
 				} else if (timer.atSecond(3.0)) {
+					level.pac().hide();
 					game.setLives(game.lives() - 1);
 					if (game.lives() == 0) {
 						level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::stop);
 						game.setOneLessLifeDisplayed(false);
 					}
-					level.pac().hide();
 				} else if (timer.hasExpired()) {
 					if (!game.hasCredit()) {
-						gc.changeState(INTRO);
+						gc.changeState(INTRO); // end of demo level
 					} else {
 						gc.changeState(game.lives() == 0 ? GAME_OVER : READY);
 					}
+				} else {
+					level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
+					level.pac().update(level);
+					level.ghosts().forEach(Ghost::animate);
 				}
 			});
 		}
