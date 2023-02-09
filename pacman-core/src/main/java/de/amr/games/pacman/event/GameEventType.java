@@ -45,6 +45,7 @@ public enum GameEventType {
 	PAC_GETS_POWER, 
 	PAC_STARTS_LOSING_POWER,
 	PAC_LOSES_POWER,
+	SOUND_EVENT,
 	UNSPECIFIED_CHANGE;
 	//@formatter:on
 }

@@ -67,4 +67,8 @@ public class GameEvents {
 	public static void publish(GameEventType type, Vector2i tile) {
 		publish(new GameEvent(IT.fnGame.get(), type, tile));
 	}
+
+	public static void publishSoundEvent(String soundCommand) {
+		publish(new SoundEvent(IT.fnGame.get(), soundCommand));
+	}
 }
