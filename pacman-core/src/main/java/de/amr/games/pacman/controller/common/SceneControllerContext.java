@@ -63,10 +63,6 @@ public class SceneControllerContext {
 		return game().hasCredit();
 	}
 
-	public GameSoundController sounds() {
-		return gameController.sounds();
-	}
-
 	public Optional<GameLevel> level() {
 		return game().level();
 	}

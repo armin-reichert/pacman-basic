@@ -26,6 +26,7 @@ package de.amr.games.pacman.controller.common;
 import static de.amr.games.pacman.controller.common.GameState.BOOT;
 import static de.amr.games.pacman.controller.common.GameState.CREDIT;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
+import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
 import java.util.Objects;
 
@@ -71,7 +72,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private GameModel game;
 	private Steering autopilot = new RuleBasedSteering();
 	private Steering manualPacSteering = Steering.NONE;
-	private GameSoundController sounds = GameSoundController.NO_SOUND;
 	private boolean autoControlled;
 	public int intermissionTestNumber; // intermission test mode
 	public boolean levelTestMode = false; // level test mode
@@ -150,14 +150,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		this.manualPacSteering = Objects.requireNonNull(steering);
 	}
 
-	public void setSounds(GameSoundController sounds) {
-		this.sounds = Objects.requireNonNull(sounds);
-	}
-
-	public GameSoundController sounds() {
-		return sounds;
-	}
-
 	/**
 	 * Lets the timer of the current game state expire. Used to give the UI a possibility to control when the game is
 	 * continued, for example after playing some animation.
@@ -170,10 +162,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 * (Re)starts the game in the intro state.
 	 */
 	public void startIntro() {
-		sounds().stopAll();
 		if (state() != CREDIT && state() != INTRO) {
 			game().changeCredit(-1);
 		}
+		publishSoundEvent("stop_all_sounds");
 		restart(INTRO);
 	}
 
@@ -181,7 +173,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 * (Re)starts the game from the boot state.
 	 */
 	public void boot() {
-		sounds().stopAll();
+		publishSoundEvent("stop_all_sounds");
 		restart(BOOT);
 	}
 }

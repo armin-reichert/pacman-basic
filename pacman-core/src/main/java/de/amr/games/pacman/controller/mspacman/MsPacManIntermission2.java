@@ -29,12 +29,12 @@ import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionData;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionState;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Clapperboard;
@@ -97,7 +97,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 			@Override
 			public void onUpdate(IntermissionData ctx) {
 				if (timer.atSecond(1)) {
-					ctx.gameController().sounds().play(GameSound.INTERMISSION_2);
+					GameEvents.publishSoundEvent("start_intermission_2");
 					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
