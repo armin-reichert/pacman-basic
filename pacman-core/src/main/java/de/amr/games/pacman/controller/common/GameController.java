@@ -154,11 +154,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		this.sounds = Objects.requireNonNull(sounds);
 	}
 
-	/**
-	 * @return sounds for current game
-	 */
 	public GameSoundController sounds() {
-		return game().hasCredit() || state() == GameState.INTERMISSION_TEST ? sounds : GameSoundController.NO_SOUND;
+		return sounds;
 	}
 
 	/**
