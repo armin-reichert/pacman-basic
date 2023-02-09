@@ -137,7 +137,7 @@ public abstract class GameModel {
 
 	protected int credit;
 	protected int lives;
-	protected final List<Byte> levelCounter;
+	protected final List<Byte> levelCounter = new LinkedList<>();
 	protected GameLevel level;
 	protected boolean playing;
 	protected Score score;
@@ -146,7 +146,6 @@ public abstract class GameModel {
 	protected boolean immune; // extra feature
 
 	protected GameModel() {
-		levelCounter = new LinkedList<>();
 		init();
 	}
 
@@ -154,10 +153,11 @@ public abstract class GameModel {
 	 * Initializes the game. Credit and level counter stay unchanged.
 	 */
 	public void init() {
-		LOG.trace("Init game (%s)", variant());
+		LOG.trace("Init game model (%s)", variant());
 		playing = false;
 		lives = INITIAL_LIVES;
 		level = null;
+		clearLevelCounter();
 		scoringEnabled = true;
 		oneLessLifeDisplayed = false; // @remove
 	}
@@ -407,8 +407,8 @@ public abstract class GameModel {
 		var highScoreFile = highscoreFile(variant());
 		try (var out = new FileOutputStream(highScoreFile)) {
 			props.storeToXML(out, "%s Hiscore".formatted(variant()));
-			LOG.info("Highscore saved. File: '%s' Points: %d Level: %d", highScoreFile.getAbsolutePath(),
-					highScore.points(), highScore.levelNumber());
+			LOG.info("Highscore saved. File: '%s' Points: %d Level: %d", highScoreFile.getAbsolutePath(), highScore.points(),
+					highScore.levelNumber());
 		} catch (Exception x) {
 			LOG.info("Highscore could not be saved. File '%s' Reason: %s", highScoreFile, x.getMessage());
 		}
