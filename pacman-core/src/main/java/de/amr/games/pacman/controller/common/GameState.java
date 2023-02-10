@@ -134,7 +134,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (!game.hasCredit()) {
 				game.init();
 				game.enterDemoLevel();
-				publish(GameEventType.LEVEL_STARTING, null);
+				publish(GameEventType.LEVEL_STARTING);
 			} else if (game.isPlaying()) {
 				game.level().ifPresent(level -> level.letsGetReadyToRumbleAndShowGuys(true));
 			} else {
@@ -142,7 +142,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.newScore();
 				game.enterLevel(1);
 				publishSoundEvent("ready_to_play");
-				publish(GameEventType.LEVEL_STARTING, null);
+				publish(GameEventType.LEVEL_STARTING);
 			}
 		}
 
@@ -258,7 +258,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.level().ifPresent(level -> {
 					var world = level.world();
 					world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
-					publish(GameEventType.PAC_FINDS_FOOD, null);
+					publish(GameEventType.PAC_FINDS_FOOD);
 				});
 			}
 		}
@@ -291,7 +291,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.restartSeconds(4);
 			game.level().ifPresent(GameLevel::exit);
 			publishSoundEvent("stop_all_sounds");
-			publish(GameEventType.UNSPECIFIED_CHANGE, null);
+			publish(GameEventType.UNSPECIFIED_CHANGE);
 		}
 
 		@Override
@@ -326,7 +326,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.restartSeconds(1);
 			game.nextLevel();
-			publish(GameEventType.LEVEL_STARTING, null);
+			publish(GameEventType.LEVEL_STARTING);
 		}
 
 		@Override
@@ -464,7 +464,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				if (gc.intermissionTestNumber < 3) {
 					++gc.intermissionTestNumber;
 					timer.restartIndefinitely();
-					publish(GameEventType.UNSPECIFIED_CHANGE, null);
+					publish(GameEventType.UNSPECIFIED_CHANGE);
 				} else {
 					gc.intermissionTestNumber = 1;
 					gc.changeState(INTRO);

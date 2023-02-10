@@ -68,6 +68,10 @@ public class GameEvents {
 		publish(new GameEvent(IT.fnGame.get(), type, tile));
 	}
 
+	public static void publish(GameEventType type) {
+		publish(new GameEvent(IT.fnGame.get(), type, null));
+	}
+
 	public static void publishSoundEvent(String soundCommand) {
 		publish(new SoundEvent(IT.fnGame.get(), soundCommand));
 	}
