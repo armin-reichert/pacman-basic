@@ -141,7 +141,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.init();
 				game.newScore();
 				game.enterLevel(1);
-				publishSoundEvent("level_starting");
+				publishSoundEvent("ready_to_play");
 				publish(GameEventType.LEVEL_STARTING, null);
 			}
 		}
