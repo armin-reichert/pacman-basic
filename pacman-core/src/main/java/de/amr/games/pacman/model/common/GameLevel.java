@@ -470,7 +470,7 @@ public class GameLevel {
 
 	public void checkTheGuys() {
 		if (memo.pacPowered) {
-			onPacPowerBegin();
+			onPacPowerStarts();
 		}
 
 		memo.pacKilled = pac.isMeetingKiller(this);
@@ -489,7 +489,7 @@ public class GameLevel {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
 		if (memo.pacPowerLost) {
-			onPacPowerEnd();
+			onPacPowerEnds();
 		}
 	}
 
@@ -533,7 +533,7 @@ public class GameLevel {
 		LOG.trace("%s died at tile %s", pac.name(), pac.tile());
 	}
 
-	private void onPacPowerBegin() {
+	private void onPacPowerStarts() {
 		LOG.trace("%s power begins", pac.name());
 		huntingTimer.stop();
 		pac.powerTimer().restartSeconds(params().pacPowerSeconds());
@@ -541,9 +541,10 @@ public class GameLevel {
 		ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
+		GameEvents.publishSoundEvent("pacman_power_starts");
 	}
 
-	private void onPacPowerEnd() {
+	private void onPacPowerEnds() {
 		LOG.trace("%s power ends", pac.name());
 		huntingTimer.start();
 		pac.powerTimer().stop();
@@ -551,6 +552,7 @@ public class GameLevel {
 		LOG.trace("Timer stopped: %s", pac.powerTimer());
 		ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
+		GameEvents.publishSoundEvent("pacman_power_ends");
 	}
 
 	// Food
@@ -587,5 +589,6 @@ public class GameLevel {
 		checkIfBlinkyBecomesCruiseElroy();
 		houseRules.updateGhostDotCounters(this);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
+		GameEvents.publishSoundEvent("pacman_found_food");
 	}
 }
