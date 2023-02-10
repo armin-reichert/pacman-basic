@@ -46,7 +46,7 @@ import de.amr.games.pacman.model.common.actors.GhostState;
  */
 public enum GameState implements FsmState<GameModel>, GameCommands {
 
-	BOOT() { // Boot steigt! Jawoll Herr Kaleu!
+	BOOT() { // "Das muss das Boot abkönnen!"
 		@Override
 		public void onEnter(GameModel game) {
 			timer.restartIndefinitely();
