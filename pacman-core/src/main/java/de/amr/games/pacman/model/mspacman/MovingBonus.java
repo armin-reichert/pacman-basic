@@ -23,13 +23,15 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
+import static de.amr.games.pacman.event.GameEvents.publish;
+import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
+
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.steering.RouteBasedSteering;
@@ -128,8 +130,8 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
 		LOG.info("Bonus eaten: %s", this);
 		jumpAnimation.stop();
-		GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
-		GameEvents.publishSoundEvent("bonus_eaten");
+		publish(GameEventType.BONUS_GETS_EATEN, tile());
+		publishSoundEvent("bonus_eaten");
 	}
 
 	public int dy() {
@@ -150,7 +152,7 @@ public class MovingBonus extends Creature implements Bonus {
 			steering.steer(level, this);
 			if (steering.isComplete()) {
 				LOG.info("Bonus reached target: %s", this);
-				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
+				publish(GameEventType.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
 			}
@@ -162,7 +164,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (--timer == 0) {
 				setInactive();
 				LOG.info("Bonus expired: %s", this);
-				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
+				publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		default -> throw new IllegalStateException();
