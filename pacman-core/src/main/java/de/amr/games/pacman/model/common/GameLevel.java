@@ -364,7 +364,7 @@ public class GameLevel {
 		this.huntingPhase = phase;
 		huntingTimer.reset(huntingTicks(phase));
 		huntingTimer.start();
-		LOG.info("Started hunting phase %d (%s). %s", phase, currentHuntingPhaseName(), huntingTimer);
+		LOG.info("Hunting phase %d (%s) starts. %s", phase, currentHuntingPhaseName(), huntingTimer);
 	}
 
 	private long huntingTicks(int phase) {
