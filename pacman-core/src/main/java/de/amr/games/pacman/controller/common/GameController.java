@@ -26,7 +26,6 @@ package de.amr.games.pacman.controller.common;
 import static de.amr.games.pacman.controller.common.GameState.BOOT;
 import static de.amr.games.pacman.controller.common.GameState.CREDIT;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
-import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
 import java.util.Objects;
 
@@ -162,10 +161,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 * (Re)starts the game in the intro state.
 	 */
 	public void startIntro() {
+		// TODO check this
 		if (state() != CREDIT && state() != INTRO) {
 			game().changeCredit(-1);
 		}
-		publishSoundEvent("stop_all_sounds");
 		restart(INTRO);
 	}
 
@@ -173,7 +172,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 * (Re)starts the game from the boot state.
 	 */
 	public void boot() {
-		publishSoundEvent("stop_all_sounds");
 		restart(BOOT);
 	}
 }

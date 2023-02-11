@@ -53,6 +53,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.clearLevelCounter();
 			game.newScore();
 			game.loadHighscore();
+			publishSoundEvent("stop_all_sounds");
 		}
 
 		@Override
@@ -69,6 +70,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.restartIndefinitely();
 			game.setPlaying(false);
 			game.removeLevel();
+			publishSoundEvent("stop_all_sounds");
 		}
 
 		@Override
