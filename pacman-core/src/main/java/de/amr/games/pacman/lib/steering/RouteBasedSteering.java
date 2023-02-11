@@ -77,7 +77,6 @@ public class RouteBasedSteering implements Steering {
 			nextTarget(level, guy);
 			LOG.trace("New target tile for %s=%s", guy.name(), guy.targetTile().get());
 		}
-		LOG.trace("Current wish dir for %s: %s (tile: %s)", guy.name(), guy.wishDir(), guy.tile());
 	}
 
 	public boolean isComplete() {
