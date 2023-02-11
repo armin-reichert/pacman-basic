@@ -28,6 +28,7 @@ import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 import static java.util.function.Predicate.not;
 
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -132,6 +133,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			publishSoundEvent("stop_all_sounds");
 			if (!game.hasCredit()) {
+				GameEvents.setSoundEnabled(false);
 				game.init();
 				game.enterDemoLevel();
 				publish(GameEventType.LEVEL_STARTING);
@@ -402,6 +404,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					}
 				} else if (timer.hasExpired()) {
 					if (!game.hasCredit()) {
+						GameEvents.setSoundEnabled(true);
 						gc.changeState(INTRO); // end of demo level
 					} else {
 						gc.changeState(game.lives() == 0 ? GAME_OVER : READY);

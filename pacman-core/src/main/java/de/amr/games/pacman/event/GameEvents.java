@@ -43,12 +43,17 @@ public class GameEvents {
 
 	private Supplier<GameModel> fnGame;
 	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
+	private boolean soundEnabled = true;
 
 	private GameEvents() {
 	}
 
 	public static void setGame(Supplier<GameModel> fnGame) {
 		IT.fnGame = fnGame;
+	}
+
+	public static void setSoundEnabled(boolean enabled) {
+		IT.soundEnabled = enabled;
 	}
 
 	public static void addListener(GameEventListener subscriber) {
@@ -73,6 +78,8 @@ public class GameEvents {
 	}
 
 	public static void publishSoundEvent(String soundCommand) {
-		publish(new SoundEvent(IT.fnGame.get(), soundCommand));
+		if (IT.soundEnabled) {
+			publish(new SoundEvent(IT.fnGame.get(), soundCommand));
+		}
 	}
 }
