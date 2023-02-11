@@ -274,7 +274,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = LEAVING_HOUSE;
 		setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
-		GameEvents.publish(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
+		GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
 	}
 
 	/**
@@ -300,7 +300,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 				enterStateHuntingPac();
 				LOG.info("Ghost %s leaves house hunting", name());
 			}
-			GameEvents.publish(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
+			GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
 		}
 	}
 
@@ -405,7 +405,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = ENTERING_HOUSE;
 		setTargetTile(tileAt(level.world().ghostRevivalPosition(id)));
-		GameEvents.publish(new GhostEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this));
+		GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this));
 	}
 
 	/**

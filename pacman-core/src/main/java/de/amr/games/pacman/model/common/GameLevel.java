@@ -24,7 +24,8 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.event.GameEvents.publish;
+import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
+import static de.amr.games.pacman.event.GameEvents.publishGameEventType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
@@ -488,7 +489,7 @@ public class GameLevel {
 		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
 		memo.pacPowerLost = pac.powerTimer().hasExpired();
 		if (memo.pacPowerFading) {
-			publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
+			publishGameEvent(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
 		if (memo.pacPowerLost) {
 			onPacPowerEnds();
@@ -542,7 +543,7 @@ public class GameLevel {
 		LOG.trace("Timer started: %s", pac.powerTimer());
 		ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
-		publish(GameEventType.PAC_GETS_POWER, pac.tile());
+		publishGameEvent(GameEventType.PAC_GETS_POWER, pac.tile());
 		publishSoundEvent("pacman_power_starts");
 	}
 
@@ -553,7 +554,7 @@ public class GameLevel {
 		pac.powerTimer().resetIndefinitely();
 		LOG.trace("Timer stopped: %s", pac.powerTimer());
 		ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-		publish(GameEventType.PAC_LOSES_POWER, pac.tile());
+		publishGameEvent(GameEventType.PAC_LOSES_POWER, pac.tile());
 		publishSoundEvent("pacman_power_ends");
 	}
 
@@ -590,7 +591,7 @@ public class GameLevel {
 		}
 		checkIfBlinkyBecomesCruiseElroy();
 		houseRules.updateGhostDotCounters(this);
-		publish(GameEventType.PAC_FINDS_FOOD, tile);
+		publishGameEvent(GameEventType.PAC_FINDS_FOOD, tile);
 		publishSoundEvent("pacman_found_food");
 	}
 
@@ -599,6 +600,6 @@ public class GameLevel {
 	 */
 	public void removeAllPellets() {
 		world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
-		publish(GameEventType.PAC_FINDS_FOOD);
+		publishGameEventType(GameEventType.PAC_FINDS_FOOD);
 	}
 }

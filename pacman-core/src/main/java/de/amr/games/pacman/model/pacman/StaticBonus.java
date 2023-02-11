@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
-import static de.amr.games.pacman.event.GameEvents.publish;
+import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
 import org.apache.logging.log4j.LogManager;
@@ -105,14 +105,14 @@ public class StaticBonus extends Entity implements Bonus {
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
 		state = BonusState.EATEN;
 		LOG.info("Bonus eaten: %s", this);
-		publish(GameEventType.BONUS_GETS_EATEN, tile());
+		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
 		publishSoundEvent("bonus_eaten");
 	}
 
 	private void expire() {
 		setInactive();
 		LOG.info("Bonus expired: %s", this);
-		publish(GameEventType.BONUS_EXPIRES, tile());
+		publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 	}
 
 	@Override

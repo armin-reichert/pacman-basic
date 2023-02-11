@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.event.GameEvents.publish;
+import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
 import java.util.List;
@@ -130,7 +130,7 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
 		LOG.info("Bonus eaten: %s", this);
 		jumpAnimation.stop();
-		publish(GameEventType.BONUS_GETS_EATEN, tile());
+		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
 		publishSoundEvent("bonus_eaten");
 	}
 
@@ -152,7 +152,7 @@ public class MovingBonus extends Creature implements Bonus {
 			steering.steer(level, this);
 			if (steering.isComplete()) {
 				LOG.info("Bonus reached target: %s", this);
-				publish(GameEventType.BONUS_EXPIRES, tile());
+				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
 			}
@@ -164,7 +164,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (--timer == 0) {
 				setInactive();
 				LOG.info("Bonus expired: %s", this);
-				publish(GameEventType.BONUS_EXPIRES, tile());
+				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		default -> throw new IllegalStateException();

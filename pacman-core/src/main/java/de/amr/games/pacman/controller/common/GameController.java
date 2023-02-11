@@ -85,7 +85,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 		// map FSM state change events to "game state change" events
 		addStateChangeListener(
-				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(game, oldState, newState)));
+				(oldState, newState) -> GameEvents.publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
 		GameEvents.setGame(this::game);
 		createGame(variant);
 	}

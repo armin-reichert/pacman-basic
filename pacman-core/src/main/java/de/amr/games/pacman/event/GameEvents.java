@@ -64,22 +64,22 @@ public class GameEvents {
 		IT.subscribers.remove(subscriber);
 	}
 
-	public static void publish(GameEvent event) {
+	public static void publishGameEvent(GameEvent event) {
 		LOG.trace("Game event: %s", event);
 		IT.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 
-	public static void publish(GameEventType type, Vector2i tile) {
-		publish(new GameEvent(IT.fnGame.get(), type, tile));
+	public static void publishGameEvent(GameEventType type, Vector2i tile) {
+		publishGameEvent(new GameEvent(IT.fnGame.get(), type, tile));
 	}
 
-	public static void publish(GameEventType type) {
-		publish(new GameEvent(IT.fnGame.get(), type, null));
+	public static void publishGameEventType(GameEventType type) {
+		publishGameEvent(new GameEvent(IT.fnGame.get(), type, null));
 	}
 
 	public static void publishSoundEvent(String soundCommand) {
 		if (IT.soundEnabled) {
-			publish(new SoundEvent(IT.fnGame.get(), soundCommand));
+			publishGameEvent(new SoundEvent(IT.fnGame.get(), soundCommand));
 		}
 	}
 }
