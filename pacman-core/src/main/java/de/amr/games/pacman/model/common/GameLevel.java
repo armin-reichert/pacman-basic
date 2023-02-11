@@ -24,6 +24,8 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.event.GameEvents.publish;
+import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
@@ -34,6 +36,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
+import static java.util.function.Predicate.not;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -45,7 +48,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -486,7 +488,7 @@ public class GameLevel {
 		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
 		memo.pacPowerLost = pac.powerTimer().hasExpired();
 		if (memo.pacPowerFading) {
-			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
+			publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
 		if (memo.pacPowerLost) {
 			onPacPowerEnds();
@@ -540,8 +542,8 @@ public class GameLevel {
 		LOG.trace("Timer started: %s", pac.powerTimer());
 		ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
-		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
-		GameEvents.publishSoundEvent("pacman_power_starts");
+		publish(GameEventType.PAC_GETS_POWER, pac.tile());
+		publishSoundEvent("pacman_power_starts");
 	}
 
 	private void onPacPowerEnds() {
@@ -551,8 +553,8 @@ public class GameLevel {
 		pac.powerTimer().resetIndefinitely();
 		LOG.trace("Timer stopped: %s", pac.powerTimer());
 		ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
-		GameEvents.publishSoundEvent("pacman_power_ends");
+		publish(GameEventType.PAC_LOSES_POWER, pac.tile());
+		publishSoundEvent("pacman_power_ends");
 	}
 
 	// Food
@@ -588,7 +590,15 @@ public class GameLevel {
 		}
 		checkIfBlinkyBecomesCruiseElroy();
 		houseRules.updateGhostDotCounters(this);
-		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, tile);
-		GameEvents.publishSoundEvent("pacman_found_food");
+		publish(GameEventType.PAC_FINDS_FOOD, tile);
+		publishSoundEvent("pacman_found_food");
+	}
+
+	/**
+	 * Called by cheat action.
+	 */
+	public void removeAllPellets() {
+		world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
+		publish(GameEventType.PAC_FINDS_FOOD);
 	}
 }

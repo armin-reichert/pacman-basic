@@ -25,7 +25,6 @@ package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.event.GameEvents.publish;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
-import static java.util.function.Predicate.not;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -257,11 +256,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void cheatEatAllPellets(GameModel game) {
 			if (game.isPlaying()) {
-				game.level().ifPresent(level -> {
-					var world = level.world();
-					world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
-					publish(GameEventType.PAC_FINDS_FOOD);
-				});
+				game.level().ifPresent(GameLevel::removeAllPellets);
 			}
 		}
 
