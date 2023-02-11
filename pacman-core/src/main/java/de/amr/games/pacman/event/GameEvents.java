@@ -24,14 +24,14 @@ SOFTWARE.
 package de.amr.games.pacman.event;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.GameModel;
 
 /**
  * @author Armin Reichert
@@ -39,47 +39,49 @@ import de.amr.games.pacman.model.common.GameModel;
 public class GameEvents {
 
 	private static final Logger LOG = LogManager.getFormatterLogger();
-	private static final GameEvents IT = new GameEvents();
 
-	private Supplier<GameModel> fnGame;
-	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
-	private boolean soundEnabled = true;
+	private static GameController gameController;
+	private static Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
+	private static boolean soundEventsEnabled = true;
 
 	private GameEvents() {
 	}
 
-	public static void setGame(Supplier<GameModel> fnGame) {
-		IT.fnGame = fnGame;
+	public static void setGameController(GameController gameController) {
+		GameEvents.gameController = Objects.requireNonNull(gameController);
 	}
 
-	public static void setSoundEnabled(boolean enabled) {
-		IT.soundEnabled = enabled;
+	public static void setSoundEventsEnabled(boolean enabled) {
+		GameEvents.soundEventsEnabled = enabled;
 	}
 
 	public static void addListener(GameEventListener subscriber) {
-		IT.subscribers.add(subscriber);
+		GameEvents.subscribers.add(Objects.requireNonNull(subscriber));
 	}
 
 	public static void removeListener(GameEventListener subscriber) {
-		IT.subscribers.remove(subscriber);
+		GameEvents.subscribers.remove(Objects.requireNonNull(subscriber));
 	}
 
 	public static void publishGameEvent(GameEvent event) {
-		LOG.trace("Game event: %s", event);
-		IT.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
+		Objects.requireNonNull(event);
+		LOG.trace("Publish game event: %s", event);
+		GameEvents.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 
 	public static void publishGameEvent(GameEventType type, Vector2i tile) {
-		publishGameEvent(new GameEvent(IT.fnGame.get(), type, tile));
+		Objects.requireNonNull(type);
+		publishGameEvent(new GameEvent(gameController.game(), type, tile));
 	}
 
-	public static void publishGameEventType(GameEventType type) {
-		publishGameEvent(new GameEvent(IT.fnGame.get(), type, null));
+	public static void publishGameEventOfType(GameEventType type) {
+		publishGameEvent(new GameEvent(gameController.game(), type, null));
 	}
 
 	public static void publishSoundEvent(String soundCommand) {
-		if (IT.soundEnabled) {
-			publishGameEvent(new SoundEvent(IT.fnGame.get(), soundCommand));
+		Objects.requireNonNull(soundCommand);
+		if (GameEvents.soundEventsEnabled) {
+			publishGameEvent(new SoundEvent(gameController.game(), soundCommand));
 		}
 	}
 }

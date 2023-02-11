@@ -29,9 +29,6 @@ import static de.amr.games.pacman.controller.common.GameState.INTRO;
 
 import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
@@ -66,7 +63,13 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	private static final Logger LOG = LogManager.getFormatterLogger();
+	private static GameModel newGameModel(GameVariant variant) {
+		return switch (variant) {
+		case MS_PACMAN -> new MsPacManGame();
+		case PACMAN -> new PacManGame();
+		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(variant));
+		};
+	}
 
 	private GameModel game;
 	private Steering autopilot = new RuleBasedSteering();
@@ -85,22 +88,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		// map FSM state change events to "game state change" events
 		addStateChangeListener(
 				(oldState, newState) -> GameEvents.publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
-		GameEvents.setGame(this::game);
-		createGame(variant);
-	}
-
-	/**
-	 * Creates a new game model for the given variant and restarts in boot state.
-	 * 
-	 * @param variant Pac-Man or Ms. Pac-Man
-	 */
-	private void createGame(GameVariant variant) {
-		game = switch (variant) {
-		case MS_PACMAN -> new MsPacManGame();
-		case PACMAN -> new PacManGame();
-		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(variant));
-		};
-		LOG.info("New game: %s", game);
+		game = newGameModel(variant);
+		GameEvents.setGameController(this);
 	}
 
 	/**
@@ -111,7 +100,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public void selectGameVariant(GameVariant variant) {
 		boolean immune = game.isImmune();
 		int credit = game.credit();
-		createGame(variant);
+		game = newGameModel(variant);
 		game.setImmune(immune);
 		game.setCredit(credit);
 	}

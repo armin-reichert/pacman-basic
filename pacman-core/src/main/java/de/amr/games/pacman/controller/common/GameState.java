@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.common;
 
-import static de.amr.games.pacman.event.GameEvents.publishGameEventType;
+import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
 import de.amr.games.pacman.event.GameEventType;
@@ -134,10 +134,10 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			publishSoundEvent("stop_all_sounds");
 			if (!game.hasCredit()) {
-				GameEvents.setSoundEnabled(false);
+				GameEvents.setSoundEventsEnabled(false);
 				game.init();
 				game.enterDemoLevel();
-				publishGameEventType(GameEventType.LEVEL_STARTING);
+				publishGameEventOfType(GameEventType.LEVEL_STARTING);
 			} else if (game.isPlaying()) {
 				game.level().ifPresent(level -> level.letsGetReadyToRumbleAndShowGuys(true));
 			} else {
@@ -145,7 +145,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.newScore();
 				game.enterLevel(1);
 				publishSoundEvent("ready_to_play");
-				publishGameEventType(GameEventType.LEVEL_STARTING);
+				publishGameEventOfType(GameEventType.LEVEL_STARTING);
 			}
 		}
 
@@ -290,7 +290,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.restartSeconds(4);
 			game.level().ifPresent(GameLevel::exit);
 			publishSoundEvent("stop_all_sounds");
-			publishGameEventType(GameEventType.UNSPECIFIED_CHANGE);
+			publishGameEventOfType(GameEventType.UNSPECIFIED_CHANGE);
 		}
 
 		@Override
@@ -325,7 +325,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.restartSeconds(1);
 			game.nextLevel();
-			publishGameEventType(GameEventType.LEVEL_STARTING);
+			publishGameEventOfType(GameEventType.LEVEL_STARTING);
 		}
 
 		@Override
@@ -401,7 +401,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					}
 				} else if (timer.hasExpired()) {
 					if (!game.hasCredit()) {
-						GameEvents.setSoundEnabled(true);
+						GameEvents.setSoundEventsEnabled(true);
 						gc.changeState(INTRO); // end of demo level
 					} else {
 						gc.changeState(game.lives() == 0 ? GAME_OVER : READY);
@@ -464,7 +464,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				if (gc.intermissionTestNumber < 3) {
 					++gc.intermissionTestNumber;
 					timer.restartIndefinitely();
-					publishGameEventType(GameEventType.UNSPECIFIED_CHANGE);
+					publishGameEventOfType(GameEventType.UNSPECIFIED_CHANGE);
 				} else {
 					gc.intermissionTestNumber = 1;
 					gc.changeState(INTRO);

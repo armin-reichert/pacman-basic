@@ -25,7 +25,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
-import static de.amr.games.pacman.event.GameEvents.publishGameEventType;
+import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
@@ -600,6 +600,6 @@ public class GameLevel {
 	 */
 	public void removeAllPellets() {
 		world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
-		publishGameEventType(GameEventType.PAC_FINDS_FOOD);
+		publishGameEventOfType(GameEventType.PAC_FINDS_FOOD);
 	}
 }
