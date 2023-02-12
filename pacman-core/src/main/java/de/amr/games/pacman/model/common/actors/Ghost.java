@@ -295,10 +295,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			setMoveAndWishDir(LEFT);
 			if (level.pac().powerTimer().isRunning() && killedIndex == -1) {
 				enterStateFrightened();
-				LOG.info("Ghost %s leaves house frightened", name());
+				LOG.trace("Ghost %s leaves house frightened", name());
 			} else {
 				enterStateHuntingPac();
-				LOG.info("Ghost %s leaves house hunting", name());
+				LOG.trace("Ghost %s leaves house hunting", name());
 			}
 			GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
 		}
