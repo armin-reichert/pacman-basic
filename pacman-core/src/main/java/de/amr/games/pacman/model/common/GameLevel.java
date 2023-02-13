@@ -471,31 +471,6 @@ public class GameLevel {
 		});
 	}
 
-	public void checkTheGuys() {
-		if (memo.pacPowered) {
-			onPacPowerStarts();
-		}
-
-		memo.pacKilled = pac.isMeetingKiller(this);
-		if (memo.pacKilled) {
-			return; // enter new game state
-		}
-
-		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
-		if (memo.edibleGhostsExist()) {
-			return; // enter new game state
-		}
-
-		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
-		memo.pacPowerLost = pac.powerTimer().hasExpired();
-		if (memo.pacPowerFading) {
-			publishGameEvent(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
-		}
-		if (memo.pacPowerLost) {
-			onPacPowerEnds();
-		}
-	}
-
 	/**
 	 * Called by cheat action only.
 	 */
@@ -536,7 +511,7 @@ public class GameLevel {
 		LOG.trace("%s died at tile %s", pac.name(), pac.tile());
 	}
 
-	private void onPacPowerStarts() {
+	public void onPacPowerStarts() {
 		LOG.trace("%s power begins", pac.name());
 		huntingTimer.stop();
 		pac.powerTimer().restartSeconds(params().pacPowerSeconds());
@@ -547,7 +522,7 @@ public class GameLevel {
 		publishSoundEvent("pacman_power_starts");
 	}
 
-	private void onPacPowerEnds() {
+	public void onPacPowerEnds() {
 		LOG.trace("%s power ends", pac.name());
 		huntingTimer.start();
 		pac.powerTimer().stop();

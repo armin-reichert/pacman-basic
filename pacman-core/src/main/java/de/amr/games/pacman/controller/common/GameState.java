@@ -23,8 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.common;
 
+import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
+import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -212,16 +214,30 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					return;
 				}
 
-				level.checkTheGuys();
+				if (level.memo().pacPowered) {
+					level.onPacPowerStarts();
+				}
+
+				level.memo().pacKilled = level.pac().isMeetingKiller(level);
 				if (level.memo().pacKilled) {
 					gc.changeState(PACMAN_DYING);
 					return;
 				}
 
+				level.memo().edibleGhosts = level.ghosts(FRIGHTENED).filter(level.pac()::sameTile).toList();
 				if (level.memo().edibleGhostsExist()) {
 					level.killEdibleGhosts();
 					gc.changeState(GHOST_DYING);
 					return;
+				}
+
+				level.memo().pacPowerFading = level.pac().powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
+				level.memo().pacPowerLost = level.pac().powerTimer().hasExpired();
+				if (level.memo().pacPowerFading) {
+					publishGameEvent(GameEventType.PAC_STARTS_LOSING_POWER, level.pac().tile());
+				}
+				if (level.memo().pacPowerLost) {
+					level.onPacPowerEnds();
 				}
 			});
 		}
