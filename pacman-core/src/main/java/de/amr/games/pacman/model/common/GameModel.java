@@ -134,31 +134,32 @@ public abstract class GameModel {
 		return levelNumber;
 	}
 
-	protected int credit;
-	protected int lives;
-	protected final List<Byte> levelCounter = new LinkedList<>();
 	protected GameLevel level;
-	protected boolean playing;
+	protected final List<Byte> levelCounter = new LinkedList<>();
 	protected Score score;
 	protected Score highScore;
+	protected int credit;
+	protected int lives;
+	protected boolean playing;
 	protected boolean scoringEnabled;
 	protected boolean immune; // extra feature
+	protected boolean oneLessLifeDisplayed; // TODO get rid of this
 
 	protected GameModel() {
 		init();
 	}
 
 	/**
-	 * Initializes the game. Credit and level counter stay unchanged.
+	 * Initializes the game. Credit, immunity and scores remain unchanged.
 	 */
 	public void init() {
-		LOG.trace("Init game model (%s)", variant());
-		playing = false;
-		lives = INITIAL_LIVES;
 		level = null;
 		clearLevelCounter();
+		lives = INITIAL_LIVES;
+		playing = false;
 		scoringEnabled = true;
 		oneLessLifeDisplayed = false; // @remove
+		LOG.trace("Game model (%s) initialized", variant());
 	}
 
 	/**
@@ -435,8 +436,6 @@ public abstract class GameModel {
 	}
 
 	// get rid of this:
-
-	protected boolean oneLessLifeDisplayed;
 
 	/** If one less life is displayed in the lives counter. */
 	public boolean isOneLessLifeDisplayed() {
