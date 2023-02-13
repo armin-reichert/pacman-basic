@@ -518,8 +518,6 @@ public class GameLevel {
 		LOG.trace("Timer started: %s", pac.powerTimer());
 		ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
-		publishGameEvent(GameEventType.PAC_GETS_POWER, pac.tile());
-		publishSoundEvent("pacman_power_starts");
 	}
 
 	public void onPacPowerEnds() {
@@ -529,8 +527,6 @@ public class GameLevel {
 		pac.powerTimer().resetIndefinitely();
 		LOG.trace("Timer stopped: %s", pac.powerTimer());
 		ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-		publishGameEvent(GameEventType.PAC_LOSES_POWER, pac.tile());
-		publishSoundEvent("pacman_power_ends");
 	}
 
 	// Food

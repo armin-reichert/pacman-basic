@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.common;
 
-import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
@@ -216,6 +215,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 				if (level.memo().pacPowerGained) {
 					level.onPacPowerStarts();
+					publishGameEventOfType(GameEventType.PAC_GETS_POWER);
+					publishSoundEvent("pacman_power_starts");
 				}
 
 				level.memo().pacKilled = level.pac().isMeetingKiller(level);
@@ -234,10 +235,12 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				level.memo().pacPowerFading = level.pac().powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
 				level.memo().pacPowerLost = level.pac().powerTimer().hasExpired();
 				if (level.memo().pacPowerFading) {
-					publishGameEvent(GameEventType.PAC_STARTS_LOSING_POWER, level.pac().tile());
+					publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
 				}
 				if (level.memo().pacPowerLost) {
 					level.onPacPowerEnds();
+					publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
+					publishSoundEvent("pacman_power_ends");
 				}
 			});
 		}
