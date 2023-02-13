@@ -214,7 +214,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					return;
 				}
 
-				if (level.memo().pacPowered) {
+				if (level.memo().pacPowerGained) {
 					level.onPacPowerStarts();
 				}
 

@@ -40,7 +40,7 @@ public class Memory {
 	public boolean energizerFound;
 	public boolean bonusReached;
 	public boolean pacKilled;
-	public boolean pacPowered;
+	public boolean pacPowerGained;
 	public boolean pacPowerLost;
 	public boolean pacPowerFading;
 	public List<Ghost> edibleGhosts;
@@ -58,7 +58,7 @@ public class Memory {
 		energizerFound = false;
 		bonusReached = false;
 		pacKilled = false;
-		pacPowered = false;
+		pacPowerGained = false;
 		pacPowerLost = false;
 		pacPowerFading = false;
 		edibleGhosts = Collections.emptyList();

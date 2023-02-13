@@ -541,7 +541,7 @@ public class GameLevel {
 			memo.foodFoundTile = Optional.of(tile);
 			memo.lastFoodFound = world.foodRemaining() == 1;
 			memo.energizerFound = world.isEnergizerTile(tile);
-			memo.pacPowered = memo.energizerFound && params().pacPowerSeconds() > 0;
+			memo.pacPowerGained = memo.energizerFound && params().pacPowerSeconds() > 0;
 			memo.bonusReached = world.eatenFoodCount() == GameModel.PELLETS_EATEN_BONUS1
 					|| world.eatenFoodCount() == GameModel.PELLETS_EATEN_BONUS2;
 			onFoodFound(tile);
