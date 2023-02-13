@@ -54,6 +54,7 @@ public class GameEvent {
 
 	@Override
 	public String toString() {
-		return String.format("%s: tile %s", type, tile.orElse(null));
+		var tileStr = tile.isPresent() ? " tile: %s".formatted(tile.get()) : "";
+		return String.format("%s%s", type, tileStr);
 	}
 }
