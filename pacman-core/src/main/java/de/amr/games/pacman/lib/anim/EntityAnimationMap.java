@@ -54,6 +54,11 @@ public class EntityAnimationMap<K> {
 		selectedKey = Objects.requireNonNull(key);
 	}
 
+	public void selectAndRestart(K key) {
+		select(key);
+		animation(selectedKey).ifPresent(EntityAnimation::restart);
+	}
+
 	public boolean isSelected(K key) {
 		if (selectedKey == null) {
 			return false;
