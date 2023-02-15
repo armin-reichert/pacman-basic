@@ -122,14 +122,15 @@ public class GameLevel {
 
 	private final GameModel game;
 	private final int number;
+	private final TickTimer huntingTimer = new TickTimer("HuntingTimer");
+	private final Memory memo = new Memory();
+
 	private World world;
 	private Pac pac;
 	private Steering pacSteering;
 	private Ghost[] ghosts;
 	private Bonus bonus;
 	private Parameters params;
-	private final TickTimer huntingTimer;
-	private final Memory memo;
 	private int[] huntingDurations;
 	private GhostHouseRules houseRules;
 	private int huntingPhase;
@@ -140,8 +141,6 @@ public class GameLevel {
 	public GameLevel(GameModel game, int number) {
 		this.game = Objects.requireNonNull(game);
 		this.number = GameModel.checkLevelNumber(number);
-		huntingTimer = new TickTimer("HuntingTimer-level-%d".formatted(number));
-		memo = new Memory();
 		setPac(game.createPac());
 		setGhosts(game.createGhosts());
 		setWorld(game.createWorld(number));
