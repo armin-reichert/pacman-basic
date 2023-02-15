@@ -70,7 +70,20 @@ public class GameLevel {
 	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	/**
-	 * Individual settings used by a level.
+	 * Simulates the overflow bug from the original Arcade version.
+	 * 
+	 * @param guy a creature
+	 * @param n   number of tiles
+	 * @return tile that is located given number of tiles ahead creature (towards move direction). In case creature looks
+	 *         up, additional n tiles are added towards left which simulates an overflow error in the Arcade game version
+	 */
+	protected static Vector2i tilesAhead(Creature guy, int n) {
+		var ahead = guy.tile().plus(guy.moveDir().vector().scaled(n));
+		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
+	}
+
+	/**
+	 * Individual level parameters.
 	 */
 	public record Parameters(
 	//@formatter:off
@@ -124,15 +137,14 @@ public class GameLevel {
 	private final int number;
 	private final TickTimer huntingTimer = new TickTimer("HuntingTimer");
 	private final Memory memo = new Memory();
-
-	private World world;
-	private Pac pac;
+	private final World world;
+	private final Pac pac;
+	private final Ghost[] ghosts;
+	private final Bonus bonus;
+	private final Parameters params;
+	private final int[] huntingDurations;
+	private final GhostHouseRules houseRules;
 	private Steering pacSteering;
-	private Ghost[] ghosts;
-	private Bonus bonus;
-	private Parameters params;
-	private int[] huntingDurations;
-	private GhostHouseRules houseRules;
 	private int huntingPhase;
 	private int numGhostsKilledInLevel;
 	private int numGhostsKilledByEnergizer;
@@ -141,24 +153,14 @@ public class GameLevel {
 	public GameLevel(GameModel game, int number) {
 		this.game = Objects.requireNonNull(game);
 		this.number = GameModel.checkLevelNumber(number);
-		setPac(game.createPac());
-		setGhosts(game.createGhosts());
-		setWorld(game.createWorld(number));
-		setBonus(game.createBonus(number));
-		setHouseRules(game.createHouseRules(number));
-		setHuntingDurations(game.huntingDurations(number));
-		setParams(game.levelParameters(number));
-		defineChasingBehavior();
-		LOG.trace("Game level %d created. (%s)", number, game.variant());
-	}
+		world = game.createWorld(number);
+		pac = game.createPac();
+		ghosts = game.createGhosts();
+		bonus = game.createBonus(number);
+		houseRules = game.createHouseRules(number);
+		huntingDurations = game.huntingDurations(number);
+		params = game.levelParameters(number);
 
-	// simulates the overflow bug from the original Arcade version
-	protected Vector2i tilesAhead(Creature guy, int n) {
-		var ahead = guy.tile().plus(guy.moveDir().vector().scaled(n));
-		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
-	}
-
-	protected void defineChasingBehavior() {
 		// Red ghost attacks Pac-Man directly
 		ghost(ID_RED_GHOST).setChasingTarget(pac::tile);
 		// Pink ghost ambushes Pac-Man
@@ -169,6 +171,8 @@ public class GameLevel {
 		ghost(ID_ORANGE_GHOST).setChasingTarget( //
 				() -> ghost(ID_ORANGE_GHOST).tile().euclideanDistance(pac.tile()) < 8 ? //
 						world.ghostScatterTargetTile(ID_ORANGE_GHOST) : pac.tile());
+
+		LOG.trace("Game level %d created. (%s)", number, game.variant());
 	}
 
 	public void update() {
@@ -204,19 +208,11 @@ public class GameLevel {
 		return world;
 	}
 
-	public void setWorld(World world) {
-		this.world = Objects.requireNonNull(world);
-	}
-
 	/**
 	 * @return Pac-Man or Ms. Pac-Man
 	 */
 	public Pac pac() {
 		return pac;
-	}
-
-	public void setPac(Pac pac) {
-		this.pac = Objects.requireNonNull(pac);
 	}
 
 	public Optional<Steering> pacSteering() {
@@ -248,13 +244,6 @@ public class GameLevel {
 		return Stream.of(ghosts);
 	}
 
-	public void setGhosts(Ghost[] ghosts) {
-		this.ghosts = Objects.requireNonNull(ghosts);
-		if (ghosts.length != 4) {
-			throw new IllegalArgumentException("There must be exactly 4 ghosts");
-		}
-	}
-
 	/**
 	 * @return Pac-Man and the ghosts in order RED, PINK, CYAN, ORANGE
 	 */
@@ -266,16 +255,8 @@ public class GameLevel {
 		return bonus;
 	}
 
-	public void setBonus(Bonus bonus) {
-		this.bonus = Objects.requireNonNull(bonus);
-	}
-
 	public Parameters params() {
 		return params;
-	}
-
-	public void setParams(Parameters params) {
-		this.params = Objects.requireNonNull(params);
 	}
 
 	public TickTimer huntingTimer() {
@@ -286,14 +267,8 @@ public class GameLevel {
 		return houseRules;
 	}
 
-	public void setHouseRules(GhostHouseRules houseRules) {
-		this.houseRules = Objects.requireNonNull(houseRules);
-	}
-
 	/**
-	 * Remembers what happens during a tick.
-	 * 
-	 * @return the memo
+	 * @return information about what happened during the current simulation step
 	 */
 	public Memory memo() {
 		return memo;
@@ -345,10 +320,6 @@ public class GameLevel {
 			return !blocked;
 		}
 		return true;
-	}
-
-	public void setHuntingDurations(int[] durations) {
-		huntingDurations = Objects.requireNonNull(durations);
 	}
 
 	/**
