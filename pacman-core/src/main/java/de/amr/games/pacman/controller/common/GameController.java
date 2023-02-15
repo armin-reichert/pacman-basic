@@ -26,6 +26,7 @@ package de.amr.games.pacman.controller.common;
 import static de.amr.games.pacman.controller.common.GameState.BOOT;
 import static de.amr.games.pacman.controller.common.GameState.CREDIT;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
+import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 
 import java.util.Objects;
 
@@ -87,7 +88,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 		// map FSM state change events to "game state change" events
 		addStateChangeListener(
-				(oldState, newState) -> GameEvents.publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
+				(oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
 		game = newGameModel(variant);
 		GameEvents.setGameController(this);
 	}

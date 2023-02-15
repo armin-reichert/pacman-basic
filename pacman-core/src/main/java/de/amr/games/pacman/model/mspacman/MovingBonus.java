@@ -59,7 +59,7 @@ public class MovingBonus extends Creature implements Bonus {
 	private final int points;
 	private long timer;
 	private BonusState state;
-	private final SingleEntityAnimation<Integer> jumpAnimation;
+	private final SingleEntityAnimation<Float> jumpAnimation;
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
 	public MovingBonus(byte symbol, int points) {
@@ -68,7 +68,7 @@ public class MovingBonus extends Creature implements Bonus {
 		this.points = points;
 		reset();
 		canTeleport = false;
-		jumpAnimation = new SingleEntityAnimation<>(2, -2);
+		jumpAnimation = new SingleEntityAnimation<>(1.5f, -1.5f);
 		jumpAnimation.setFrameDuration(10);
 		jumpAnimation.repeatForever();
 		setInactive();
@@ -134,7 +134,7 @@ public class MovingBonus extends Creature implements Bonus {
 		publishSoundEvent("bonus_eaten");
 	}
 
-	public int dy() {
+	public float dy() {
 		return jumpAnimation.isRunning() ? jumpAnimation.frame() : 0;
 	}
 
