@@ -55,6 +55,9 @@ public class ArcadeWorld extends TileMapWorld {
 	public static final Vector2i SIZE_TILES = v2i(28, 36);
 	public static final Vector2i SIZE_PX = SIZE_TILES.scaled(TS);
 
+	public static final String FLASHING = "flashing";
+	public static final String ENERGIZER_PULSE = "energizerPulse";
+
 	private static final Vector2f PAC_INITIAL_POSITION = halfTileRightOf(13, 26);
 	private static final Direction PAC_INITIAL_DIRECTION = Direction.LEFT;
 
@@ -77,7 +80,7 @@ public class ArcadeWorld extends TileMapWorld {
 		house = new ArcadeGhostHouse();
 		upwardBlockedTiles = Collections.emptySet();
 		animationMap = new HashMap<>(2);
-		animationMap.put("energizerPulse", new Pulse(10, true));
+		animationMap.put(ArcadeWorld.ENERGIZER_PULSE, new Pulse(10, true));
 	}
 
 	/**

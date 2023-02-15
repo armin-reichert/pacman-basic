@@ -39,6 +39,7 @@ import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
  * Rule of thumb: here, specify "what" and "when", not "how" (this should be implemented in the model).
@@ -191,7 +192,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				if (!gc.levelTestMode) {
 					publishSoundEvent("hunting_phase_started_%d".formatted(level.huntingPhase()));
 				}
-				level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::restart);
+				level.world().animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::restart);
 			});
 		}
 
@@ -325,7 +326,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 						gc.changeState(CHANGING_TO_NEXT_LEVEL); // next level
 					}
 				} else {
-					level.world().animation("flashing").ifPresent(flashing -> {
+					level.world().animation(ArcadeWorld.FLASHING).ifPresent(flashing -> {
 						if (timer.atSecond(1)) {
 							flashing.setRepetitions(level.params().numFlashes());
 							flashing.restart();
@@ -376,7 +377,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					steering.steer(level, level.pac());
 					level.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
 							.forEach(ghost -> ghost.update(level));
-					level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
+					level.world().animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
 				});
 			}
 		}
@@ -415,7 +416,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					level.pac().hide();
 					game.setLives(game.lives() - 1);
 					if (game.lives() == 0) {
-						level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::stop);
+						level.world().animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::stop);
 						game.setOneLessLifeDisplayed(false);
 					}
 				} else if (timer.hasExpired()) {
@@ -426,7 +427,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 						gc.changeState(game.lives() == 0 ? GAME_OVER : READY);
 					}
 				} else {
-					level.world().animation(ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
+					level.world().animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
 					level.pac().update(level);
 					level.ghosts().forEach(Ghost::animate);
 				}
@@ -492,7 +493,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 	};
 
-	static final String ENERGIZER_PULSE = "energizerPulse";
 	GameController gc;
 	final TickTimer timer = new TickTimer("Timer-" + name());
 
