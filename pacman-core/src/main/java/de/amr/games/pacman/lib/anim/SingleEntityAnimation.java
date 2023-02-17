@@ -34,13 +34,13 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 
 	public static final int INDEFINITE = -1;
 
-	protected T[] things;
+	protected T[] frames;
 	protected int repetitions;
 	protected long totalRunningTicks;
 	protected long frameDurationTicks;
-	protected long frameRunningTicks;
+	protected long frameTick;
 	protected int frameIndex;
-	protected long loopIndex;
+	protected long repetitionIndex;
 	protected boolean running;
 	protected boolean complete;
 
@@ -49,7 +49,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Sequence must have at least contain one thing");
 		}
-		this.things = things;
+		this.frames = things;
 		repetitions = 1;
 		frameDurationTicks = 6; // 0.1 sec
 		reset();
@@ -58,9 +58,9 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	@Override
 	public void reset() {
 		totalRunningTicks = 0;
-		frameRunningTicks = 0;
+		frameTick = 0;
 		frameIndex = 0;
-		loopIndex = 0;
+		repetitionIndex = 0;
 		running = false;
 		complete = false;
 	}
@@ -95,44 +95,56 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 
 	@Override
 	public T animate() {
-		T currentThing = things[frameIndex];
+		T currentThing = frame();
 		advance();
 		return currentThing;
 	}
 
 	private void advance() {
-		if (running) {
-			if (frameRunningTicks + 1 < frameDurationTicks) {
-				frameRunningTicks++;
-			} else if (frameIndex + 1 < things.length) {
-				// start next frame
-				frameIndex++;
-				frameRunningTicks = 0;
-			} else if (loopIndex + 1 < repetitions) {
-				// start next loop
-				loopIndex++;
-				frameIndex = 0;
-				frameRunningTicks = 0;
-			} else if (repetitions != INDEFINITE) {
-				// last loop complete
-				complete = true;
-				running = false;
-			} else {
-				loopIndex = 0;
-				frameIndex = 0;
-				frameRunningTicks = 0;
-			}
+		if (!running) {
+			return;
 		}
+		// continue current frame?
+		if (frameTick < frameDurationTicks - 1) {
+			++frameTick;
+			return;
+		}
+		// start next frame?
+		if (frameIndex < frames.length - 1) {
+			++frameIndex;
+			frameTick = 0;
+			return;
+		}
+		// loop forever?
+		if (repetitions == INDEFINITE) {
+			repetitionIndex = 0;
+			frameIndex = 0;
+			frameTick = 0;
+			return;
+		}
+		// start next repetition?
+		if (repetitionIndex < repetitions - 1) {
+			++repetitionIndex;
+			frameIndex = 0;
+			frameTick = 0;
+			return;
+		}
+		complete = true;
+		stop();
 	}
 
 	@Override
 	public T frame() {
-		return things[frameIndex];
+		if (frameIndex >= frames.length) {
+			throw new IllegalStateException("Trying to access animation frame at index %d but there are only %d frames. %s"
+					.formatted(frameIndex, frames.length, getClass().getName()));
+		}
+		return frames[frameIndex];
 	}
 
 	@Override
 	public T frame(int i) {
-		return things[i];
+		return frames[i];
 	}
 
 	@Override
@@ -142,8 +154,12 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 
 	@Override
 	public void setFrameIndex(int i) {
+		if (frameIndex >= frames.length) {
+			throw new IllegalStateException("Trying to set animation frame index to %d but there are only %d frames. %s"
+					.formatted(frameIndex, frames.length, getClass().getName()));
+		}
 		frameIndex = i;
-		frameRunningTicks = 0;
+		frameTick = 0;
 	}
 
 	public long getFrameDuration() {
@@ -151,12 +167,12 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	}
 
 	public long duration() {
-		return things.length * frameDurationTicks;
+		return frames.length * frameDurationTicks;
 	}
 
 	@Override
 	public int numFrames() {
-		return things.length;
+		return frames.length;
 	}
 
 	@Override

@@ -467,8 +467,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		animation(AnimKeys.GHOST_FLASHING).ifPresent(flashing -> {
 			if (stopped) {
 				flashing.stop();
-				// TODO: this is dependent on the animation implementation: display white ghost with red eyes
-				flashing.setFrameIndex(2);
+				flashing.setFrameIndex(0);
 			} else {
 				flashing.start();
 			}

@@ -30,8 +30,8 @@ package de.amr.games.pacman.lib.anim;
  */
 public class Pulse extends SingleEntityAnimation<Boolean> {
 
-	public Pulse(int ticks, boolean firstValuê) {
-		super(firstValuê, !firstValuê);
+	public Pulse(int ticks, boolean firstValue) {
+		super(firstValue, !firstValue);
 		setFrameDuration(ticks);
 		repeatForever();
 	}
