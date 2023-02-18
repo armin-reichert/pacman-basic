@@ -93,4 +93,8 @@ public interface AnimatedEntity<K> {
 	default void stopAnimation() {
 		animation().ifPresent(EntityAnimation::stop);
 	}
+
+	default boolean isAnimationSelected(K key) {
+		return animations().isPresent() && animations().get().isSelected(key);
+	}
 }
