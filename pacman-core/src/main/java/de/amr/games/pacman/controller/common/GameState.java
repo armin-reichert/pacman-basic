@@ -90,6 +90,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void addCredit(GameModel game) {
+			GameEvents.setSoundEventsEnabled(true);
 			boolean added = game.changeCredit(1);
 			if (added) {
 				publishSoundEvent("credit_added");
@@ -112,6 +113,11 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	},
 
 	CREDIT {
+		@Override
+		public void onEnter(GameModel context) {
+			GameEvents.setSoundEventsEnabled(true);
+		}
+
 		@Override
 		public void onUpdate(GameModel game) {
 			// nothing to do here
@@ -146,6 +152,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.init();
 				game.newScore();
 				game.enterLevel(1);
+				GameEvents.setSoundEventsEnabled(true);
 				publishSoundEvent("ready_to_play");
 				publishGameEventOfType(GameEventType.LEVEL_STARTING);
 			}
@@ -267,6 +274,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void addCredit(GameModel game) {
 			if (!game.isPlaying()) {
+				GameEvents.setSoundEventsEnabled(true);
 				boolean added = game.changeCredit(1);
 				if (added) {
 					publishSoundEvent("credit_added");
