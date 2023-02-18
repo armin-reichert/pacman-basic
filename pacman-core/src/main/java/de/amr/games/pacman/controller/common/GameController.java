@@ -162,6 +162,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 * (Re)starts the game from the boot state.
 	 */
 	public void boot() {
+		game().clearLevelCounter();
 		restart(BOOT);
 	}
 }
