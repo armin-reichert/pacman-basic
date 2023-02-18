@@ -154,7 +154,6 @@ public abstract class GameModel {
 	 */
 	public void init() {
 		level = null;
-		clearLevelCounter();
 		lives = INITIAL_LIVES;
 		playing = false;
 		scoringEnabled = true;
@@ -253,16 +252,6 @@ public abstract class GameModel {
 	 */
 	public abstract void enterDemoLevel();
 
-	public void incrementLevelCounter() {
-		if (level.number() == 1) {
-			levelCounter.clear();
-		}
-		levelCounter.add(level.bonus().symbol());
-		if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
-			levelCounter.remove(0);
-		}
-	}
-
 	/**
 	 * Enters the next game level.
 	 */
@@ -323,6 +312,16 @@ public abstract class GameModel {
 
 	public void clearLevelCounter() {
 		levelCounter.clear();
+	}
+
+	public void incrementLevelCounter() {
+		if (level.number() == 1) {
+			levelCounter.clear();
+		}
+		levelCounter.add(level.bonus().symbol());
+		if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
+			levelCounter.remove(0);
+		}
 	}
 
 	public Optional<Score> score() {

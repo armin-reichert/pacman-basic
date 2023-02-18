@@ -312,7 +312,8 @@ public class MsPacManGame extends GameModel {
 		var entryPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
 		var exitPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
 		var traverseDirection = RND.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-		var start = traverseDirection == Direction.RIGHT ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
+		var start = traverseDirection == Direction.RIGHT ? np(entryPortal.leftTunnelEnd())
+				: np(entryPortal.rightTunnelEnd());
 		var houseEntry = level.world().ghostHouse().door().entryTile().minus(0, 1);
 		int houseHeight = level.world().ghostHouse().sizeInTiles().y();
 		var route = new ArrayList<NavigationPoint>();
@@ -351,7 +352,6 @@ public class MsPacManGame extends GameModel {
 		level = new MsPacManGameDemoLevel(this);
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		scoringEnabled = false;
-		incrementLevelCounter();
 		LOG.info("Ms. Pac-Man demo level entered");
 	}
 }

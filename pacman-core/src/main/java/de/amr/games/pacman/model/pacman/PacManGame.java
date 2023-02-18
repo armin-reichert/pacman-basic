@@ -159,7 +159,6 @@ public class PacManGame extends GameModel {
 		level = new PacManGameDemoLevel(this);
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		scoringEnabled = false;
-		incrementLevelCounter();
 		LOG.info("Pac-Man demo level entered");
 	}
 }
