@@ -406,7 +406,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			game.level().ifPresent(level -> {
 				timer.restartSeconds(4);
-				level.bonus().setInactive();
 				level.onPacKilled();
 				publishSoundEvent("stop_all_sounds");
 			});
@@ -440,6 +439,13 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					level.pac().update(level);
 					level.ghosts().forEach(Ghost::animate);
 				}
+			});
+		}
+
+		@Override
+		public void onExit(GameModel context) {
+			context.level().ifPresent(level -> {
+				level.bonus().setInactive();
 			});
 		}
 	},
