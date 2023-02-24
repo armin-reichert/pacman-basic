@@ -440,10 +440,14 @@ public class GameLevel {
 		});
 	}
 
+	public void findEdibleGhosts() {
+		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
+	}
+
 	/**
 	 * Called by cheat action only.
 	 */
-	public void killAllPossibleGhosts() {
+	public void killAllHuntingAndFrightenedGhosts() {
 		memo.edibleGhosts = ghosts(HUNTING_PAC, FRIGHTENED).toList();
 		numGhostsKilledByEnergizer = 0;
 		killEdibleGhosts();
@@ -472,6 +476,10 @@ public class GameLevel {
 	}
 
 	// Pac-Man
+
+	public void checkIfPacManGetsKilled() {
+		memo.pacKilled = pac.isMeetingKiller(this);
+	}
 
 	public void onPacKilled() {
 		pac.die();

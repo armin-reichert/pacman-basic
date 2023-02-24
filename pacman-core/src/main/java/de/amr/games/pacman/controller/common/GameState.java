@@ -25,7 +25,6 @@ package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
-import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -228,13 +227,13 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					publishSoundEvent("pacman_power_starts");
 				}
 
-				level.memo().pacKilled = level.pac().isMeetingKiller(level);
+				level.checkIfPacManGetsKilled();
 				if (level.memo().pacKilled) {
 					gc.changeState(PACMAN_DYING);
 					return;
 				}
 
-				level.memo().edibleGhosts = level.ghosts(FRIGHTENED).filter(level.pac()::sameTile).toList();
+				level.findEdibleGhosts();
 				if (level.memo().edibleGhostsExist()) {
 					level.killEdibleGhosts();
 					gc.changeState(GHOST_DYING);
@@ -295,7 +294,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void cheatKillAllEatableGhosts(GameModel game) {
 			if (game.isPlaying()) {
 				game.level().ifPresent(level -> {
-					level.killAllPossibleGhosts();
+					level.killAllHuntingAndFrightenedGhosts();
 					gc.changeState(GameState.GHOST_DYING);
 				});
 			}
