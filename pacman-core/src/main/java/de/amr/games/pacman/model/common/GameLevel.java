@@ -444,7 +444,7 @@ public class GameLevel {
 		});
 	}
 
-	public void findEdibleGhosts() {
+	private void findEdibleGhosts() {
 		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
 	}
 
@@ -485,7 +485,7 @@ public class GameLevel {
 		return memo.pacKilled;
 	}
 
-	public void checkIfPacManGetsKilled() {
+	private void checkIfPacManGetsKilled() {
 		memo.pacKilled = pac.isMeetingKiller(this);
 	}
 
@@ -496,7 +496,7 @@ public class GameLevel {
 		LOG.trace("%s died at tile %s", pac.name(), pac.tile());
 	}
 
-	public void checkPacPower() {
+	private void checkPacPower() {
 		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
 		memo.pacPowerLost = pac.powerTimer().hasExpired();
 		if (memo.pacPowerGained) {
@@ -512,7 +512,7 @@ public class GameLevel {
 		}
 	}
 
-	public void onPacPowerStarts() {
+	private void onPacPowerStarts() {
 		LOG.trace("%s power begins", pac.name());
 		huntingTimer.stop();
 		pac.powerTimer().restartSeconds(params().pacPowerSeconds());
@@ -521,7 +521,7 @@ public class GameLevel {
 		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
 	}
 
-	public void onPacPowerEnds() {
+	private void onPacPowerEnds() {
 		LOG.trace("%s power ends", pac.name());
 		huntingTimer.start();
 		pac.powerTimer().stop();
@@ -536,7 +536,7 @@ public class GameLevel {
 		return memo.lastFoodFound;
 	}
 
-	public void checkIfPacFoundFood() {
+	private void checkIfPacFoundFood() {
 		var tile = pac.tile();
 		if (world.containsFood(tile)) {
 			memo.foodFoundTile = Optional.of(tile);
