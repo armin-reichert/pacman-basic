@@ -206,30 +206,25 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
+				// TODO make separate state for level test mode?
 				if (gc.levelTestMode) {
 					runLevelTestMode(level);
 					return;
 				}
+
+				// TODO this looks ugly
 				var steering = level.pacSteering().orElse(gc.steering());
 				steering.steer(level, level.pac());
+
 				level.update();
 
-				level.checkIfPacFoundFood();
-				level.checkPacPower();
-				if (level.memo().lastFoodFound) {
+				if (level.completed()) {
 					gc.changeState(LEVEL_COMPLETE);
-					return;
-				}
-				level.checkIfPacManGetsKilled();
-				if (level.memo().pacKilled) {
+				} else if (level.pacKilled()) {
 					gc.changeState(PACMAN_DYING);
-					return;
-				}
-				level.findEdibleGhosts();
-				if (level.memo().edibleGhostsExist()) {
+				} else if (level.memo().edibleGhostsExist()) {
 					level.killEdibleGhosts();
 					gc.changeState(GHOST_DYING);
-					return;
 				}
 			});
 		}

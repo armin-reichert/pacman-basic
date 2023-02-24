@@ -177,12 +177,16 @@ public class GameLevel {
 
 	public void update() {
 		memo.forgetEverything(); // ich scholze jetzt
+		world.animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
 		pac.update(this);
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
-		bonus.update(this);
-		world.animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
 		updateHunting();
+		bonus.update(this);
+		checkIfPacFoundFood();
+		checkPacPower();
+		checkIfPacManGetsKilled();
+		findEdibleGhosts();
 	}
 
 	public void exit() {
@@ -477,6 +481,10 @@ public class GameLevel {
 
 	// Pac-Man
 
+	public boolean pacKilled() {
+		return memo.pacKilled;
+	}
+
 	public void checkIfPacManGetsKilled() {
 		memo.pacKilled = pac.isMeetingKiller(this);
 	}
@@ -523,6 +531,10 @@ public class GameLevel {
 	}
 
 	// Food
+
+	public boolean completed() {
+		return memo.lastFoodFound;
+	}
 
 	public void checkIfPacFoundFood() {
 		var tile = pac.tile();
