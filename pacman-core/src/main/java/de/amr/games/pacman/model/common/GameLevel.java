@@ -488,6 +488,22 @@ public class GameLevel {
 		LOG.trace("%s died at tile %s", pac.name(), pac.tile());
 	}
 
+	public void checkPacPower() {
+		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
+		memo.pacPowerLost = pac.powerTimer().hasExpired();
+		if (memo.pacPowerGained) {
+			onPacPowerStarts();
+			publishGameEventOfType(GameEventType.PAC_GETS_POWER);
+			publishSoundEvent("pacman_power_starts");
+		} else if (memo.pacPowerFading) {
+			publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
+		} else if (memo.pacPowerLost) {
+			onPacPowerEnds();
+			publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
+			publishSoundEvent("pacman_power_ends");
+		}
+	}
+
 	public void onPacPowerStarts() {
 		LOG.trace("%s power begins", pac.name());
 		huntingTimer.stop();

@@ -210,45 +210,26 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					runLevelTestMode(level);
 					return;
 				}
-
 				var steering = level.pacSteering().orElse(gc.steering());
 				steering.steer(level, level.pac());
 				level.update();
 
 				level.checkIfPacFoundFood();
+				level.checkPacPower();
 				if (level.memo().lastFoodFound) {
 					gc.changeState(LEVEL_COMPLETE);
 					return;
 				}
-
-				if (level.memo().pacPowerGained) {
-					level.onPacPowerStarts();
-					publishGameEventOfType(GameEventType.PAC_GETS_POWER);
-					publishSoundEvent("pacman_power_starts");
-				}
-
 				level.checkIfPacManGetsKilled();
 				if (level.memo().pacKilled) {
 					gc.changeState(PACMAN_DYING);
 					return;
 				}
-
 				level.findEdibleGhosts();
 				if (level.memo().edibleGhostsExist()) {
 					level.killEdibleGhosts();
 					gc.changeState(GHOST_DYING);
 					return;
-				}
-
-				level.memo().pacPowerFading = level.pac().powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
-				level.memo().pacPowerLost = level.pac().powerTimer().hasExpired();
-				if (level.memo().pacPowerFading) {
-					publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
-				}
-				if (level.memo().pacPowerLost) {
-					level.onPacPowerEnds();
-					publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
-					publishSoundEvent("pacman_power_ends");
 				}
 			});
 		}
