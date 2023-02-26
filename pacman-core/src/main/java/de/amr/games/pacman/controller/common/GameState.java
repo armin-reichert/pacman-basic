@@ -141,7 +141,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			publishSoundEvent("stop_all_sounds");
 			if (!game.hasCredit()) {
-				GameEvents.setSoundEventsEnabled(false);
 				game.init();
 				game.enterDemoLevel();
 				publishGameEventOfType(GameEventType.LEVEL_STARTING);

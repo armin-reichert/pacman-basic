@@ -352,6 +352,7 @@ public class MsPacManGame extends GameModel {
 		level = new MsPacManGameDemoLevel(this);
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		scoringEnabled = false;
+		GameEvents.setSoundEventsEnabled(false);
 		LOG.info("Ms. Pac-Man demo level entered");
 	}
 }
