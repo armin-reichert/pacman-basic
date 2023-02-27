@@ -111,8 +111,7 @@ public class PacManGame extends GameModel {
 	@Override
 	public ArcadeWorld createWorld(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		var world = new ArcadeWorld(MAP);
-		world.setUpwardBlockedTiles(RED_ZONE);
+		var world = new ArcadeWorld(MAP, RED_ZONE);
 		return world;
 	}
 

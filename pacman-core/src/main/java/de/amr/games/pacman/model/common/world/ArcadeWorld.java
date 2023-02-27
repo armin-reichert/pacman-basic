@@ -30,11 +30,9 @@ import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.anim.Pulse;
@@ -73,29 +71,25 @@ public class ArcadeWorld extends TileMapWorld {
 
 	private final ArcadeGhostHouse house;
 	private final Map<String, EntityAnimation> animationMap;
-	private Set<Vector2i> upwardBlockedTiles;
+	private final Collection<Vector2i> upwardBlockedTiles;
 
-	public ArcadeWorld(byte[][] tileMapData) {
+	public ArcadeWorld(byte[][] tileMapData, Collection<Vector2i> upwardBlockedTiles) {
 		super(tileMapData);
+		this.upwardBlockedTiles = Objects.requireNonNull(upwardBlockedTiles);
 		house = new ArcadeGhostHouse();
-		upwardBlockedTiles = Collections.emptySet();
 		animationMap = new HashMap<>(2);
 		animationMap.put(ArcadeWorld.ENERGIZER_PULSE, new Pulse(10, true));
 	}
 
-	/**
-	 * @param tiles tiles where chasing ghosts cannot move upwards
-	 */
-	public void setUpwardBlockedTiles(Collection<Vector2i> tiles) {
-		Objects.requireNonNull(tiles);
-		upwardBlockedTiles = new HashSet<>(tiles);
+	public ArcadeWorld(byte[][] tileMapData) {
+		this(tileMapData, Collections.emptyList());
 	}
 
 	/**
 	 * @return tiles where chasing ghosts cannot move upwards
 	 */
 	public Collection<Vector2i> upwardBlockedTiles() {
-		return Collections.unmodifiableSet(upwardBlockedTiles);
+		return Collections.unmodifiableCollection(upwardBlockedTiles);
 	}
 
 	@Override
