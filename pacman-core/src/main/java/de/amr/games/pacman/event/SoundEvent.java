@@ -23,6 +23,8 @@ SOFTWARE.
 */
 package de.amr.games.pacman.event;
 
+import java.util.Objects;
+
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -30,15 +32,15 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class SoundEvent extends GameEvent {
 
-	public final String soundCommand;
+	public final String id;
 
-	public SoundEvent(GameModel game, String soundCommand) {
+	public SoundEvent(GameModel game, String id) {
 		super(game, GameEventType.SOUND_EVENT, null);
-		this.soundCommand = soundCommand;
+		this.id = Objects.requireNonNull(id);
 	}
 
 	@Override
 	public String toString() {
-		return "SoundEvent('%s')".formatted(soundCommand);
+		return "SoundEvent('%s')".formatted(id);
 	}
 }

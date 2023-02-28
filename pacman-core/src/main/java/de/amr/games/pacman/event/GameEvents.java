@@ -53,6 +53,7 @@ public class GameEvents {
 
 	public static void setSoundEventsEnabled(boolean enabled) {
 		GameEvents.soundEventsEnabled = enabled;
+		LOG.info("Sound events %s".formatted(enabled ? "enabled" : "disabled"));
 	}
 
 	public static void addListener(GameEventListener subscriber) {
