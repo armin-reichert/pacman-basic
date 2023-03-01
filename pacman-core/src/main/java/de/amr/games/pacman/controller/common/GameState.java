@@ -428,8 +428,15 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	},
 
 	LEVEL_TEST {
+
+		private int lastTestedLevel;
+
 		@Override
 		public void onEnter(GameModel game) {
+			lastTestedLevel = switch (game.variant()) {
+			case MS_PACMAN -> 8;
+			case PACMAN -> 20;
+			};
 			timer.restartIndefinitely();
 			game.init();
 			game.enterLevel(1);
@@ -439,10 +446,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
-				int lastTestedLevel = switch (game.variant()) {
-				case MS_PACMAN -> 8;
-				case PACMAN -> 20;
-				};
 				if (level.number() <= lastTestedLevel) {
 					if (timer.atSecond(0.5)) {
 						level.game().onBonusReached();
