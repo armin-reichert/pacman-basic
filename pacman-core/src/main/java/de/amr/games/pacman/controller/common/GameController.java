@@ -77,8 +77,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private Steering manualPacSteering = Steering.NONE;
 	private boolean autoControlled;
 	public int intermissionTestNumber; // intermission test mode
-	public boolean levelTestMode = false; // level test mode
-	public int levelTestLastLevelNumber = 21; // level test mode
 
 	public GameController(GameVariant variant) {
 		Objects.requireNonNull(variant);

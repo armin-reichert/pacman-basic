@@ -188,9 +188,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			game.level().ifPresent(level -> {
-				if (!gc.levelTestMode) {
-					publishSoundEvent("hunting_phase_started_%d".formatted(level.huntingPhase()));
-				}
+				publishSoundEvent("hunting_phase_started_%d".formatted(level.huntingPhase()));
 				level.world().animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::restart);
 			});
 		}
@@ -198,18 +196,11 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
-				// TODO make separate state for level test mode?
-				if (gc.levelTestMode) {
-					runLevelTestMode(level);
-					return;
-				}
-
 				// TODO this looks ugly
 				var steering = level.pacSteering().orElse(gc.steering());
 				steering.steer(level, level.pac());
 
 				level.update();
-
 				if (level.completed()) {
 					gc.changeState(LEVEL_COMPLETE);
 				} else if (level.pacKilled()) {
@@ -219,24 +210,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					gc.changeState(GHOST_DYING);
 				}
 			});
-		}
-
-		private void runLevelTestMode(GameLevel level) {
-			if (level.number() <= gc.levelTestLastLevelNumber) {
-				// activate bonus for one second, then eat it / show won points
-				if (timer.atSecond(0.0)) {
-					level.game().onBonusReached();
-				} else if (timer.atSecond(1.0)) {
-					level.bonus().eat();
-				} else if (timer.atSecond(2.0)) {
-					gc.changeState(LEVEL_COMPLETE);
-				}
-				level.bonus().update(level);
-			} else {
-				// end level test mode
-				gc.levelTestMode = false;
-				gc.boot();
-			}
 		}
 
 		@Override
@@ -451,6 +424,49 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (timer.hasExpired()) {
 				gc.changeState(!game.hasCredit() || !game.isPlaying() ? INTRO : CHANGING_TO_NEXT_LEVEL);
 			}
+		}
+	},
+
+	LEVEL_TEST {
+		@Override
+		public void onEnter(GameModel game) {
+			timer.restartIndefinitely();
+			game.init();
+			game.enterLevel(1);
+			publishGameEventOfType(GameEventType.LEVEL_STARTING);
+		}
+
+		@Override
+		public void onUpdate(GameModel game) {
+			game.level().ifPresent(level -> {
+				int lastTestedLevel = switch (game.variant()) {
+				case MS_PACMAN -> 8;
+				case PACMAN -> 20;
+				};
+				if (level.number() <= lastTestedLevel) {
+					if (timer.atSecond(0.5)) {
+						level.game().onBonusReached();
+					} else if (timer.atSecond(2.0)) {
+						level.bonus().eat();
+					} else if (timer.atSecond(3.0)) {
+						level.exit();
+						game.nextLevel();
+						timer.restartIndefinitely();
+						publishGameEventOfType(GameEventType.LEVEL_STARTING);
+					}
+					level.world().animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
+					level.guys().forEach(Creature::show);
+					level.ghosts().forEach(ghost -> ghost.update(level));
+					level.bonus().update(level);
+				} else {
+					gc.boot();
+				}
+			});
+		}
+
+		@Override
+		public void onExit(GameModel game) {
+			game.clearLevelCounter();
 		}
 	},
 
