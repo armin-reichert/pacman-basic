@@ -138,14 +138,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	/**
-	 * Lets the timer of the current game state expire. Used to give the UI a possibility to control when the game is
-	 * continued, for example after playing some animation.
-	 */
-	public void terminateCurrentState() {
-		state().timer().expire();
-	}
-
-	/**
 	 * (Re)starts the game in the intro state.
 	 */
 	public void startIntro() {
