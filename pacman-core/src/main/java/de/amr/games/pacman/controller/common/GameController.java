@@ -106,7 +106,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	@Override
 	public GameModel context() {
-		return game();
+		return game;
 	}
 
 	public GameModel game() {
@@ -127,10 +127,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public Steering steering() {
 		return autoControlled ? autopilot : manualPacSteering;
-	}
-
-	public Steering manualPacSteering() {
-		return manualPacSteering;
 	}
 
 	public void setManualPacSteering(Steering steering) {
