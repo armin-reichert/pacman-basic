@@ -448,17 +448,25 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.level().ifPresent(level -> {
 				if (level.number() <= lastTestedLevel) {
 					if (timer.atSecond(0.5)) {
+						level.guys().forEach(Creature::show);
+					} else if (timer.atSecond(1.5)) {
 						level.game().onBonusReached();
-					} else if (timer.atSecond(2.0)) {
+					} else if (timer.atSecond(2.5)) {
 						level.bonus().eat();
-					} else if (timer.atSecond(3.0)) {
+						level.guys().forEach(Creature::hide);
+					} else if (timer.atSecond(4.5)) {
+						level.world().animation(ArcadeWorld.FLASHING).ifPresent(flashing -> {
+							flashing.setRepetitions(level.params().numFlashes());
+							flashing.restart();
+						});
+					} else if (timer.atSecond(6.0)) {
 						level.exit();
 						game.nextLevel();
 						timer.restartIndefinitely();
 						publishGameEventOfType(GameEventType.LEVEL_STARTING);
 					}
 					level.world().animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
-					level.guys().forEach(Creature::show);
+					level.world().animation(ArcadeWorld.FLASHING).ifPresent(flashing -> flashing.animate());
 					level.ghosts().forEach(ghost -> ghost.update(level));
 					level.bonus().update(level);
 				} else {
