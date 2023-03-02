@@ -152,14 +152,14 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			final int showGuysTick = 130; // not sure
+			final int showGuysTick = 120; // not sure
 			game.level().ifPresent(level -> {
 				if (game.hasCredit() && !game.isPlaying()) {
 					// start new game
 					if (timer.tick() == showGuysTick) {
 						level.guys().forEach(Creature::show);
 						game.setOneLessLifeDisplayed(true);
-					} else if (timer.tick() == showGuysTick + 100) {
+					} else if (timer.tick() == showGuysTick + 120) {
 						// start playing
 						game.setPlaying(true);
 						level.startHuntingPhase(0);
