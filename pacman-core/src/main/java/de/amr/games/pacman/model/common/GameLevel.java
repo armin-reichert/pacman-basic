@@ -486,7 +486,10 @@ public class GameLevel {
 	}
 
 	private void checkIfPacManGetsKilled() {
-		memo.pacKilled = pac.isMeetingKiller(this);
+		if (game.isImmune()) {
+			return;
+		}
+		memo.pacKilled = ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	public void onPacKilled() {

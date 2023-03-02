@@ -23,8 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
-import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
-
 import java.util.Objects;
 import java.util.Optional;
 
@@ -108,11 +106,6 @@ public class Pac extends Creature implements AnimatedEntity {
 	public boolean isPowerFading(GameLevel level) {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		return powerTimer.isRunning() && powerTimer.remaining() <= GameModel.TICKS_PAC_POWER_FADES;
-	}
-
-	public boolean isMeetingKiller(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
-		return !level.game().isImmune() && !powerTimer.isRunning() && level.ghosts(HUNTING_PAC).anyMatch(this::sameTile);
 	}
 
 	@Override
