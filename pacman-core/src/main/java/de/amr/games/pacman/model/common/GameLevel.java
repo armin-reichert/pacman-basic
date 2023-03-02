@@ -536,7 +536,7 @@ public class GameLevel {
 		return memo.lastFoodFound;
 	}
 
-	private void checkIfPacFoundFood() {
+	public void checkIfPacFoundFood() {
 		var tile = pac.tile();
 		if (world.containsFood(tile)) {
 			memo.foodFoundTile = Optional.of(tile);

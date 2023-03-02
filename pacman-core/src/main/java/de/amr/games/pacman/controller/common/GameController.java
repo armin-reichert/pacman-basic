@@ -77,8 +77,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private Steering manualPacSteering = Steering.NONE;
 	private boolean autoControlled;
 	public int intermissionTestNumber; // intermission test mode
-	public boolean levelTestMode = false; // level test mode
-	public int levelTestLastLevelNumber = 21; // level test mode
 
 	public GameController(GameVariant variant) {
 		Objects.requireNonNull(variant);
@@ -108,7 +106,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	@Override
 	public GameModel context() {
-		return game();
+		return game;
 	}
 
 	public GameModel game() {
@@ -131,20 +129,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return autoControlled ? autopilot : manualPacSteering;
 	}
 
-	public Steering manualPacSteering() {
-		return manualPacSteering;
-	}
-
 	public void setManualPacSteering(Steering steering) {
 		this.manualPacSteering = Objects.requireNonNull(steering);
-	}
-
-	/**
-	 * Lets the timer of the current game state expire. Used to give the UI a possibility to control when the game is
-	 * continued, for example after playing some animation.
-	 */
-	public void terminateCurrentState() {
-		state().timer().expire();
 	}
 
 	/**
