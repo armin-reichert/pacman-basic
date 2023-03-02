@@ -36,6 +36,9 @@ import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 
+/**
+ * @author Armin Reichert
+ */
 public enum PacManIntroState implements FsmState<PacManIntroData> {
 
 	START {
