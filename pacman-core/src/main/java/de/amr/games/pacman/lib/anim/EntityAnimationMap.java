@@ -24,7 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib.anim;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,12 +35,8 @@ import java.util.stream.Stream;
  */
 public class EntityAnimationMap {
 
-	private final Map<AnimKeys, EntityAnimation> animationsByKey;
+	private final Map<AnimKeys, EntityAnimation> animationsByKey = new EnumMap<>(AnimKeys.class);
 	protected AnimKeys selectedKey;
-
-	public EntityAnimationMap(int initialSize) {
-		animationsByKey = new HashMap<>(initialSize);
-	}
 
 	public final Optional<EntityAnimation> animation(AnimKeys key) {
 		return Optional.ofNullable(animationsByKey.get(key));
