@@ -265,7 +265,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
 			move();
 		}
-		updateColoredAnimation(level);
+		if (level.pac().powerTimer().isRunning()) {
+			updateFrightenedAnimation(level);
+		} else {
+			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+		}
 	}
 
 	// --- LEAVING_HOUSE ---
@@ -288,15 +292,20 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param level the level
 	 */
 	private void updateStateLeavingHouse(GameLevel level) {
-		updateColoredAnimation(level);
+		if (level.pac().powerTimer().isRunning() && killedIndex == -1) {
+			updateFrightenedAnimation(level);
+		} else {
+			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+		}
 		var outOfHouse = level.world().ghostHouse().leadOutside(this);
 		if (outOfHouse) {
 			setNewTileEntered(false);
 			setMoveAndWishDir(LEFT);
-			if (level.pac().powerTimer().isRunning() && killedIndex == -1) {
+			if (killedIndex == -1 && level.pac().powerTimer().isRunning()) {
 				enterStateFrightened();
 				LOG.trace("Ghost %s leaves house frightened", name());
 			} else {
+				killedIndex = -1;
 				enterStateHuntingPac();
 				LOG.trace("Ghost %s leaves house hunting", name());
 			}
@@ -323,7 +332,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private void updateStateHuntingPac(GameLevel level) {
 		setRelSpeed(level.huntingSpeed(this));
 		level.game().doGhostHuntingAction(level, this);
-		updateColoredAnimation(level);
 	}
 
 	// --- FRIGHTENED ---
@@ -432,15 +440,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	@Override
 	public Optional<EntityAnimationMap<AnimKeys>> animations() {
 		return Optional.ofNullable(animations);
-	}
-
-	private void updateColoredAnimation(GameLevel level) {
-		var pac = level.pac();
-		if (!pac.powerTimer().isRunning() || pac.powerTimer().isRunning() && killedIndex != -1) {
-			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
-		} else {
-			updateFrightenedAnimation(level);
-		}
 	}
 
 	private void updateFrightenedAnimation(GameLevel level) {
