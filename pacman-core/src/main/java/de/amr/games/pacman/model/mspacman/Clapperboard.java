@@ -34,23 +34,23 @@ import de.amr.games.pacman.model.common.actors.Entity;
  * 
  * @author Armin Reichert
  */
-public class Clapperboard extends Entity implements AnimatedEntity<Integer> {
+public class Clapperboard extends Entity implements AnimatedEntity {
 
 	public final int sceneNumber;
 	public final String sceneTitle;
-	private EntityAnimationMap<Integer> animationSet;
+	private EntityAnimationMap animationSet;
 
 	public Clapperboard(int sceneNumber, String sceneTitle) {
 		this.sceneNumber = sceneNumber;
 		this.sceneTitle = sceneTitle;
 	}
 
-	public void setAnimationSet(EntityAnimationMap<Integer> animationSet) {
+	public void setAnimationSet(EntityAnimationMap animationSet) {
 		this.animationSet = animationSet;
 	}
 
 	@Override
-	public Optional<EntityAnimationMap<Integer>> animations() {
+	public Optional<EntityAnimationMap> animations() {
 		return Optional.ofNullable(animationSet);
 	}
 }

@@ -33,40 +33,40 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  */
-public class EntityAnimationMap<K> {
+public class EntityAnimationMap {
 
-	private final Map<K, EntityAnimation> animationsByKey;
-	protected K selectedKey;
+	private final Map<AnimKeys, EntityAnimation> animationsByKey;
+	protected AnimKeys selectedKey;
 
 	public EntityAnimationMap(int initialSize) {
 		animationsByKey = new HashMap<>(initialSize);
 	}
 
-	public final Optional<EntityAnimation> animation(K key) {
+	public final Optional<EntityAnimation> animation(AnimKeys key) {
 		return Optional.ofNullable(animationsByKey.get(key));
 	}
 
-	public void put(K key, EntityAnimation animation) {
+	public void put(AnimKeys key, EntityAnimation animation) {
 		animationsByKey.put(key, Objects.requireNonNull(animation));
 	}
 
-	public void select(K key) {
+	public void select(AnimKeys key) {
 		selectedKey = Objects.requireNonNull(key);
 	}
 
-	public void selectAndRestart(K key) {
+	public void selectAndRestart(AnimKeys key) {
 		select(key);
 		animation(selectedKey).ifPresent(EntityAnimation::restart);
 	}
 
-	public boolean isSelected(K key) {
+	public boolean isSelected(AnimKeys key) {
 		if (selectedKey == null) {
 			return false;
 		}
 		return selectedKey.equals(Objects.requireNonNull(key));
 	}
 
-	public K selectedKey() {
+	public AnimKeys selectedKey() {
 		return selectedKey;
 	}
 

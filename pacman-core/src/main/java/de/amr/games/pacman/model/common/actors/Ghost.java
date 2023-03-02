@@ -43,6 +43,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.U;
+import de.amr.games.pacman.lib.anim.AnimKeys;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.anim.EntityAnimationMap;
@@ -57,7 +58,7 @@ import de.amr.games.pacman.model.common.world.World;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
+public class Ghost extends Creature implements AnimatedEntity {
 
 	public static final byte ID_RED_GHOST = 0;
 	public static final byte ID_PINK_GHOST = 1;
@@ -67,7 +68,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private final byte id;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
-	private EntityAnimationMap<AnimKeys> animations;
+	private EntityAnimationMap animations;
 	private int killedIndex;
 
 	public Ghost(byte id, String name) {
@@ -433,12 +434,12 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	// Animations
 
-	public void setAnimations(EntityAnimationMap<AnimKeys> animationSet) {
+	public void setAnimations(EntityAnimationMap animationSet) {
 		this.animations = animationSet;
 	}
 
 	@Override
-	public Optional<EntityAnimationMap<AnimKeys>> animations() {
+	public Optional<EntityAnimationMap> animations() {
 		return Optional.ofNullable(animations);
 	}
 

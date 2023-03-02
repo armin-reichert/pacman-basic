@@ -28,6 +28,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import java.util.Objects;
 import java.util.Optional;
 
+import de.amr.games.pacman.lib.anim.AnimKeys;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.EntityAnimationMap;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -39,7 +40,7 @@ import de.amr.games.pacman.model.common.GameModel;
  * 
  * @author Armin Reichert
  */
-public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
+public class Pac extends Creature implements AnimatedEntity {
 
 	public static final int REST_INDEFINITE = -1;
 
@@ -47,7 +48,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	private boolean dead;
 	private int restingTicks;
 	private int starvingTicks;
-	private EntityAnimationMap<AnimKeys> animationSet;
+	private EntityAnimationMap animationSet;
 
 	public Pac(String name) {
 		super(name);
@@ -127,11 +128,11 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	@Override
-	public Optional<EntityAnimationMap<AnimKeys>> animations() {
+	public Optional<EntityAnimationMap> animations() {
 		return Optional.ofNullable(animationSet);
 	}
 
-	public void setAnimations(EntityAnimationMap<AnimKeys> animationSet) {
+	public void setAnimations(EntityAnimationMap animationSet) {
 		this.animationSet = animationSet;
 	}
 

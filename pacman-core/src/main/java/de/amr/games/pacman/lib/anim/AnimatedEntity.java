@@ -32,15 +32,15 @@ import java.util.Optional;
  * @param <K> key type of animation map, most probably an enumeration type
  * @author Armin Reichert
  */
-public interface AnimatedEntity<K> {
+public interface AnimatedEntity {
 
-	public Optional<EntityAnimationMap<K>> animations();
+	public Optional<EntityAnimationMap> animations();
 
 	/**
 	 * @param key key identifying animation in set
 	 * @return (optional) animation specified by given key
 	 */
-	default Optional<EntityAnimation> animation(K key) {
+	default Optional<EntityAnimation> animation(AnimKeys key) {
 		return animations().flatMap(am -> am.animation(key));
 	}
 
@@ -57,7 +57,7 @@ public interface AnimatedEntity<K> {
 	 * @param key key identifying animation in set
 	 * @return (optional) selected animation
 	 */
-	default Optional<EntityAnimation> selectAndRunAnimation(K key) {
+	default Optional<EntityAnimation> selectAndRunAnimation(AnimKeys key) {
 		animations().ifPresent(anims -> {
 			anims.select(key);
 			anims.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
@@ -71,7 +71,7 @@ public interface AnimatedEntity<K> {
 	 * @param key key identifying animation in set
 	 * @return (optional) selected animation
 	 */
-	default Optional<EntityAnimation> selectAndResetAnimation(K key) {
+	default Optional<EntityAnimation> selectAndResetAnimation(AnimKeys key) {
 		animations().ifPresent(anims -> {
 			anims.select(key);
 			anims.selectedAnimation().ifPresent(EntityAnimation::reset);
@@ -94,7 +94,7 @@ public interface AnimatedEntity<K> {
 		animation().ifPresent(EntityAnimation::stop);
 	}
 
-	default boolean isAnimationSelected(K key) {
+	default boolean isAnimationSelected(AnimKeys key) {
 		return animations().isPresent() && animations().get().isSelected(key);
 	}
 }
