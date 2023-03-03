@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
+import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.lib.steering.Direction.DOWN;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
@@ -39,7 +40,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.AnimKeys;
@@ -278,7 +278,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = LEAVING_HOUSE;
 		setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
-		GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
+		publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
 	}
 
 	/**
@@ -309,7 +309,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 				enterStateHuntingPac();
 				LOG.trace("Ghost %s leaves house hunting", name());
 			}
-			GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
+			publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
 		}
 	}
 
@@ -413,7 +413,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = ENTERING_HOUSE;
 		setTargetTile(null);
-		GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this));
+		publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this));
 	}
 
 	/**
