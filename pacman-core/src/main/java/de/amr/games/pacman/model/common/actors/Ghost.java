@@ -235,25 +235,23 @@ public class Ghost extends Creature implements AnimatedEntity {
 		case EATEN -> updateStateEaten();
 		case RETURNING_TO_HOUSE -> updateStateReturningToHouse(level);
 		case ENTERING_HOUSE -> updateStateEnteringHouse(level);
-		default -> throw new IllegalArgumentException("Unexpected value: " + state);
+		default -> throw new IllegalArgumentException("Unknown state: " + state);
 		}
 		animate();
 	}
 
 	// --- LOCKED ---
 
+	/**
+	 * In locked state, ghosts inside the house are bouncing up and down. They become blue and blink if Pac-Man gets/loses
+	 * power. After that, they return to their normal color.
+	 */
 	public void enterStateLocked() {
 		state = LOCKED;
 		setPixelSpeed(0);
 		selectAndResetAnimation(AnimKeys.GHOST_COLOR);
 	}
 
-	/**
-	 * In locked state, ghosts inside the house are bouncing up and down. They become blue and blink if Pac-Man gets/loses
-	 * power. After that, they return to their normal color.
-	 * 
-	 * @param level the level
-	 */
 	private void updateStateLocked(GameLevel level) {
 		var initialPosition = level.world().ghostInitialPosition(id);
 		if (level.world().ghostHouse().contains(this)) {
@@ -265,7 +263,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 			setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
 			move();
 		}
-		if (level.pac().powerTimer().isRunning()) {
+		boolean endangered = level.pac().powerTimer().isRunning() && killedIndex == -1;
+		if (endangered) {
 			updateFrightenedAnimation(level);
 		} else {
 			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
@@ -274,13 +273,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	// --- LEAVING_HOUSE ---
 
-	public void enterStateLeavingHouse(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
-		state = LEAVING_HOUSE;
-		setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
-		publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
-	}
-
 	/**
 	 * When a ghost leaves the house, he follows a specific route from his home/revival position to the house exit. This
 	 * logic is house-specific so it is placed in the house implementation. In the Arcade versions of Pac-Man and Ms.
@@ -288,11 +280,17 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * door on top of the house.
 	 * <p>
 	 * The ghost speed is slower than outside but I do not know yet the exact value.
-	 * 
-	 * @param level the level
 	 */
+	public void enterStateLeavingHouse(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		state = LEAVING_HOUSE;
+		setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
+		publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
+	}
+
 	private void updateStateLeavingHouse(GameLevel level) {
-		if (level.pac().powerTimer().isRunning() && killedIndex == -1) {
+		boolean endangered = level.pac().powerTimer().isRunning() && killedIndex == -1;
+		if (endangered) {
 			updateFrightenedAnimation(level);
 		} else {
 			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
@@ -301,7 +299,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (outOfHouse) {
 			setNewTileEntered(false);
 			setMoveAndWishDir(LEFT);
-			if (killedIndex == -1 && level.pac().powerTimer().isRunning()) {
+			if (endangered) {
 				enterStateFrightened();
 				LOG.trace("Ghost %s leaves house frightened", name());
 			} else {
@@ -316,19 +314,17 @@ public class Ghost extends Creature implements AnimatedEntity {
 	// --- HUNTING_PAC ---
 
 	/**
-	 * @param level the game level
+	 * In each game level there are 4 alternating (scattering vs. chasing) hunting phases of different duration. The first
+	 * hunting phase is always a "scatter" phase where the ghosts retreat to their maze corners. After some time they
+	 * start chasing Pac-Man according to their character ("Shadow", "Speedy", "Bashful", "Pokey"). The 4th hunting phase
+	 * is an "infinite" chasing phase.
+	 * <p>
 	 */
 	public void enterStateHuntingPac() {
 		state = HUNTING_PAC;
 		selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 	}
 
-	/*
-	 * There are 4 hunting phases of different duration at each level. A hunting phase always starts with a "scatter"
-	 * phase where the ghosts retreat to their maze corners. After some time they start chasing Pac-Man according to their
-	 * character ("Shadow", "Speedy", "Bashful", "Pokey"). The 4th hunting phase at each level has an "infinite" chasing
-	 * phase. <p>
-	 */
 	private void updateStateHuntingPac(GameLevel level) {
 		setRelSpeed(level.huntingSpeed(this));
 		level.game().doGhostHuntingAction(level, this);
@@ -337,24 +333,17 @@ public class Ghost extends Creature implements AnimatedEntity {
 	// --- FRIGHTENED ---
 
 	/**
-	 * @param level the game level
+	 * When frightened, a ghost moves randomly through the world, at each new tile he randomly decides where to move next.
+	 * Reversing the move direction is not allowed in this state either.
+	 * <p>
+	 * A frightened ghost has a blue color and starts flashing blue/white shortly (how long exactly?) before Pac-Man loses
+	 * his power. Speed is about half of the normal speed.
 	 */
 	public void enterStateFrightened() {
 		state = FRIGHTENED;
 		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 	}
 
-	/**
-	 * When frightened, a ghost moves randomly through the world, at each new tile he randomly decides where to move next.
-	 * Reversing the move direction is not allowed in this state either.
-	 * <p>
-	 * A frightened ghost has a blue color and starts flashing blue/white shortly (how long exactly?) before Pac-Man loses
-	 * his power.
-	 * <p>
-	 * Speed is about half of the normal speed.
-	 * 
-	 * @param level the game level
-	 */
 	private void updateStateFrightened(GameLevel level) {
 		var speed = level.world().isTunnel(tile()) ? level.params().ghostSpeedTunnel()
 				: level.params().ghostSpeedFrightened();
@@ -366,10 +355,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 	// --- EATEN ---
 
 	/**
-	 * After a ghost is eaten by Pac-Man he is displayed for a short time as the number of points earned for eating him.
+	 * After a ghost is eaten by Pac-Man, he is displayed for a short time as the number of points earned for eating him.
 	 * The value doubles for each ghost eaten using the power of the same energizer.
-	 * 
-	 * @param level the level
 	 */
 	public void enterStateEaten() {
 		state = EATEN;
@@ -380,8 +367,14 @@ public class Ghost extends Creature implements AnimatedEntity {
 		// nothing to do
 	}
 
-	// --- RETURNING_HOUSE ---
+	// --- RETURNING_TO_HOUSE ---
 
+	/**
+	 * After the short time being displayed by his value, the eaten ghost is displayed by his eyes only and returns to the
+	 * ghost house to be revived. Hallelujah!
+	 * 
+	 * @param level the game level
+	 */
 	public void enterStateReturningToHouse(GameLevel level) {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = RETURNING_TO_HOUSE;
@@ -389,12 +382,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 		selectAndRunAnimation(AnimKeys.GHOST_EYES);
 	}
 
-	/**
-	 * After the short time being displayed by his value, the eaten ghost is displayed by his eyes only and returns to the
-	 * ghost house to be revived. Hallelujah!
-	 * 
-	 * @param game the game
-	 */
 	private void updateStateReturningToHouse(GameLevel level) {
 		var houseEntry = level.world().ghostHouse().door().entryPosition();
 		if (position().almostEquals(houseEntry, 1, 0)) {
@@ -407,31 +394,31 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 	}
 
-	// ENTERING_HOUSE state
+	// --- ENTERING_HOUSE ---
 
+	/**
+	 * When an eaten ghost reaches the ghost house, he enters and moves (is lead) to his revival position. Because the
+	 * exact route from the house entry to the revival tile is house-specific, this logic is in the house implementation.
+	 * 
+	 * @param level the game level
+	 */
 	public void enterStateEnteringHouse(GameLevel level) {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = ENTERING_HOUSE;
 		setTargetTile(null);
+		setPixelSpeed(GameModel.SPEED_GHOST_ENTERING_HOUSE_PX);
 		publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this));
 	}
 
-	/**
-	 * When an eaten ghost reaches the ghost house, he enters and moves to his revival position. Because the exact route
-	 * from the house entry to the revival tile is house-specific, this logic is in the house implementation.
-	 * 
-	 * @param level the level
-	 */
 	private void updateStateEnteringHouse(GameLevel level) {
-		setPixelSpeed(GameModel.SPEED_GHOST_ENTERING_HOUSE_PX);
-		boolean atRevivalTile = level.world().ghostHouse().leadInside(this, level.world().ghostRevivalPosition(id));
-		if (atRevivalTile) {
+		boolean atRevivalPosition = level.world().ghostHouse().leadInside(this, level.world().ghostRevivalPosition(id));
+		if (atRevivalPosition) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();
 		}
 	}
 
-	// Animations
+	// Animation
 
 	public void setAnimations(EntityAnimationMap animationSet) {
 		this.animations = animationSet;
