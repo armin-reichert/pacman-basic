@@ -28,11 +28,11 @@ import static de.amr.games.pacman.model.common.world.World.t;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameState;
-import de.amr.games.pacman.lib.anim.AnimationKey;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.model.common.AnimationKey;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 

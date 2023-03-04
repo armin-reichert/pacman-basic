@@ -26,10 +26,10 @@ package de.amr.games.pacman.model.common.actors;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.anim.AnimationKey;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.EntityAnimationMap;
 import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.model.common.AnimationKey;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 
