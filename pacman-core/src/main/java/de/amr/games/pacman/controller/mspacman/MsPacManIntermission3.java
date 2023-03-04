@@ -30,7 +30,7 @@ import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionData;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionState;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.anim.AnimKeys;
+import de.amr.games.pacman.lib.anim.AnimationKey;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -119,12 +119,12 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(t(3), ctx.groundY - 4);
-				ctx.pacMan.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.selectAndResetAnimation(AnimationKey.PAC_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
 				ctx.msPacMan.setPosition(t(5), ctx.groundY - 4);
-				ctx.msPacMan.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.msPacMan.selectAndResetAnimation(AnimationKey.PAC_MUNCHING);
 				ctx.msPacMan.show();
 
 				ctx.stork.setPosition(t(30), t(12));

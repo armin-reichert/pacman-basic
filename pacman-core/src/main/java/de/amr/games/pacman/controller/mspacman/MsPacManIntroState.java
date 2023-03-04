@@ -32,7 +32,7 @@ import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameState;
-import de.amr.games.pacman.lib.anim.AnimKeys;
+import de.amr.games.pacman.lib.anim.AnimationKey;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -52,7 +52,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			ctx.msPacMan.setPosition(t(34), TURNING_POSITION.y());
 			ctx.msPacMan.setMoveDir(LEFT);
 			ctx.msPacMan.setPixelSpeed(GUYS_SPEED);
-			ctx.msPacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
+			ctx.msPacMan.selectAndRunAnimation(AnimationKey.PAC_MUNCHING);
 			ctx.msPacMan.show();
 			ctx.ghosts.forEach(ghost -> {
 				ghost.setPosition(t(34), TURNING_POSITION.y());

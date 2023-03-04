@@ -42,7 +42,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.U;
-import de.amr.games.pacman.lib.anim.AnimKeys;
+import de.amr.games.pacman.lib.anim.AnimationKey;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.anim.EntityAnimationMap;
@@ -249,7 +249,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateLocked() {
 		state = LOCKED;
 		setPixelSpeed(0);
-		selectAndResetAnimation(AnimKeys.GHOST_COLOR);
+		selectAndResetAnimation(AnimationKey.GHOST_COLOR);
 	}
 
 	private void updateStateLocked(GameLevel level) {
@@ -267,7 +267,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (endangered) {
 			updateFrightenedAnimation(level);
 		} else {
-			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+			selectAndRunAnimation(AnimationKey.GHOST_COLOR);
 		}
 	}
 
@@ -293,7 +293,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (endangered) {
 			updateFrightenedAnimation(level);
 		} else {
-			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+			selectAndRunAnimation(AnimationKey.GHOST_COLOR);
 		}
 		var outOfHouse = level.world().ghostHouse().leadOutside(this);
 		if (outOfHouse) {
@@ -322,7 +322,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 */
 	public void enterStateHuntingPac() {
 		state = HUNTING_PAC;
-		selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+		selectAndRunAnimation(AnimationKey.GHOST_COLOR);
 	}
 
 	private void updateStateHuntingPac(GameLevel level) {
@@ -341,7 +341,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 */
 	public void enterStateFrightened() {
 		state = FRIGHTENED;
-		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
+		selectAndRunAnimation(AnimationKey.GHOST_BLUE);
 	}
 
 	private void updateStateFrightened(GameLevel level) {
@@ -360,7 +360,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 */
 	public void enterStateEaten() {
 		state = EATEN;
-		selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
+		selectAndRunAnimation(AnimationKey.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
 	}
 
 	private void updateStateEaten() {
@@ -379,7 +379,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		Objects.requireNonNull(level, MSG_LEVEL_NULL);
 		state = RETURNING_TO_HOUSE;
 		setTargetTile(level.world().ghostHouse().door().entryTile());
-		selectAndRunAnimation(AnimKeys.GHOST_EYES);
+		selectAndRunAnimation(AnimationKey.GHOST_EYES);
 	}
 
 	private void updateStateReturningToHouse(GameLevel level) {
@@ -431,11 +431,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private void updateFrightenedAnimation(GameLevel level) {
 		if (level.pac().powerTimer().remaining() > GameModel.TICKS_PAC_POWER_FADES) {
-			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
+			selectAndRunAnimation(AnimationKey.GHOST_BLUE);
 		} else {
 			animations().ifPresent(anims -> {
-				if (!anims.isSelected(AnimKeys.GHOST_FLASHING)) {
-					selectAndRunAnimation(AnimKeys.GHOST_FLASHING)
+				if (!anims.isSelected(AnimationKey.GHOST_FLASHING)) {
+					selectAndRunAnimation(AnimationKey.GHOST_FLASHING)
 							.ifPresent(flashing -> startFlashing(level.params().numFlashes(), flashing));
 				}
 			});
@@ -450,7 +450,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	public void stopFlashing(boolean stopped) {
-		animation(AnimKeys.GHOST_FLASHING).ifPresent(flashing -> {
+		animation(AnimationKey.GHOST_FLASHING).ifPresent(flashing -> {
 			if (stopped) {
 				flashing.stop();
 				flashing.setFrameIndex(0);

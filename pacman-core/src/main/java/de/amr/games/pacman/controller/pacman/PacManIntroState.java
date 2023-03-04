@@ -28,7 +28,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameState;
-import de.amr.games.pacman.lib.anim.AnimKeys;
+import de.amr.games.pacman.lib.anim.AnimationKey;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -95,14 +95,14 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 			ctx.pacMan.setMoveDir(Direction.LEFT);
 			ctx.pacMan.setPixelSpeed(PacManIntroData.CHASING_SPEED);
 			ctx.pacMan.show();
-			ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
+			ctx.pacMan.selectAndRunAnimation(AnimationKey.PAC_MUNCHING);
 			for (Ghost ghost : ctx.ghosts) {
 				ghost.enterStateHuntingPac();
 				ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id() + 1), 0));
 				ghost.setMoveAndWishDir(Direction.LEFT);
 				ghost.setPixelSpeed(PacManIntroData.CHASING_SPEED);
 				ghost.show();
-				ghost.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+				ghost.selectAndRunAnimation(AnimationKey.GHOST_COLOR);
 			}
 		}
 
@@ -116,7 +116,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 			else if (ctx.pacMan.position().x() <= t(PacManIntroData.LEFT_TILE) + 4) {
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterStateFrightened();
-					ghost.selectAndRunAnimation(AnimKeys.GHOST_BLUE);
+					ghost.selectAndRunAnimation(AnimationKey.GHOST_BLUE);
 					ghost.setMoveAndWishDir(Direction.RIGHT);
 					ghost.setPixelSpeed(0.6f);
 					ghost.move();
@@ -170,7 +170,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 				ctx.pacMan.setPixelSpeed(0);
 				Stream.of(ctx.ghosts).forEach(ghost -> {
 					ghost.setPixelSpeed(0);
-					ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(EntityAnimation::stop);
+					ghost.animation(AnimationKey.GHOST_BLUE).ifPresent(EntityAnimation::stop);
 				});
 			});
 
@@ -182,7 +182,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 					if (!ghost.is(GhostState.EATEN)) {
 						ghost.show();
 						ghost.setPixelSpeed(0.6f);
-						ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(EntityAnimation::start);
+						ghost.animation(AnimationKey.GHOST_BLUE).ifPresent(EntityAnimation::start);
 					} else {
 						ghost.hide();
 					}

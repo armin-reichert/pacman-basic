@@ -26,7 +26,11 @@ package de.amr.games.pacman.lib.anim;
 /**
  * @author Armin Reichert
  */
-public interface AnimKeys {
+public final class AnimationKey {
+
+	private AnimationKey() {
+		// nothing to do
+	}
 
 	public static final String MAZE_FLASHING = "MAZE_FLASHING";
 	public static final String MAZE_ENERGIZER_BLINKING = "MAZE_ENERGIZER_BLINKING";
@@ -44,5 +48,6 @@ public interface AnimKeys {
 	public static final String BLINKY_DAMAGED = "BLINKY_DAMAGED";
 	public static final String BLINKY_PATCHED = "BLINKY_PATCHED";
 	public static final String BLINKY_NAKED = "BLINKY_NAKED";
+
 	public static final String CLAPPERBOARD = "CLAPPERBOARD";
 }

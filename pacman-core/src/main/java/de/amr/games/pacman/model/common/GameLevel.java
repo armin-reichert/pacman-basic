@@ -49,7 +49,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.lib.anim.AnimKeys;
+import de.amr.games.pacman.lib.anim.AnimationKey;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -177,7 +177,7 @@ public class GameLevel {
 
 	public void update() {
 		memo.forgetEverything(); // ich scholze jetzt
-		world.animation(AnimKeys.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::animate);
+		world.animation(AnimationKey.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::animate);
 		pac.update(this);
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
@@ -192,10 +192,10 @@ public class GameLevel {
 	public void exit() {
 		LOG.trace("Exit level %d (%s)", number, game.variant());
 		pac.rest(Pac.REST_INDEFINITE);
-		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+		pac.selectAndResetAnimation(AnimationKey.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonus.setInactive();
-		world.animation(AnimKeys.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::reset);
+		world.animation(AnimationKey.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::reset);
 		huntingTimer.stop();
 	}
 
@@ -405,7 +405,7 @@ public class GameLevel {
 			ghost.enterStateLocked();
 		});
 		bonus.setInactive();
-		world.animation(AnimKeys.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::reset);
+		world.animation(AnimationKey.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::reset);
 	}
 
 	/**

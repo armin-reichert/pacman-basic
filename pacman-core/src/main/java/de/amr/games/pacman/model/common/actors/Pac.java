@@ -26,7 +26,7 @@ package de.amr.games.pacman.model.common.actors;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.anim.AnimKeys;
+import de.amr.games.pacman.lib.anim.AnimationKey;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.EntityAnimationMap;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -60,7 +60,7 @@ public class Pac extends Creature implements AnimatedEntity {
 		dead = false;
 		restingTicks = 0;
 		starvingTicks = 0;
-		selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
+		selectAndResetAnimation(AnimationKey.PAC_MUNCHING);
 		powerTimer.reset(0);
 	}
 
@@ -79,7 +79,7 @@ public class Pac extends Creature implements AnimatedEntity {
 			var speed = powerTimer.isRunning() ? level.params().pacSpeedPowered() : level.params().pacSpeed();
 			setRelSpeed(speed);
 			tryMoving(level);
-			selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
+			selectAndRunAnimation(AnimationKey.PAC_MUNCHING);
 			if (!isStuck()) {
 				animate();
 			}
