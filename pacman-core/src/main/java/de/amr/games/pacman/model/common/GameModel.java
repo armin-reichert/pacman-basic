@@ -84,19 +84,12 @@ public abstract class GameModel {
 
 	public static final String AK_PAC_DYING = "PAC_DYING";
 	public static final String AK_PAC_MUNCHING = "PAC_MUNCHING";
-	public static final String AK_PAC_BIG = "PAC_BIG";
 
 	public static final String AK_GHOST_BLUE = "GHOST_BLUE";
 	public static final String AK_GHOST_COLOR = "GHOST_COLOR";
 	public static final String AK_GHOST_EYES = "GHOST_EYES";
 	public static final String AK_GHOST_FLASHING = "GHOST_FLASHING";
 	public static final String AK_GHOST_VALUE = "GHOST_VALUE";
-
-	public static final String AK_BLINKY_DAMAGED = "BLINKY_DAMAGED";
-	public static final String AK_BLINKY_PATCHED = "BLINKY_PATCHED";
-	public static final String AK_BLINKY_NAKED = "BLINKY_NAKED";
-
-	public static final String AK_CLAPPERBOARD = "CLAPPERBOARD";
 
 	//@formatter:off
 	protected static final byte[][] LEVEL_PARAMETERS = {

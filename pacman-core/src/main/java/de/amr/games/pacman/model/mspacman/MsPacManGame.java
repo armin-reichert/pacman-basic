@@ -219,6 +219,8 @@ public class MsPacManGame extends GameModel {
 	};
 	//@formatter:on
 
+	public static final String AK_CLAPPERBOARD = "CLAPPERBOARD";
+
 	@Override
 	public Pac createPac() {
 		return new Pac("Ms. Pac-Man");

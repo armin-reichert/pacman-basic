@@ -90,6 +90,11 @@ public class PacManGame extends GameModel {
 	};
 	//@formatter:on
 
+	public static final String AK_PAC_BIG = "PAC_BIG";
+	public static final String AK_BLINKY_DAMAGED = "BLINKY_DAMAGED";
+	public static final String AK_BLINKY_PATCHED = "BLINKY_PATCHED";
+	public static final String AK_BLINKY_NAKED = "BLINKY_NAKED";
+
 	// Tiles where chasing ghosts cannot move upwards
 	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
