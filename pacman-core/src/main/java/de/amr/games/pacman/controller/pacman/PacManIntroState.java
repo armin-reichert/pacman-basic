@@ -32,7 +32,7 @@ import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.model.common.AnimationKey;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 
@@ -95,14 +95,14 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 			ctx.pacMan.setMoveDir(Direction.LEFT);
 			ctx.pacMan.setPixelSpeed(PacManIntroData.CHASING_SPEED);
 			ctx.pacMan.show();
-			ctx.pacMan.selectAndRunAnimation(AnimationKey.PAC_MUNCHING);
+			ctx.pacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 			for (Ghost ghost : ctx.ghosts) {
 				ghost.enterStateHuntingPac();
 				ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id() + 1), 0));
 				ghost.setMoveAndWishDir(Direction.LEFT);
 				ghost.setPixelSpeed(PacManIntroData.CHASING_SPEED);
 				ghost.show();
-				ghost.selectAndRunAnimation(AnimationKey.GHOST_COLOR);
+				ghost.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
 			}
 		}
 
@@ -116,7 +116,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 			else if (ctx.pacMan.position().x() <= t(PacManIntroData.LEFT_TILE) + 4) {
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterStateFrightened();
-					ghost.selectAndRunAnimation(AnimationKey.GHOST_BLUE);
+					ghost.selectAndRunAnimation(GameModel.AK_GHOST_BLUE);
 					ghost.setMoveAndWishDir(Direction.RIGHT);
 					ghost.setPixelSpeed(0.6f);
 					ghost.move();
@@ -170,7 +170,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 				ctx.pacMan.setPixelSpeed(0);
 				Stream.of(ctx.ghosts).forEach(ghost -> {
 					ghost.setPixelSpeed(0);
-					ghost.animation(AnimationKey.GHOST_BLUE).ifPresent(EntityAnimation::stop);
+					ghost.animation(GameModel.AK_GHOST_BLUE).ifPresent(EntityAnimation::stop);
 				});
 			});
 
@@ -182,7 +182,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 					if (!ghost.is(GhostState.EATEN)) {
 						ghost.show();
 						ghost.setPixelSpeed(0.6f);
-						ghost.animation(AnimationKey.GHOST_BLUE).ifPresent(EntityAnimation::start);
+						ghost.animation(GameModel.AK_GHOST_BLUE).ifPresent(EntityAnimation::start);
 					} else {
 						ghost.hide();
 					}

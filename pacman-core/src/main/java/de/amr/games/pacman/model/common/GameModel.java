@@ -78,6 +78,26 @@ public abstract class GameModel {
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
 	public static final short TICKS_PAC_POWER_FADES = 2 * FPS; // unsure
 
+	// Animations keys
+	public static final String AK_MAZE_FLASHING = "MAZE_FLASHING";
+	public static final String AK_MAZE_ENERGIZER_BLINKING = "MAZE_ENERGIZER_BLINKING";
+
+	public static final String AK_PAC_DYING = "PAC_DYING";
+	public static final String AK_PAC_MUNCHING = "PAC_MUNCHING";
+	public static final String AK_PAC_BIG = "PAC_BIG";
+
+	public static final String AK_GHOST_BLUE = "GHOST_BLUE";
+	public static final String AK_GHOST_COLOR = "GHOST_COLOR";
+	public static final String AK_GHOST_EYES = "GHOST_EYES";
+	public static final String AK_GHOST_FLASHING = "GHOST_FLASHING";
+	public static final String AK_GHOST_VALUE = "GHOST_VALUE";
+
+	public static final String AK_BLINKY_DAMAGED = "BLINKY_DAMAGED";
+	public static final String AK_BLINKY_PATCHED = "BLINKY_PATCHED";
+	public static final String AK_BLINKY_NAKED = "BLINKY_NAKED";
+
+	public static final String AK_CLAPPERBOARD = "CLAPPERBOARD";
+
 	//@formatter:off
 	protected static final byte[][] LEVEL_PARAMETERS = {
 	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5, 0},

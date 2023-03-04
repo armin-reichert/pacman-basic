@@ -37,7 +37,7 @@ import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.model.common.AnimationKey;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -103,25 +103,25 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(-t(2), ctx.upperY);
-				ctx.pacMan.selectAndRunAnimation(AnimationKey.PAC_MUNCHING);
+				ctx.pacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.inky = new Ghost(Ghost.ID_CYAN_GHOST, "Inky");
 				ctx.inky.setMoveAndWishDir(Direction.RIGHT);
 				ctx.inky.setPosition(ctx.pacMan.position().minus(t(6), 0));
-				ctx.inky.selectAndRunAnimation(AnimationKey.GHOST_COLOR);
+				ctx.inky.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
 				ctx.inky.show();
 
 				ctx.msPac = new Pac("Ms. Pac-Man");
 				ctx.msPac.setMoveDir(Direction.LEFT);
 				ctx.msPac.setPosition(t(30), ctx.lowerY);
-				ctx.msPac.selectAndRunAnimation(AnimationKey.PAC_MUNCHING);
+				ctx.msPac.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.msPac.show();
 
 				ctx.pinky = new Ghost(ID_PINK_GHOST, "Pinky");
 				ctx.pinky.setMoveAndWishDir(Direction.LEFT);
 				ctx.pinky.setPosition(ctx.msPac.position().plus(t(6), 0));
-				ctx.pinky.selectAndRunAnimation(AnimationKey.GHOST_COLOR);
+				ctx.pinky.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
 				ctx.pinky.show();
 
 				ctx.heart = new Entity();
@@ -235,10 +235,10 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				timer.start();
 				ctx.pacMan.setPixelSpeed(0);
 				ctx.pacMan.setMoveDir(Direction.LEFT);
-				ctx.pacMan.animation(AnimationKey.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
+				ctx.pacMan.animation(GameModel.AK_PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 				ctx.msPac.setPixelSpeed(0);
 				ctx.msPac.setMoveDir(Direction.RIGHT);
-				ctx.msPac.animation(AnimationKey.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
+				ctx.msPac.animation(GameModel.AK_PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 				ctx.inky.setPixelSpeed(0);
 				ctx.inky.hide();
 				ctx.pinky.setPixelSpeed(0);

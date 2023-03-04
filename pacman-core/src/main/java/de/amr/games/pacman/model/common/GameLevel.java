@@ -176,7 +176,7 @@ public class GameLevel {
 
 	public void update() {
 		memo.forgetEverything(); // ich scholze jetzt
-		world.animation(AnimationKey.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::animate);
+		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::animate);
 		pac.update(this);
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
@@ -191,10 +191,10 @@ public class GameLevel {
 	public void exit() {
 		LOG.trace("Exit level %d (%s)", number, game.variant());
 		pac.rest(Pac.REST_INDEFINITE);
-		pac.selectAndResetAnimation(AnimationKey.PAC_MUNCHING);
+		pac.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonus.setInactive();
-		world.animation(AnimationKey.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::reset);
+		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::reset);
 		huntingTimer.stop();
 	}
 
@@ -404,7 +404,7 @@ public class GameLevel {
 			ghost.enterStateLocked();
 		});
 		bonus.setInactive();
-		world.animation(AnimationKey.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::reset);
+		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::reset);
 	}
 
 	/**

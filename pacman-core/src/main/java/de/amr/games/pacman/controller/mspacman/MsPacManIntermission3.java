@@ -36,7 +36,7 @@ import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.model.common.AnimationKey;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Clapperboard;
@@ -119,12 +119,12 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(t(3), ctx.groundY - 4);
-				ctx.pacMan.selectAndResetAnimation(AnimationKey.PAC_MUNCHING);
+				ctx.pacMan.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
 				ctx.msPacMan.setPosition(t(5), ctx.groundY - 4);
-				ctx.msPacMan.selectAndResetAnimation(AnimationKey.PAC_MUNCHING);
+				ctx.msPacMan.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.msPacMan.show();
 
 				ctx.stork.setPosition(t(30), t(12));

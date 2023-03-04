@@ -35,7 +35,7 @@ import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.model.common.AnimationKey;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Clapperboard;
 
@@ -88,10 +88,10 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 				ctx.clapperboard.show();
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.selectAndRunAnimation(AnimationKey.PAC_MUNCHING);
+				ctx.pacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
-				ctx.msPacMan.selectAndRunAnimation(AnimationKey.GHOST_COLOR);
+				ctx.msPacMan.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
 			}
 
 			@Override
