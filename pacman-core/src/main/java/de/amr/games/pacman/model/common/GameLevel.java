@@ -177,7 +177,7 @@ public class GameLevel {
 
 	public void update() {
 		memo.forgetEverything(); // ich scholze jetzt
-		world.animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::animate);
+		world.animation(AnimKeys.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::animate);
 		pac.update(this);
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
@@ -195,7 +195,7 @@ public class GameLevel {
 		pac.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonus.setInactive();
-		world.animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::reset);
+		world.animation(AnimKeys.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::reset);
 		huntingTimer.stop();
 	}
 
@@ -318,6 +318,7 @@ public class GameLevel {
 	public boolean isSteeringAllowed(Ghost ghost, Direction dir) {
 		Objects.requireNonNull(ghost);
 		Objects.requireNonNull(dir);
+		// TODO how to avoid this check?
 		if (world instanceof ArcadeWorld arcadeWorld) {
 			boolean blocked = dir == Direction.UP && ghost.is(HUNTING_PAC)
 					&& arcadeWorld.upwardBlockedTiles().contains(ghost.tile());
@@ -404,7 +405,7 @@ public class GameLevel {
 			ghost.enterStateLocked();
 		});
 		bonus.setInactive();
-		world.animation(ArcadeWorld.ENERGIZER_PULSE).ifPresent(EntityAnimation::reset);
+		world.animation(AnimKeys.MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::reset);
 	}
 
 	/**

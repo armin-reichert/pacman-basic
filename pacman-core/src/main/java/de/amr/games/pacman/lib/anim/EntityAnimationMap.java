@@ -74,23 +74,27 @@ public class EntityAnimationMap {
 		return animationsByKey.values().stream();
 	}
 
+	public void animate() {
+		all().forEach(EntityAnimation::animate);
+	}
+
 	public void reset() {
 		all().forEach(EntityAnimation::reset);
+	}
+
+	public void restart() {
+		all().forEach(EntityAnimation::restart);
 	}
 
 	public void stop() {
 		all().forEach(EntityAnimation::stop);
 	}
 
-	public void run() {
+	public void start() {
 		all().forEach(EntityAnimation::start);
 	}
 
 	public void ensureRunning() {
 		all().forEach(EntityAnimation::ensureRunning);
-	}
-
-	public void restart() {
-		all().forEach(EntityAnimation::restart);
 	}
 }

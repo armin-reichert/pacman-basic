@@ -24,11 +24,11 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.anim.EntityAnimation;
+import de.amr.games.pacman.lib.anim.AnimatedEntity;
+import de.amr.games.pacman.lib.anim.EntityAnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -38,7 +38,7 @@ import de.amr.games.pacman.lib.steering.Direction;
  * 
  * @author Armin Reichert
  */
-public interface World {
+public interface World extends AnimatedEntity {
 
 	/** Tile size in pixels (8). */
 	public static final int TS = 8;
@@ -268,17 +268,5 @@ public interface World {
 	 */
 	int eatenFoodCount();
 
-	/**
-	 * Adds an animation to this world like flashing, energizer animation.
-	 * 
-	 * @param key       animation key
-	 * @param animation animation
-	 */
-	void addAnimation(String key, EntityAnimation animation);
-
-	/**
-	 * @param key animation key
-	 * @return (optional)animation stored under this key
-	 */
-	Optional<EntityAnimation> animation(String key);
+	void setAnimations(EntityAnimationMap animationMap);
 }

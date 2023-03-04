@@ -46,7 +46,7 @@ public class Pac extends Creature implements AnimatedEntity {
 	private boolean dead;
 	private int restingTicks;
 	private int starvingTicks;
-	private EntityAnimationMap animationSet;
+	private EntityAnimationMap animationMap;
 
 	public Pac(String name) {
 		super(name);
@@ -122,11 +122,11 @@ public class Pac extends Creature implements AnimatedEntity {
 
 	@Override
 	public Optional<EntityAnimationMap> animations() {
-		return Optional.ofNullable(animationSet);
+		return Optional.ofNullable(animationMap);
 	}
 
-	public void setAnimations(EntityAnimationMap animationSet) {
-		this.animationSet = animationSet;
+	public void setAnimations(EntityAnimationMap animationMap) {
+		this.animationMap = animationMap;
 	}
 
 	public boolean isDead() {

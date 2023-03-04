@@ -29,13 +29,10 @@ import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.anim.EntityAnimation;
-import de.amr.games.pacman.lib.anim.Pulse;
+import de.amr.games.pacman.lib.anim.EntityAnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -53,9 +50,6 @@ public class ArcadeWorld extends TileMapWorld {
 	public static final Vector2i SIZE_TILES = v2i(28, 36);
 	public static final Vector2i SIZE_PX = SIZE_TILES.scaled(TS);
 
-	public static final String FLASHING = "flashing";
-	public static final String ENERGIZER_PULSE = "energizerPulse";
-
 	private static final Vector2f PAC_INITIAL_POSITION = halfTileRightOf(13, 26);
 	private static final Direction PAC_INITIAL_DIRECTION = Direction.LEFT;
 
@@ -70,15 +64,13 @@ public class ArcadeWorld extends TileMapWorld {
 	//@formatter:on
 
 	private final ArcadeGhostHouse house;
-	private final Map<String, EntityAnimation> animationMap;
+	private EntityAnimationMap animationMap;
 	private final Collection<Vector2i> upwardBlockedTiles;
 
 	public ArcadeWorld(byte[][] tileMapData, Collection<Vector2i> upwardBlockedTiles) {
 		super(tileMapData);
 		this.upwardBlockedTiles = Objects.requireNonNull(upwardBlockedTiles);
 		house = new ArcadeGhostHouse();
-		animationMap = new HashMap<>(2);
-		animationMap.put(ArcadeWorld.ENERGIZER_PULSE, new Pulse(10, true));
 	}
 
 	public ArcadeWorld(byte[][] tileMapData) {
@@ -136,12 +128,12 @@ public class ArcadeWorld extends TileMapWorld {
 	}
 
 	@Override
-	public void addAnimation(String key, EntityAnimation animation) {
-		animationMap.put(key, animation);
+	public Optional<EntityAnimationMap> animations() {
+		return Optional.ofNullable(animationMap);
 	}
 
 	@Override
-	public Optional<EntityAnimation> animation(String key) {
-		return Optional.ofNullable(animationMap.get(key));
+	public void setAnimations(EntityAnimationMap animationMap) {
+		this.animationMap = animationMap;
 	}
 }

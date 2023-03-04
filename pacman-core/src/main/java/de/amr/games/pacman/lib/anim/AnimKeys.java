@@ -28,12 +28,11 @@ package de.amr.games.pacman.lib.anim;
  */
 public enum AnimKeys {
 
-	/* Pac-Man */
+	MAZE_FLASHING, MAZE_ENERGIZER_BLINKING,
+
 	PAC_DYING, PAC_MUNCHING, PAC_BIG,
 
-	/* Ghosts */
 	GHOST_BLUE, GHOST_COLOR, GHOST_EYES, GHOST_FLASHING, GHOST_VALUE,
 
-	/* Cutscenes */
 	BLINKY_DAMAGED, BLINKY_PATCHED, BLINKY_NAKED, CLAPPERBOARD;
 }
