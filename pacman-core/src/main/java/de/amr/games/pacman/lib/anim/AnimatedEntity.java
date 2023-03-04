@@ -40,7 +40,7 @@ public interface AnimatedEntity {
 	 * @param key key identifying animation in set
 	 * @return (optional) animation specified by given key
 	 */
-	default Optional<EntityAnimation> animation(AnimKeys key) {
+	default Optional<EntityAnimation> animation(String key) {
 		return animations().flatMap(am -> am.animation(key));
 	}
 
@@ -57,7 +57,7 @@ public interface AnimatedEntity {
 	 * @param key key identifying animation in set
 	 * @return (optional) selected animation
 	 */
-	default Optional<EntityAnimation> selectAndRunAnimation(AnimKeys key) {
+	default Optional<EntityAnimation> selectAndRunAnimation(String key) {
 		animations().ifPresent(anims -> {
 			anims.select(key);
 			anims.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
@@ -71,7 +71,7 @@ public interface AnimatedEntity {
 	 * @param key key identifying animation in set
 	 * @return (optional) selected animation
 	 */
-	default Optional<EntityAnimation> selectAndResetAnimation(AnimKeys key) {
+	default Optional<EntityAnimation> selectAndResetAnimation(String key) {
 		animations().ifPresent(anims -> {
 			anims.select(key);
 			anims.selectedAnimation().ifPresent(EntityAnimation::reset);
@@ -94,7 +94,7 @@ public interface AnimatedEntity {
 		animation().ifPresent(EntityAnimation::stop);
 	}
 
-	default boolean isAnimationSelected(AnimKeys key) {
+	default boolean isAnimationSelected(String key) {
 		return animations().isPresent() && animations().get().isSelected(key);
 	}
 }

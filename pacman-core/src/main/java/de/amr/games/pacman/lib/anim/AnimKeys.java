@@ -26,13 +26,23 @@ package de.amr.games.pacman.lib.anim;
 /**
  * @author Armin Reichert
  */
-public enum AnimKeys {
+public interface AnimKeys {
 
-	MAZE_FLASHING, MAZE_ENERGIZER_BLINKING,
+	public static final String MAZE_FLASHING = "MAZE_FLASHING";
+	public static final String MAZE_ENERGIZER_BLINKING = "MAZE_ENERGIZER_BLINKING";
 
-	PAC_DYING, PAC_MUNCHING, PAC_BIG,
+	public static final String PAC_DYING = "PAC_DYING";
+	public static final String PAC_MUNCHING = "PAC_MUNCHING";
+	public static final String PAC_BIG = "PAC_BIG";
 
-	GHOST_BLUE, GHOST_COLOR, GHOST_EYES, GHOST_FLASHING, GHOST_VALUE,
+	public static final String GHOST_BLUE = "GHOST_BLUE";
+	public static final String GHOST_COLOR = "GHOST_COLOR";
+	public static final String GHOST_EYES = "GHOST_EYES";
+	public static final String GHOST_FLASHING = "GHOST_FLASHING";
+	public static final String GHOST_VALUE = "GHOST_VALUE";
 
-	BLINKY_DAMAGED, BLINKY_PATCHED, BLINKY_NAKED, CLAPPERBOARD;
+	public static final String BLINKY_DAMAGED = "BLINKY_DAMAGED";
+	public static final String BLINKY_PATCHED = "BLINKY_PATCHED";
+	public static final String BLINKY_NAKED = "BLINKY_NAKED";
+	public static final String CLAPPERBOARD = "CLAPPERBOARD";
 }
