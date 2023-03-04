@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.lib.math.MathFunctions.differsAtMost;
+import static de.amr.games.pacman.lib.U.differsAtMost;
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;

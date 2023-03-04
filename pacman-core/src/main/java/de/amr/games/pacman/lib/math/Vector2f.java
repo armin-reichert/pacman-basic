@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib.math;
 
-import static de.amr.games.pacman.lib.math.MathFunctions.differsAtMost;
+import static de.amr.games.pacman.lib.U.differsAtMost;
 
 /**
  * Immutable 2D vector with float precision. Component values are treated as equal if they differ less than
