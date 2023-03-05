@@ -76,7 +76,7 @@ public class GameLevel {
 	 * @return tile that is located given number of tiles ahead creature (towards move direction). In case creature looks
 	 *         up, additional n tiles are added towards left which simulates an overflow error in the Arcade game version
 	 */
-	protected static Vector2i tilesAhead(Creature guy, int n) {
+	private static Vector2i tilesAhead(Creature guy, int n) {
 		var ahead = guy.tile().plus(guy.moveDir().vector().scaled(n));
 		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
@@ -539,7 +539,7 @@ public class GameLevel {
 		return memo.lastFoodFound;
 	}
 
-	public void checkIfPacFoundFood() {
+	private void checkIfPacFoundFood() {
 		var tile = pac.tile();
 		if (world.containsFood(tile)) {
 			memo.foodFoundTile = Optional.of(tile);
