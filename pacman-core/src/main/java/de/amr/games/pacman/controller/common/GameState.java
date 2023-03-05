@@ -104,7 +104,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void startCutscenesTest(GameModel game) {
-			gc.intermissionTestNumber = 1;
+			game.intermissionTestNumber = 1;
 			gc.changeState(INTERMISSION_TEST);
 		}
 	},
@@ -496,12 +496,12 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				if (gc.intermissionTestNumber < 3) {
-					++gc.intermissionTestNumber;
+				if (game.intermissionTestNumber < 3) {
+					++game.intermissionTestNumber;
 					timer.restartIndefinitely();
 					publishGameEventOfType(GameEventType.UNSPECIFIED_CHANGE);
 				} else {
-					gc.intermissionTestNumber = 1;
+					game.intermissionTestNumber = 1;
 					gc.changeState(INTRO);
 				}
 			}

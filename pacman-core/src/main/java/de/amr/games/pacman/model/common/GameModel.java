@@ -174,6 +174,7 @@ public abstract class GameModel {
 	protected boolean scoringEnabled;
 	protected boolean immune; // extra feature
 	protected boolean oneLessLifeDisplayed; // TODO get rid of this
+	public int intermissionTestNumber; // intermission test mode
 
 	protected GameModel() {
 		init();

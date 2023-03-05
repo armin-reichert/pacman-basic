@@ -76,7 +76,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private Steering autopilot = new RuleBasedSteering();
 	private Steering manualPacSteering = Steering.NONE;
 	private boolean autoControlled;
-	public int intermissionTestNumber; // intermission test mode
 
 	public GameController(GameVariant variant) {
 		Objects.requireNonNull(variant);
