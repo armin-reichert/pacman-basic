@@ -46,6 +46,14 @@ public class U {
 		return left + RND.nextDouble() * (right - left);
 	}
 
+	public static boolean isEven(int n) {
+		return n % 2 == 0;
+	}
+
+	public static boolean isOdd(int n) {
+		return n % 2 != 0;
+	}
+
 	/**
 	 * @param value1 value1
 	 * @param value2 value2

@@ -49,6 +49,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.EntityAnimation;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -371,18 +372,18 @@ public class GameLevel {
 	 * @return (optional) number of current scattering phase <code>(0-3)</code>
 	 */
 	public OptionalInt scatterPhase() {
-		return huntingPhase % 2 == 0 ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
+		return U.isEven(huntingPhase) ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
 	}
 
 	/**
 	 * @return (optional) number of current chasing phase <code>(0-3)</code>
 	 */
 	public OptionalInt chasingPhase() {
-		return huntingPhase % 2 == 1 ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
+		return U.isOdd(huntingPhase) ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
 	}
 
 	public String currentHuntingPhaseName() {
-		return huntingPhase % 2 == 0 ? "Scattering" : "Chasing";
+		return U.isEven(huntingPhase) ? "Scattering" : "Chasing";
 	}
 
 	/**
