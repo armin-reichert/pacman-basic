@@ -83,7 +83,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void selectGameVariant(GameVariant variant) {
 			gc.selectGameVariant(variant);
-			gc.boot();
+			gc.restart(GameState.BOOT);
 		}
 
 		@Override
@@ -476,7 +476,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					level.ghosts().forEach(ghost -> ghost.update(level));
 					level.bonus().update(level);
 				} else {
-					gc.boot();
+					gc.restart(GameState.BOOT);
 				}
 			});
 		}

@@ -23,9 +23,6 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller.common;
 
-import static de.amr.games.pacman.controller.common.GameState.BOOT;
-import static de.amr.games.pacman.controller.common.GameState.CREDIT;
-import static de.amr.games.pacman.controller.common.GameState.INTRO;
 import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 
 import java.util.Objects;
@@ -130,23 +127,5 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void setManualPacSteering(Steering steering) {
 		this.manualPacSteering = Objects.requireNonNull(steering);
-	}
-
-	/**
-	 * (Re)starts the game in the intro state.
-	 */
-	public void startIntro() {
-		// TODO check this
-		if (state() != CREDIT && state() != INTRO) {
-			game().changeCredit(-1);
-		}
-		restart(INTRO);
-	}
-
-	/**
-	 * (Re)starts the game from the boot state.
-	 */
-	public void boot() {
-		restart(BOOT);
 	}
 }
