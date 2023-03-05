@@ -78,16 +78,16 @@ public abstract class GameModel {
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
 	public static final short TICKS_PAC_POWER_FADES = 2 * FPS; // unsure
 
-	// Animations keys
-	public static final String AK_GHOST_BLUE = "GHOST_BLUE";
-	public static final String AK_GHOST_COLOR = "GHOST_COLOR";
-	public static final String AK_GHOST_EYES = "GHOST_EYES";
-	public static final String AK_GHOST_FLASHING = "GHOST_FLASHING";
-	public static final String AK_GHOST_VALUE = "GHOST_VALUE";
-	public static final String AK_MAZE_ENERGIZER_BLINKING = "MAZE_ENERGIZER_BLINKING";
-	public static final String AK_MAZE_FLASHING = "MAZE_FLASHING";
-	public static final String AK_PAC_DYING = "PAC_DYING";
-	public static final String AK_PAC_MUNCHING = "PAC_MUNCHING";
+	// Animation keys
+	public static final String AK_GHOST_BLUE = "ghost_blue";
+	public static final String AK_GHOST_COLOR = "ghost_color";
+	public static final String AK_GHOST_EYES = "ghost_eyes";
+	public static final String AK_GHOST_FLASHING = "ghost_flashing";
+	public static final String AK_GHOST_VALUE = "ghost_value";
+	public static final String AK_MAZE_ENERGIZER_BLINKING = "maze_energizer_blinking";
+	public static final String AK_MAZE_FLASHING = "maze_flashing";
+	public static final String AK_PAC_DYING = "pac_dying";
+	public static final String AK_PAC_MUNCHING = "pac_munching";
 
 	// Sound events
 	public static final String SE_BONUS_EATEN = "bonus_eaten";
