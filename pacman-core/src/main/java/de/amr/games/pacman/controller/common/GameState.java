@@ -496,7 +496,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				if (game.intermissionTestNumber < 3) {
+				if (game.intermissionTestNumber < game.numCutScenes()) {
 					++game.intermissionTestNumber;
 					timer.restartIndefinitely();
 					publishGameEventOfType(GameEventType.UNSPECIFIED_CHANGE);
@@ -508,7 +508,10 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		}
 	};
 
+	/** The game controller hosting this state. */
 	GameController gc;
+
+	/** The timer of this state. */
 	final TickTimer timer = new TickTimer("Timer-" + name());
 
 	@Override

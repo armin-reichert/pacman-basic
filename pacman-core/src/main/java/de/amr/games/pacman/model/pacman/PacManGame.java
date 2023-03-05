@@ -150,6 +150,11 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
+	public int numCutScenes() {
+		return 3;
+	}
+
+	@Override
 	public void onBonusReached() {
 		var bonus = level.bonus();
 		int ticks = 10 * FPS - RND.nextInt(FPS); // between 9 and 10 seconds

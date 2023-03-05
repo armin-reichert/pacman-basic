@@ -309,6 +309,11 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
+	public int numCutScenes() {
+		return 3;
+	}
+
+	@Override
 	public void onBonusReached() {
 		int numPortals = level.world().portals().size();
 		var entryPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));

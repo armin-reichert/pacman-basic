@@ -259,6 +259,8 @@ public abstract class GameModel {
 	 */
 	public abstract void onBonusReached();
 
+	public abstract int numCutScenes();
+
 	/** @return (optional) current game level. */
 	public Optional<GameLevel> level() {
 		return Optional.ofNullable(level);
