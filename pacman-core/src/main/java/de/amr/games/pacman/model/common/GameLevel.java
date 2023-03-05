@@ -505,13 +505,13 @@ public class GameLevel {
 		if (memo.pacPowerGained) {
 			onPacPowerStarts();
 			publishGameEventOfType(GameEventType.PAC_GETS_POWER);
-			publishSoundEvent("pacman_power_starts");
+			publishSoundEvent(GameModel.SE_PACMAN_POWER_STARTS);
 		} else if (memo.pacPowerFading) {
 			publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
 		} else if (memo.pacPowerLost) {
 			onPacPowerEnds();
 			publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
-			publishSoundEvent("pacman_power_ends");
+			publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS);
 		}
 	}
 
@@ -571,7 +571,7 @@ public class GameLevel {
 		checkIfBlinkyBecomesCruiseElroy();
 		houseRules.updateGhostDotCounters(this);
 		publishGameEvent(GameEventType.PAC_FINDS_FOOD, tile);
-		publishSoundEvent("pacman_found_food");
+		publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
 	}
 
 	/**

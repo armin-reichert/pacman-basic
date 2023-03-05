@@ -79,17 +79,34 @@ public abstract class GameModel {
 	public static final short TICKS_PAC_POWER_FADES = 2 * FPS; // unsure
 
 	// Animations keys
-	public static final String AK_MAZE_FLASHING = "MAZE_FLASHING";
-	public static final String AK_MAZE_ENERGIZER_BLINKING = "MAZE_ENERGIZER_BLINKING";
-
-	public static final String AK_PAC_DYING = "PAC_DYING";
-	public static final String AK_PAC_MUNCHING = "PAC_MUNCHING";
-
 	public static final String AK_GHOST_BLUE = "GHOST_BLUE";
 	public static final String AK_GHOST_COLOR = "GHOST_COLOR";
 	public static final String AK_GHOST_EYES = "GHOST_EYES";
 	public static final String AK_GHOST_FLASHING = "GHOST_FLASHING";
 	public static final String AK_GHOST_VALUE = "GHOST_VALUE";
+	public static final String AK_MAZE_ENERGIZER_BLINKING = "MAZE_ENERGIZER_BLINKING";
+	public static final String AK_MAZE_FLASHING = "MAZE_FLASHING";
+	public static final String AK_PAC_DYING = "PAC_DYING";
+	public static final String AK_PAC_MUNCHING = "PAC_MUNCHING";
+
+	// Sound events
+	public static final String SE_BONUS_EATEN = "bonus_eaten";
+	public static final String SE_CREDIT_ADDED = "credit_added";
+	public static final String SE_EXTRA_LIFE = "extra_life";
+	public static final String SE_GHOST_EATEN = "ghost_eaten";
+	public static final String SE_HUNTING_PHASE_STARTED_0 = "hunting_phase_started_0";
+	public static final String SE_HUNTING_PHASE_STARTED_2 = "hunting_phase_started_2";
+	public static final String SE_HUNTING_PHASE_STARTED_4 = "hunting_phase_started_4";
+	public static final String SE_HUNTING_PHASE_STARTED_6 = "hunting_phase_started_5";
+	public static final String SE_PACMAN_DEATH = "pacman_death";
+	public static final String SE_PACMAN_FOUND_FOOD = "pacman_found_food";
+	public static final String SE_PACMAN_POWER_ENDS = "pacman_power_ends";
+	public static final String SE_PACMAN_POWER_STARTS = "pacman_power_starts";
+	public static final String SE_READY_TO_PLAY = "ready_to_play";
+	public static final String SE_START_INTERMISSION_1 = "start_intermission_1";
+	public static final String SE_START_INTERMISSION_2 = "start_intermission_2";
+	public static final String SE_START_INTERMISSION_3 = "start_intermission_3";
+	public static final String SE_STOP_ALL_SOUNDS = "stop_all_sounds";
 
 	//@formatter:off
 	protected static final byte[][] LEVEL_PARAMETERS = {
@@ -369,7 +386,7 @@ public abstract class GameModel {
 		}
 		if (oldScore < SCORE_EXTRA_LIFE && newScore >= SCORE_EXTRA_LIFE) {
 			lives += 1;
-			GameEvents.publishSoundEvent("extra_life");
+			GameEvents.publishSoundEvent(SE_EXTRA_LIFE);
 		}
 	}
 

@@ -102,7 +102,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 			@Override
 			public void onUpdate(IntermissionData ctx) {
 				if (timer.atSecond(1)) {
-					GameEvents.publishSoundEvent("start_intermission_3");
+					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_3);
 					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();

@@ -131,7 +131,7 @@ public class MovingBonus extends Creature implements Bonus {
 		LOG.info("Bonus eaten: %s", this);
 		jumpAnimation.stop();
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
-		publishSoundEvent("bonus_eaten");
+		publishSoundEvent(GameModel.SE_BONUS_EATEN);
 	}
 
 	public float dy() {

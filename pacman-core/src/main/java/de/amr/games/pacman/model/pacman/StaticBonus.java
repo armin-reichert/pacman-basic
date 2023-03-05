@@ -106,7 +106,7 @@ public class StaticBonus extends Entity implements Bonus {
 		state = BonusState.EATEN;
 		LOG.info("Bonus eaten: %s", this);
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
-		publishSoundEvent("bonus_eaten");
+		publishSoundEvent(GameModel.SE_BONUS_EATEN);
 	}
 
 	private void expire() {

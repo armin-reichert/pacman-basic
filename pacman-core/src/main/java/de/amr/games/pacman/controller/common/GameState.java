@@ -53,7 +53,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.clearLevelCounter();
 			game.newScore();
 			game.loadHighscore();
-			publishSoundEvent("stop_all_sounds");
+			publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
 		}
 
 		@Override
@@ -70,7 +70,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.restartIndefinitely();
 			game.setPlaying(false);
 			game.removeLevel();
-			publishSoundEvent("stop_all_sounds");
+			publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
 		}
 
 		@Override
@@ -90,7 +90,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void addCredit(GameModel game) {
 			boolean added = game.changeCredit(1);
 			if (added) {
-				publishSoundEvent("credit_added");
+				publishSoundEvent(GameModel.SE_CREDIT_ADDED);
 			}
 			gc.changeState(CREDIT);
 		}
@@ -119,7 +119,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void addCredit(GameModel game) {
 			boolean added = game.changeCredit(1);
 			if (added) {
-				publishSoundEvent("credit_added");
+				publishSoundEvent(GameModel.SE_CREDIT_ADDED);
 			}
 		}
 
@@ -132,7 +132,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			publishSoundEvent("stop_all_sounds");
+			publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
 			if (!game.hasCredit()) {
 				game.init();
 				game.enterDemoLevel();
@@ -144,7 +144,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.newScore();
 				game.clearLevelCounter();
 				game.enterLevel(1);
-				publishSoundEvent("ready_to_play");
+				publishSoundEvent(GameModel.SE_READY_TO_PLAY);
 				publishGameEventOfType(GameEventType.LEVEL_STARTING);
 			}
 		}
@@ -187,7 +187,15 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			game.level().ifPresent(level -> {
-				publishSoundEvent("hunting_phase_started_%d".formatted(level.huntingPhase()));
+				switch (level.huntingPhase()) {
+				case 0 -> publishSoundEvent(GameModel.SE_HUNTING_PHASE_STARTED_0);
+				case 2 -> publishSoundEvent(GameModel.SE_HUNTING_PHASE_STARTED_2);
+				case 4 -> publishSoundEvent(GameModel.SE_HUNTING_PHASE_STARTED_4);
+				case 6 -> publishSoundEvent(GameModel.SE_HUNTING_PHASE_STARTED_6);
+				default -> {
+					// no sound event
+				}
+				}
 				level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::restart);
 			});
 		}
@@ -216,7 +224,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (!game.isPlaying()) {
 				boolean added = game.changeCredit(1);
 				if (added) {
-					publishSoundEvent("credit_added");
+					publishSoundEvent(GameModel.SE_CREDIT_ADDED);
 				}
 				gc.changeState(CREDIT);
 			}
@@ -256,7 +264,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.restartSeconds(4);
 			game.level().ifPresent(GameLevel::exit);
-			publishSoundEvent("stop_all_sounds");
+			publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
 			publishGameEventOfType(GameEventType.UNSPECIFIED_CHANGE);
 		}
 
@@ -310,7 +318,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.level().ifPresent(level -> {
 				level.pac().hide();
 				level.ghosts().forEach(ghost -> ghost.stopFlashing(true));
-				publishSoundEvent("ghost_eaten");
+				publishSoundEvent(GameModel.SE_GHOST_EATEN);
 			});
 		}
 
@@ -345,7 +353,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.level().ifPresent(level -> {
 				timer.restartSeconds(4);
 				level.onPacKilled();
-				publishSoundEvent("stop_all_sounds");
+				publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
 			});
 		}
 
@@ -357,7 +365,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					level.ghosts().forEach(Ghost::hide);
 				} else if (timer.atSecond(1.4)) {
 					level.pac().startAnimation();
-					publishSoundEvent("pacman_death");
+					publishSoundEvent(GameModel.SE_PACMAN_DEATH);
 				} else if (timer.atSecond(3.0)) {
 					level.pac().hide();
 					game.setLives(game.lives() - 1);
@@ -395,7 +403,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.restartSeconds(1.2);
 			game.changeCredit(-1);
 			game.saveNewHighscore();
-			publishSoundEvent("stop_all_sounds");
+			publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
 		}
 
 		@Override
