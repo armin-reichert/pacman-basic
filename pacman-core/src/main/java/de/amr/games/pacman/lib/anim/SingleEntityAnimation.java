@@ -45,13 +45,13 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	protected boolean complete;
 
 	@SafeVarargs
-	public SingleEntityAnimation(T... things) {
-		if (things.length == 0) {
-			throw new IllegalArgumentException("Sequence must have at least contain one thing");
+	public SingleEntityAnimation(T... frames) {
+		if (frames.length == 0) {
+			throw new IllegalArgumentException("Animation must at least contain one frame");
 		}
-		this.frames = things;
+		this.frames = frames;
 		repetitions = 1;
-		frameDurationTicks = 6; // 0.1 sec
+		frameDurationTicks = 6; // 0.1 sec at 60Hz
 		reset();
 	}
 
