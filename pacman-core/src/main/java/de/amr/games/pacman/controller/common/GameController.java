@@ -32,7 +32,6 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.steering.RuleBasedSteering;
-import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -166,7 +165,12 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void cheatEatAllPellets() {
 		if (game.isPlaying() && state() == GameState.HUNTING) {
-			game.level().ifPresent(GameLevel::removeAllPellets);
+			game.level().ifPresent(level -> {
+				level.removeAllPellets();
+				if (level.world().foodRemaining() == 0) {
+					changeState(GameState.LEVEL_COMPLETE);
+				}
+			});
 		}
 	}
 
