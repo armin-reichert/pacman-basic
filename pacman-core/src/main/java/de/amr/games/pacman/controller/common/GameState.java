@@ -34,7 +34,6 @@ import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -44,7 +43,7 @@ import de.amr.games.pacman.model.common.actors.GhostState;
  * 
  * @author Armin Reichert
  */
-public enum GameState implements FsmState<GameModel>, GameCommands {
+public enum GameState implements FsmState<GameModel> {
 
 	BOOT() { // "Das muss das Boot abkönnen!"
 		@Override
@@ -79,53 +78,12 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				gc.changeState(READY);
 			}
 		}
-
-		@Override
-		public void selectGameVariant(GameVariant variant) {
-			gc.selectGameVariant(variant);
-			gc.restart(GameState.BOOT);
-		}
-
-		@Override
-		public void addCredit(GameModel game) {
-			boolean added = game.changeCredit(1);
-			if (added) {
-				publishSoundEvent(GameModel.SE_CREDIT_ADDED);
-			}
-			gc.changeState(CREDIT);
-		}
-
-		@Override
-		public void requestGame(GameModel game) {
-			if (game.hasCredit()) {
-				gc.changeState(READY);
-			}
-		}
-
-		@Override
-		public void startCutscenesTest(GameModel game) {
-			game.intermissionTestNumber = 1;
-			gc.changeState(INTERMISSION_TEST);
-		}
 	},
 
 	CREDIT {
 		@Override
 		public void onUpdate(GameModel game) {
 			// nothing to do here
-		}
-
-		@Override
-		public void addCredit(GameModel game) {
-			boolean added = game.changeCredit(1);
-			if (added) {
-				publishSoundEvent(GameModel.SE_CREDIT_ADDED);
-			}
-		}
-
-		@Override
-		public void requestGame(GameModel game) {
-			gc.changeState(READY);
 		}
 	},
 
@@ -217,45 +175,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					gc.changeState(GHOST_DYING);
 				}
 			});
-		}
-
-		@Override
-		public void addCredit(GameModel game) {
-			if (!game.isPlaying()) {
-				boolean added = game.changeCredit(1);
-				if (added) {
-					publishSoundEvent(GameModel.SE_CREDIT_ADDED);
-				}
-				gc.changeState(CREDIT);
-			}
-		}
-
-		@Override
-		public void cheatEatAllPellets(GameModel game) {
-			if (game.isPlaying()) {
-				game.level().ifPresent(GameLevel::removeAllPellets);
-			}
-		}
-
-		@Override
-		public void cheatKillAllEatableGhosts(GameModel game) {
-			if (game.isPlaying()) {
-				game.level().ifPresent(level -> {
-					level.killAllHuntingAndFrightenedGhosts();
-					gc.changeState(GameState.GHOST_DYING);
-				});
-			}
-		}
-
-		@Override
-		public void cheatEnterNextLevel(GameModel game) {
-			if (game.isPlaying()) {
-				game.level().ifPresent(level -> {
-					var world = level.world();
-					world.tiles().forEach(world::removeFood);
-					gc.changeState(GameState.LEVEL_COMPLETE);
-				});
-			}
 		}
 	},
 
@@ -435,7 +354,6 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	},
 
 	LEVEL_TEST {
-
 		private int lastTestedLevel;
 
 		@Override

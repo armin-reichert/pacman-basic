@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
+import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
 import java.util.Objects;
 
@@ -31,6 +32,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.steering.RuleBasedSteering;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -87,19 +89,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		GameEvents.setGameController(this);
 	}
 
-	/**
-	 * Selects the game specified by the given variant.
-	 * 
-	 * @param variant Pac-Man or Ms. Pac-Man
-	 */
-	public void selectGameVariant(GameVariant variant) {
-		boolean immune = game.isImmune();
-		int credit = game.credit();
-		game = newGameModel(variant);
-		game.setImmune(immune);
-		game.setCredit(credit);
-	}
-
 	@Override
 	public GameModel context() {
 		return game;
@@ -127,5 +116,81 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void setManualPacSteering(Steering steering) {
 		this.manualPacSteering = Objects.requireNonNull(steering);
+	}
+
+	// Game commands
+
+	/**
+	 * Creates a new game as specified by the given variant and reboots. Keeps immunity and credit.
+	 * 
+	 * @param variant Pac-Man or Ms. Pac-Man
+	 */
+	public void selectGameVariant(GameVariant variant) {
+		switch (state()) {
+		case INTRO -> {
+			boolean immune = game.isImmune();
+			int credit = game.credit();
+			game = newGameModel(variant);
+			game.setImmune(immune);
+			game.setCredit(credit);
+			restart(GameState.BOOT);
+		}
+		default -> {
+			// not supported
+		}
+		}
+	}
+
+	/**
+	 * Adds credit (simulates insertion of a coin) and switches to the credit scene.
+	 */
+	public void addCredit() {
+		if (!game.isPlaying()) {
+			boolean added = game.changeCredit(1);
+			if (added) {
+				publishSoundEvent(GameModel.SE_CREDIT_ADDED);
+			}
+			if (state() != GameState.CREDIT) {
+				changeState(GameState.CREDIT);
+			}
+		}
+	}
+
+	public void startPlaying() {
+		if ((state() == GameState.INTRO || state() == GameState.CREDIT) && game.hasCredit()) {
+			changeState(GameState.READY);
+		}
+	}
+
+	public void startCutscenesTest() {
+		if (state() == GameState.INTRO) {
+			game.intermissionTestNumber = 1;
+			changeState(GameState.INTERMISSION_TEST);
+		}
+	}
+
+	public void cheatEatAllPellets() {
+		if (game.isPlaying() && state() == GameState.HUNTING) {
+			game.level().ifPresent(GameLevel::removeAllPellets);
+		}
+	}
+
+	public void cheatKillAllEatableGhosts() {
+		if (game.isPlaying() && state() == GameState.HUNTING) {
+			game.level().ifPresent(level -> {
+				level.killAllHuntingAndFrightenedGhosts();
+				changeState(GameState.GHOST_DYING);
+			});
+		}
+	}
+
+	public void cheatEnterNextLevel() {
+		if (game.isPlaying() && state() == GameState.HUNTING) {
+			game.level().ifPresent(level -> {
+				var world = level.world();
+				world.tiles().forEach(world::removeFood);
+				changeState(GameState.LEVEL_COMPLETE);
+			});
+		}
 	}
 }
