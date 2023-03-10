@@ -30,7 +30,6 @@ import static de.amr.games.pacman.model.common.world.World.t;
 import java.util.List;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -40,7 +39,8 @@ import de.amr.games.pacman.model.common.actors.Pac;
 /**
  * @author Armin Reichert
  */
-public class MsPacManIntroData extends SceneControllerContext {
+public class MsPacManIntroData {
+	public final GameController gameController;
 	public static final float GUYS_SPEED = 1.1f;
 	public static final Vector2i BLINKY_END_TILE = v2i(t(8), t(11));
 	public static final Vector2i TURNING_POSITION = v2i(t(6), t(20)).plus(0, HTS);
@@ -59,7 +59,7 @@ public class MsPacManIntroData extends SceneControllerContext {
 	boolean creditVisible = false;
 
 	public MsPacManIntroData(GameController gameController) {
-		super(gameController);
+		this.gameController = gameController;
 	}
 
 	public int ghostIndex() {

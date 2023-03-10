@@ -112,13 +112,13 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 	READY_TO_PLAY {
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
-			if (timer.atSecond(2.0) && !ctx.game().hasCredit()) {
-				ctx.gameController().changeState(GameState.READY);
+			if (timer.atSecond(2.0) && !ctx.gameController.game().hasCredit()) {
+				ctx.gameController.changeState(GameState.READY);
 				// go into demo mode
 				return;
 			}
 			if (timer.atSecond(5)) {
-				ctx.gameController().changeState(GameState.CREDIT);
+				ctx.gameController.changeState(GameState.CREDIT);
 				return;
 			}
 			ctx.lightsTimer.advance();

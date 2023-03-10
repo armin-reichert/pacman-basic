@@ -27,7 +27,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.IntermissionData;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.IntermissionState;
 import de.amr.games.pacman.event.GameEvents;
@@ -69,7 +68,8 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 		return intermissionData;
 	}
 
-	public static class IntermissionData extends SceneControllerContext {
+	public static class IntermissionData {
+		public final GameController gameController;
 		public final int upperY = t(12);
 		public final int middleY = t(18);
 		public final int lowerY = t(24);
@@ -85,7 +85,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 		public Entity heart;
 
 		public IntermissionData(GameController gameController) {
-			super(gameController);
+			this.gameController = gameController;
 		}
 	}
 
@@ -251,7 +251,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 			@Override
 			public void onUpdate(IntermissionData ctx) {
 				if (timer.hasExpired()) {
-					ctx.gameController().terminateCurrentState();
+					ctx.gameController.terminateCurrentState();
 				}
 			}
 		};

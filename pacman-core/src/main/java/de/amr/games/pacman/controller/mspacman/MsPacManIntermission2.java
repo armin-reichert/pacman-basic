@@ -26,7 +26,6 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionData;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionState;
 import de.amr.games.pacman.event.GameEvents;
@@ -64,7 +63,8 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 		return intermissionData;
 	}
 
-	public static class IntermissionData extends SceneControllerContext {
+	public static class IntermissionData {
+		public final GameController gameController;
 		public final int upperY = t(12);
 		public final int middleY = t(18);
 		public final int lowerY = t(24);
@@ -73,7 +73,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 		public Pac msPacMan;
 
 		public IntermissionData(GameController gameController) {
-			super(gameController);
+			this.gameController = gameController;
 		}
 	}
 
@@ -153,7 +153,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 					ctx.msPacMan.setMoveDir(Direction.RIGHT);
 					ctx.msPacMan.setPixelSpeed(4.0f);
 				} else if (timer.atSecond(21)) {
-					ctx.gameController().terminateCurrentState();
+					ctx.gameController.terminateCurrentState();
 					return;
 				}
 				ctx.pacMan.move();

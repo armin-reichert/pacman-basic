@@ -26,7 +26,6 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionData;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionState;
 import de.amr.games.pacman.event.GameEvents;
@@ -68,7 +67,8 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 		return intermissionData;
 	}
 
-	public static class IntermissionData extends SceneControllerContext {
+	public static class IntermissionData {
+		public final GameController gameController;
 		public final int groundY = t(24);
 		public Clapperboard clapperboard;
 		public Pac pacMan;
@@ -79,7 +79,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 		public int numBagBounces;
 
 		public IntermissionData(GameController gameController) {
-			super(gameController);
+			this.gameController = gameController;
 		}
 	}
 
@@ -176,7 +176,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 			public void onUpdate(IntermissionData ctx) {
 				ctx.stork.move();
 				if (timer.hasExpired()) {
-					ctx.gameController().terminateCurrentState();
+					ctx.gameController.terminateCurrentState();
 				}
 			}
 		};
