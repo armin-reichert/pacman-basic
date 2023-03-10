@@ -37,7 +37,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
-import static java.util.function.Predicate.not;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -559,13 +558,5 @@ public class GameLevel {
 		if (memo.bonusReached) {
 			game.onBonusReached();
 		}
-	}
-
-	/**
-	 * Called by cheat action.
-	 */
-	public void removeAllPellets() {
-		world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
-		publishGameEventOfType(GameEventType.PAC_FINDS_FOOD);
 	}
 }

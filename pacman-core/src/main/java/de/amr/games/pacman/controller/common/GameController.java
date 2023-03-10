@@ -24,10 +24,13 @@ SOFTWARE.
 package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
+import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
+import static java.util.function.Predicate.not;
 
 import java.util.Objects;
 
+import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
@@ -166,8 +169,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public void cheatEatAllPellets() {
 		if (game.isPlaying() && state() == GameState.HUNTING) {
 			game.level().ifPresent(level -> {
-				level.removeAllPellets();
-				if (level.world().foodRemaining() == 0) {
+				var world = level.world();
+				world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
+				publishGameEventOfType(GameEventType.PAC_FINDS_FOOD);
+				if (world.foodRemaining() == 0) {
 					changeState(GameState.LEVEL_COMPLETE);
 				}
 			});
