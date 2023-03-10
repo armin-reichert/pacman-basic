@@ -533,36 +533,32 @@ public class GameLevel {
 	private void checkIfPacFoundFood() {
 		var tile = pac.tile();
 		if (world.containsFood(tile)) {
+			world.removeFood(tile);
 			memo.foodFoundTile = Optional.of(tile);
-			memo.lastFoodFound = world.foodRemaining() == 1;
 			memo.energizerFound = world.isEnergizerTile(tile);
+			memo.lastFoodFound = world.foodRemaining() == 0;
 			memo.pacPowerGained = memo.energizerFound && params().pacPowerSeconds() > 0;
 			memo.bonusReached = world.eatenFoodCount() == GameModel.PELLETS_EATEN_BONUS1
 					|| world.eatenFoodCount() == GameModel.PELLETS_EATEN_BONUS2;
-			onFoodFound(tile);
+			pac.endStarving();
+			if (memo.energizerFound) {
+				numGhostsKilledByEnergizer = 0;
+				pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
+				game.scorePoints(GameModel.POINTS_ENERGIZER);
+			} else {
+				pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
+				game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
+			}
+			checkIfBlinkyBecomesCruiseElroy();
+			houseRules.updateGhostDotCounters(this);
+			publishGameEvent(GameEventType.PAC_FINDS_FOOD, tile);
+			publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
 		} else {
 			pac.starve();
 		}
 		if (memo.bonusReached) {
 			game.onBonusReached();
 		}
-	}
-
-	private void onFoodFound(Vector2i tile) {
-		world.removeFood(tile);
-		pac.endStarving();
-		if (memo.energizerFound) {
-			numGhostsKilledByEnergizer = 0;
-			pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
-			game.scorePoints(GameModel.POINTS_ENERGIZER);
-		} else {
-			pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
-			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
-		}
-		checkIfBlinkyBecomesCruiseElroy();
-		houseRules.updateGhostDotCounters(this);
-		publishGameEvent(GameEventType.PAC_FINDS_FOOD, tile);
-		publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
 	}
 
 	/**
