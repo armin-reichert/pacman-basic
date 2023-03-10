@@ -504,34 +504,24 @@ public class GameLevel {
 		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
 		memo.pacPowerLost = pac.powerTimer().hasExpired();
 		if (memo.pacPowerGained) {
-			onPacPowerStarts();
+			huntingTimer.stop();
+			pac.powerTimer().restartSeconds(params().pacPowerSeconds());
+			LOG.trace("%s power starting, duration %d ticks", pac.name(), pac.powerTimer().duration());
+			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
+			ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
 			publishGameEventOfType(GameEventType.PAC_GETS_POWER);
 			publishSoundEvent(GameModel.SE_PACMAN_POWER_STARTS);
 		} else if (memo.pacPowerFading) {
 			publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
 		} else if (memo.pacPowerLost) {
-			onPacPowerEnds();
+			LOG.trace("%s power ends, timer: %s", pac.name(), pac.powerTimer());
+			huntingTimer.start();
+			pac.powerTimer().stop();
+			pac.powerTimer().resetIndefinitely();
+			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
 			publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
 			publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS);
 		}
-	}
-
-	private void onPacPowerStarts() {
-		LOG.trace("%s power begins", pac.name());
-		huntingTimer.stop();
-		pac.powerTimer().restartSeconds(params().pacPowerSeconds());
-		LOG.trace("Timer started: %s", pac.powerTimer());
-		ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
-		ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
-	}
-
-	private void onPacPowerEnds() {
-		LOG.trace("%s power ends", pac.name());
-		huntingTimer.start();
-		pac.powerTimer().stop();
-		pac.powerTimer().resetIndefinitely();
-		LOG.trace("Timer stopped: %s", pac.powerTimer());
-		ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
 	}
 
 	// Food
