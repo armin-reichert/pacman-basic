@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.amr.games.pacman.lib.anim.FixedEntityAnimation;
+import de.amr.games.pacman.lib.anim.FrameSequence;
 
 /**
  * @author Armin Reichert
@@ -37,11 +37,11 @@ import de.amr.games.pacman.lib.anim.FixedEntityAnimation;
  */
 public class FixedEntityAnimationTest {
 
-	private FixedEntityAnimation<String> animation;
+	private FrameSequence<String> animation;
 
 	@Before
 	public void setUp() {
-		animation = new FixedEntityAnimation<>("A", "B", "C");
+		animation = new FrameSequence<>("A", "B", "C");
 	}
 
 	@Test

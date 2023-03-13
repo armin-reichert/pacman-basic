@@ -30,21 +30,21 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  */
-public class FixedEntityAnimation<T> implements EntityAnimation {
+public class FrameSequence<T> implements EntityAnimation {
 
 	private int frameIndex;
-	private final T[] things;
+	private final T[] frames;
 
 	@SafeVarargs
-	public FixedEntityAnimation(T... things) {
-		this.things = things;
+	public FrameSequence(T... frames) {
+		this.frames = frames;
 	}
 
 	@SuppressWarnings("unchecked")
-	public FixedEntityAnimation(List<T> list) {
-		this.things = (T[]) new Object[list.size()];
-		for (int i = 0; i < list.size(); ++i) {
-			things[i] = list.get(i);
+	public FrameSequence(List<T> seq) {
+		this.frames = (T[]) new Object[seq.size()];
+		for (int i = 0; i < seq.size(); ++i) {
+			frames[i] = seq.get(i);
 		}
 	}
 
@@ -84,17 +84,17 @@ public class FixedEntityAnimation<T> implements EntityAnimation {
 	}
 
 	public Stream<T> frames() {
-		return Stream.of(things);
+		return Stream.of(frames);
 	}
 
 	@Override
 	public int numFrames() {
-		return things.length;
+		return frames.length;
 	}
 
 	@Override
 	public T frame(int i) {
-		return things[i];
+		return frames[i];
 	}
 
 	@Override
@@ -109,9 +109,9 @@ public class FixedEntityAnimation<T> implements EntityAnimation {
 
 	@Override
 	public void setFrameIndex(int i) {
-		if (i < 0 || i >= things.length) {
+		if (i < 0 || i >= frames.length) {
 			throw new IllegalArgumentException(
-					"Illegal frame index: %d. Index must be from interval 0..%d".formatted(i, things.length - 1));
+					"Illegal frame index: %d. Index must be from interval 0..%d".formatted(i, frames.length - 1));
 		}
 		frameIndex = i;
 	}
