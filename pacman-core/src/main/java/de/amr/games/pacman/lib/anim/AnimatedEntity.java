@@ -29,26 +29,25 @@ import java.util.Optional;
 /**
  * Mix-in with useful methods for an animated entity.
  * 
- * @param <K> key type of animation map, most probably an enumeration type
  * @author Armin Reichert
  */
 public interface AnimatedEntity {
 
-	public Optional<EntityAnimationMap> animations();
+	public Optional<AnimationMap> animations();
 
 	/**
 	 * @param key key identifying animation in set
 	 * @return (optional) animation specified by given key
 	 */
-	default Optional<EntityAnimation> animation(String key) {
+	default Optional<Animated> animation(String key) {
 		return animations().flatMap(am -> am.animation(key));
 	}
 
 	/**
 	 * @return (optional) selected animation
 	 */
-	default Optional<EntityAnimation> animation() {
-		return animations().flatMap(EntityAnimationMap::selectedAnimation);
+	default Optional<Animated> animation() {
+		return animations().flatMap(AnimationMap::selectedAnimation);
 	}
 
 	/**
@@ -57,10 +56,10 @@ public interface AnimatedEntity {
 	 * @param key key identifying animation in set
 	 * @return (optional) selected animation
 	 */
-	default Optional<EntityAnimation> selectAndRunAnimation(String key) {
+	default Optional<Animated> selectAndRunAnimation(String key) {
 		animations().ifPresent(anims -> {
 			anims.select(key);
-			anims.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
+			anims.selectedAnimation().ifPresent(Animated::ensureRunning);
 		});
 		return animation();
 	}
@@ -71,10 +70,10 @@ public interface AnimatedEntity {
 	 * @param key key identifying animation in set
 	 * @return (optional) selected animation
 	 */
-	default Optional<EntityAnimation> selectAndResetAnimation(String key) {
+	default Optional<Animated> selectAndResetAnimation(String key) {
 		animations().ifPresent(anims -> {
 			anims.select(key);
-			anims.selectedAnimation().ifPresent(EntityAnimation::reset);
+			anims.selectedAnimation().ifPresent(Animated::reset);
 		});
 		return animation();
 	}
@@ -83,15 +82,15 @@ public interface AnimatedEntity {
 	 * Advances the currently selected animation by a single frame.
 	 */
 	default void animate() {
-		animation().ifPresent(EntityAnimation::animate);
+		animation().ifPresent(Animated::animate);
 	}
 
 	default void startAnimation() {
-		animation().ifPresent(EntityAnimation::start);
+		animation().ifPresent(Animated::start);
 	}
 
 	default void stopAnimation() {
-		animation().ifPresent(EntityAnimation::stop);
+		animation().ifPresent(Animated::stop);
 	}
 
 	default boolean isAnimationSelected(String key) {

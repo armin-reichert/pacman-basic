@@ -32,24 +32,24 @@ import de.amr.games.pacman.lib.steering.Direction;
 /**
  * @author Armin Reichert
  */
-public class EntityAnimationByDirection implements EntityAnimation {
+public class AnimationByDirection implements Animated {
 
-	private final Map<Direction, EntityAnimation> map = new EnumMap<>(Direction.class);
+	private final Map<Direction, Animated> map = new EnumMap<>(Direction.class);
 	private final Supplier<Direction> fnDirection;
 
-	public EntityAnimationByDirection(Supplier<Direction> fnDirection) {
+	public AnimationByDirection(Supplier<Direction> fnDirection) {
 		this.fnDirection = fnDirection;
 	}
 
-	public void put(Direction dir, EntityAnimation animation) {
+	public void put(Direction dir, Animated animation) {
 		map.put(dir, animation);
 	}
 
-	public EntityAnimation get(Direction dir) {
+	public Animated get(Direction dir) {
 		return map.get(dir);
 	}
 
-	private EntityAnimation currentAnimation() {
+	private Animated currentAnimation() {
 		return map.get(fnDirection.get());
 	}
 
@@ -60,7 +60,7 @@ public class EntityAnimationByDirection implements EntityAnimation {
 
 	@Override
 	public void ensureRunning() {
-		map.values().forEach(EntityAnimation::ensureRunning);
+		map.values().forEach(Animated::ensureRunning);
 	}
 
 	@Override
@@ -95,12 +95,12 @@ public class EntityAnimationByDirection implements EntityAnimation {
 
 	@Override
 	public void reset() {
-		map.values().forEach(EntityAnimation::reset);
+		map.values().forEach(Animated::reset);
 	}
 
 	@Override
 	public void restart() {
-		map.values().forEach(EntityAnimation::restart);
+		map.values().forEach(Animated::restart);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class EntityAnimationByDirection implements EntityAnimation {
 
 	@Override
 	public void start() {
-		map.values().forEach(EntityAnimation::start);
+		map.values().forEach(Animated::start);
 	}
 
 	@Override
@@ -120,6 +120,6 @@ public class EntityAnimationByDirection implements EntityAnimation {
 
 	@Override
 	public void stop() {
-		map.values().forEach(EntityAnimation::stop);
+		map.values().forEach(Animated::stop);
 	}
 }

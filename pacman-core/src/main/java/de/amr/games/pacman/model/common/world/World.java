@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
-import de.amr.games.pacman.lib.anim.EntityAnimationMap;
+import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -268,5 +268,5 @@ public interface World extends AnimatedEntity {
 	 */
 	int eatenFoodCount();
 
-	void setAnimations(EntityAnimationMap animationMap);
+	void setAnimations(AnimationMap animationMap);
 }

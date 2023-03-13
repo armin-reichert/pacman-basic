@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  */
-public class FrameSequence<T> implements EntityAnimation {
+public class FrameSequence<T> implements Animated {
 
 	private int frameIndex;
 	private final T[] frames;

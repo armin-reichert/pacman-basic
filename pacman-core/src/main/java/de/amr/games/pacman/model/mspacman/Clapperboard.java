@@ -25,7 +25,7 @@ package de.amr.games.pacman.model.mspacman;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.anim.EntityAnimation;
+import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
@@ -37,18 +37,18 @@ public class Clapperboard extends Entity {
 
 	public final int sceneNumber;
 	public final String sceneTitle;
-	private EntityAnimation animation;
+	private Animated animation;
 
 	public Clapperboard(int sceneNumber, String sceneTitle) {
 		this.sceneNumber = sceneNumber;
 		this.sceneTitle = sceneTitle;
 	}
 
-	public void setAnimation(EntityAnimation animation) {
+	public void setAnimation(Animated animation) {
 		this.animation = animation;
 	}
 
-	public Optional<EntityAnimation> animation() {
+	public Optional<Animated> animation() {
 		return Optional.ofNullable(animation);
 	}
 }

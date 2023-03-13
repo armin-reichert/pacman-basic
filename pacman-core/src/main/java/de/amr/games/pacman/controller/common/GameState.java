@@ -28,8 +28,8 @@ import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.anim.EntityAnimation;
-import de.amr.games.pacman.lib.anim.EntityAnimationMap;
+import de.amr.games.pacman.lib.anim.Animated;
+import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -154,7 +154,7 @@ public enum GameState implements FsmState<GameModel> {
 					// no sound event
 				}
 				}
-				level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::restart);
+				level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::restart);
 			});
 		}
 
@@ -251,7 +251,7 @@ public enum GameState implements FsmState<GameModel> {
 					steering.steer(level, level.pac());
 					level.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
 							.forEach(ghost -> ghost.update(level));
-					level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::animate);
+					level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
 				});
 			}
 		}
@@ -289,7 +289,7 @@ public enum GameState implements FsmState<GameModel> {
 					level.pac().hide();
 					game.setLives(game.lives() - 1);
 					if (game.lives() == 0) {
-						level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::stop);
+						level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::stop);
 						game.setOneLessLifeDisplayed(false);
 					}
 				} else if (timer.hasExpired()) {
@@ -301,7 +301,7 @@ public enum GameState implements FsmState<GameModel> {
 						gc.changeState(game.lives() == 0 ? GAME_OVER : READY);
 					}
 				} else {
-					level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(EntityAnimation::animate);
+					level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
 					level.pac().update(level);
 					level.ghosts().forEach(Ghost::animate);
 				}
@@ -390,7 +390,7 @@ public enum GameState implements FsmState<GameModel> {
 						timer.restartIndefinitely();
 						publishGameEventOfType(GameEventType.LEVEL_STARTING);
 					}
-					level.world().animations().ifPresent(EntityAnimationMap::animate);
+					level.world().animations().ifPresent(AnimationMap::animate);
 					level.ghosts().forEach(ghost -> ghost.update(level));
 					level.bonus().update(level);
 				} else {

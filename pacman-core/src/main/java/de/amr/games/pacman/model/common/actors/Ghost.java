@@ -43,8 +43,8 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
-import de.amr.games.pacman.lib.anim.EntityAnimation;
-import de.amr.games.pacman.lib.anim.EntityAnimationMap;
+import de.amr.games.pacman.lib.anim.Animated;
+import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -66,7 +66,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private final byte id;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
-	private EntityAnimationMap animations;
+	private AnimationMap animations;
 	private int killedIndex;
 
 	public Ghost(byte id, String name) {
@@ -419,12 +419,12 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	// Animation
 
-	public void setAnimations(EntityAnimationMap animationSet) {
+	public void setAnimations(AnimationMap animationSet) {
 		this.animations = animationSet;
 	}
 
 	@Override
-	public Optional<EntityAnimationMap> animations() {
+	public Optional<AnimationMap> animations() {
 		return Optional.ofNullable(animations);
 	}
 
@@ -441,7 +441,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 	}
 
-	private void startFlashing(int numFlashes, EntityAnimation flashing) {
+	private void startFlashing(int numFlashes, Animated flashing) {
 		long frameTicks = GameModel.TICKS_PAC_POWER_FADES / (numFlashes * flashing.numFrames());
 		flashing.setFrameDuration(frameTicks);
 		flashing.setRepetitions(numFlashes);

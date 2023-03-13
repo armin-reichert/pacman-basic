@@ -28,7 +28,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameState;
-import de.amr.games.pacman.lib.anim.EntityAnimation;
+import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -170,7 +170,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 				ctx.pacMan.setPixelSpeed(0);
 				Stream.of(ctx.ghosts).forEach(ghost -> {
 					ghost.setPixelSpeed(0);
-					ghost.animation(GameModel.AK_GHOST_BLUE).ifPresent(EntityAnimation::stop);
+					ghost.animation(GameModel.AK_GHOST_BLUE).ifPresent(Animated::stop);
 				});
 			});
 
@@ -182,7 +182,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 					if (!ghost.is(GhostState.EATEN)) {
 						ghost.show();
 						ghost.setPixelSpeed(0.6f);
-						ghost.animation(GameModel.AK_GHOST_BLUE).ifPresent(EntityAnimation::start);
+						ghost.animation(GameModel.AK_GHOST_BLUE).ifPresent(Animated::start);
 					} else {
 						ghost.hide();
 					}

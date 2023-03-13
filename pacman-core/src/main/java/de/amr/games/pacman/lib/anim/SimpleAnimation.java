@@ -26,11 +26,11 @@ package de.amr.games.pacman.lib.anim;
 /**
  * Time-controlled sequence of things, for example of boolean values, numbers, images, spritesheet regions etc.
  * 
- * @param <T> type of things to be animated
+ * @param <T> type of "things" to be animated
  * 
  * @author Armin Reichert
  */
-public class SingleEntityAnimation<T> implements EntityAnimation {
+public class SimpleAnimation<T> implements Animated {
 
 	public static final int INDEFINITE = -1;
 
@@ -45,7 +45,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	protected boolean complete;
 
 	@SafeVarargs
-	public SingleEntityAnimation(T... frames) {
+	public SimpleAnimation(T... frames) {
 		if (frames.length == 0) {
 			throw new IllegalArgumentException("Animation must at least contain one frame");
 		}

@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.anim.EntityAnimationMap;
+import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -64,7 +64,7 @@ public class ArcadeWorld extends TileMapWorld {
 	//@formatter:on
 
 	private final ArcadeGhostHouse house;
-	private EntityAnimationMap animationMap;
+	private AnimationMap animationMap;
 	private final Collection<Vector2i> upwardBlockedTiles;
 
 	public ArcadeWorld(byte[][] tileMapData, Collection<Vector2i> upwardBlockedTiles) {
@@ -128,12 +128,12 @@ public class ArcadeWorld extends TileMapWorld {
 	}
 
 	@Override
-	public Optional<EntityAnimationMap> animations() {
+	public Optional<AnimationMap> animations() {
 		return Optional.ofNullable(animationMap);
 	}
 
 	@Override
-	public void setAnimations(EntityAnimationMap animationMap) {
+	public void setAnimations(AnimationMap animationMap) {
 		this.animationMap = animationMap;
 	}
 }

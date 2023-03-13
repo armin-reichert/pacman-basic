@@ -32,7 +32,7 @@ import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameState;
-import de.amr.games.pacman.lib.anim.EntityAnimation;
+import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
@@ -87,7 +87,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			}
 			if (ghost.position().y() <= BLINKY_END_TILE.y() + ghost.id() * 18) {
 				ghost.setPixelSpeed(0);
-				ghost.animation().ifPresent(EntityAnimation::reset);
+				ghost.animation().ifPresent(Animated::reset);
 				if (++ctx.ghostIndex == 4) {
 					intro.changeState(MsPacManIntroState.MSPACMAN);
 				}
@@ -103,7 +103,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			ctx.msPacMan.animate();
 			if (ctx.msPacMan.position().x() <= MS_PACMAN_STOP_X) {
 				ctx.msPacMan.setPixelSpeed(0);
-				ctx.msPacMan.animation().ifPresent(EntityAnimation::reset);
+				ctx.msPacMan.animation().ifPresent(Animated::reset);
 				intro.changeState(MsPacManIntroState.READY_TO_PLAY);
 			}
 		}

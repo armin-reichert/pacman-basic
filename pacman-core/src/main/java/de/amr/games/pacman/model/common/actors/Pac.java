@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
-import de.amr.games.pacman.lib.anim.EntityAnimationMap;
+import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -45,7 +45,7 @@ public class Pac extends Creature implements AnimatedEntity {
 	private boolean dead;
 	private int restingTicks;
 	private int starvingTicks;
-	private EntityAnimationMap animationMap;
+	private AnimationMap animationMap;
 
 	public Pac(String name) {
 		super(name);
@@ -120,11 +120,11 @@ public class Pac extends Creature implements AnimatedEntity {
 	}
 
 	@Override
-	public Optional<EntityAnimationMap> animations() {
+	public Optional<AnimationMap> animations() {
 		return Optional.ofNullable(animationMap);
 	}
 
-	public void setAnimations(EntityAnimationMap animationMap) {
+	public void setAnimations(AnimationMap animationMap) {
 		this.animationMap = animationMap;
 	}
 

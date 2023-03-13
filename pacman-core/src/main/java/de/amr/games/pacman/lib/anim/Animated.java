@@ -26,7 +26,7 @@ package de.amr.games.pacman.lib.anim;
 /**
  * @author Armin Reichert
  */
-public interface EntityAnimation {
+public interface Animated {
 
 	boolean isRunning();
 

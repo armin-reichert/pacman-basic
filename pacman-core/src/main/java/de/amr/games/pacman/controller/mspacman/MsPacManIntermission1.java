@@ -30,7 +30,7 @@ import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.IntermissionData;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.IntermissionState;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.anim.EntityAnimation;
+import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.math.Vector2f;
@@ -131,7 +131,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 			public void onUpdate(IntermissionData ctx) {
 				if (timer.atSecond(1)) {
 					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_1);
-					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
+					ctx.clapperboard.animation().ifPresent(Animated::restart);
 				}
 				if (timer.hasExpired()) {
 					ctx.clapperboard.hide();
@@ -235,10 +235,10 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				timer.start();
 				ctx.pacMan.setPixelSpeed(0);
 				ctx.pacMan.setMoveDir(Direction.LEFT);
-				ctx.pacMan.animation(GameModel.AK_PAC_MUNCHING).ifPresent(EntityAnimation::reset);
+				ctx.pacMan.animation(GameModel.AK_PAC_MUNCHING).ifPresent(Animated::reset);
 				ctx.msPac.setPixelSpeed(0);
 				ctx.msPac.setMoveDir(Direction.RIGHT);
-				ctx.msPac.animation(GameModel.AK_PAC_MUNCHING).ifPresent(EntityAnimation::reset);
+				ctx.msPac.animation(GameModel.AK_PAC_MUNCHING).ifPresent(Animated::reset);
 				ctx.inky.setPixelSpeed(0);
 				ctx.inky.hide();
 				ctx.pinky.setPixelSpeed(0);

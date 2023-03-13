@@ -33,16 +33,16 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  */
-public class EntityAnimationMap {
+public class AnimationMap {
 
-	private final Map<String, EntityAnimation> animationsByKey = new HashMap<>(5);
+	private final Map<String, Animated> animationsByKey = new HashMap<>(5);
 	protected String selectedKey;
 
-	public final Optional<EntityAnimation> animation(String key) {
+	public final Optional<Animated> animation(String key) {
 		return Optional.ofNullable(animationsByKey.get(key));
 	}
 
-	public void put(String key, EntityAnimation animation) {
+	public void put(String key, Animated animation) {
 		animationsByKey.put(key, Objects.requireNonNull(animation));
 	}
 
@@ -52,7 +52,7 @@ public class EntityAnimationMap {
 
 	public void selectAndRestart(String key) {
 		select(key);
-		animation(selectedKey).ifPresent(EntityAnimation::restart);
+		animation(selectedKey).ifPresent(Animated::restart);
 	}
 
 	public boolean isSelected(String key) {
@@ -66,35 +66,35 @@ public class EntityAnimationMap {
 		return selectedKey;
 	}
 
-	public Optional<EntityAnimation> selectedAnimation() {
+	public Optional<Animated> selectedAnimation() {
 		return animation(selectedKey);
 	}
 
-	public final Stream<EntityAnimation> all() {
+	public final Stream<Animated> all() {
 		return animationsByKey.values().stream();
 	}
 
 	public void animate() {
-		all().forEach(EntityAnimation::animate);
+		all().forEach(Animated::animate);
 	}
 
 	public void reset() {
-		all().forEach(EntityAnimation::reset);
+		all().forEach(Animated::reset);
 	}
 
 	public void restart() {
-		all().forEach(EntityAnimation::restart);
+		all().forEach(Animated::restart);
 	}
 
 	public void stop() {
-		all().forEach(EntityAnimation::stop);
+		all().forEach(Animated::stop);
 	}
 
 	public void start() {
-		all().forEach(EntityAnimation::start);
+		all().forEach(Animated::start);
 	}
 
 	public void ensureRunning() {
-		all().forEach(EntityAnimation::ensureRunning);
+		all().forEach(Animated::ensureRunning);
 	}
 }

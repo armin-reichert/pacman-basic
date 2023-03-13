@@ -32,7 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.lib.anim.SingleEntityAnimation;
+import de.amr.games.pacman.lib.anim.SimpleAnimation;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.steering.RouteBasedSteering;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -59,7 +59,7 @@ public class MovingBonus extends Creature implements Bonus {
 	private final int points;
 	private long timer;
 	private BonusState state;
-	private final SingleEntityAnimation<Float> jumpAnimation;
+	private final SimpleAnimation<Float> jumpAnimation;
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
 	public MovingBonus(byte symbol, int points) {
@@ -68,7 +68,7 @@ public class MovingBonus extends Creature implements Bonus {
 		this.points = points;
 		reset();
 		canTeleport = false;
-		jumpAnimation = new SingleEntityAnimation<>(1.5f, -1.5f);
+		jumpAnimation = new SimpleAnimation<>(1.5f, -1.5f);
 		jumpAnimation.setFrameDuration(10);
 		jumpAnimation.repeatForever();
 		setInactive();

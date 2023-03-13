@@ -29,7 +29,7 @@ import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionData;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionState;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.anim.EntityAnimation;
+import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -98,7 +98,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 			public void onUpdate(IntermissionData ctx) {
 				if (timer.atSecond(1)) {
 					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_2);
-					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
+					ctx.clapperboard.animation().ifPresent(Animated::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
 				} else if (timer.atSecond(3)) {
