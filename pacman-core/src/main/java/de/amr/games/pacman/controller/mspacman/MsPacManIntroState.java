@@ -66,9 +66,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
-			if (timer.tick() == 2) {
-				ctx.creditVisible = true;
-			} else if (timer.atSecond(1)) {
+			if (timer.atSecond(1)) {
 				intro.changeState(MsPacManIntroState.GHOSTS);
 			}
 			ctx.lightsTimer.advance();

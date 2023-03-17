@@ -56,7 +56,6 @@ public class MsPacManIntroData {
 			new Ghost(Ghost.ID_ORANGE_GHOST, "Sue") //
 	);
 	int ghostIndex = 0;
-	boolean creditVisible = false;
 
 	public MsPacManIntroData(GameController gameController) {
 		this.gameController = gameController;
@@ -64,9 +63,5 @@ public class MsPacManIntroData {
 
 	public int ghostIndex() {
 		return ghostIndex;
-	}
-
-	public boolean isCreditVisible() {
-		return creditVisible;
 	}
 }
