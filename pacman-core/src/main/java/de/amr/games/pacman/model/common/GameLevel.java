@@ -537,8 +537,7 @@ public class GameLevel {
 			memo.energizerFound = world.isEnergizerTile(tile);
 			memo.lastFoodFound = world.foodRemaining() == 0;
 			memo.pacPowerGained = memo.energizerFound && params().pacPowerSeconds() > 0;
-			memo.bonusReached = world.eatenFoodCount() == GameModel.PELLETS_EATEN_BONUS1
-					|| world.eatenFoodCount() == GameModel.PELLETS_EATEN_BONUS2;
+			memo.bonusReached = game.isFirstBonusReached() || game.isSecondBonusReached();
 			pac.endStarving();
 			if (memo.energizerFound) {
 				numGhostsKilledByEnergizer = 0;

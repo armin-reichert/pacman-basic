@@ -73,8 +73,6 @@ public abstract class GameModel {
 	public static final short POINTS_ALL_GHOSTS_KILLED = 12_000;
 	public static final short[] POINTS_GHOSTS_SEQUENCE = { 200, 400, 800, 1600 };
 	public static final short SCORE_EXTRA_LIFE = 10_000;
-	public static final short PELLETS_EATEN_BONUS1 = 70;
-	public static final short PELLETS_EATEN_BONUS2 = 170;
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
 	public static final short TICKS_PAC_POWER_FADES = 2 * FPS; // unsure
 
@@ -258,6 +256,10 @@ public abstract class GameModel {
 	 * Called when the bonus gets activated.
 	 */
 	public abstract void onBonusReached();
+
+	public abstract boolean isFirstBonusReached();
+
+	public abstract boolean isSecondBonusReached();
 
 	public abstract int numCutScenes();
 

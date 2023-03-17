@@ -155,6 +155,16 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
+	public boolean isFirstBonusReached() {
+		return level.world().eatenFoodCount() == 70;
+	}
+
+	@Override
+	public boolean isSecondBonusReached() {
+		return level.world().eatenFoodCount() == 170;
+	}
+
+	@Override
 	public void onBonusReached() {
 		var bonus = level.bonus();
 		int ticks = 10 * FPS - RND.nextInt(FPS); // between 9 and 10 seconds
