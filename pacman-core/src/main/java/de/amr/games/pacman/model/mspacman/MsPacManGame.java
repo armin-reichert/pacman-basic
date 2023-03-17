@@ -219,7 +219,7 @@ public class MsPacManGame extends GameModel {
 	};
 	//@formatter:on
 
-	public static final String AK_CLAPPERBOARD = "CLAPPERBOARD";
+	public static final String AK_CLAPPERBOARD = "clapperboard";
 
 	@Override
 	public Pac createPac() {
