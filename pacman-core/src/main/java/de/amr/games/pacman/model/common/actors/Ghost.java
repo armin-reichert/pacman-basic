@@ -42,8 +42,8 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.U;
-import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.Animated;
+import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -129,7 +129,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	@Override
-	protected boolean canReverse(GameLevel level) {
+	public boolean canReverse(GameLevel level) {
 		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 

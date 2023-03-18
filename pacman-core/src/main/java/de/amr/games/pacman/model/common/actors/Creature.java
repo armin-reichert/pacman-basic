@@ -197,10 +197,10 @@ public class Creature extends Entity {
 	}
 
 	/**
-	 * @param game game model
+	 * @param level game level
 	 * @return if the creature can reverse its direction
 	 */
-	protected boolean canReverse(GameLevel level) {
+	public boolean canReverse(GameLevel level) {
 		return newTileEntered;
 	}
 
@@ -338,7 +338,7 @@ public class Creature extends Entity {
 		return MoveResult.moved("Moved %5s (%.2f pixels)", dir, newVelocity.length());
 	}
 
-	protected boolean atTurnPositionTo(Direction dir) {
+	private boolean atTurnPositionTo(Direction dir) {
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
 		return Math.abs(offset) <= 1;
 	}
