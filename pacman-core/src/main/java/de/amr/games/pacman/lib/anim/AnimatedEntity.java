@@ -94,6 +94,10 @@ public interface AnimatedEntity {
 	}
 
 	default boolean isAnimationSelected(String key) {
-		return animations().isPresent() && animations().get().isSelected(key);
+		var animations = animations();
+		if (animations.isPresent()) {
+			return animations.get().isSelected(key);
+		}
+		return false;
 	}
 }
