@@ -439,7 +439,7 @@ public class GameLevel {
 		checkIfGhostCanLeaveHouse().ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
-			LOG.trace("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
+			LOG.trace("%s unlocked: %s", unlock.ghost().name(), unlock.reason());
 			if (unlock.ghost().id() == ID_ORANGE_GHOST && cruiseElroyState < 0) {
 				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
 				setCruiseElroyStateEnabled(true);
@@ -605,7 +605,7 @@ public class GameLevel {
 
 	private void increaseGhostDotCounter(Ghost ghost) {
 		ghostDotCounters[ghost.id()]++;
-		LOG.trace("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id()]);
+		LOG.trace("%s dot counter = %d", ghost.name(), ghostDotCounters[ghost.id()]);
 	}
 
 	private Optional<GhostUnlockResult> checkIfGhostCanLeaveHouse() {
