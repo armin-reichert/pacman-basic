@@ -430,7 +430,7 @@ public class GameLevel {
 	}
 
 	private void checkIfGhostCanGetUnlocked() {
-		checkIfGhostUnlocked().ifPresent(unlock -> {
+		checkIfGhostCanLeaveHouse().ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
 			LOG.trace("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
@@ -602,25 +602,25 @@ public class GameLevel {
 		LOG.trace("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id()]);
 	}
 
-	public Optional<GhostUnlockResult> checkIfGhostUnlocked() {
+	private Optional<GhostUnlockResult> checkIfGhostCanLeaveHouse() {
 		var ghost = ghosts(LOCKED).findFirst().orElse(null);
 		if (ghost == null) {
 			return Optional.empty();
 		}
-		var outsideHouse = !world.ghostHouse().contains(ghost);
-		if (outsideHouse) {
-			return unlockGhost(ghost, "Outside house");
+		if (!world.ghostHouse().contains(ghost)) {
+			return unlockGhost(ghost, "Already outside house");
 		}
+		var id = ghost.id();
 		// check private dot counter
-		if (!globalDotCounterEnabled && ghostDotCounters[ghost.id()] >= privateGhostDotLimits[ghost.id()]) {
-			return unlockGhost(ghost, "Private dot counter at limit (%d)", privateGhostDotLimits[ghost.id()]);
+		if (!globalDotCounterEnabled && ghostDotCounters[id] >= privateGhostDotLimits[id]) {
+			return unlockGhost(ghost, "Private dot counter at limit (%d)", privateGhostDotLimits[id]);
 		}
 		// check global dot counter
-		var globalDotLimit = globalGhostDotLimits[ghost.id()] == -1 ? Integer.MAX_VALUE : globalGhostDotLimits[ghost.id()];
+		var globalDotLimit = globalGhostDotLimits[id] == -1 ? Integer.MAX_VALUE : globalGhostDotLimits[id];
 		if (globalDotCounter >= globalDotLimit) {
 			return unlockGhost(ghost, "Global dot counter at limit (%d)", globalDotLimit);
 		}
-		// check Pac-Man starving reaches limit
+		// check Pac-Man starving time
 		if (pac.starvingTicks() >= pacStarvingTicksLimit) {
 			pac.endStarving();
 			LOG.trace("Pac-Man starving timer reset to 0");
@@ -630,8 +630,7 @@ public class GameLevel {
 	}
 
 	private Optional<GhostUnlockResult> unlockGhost(Ghost ghost, String reason, Object... args) {
-		var outsideHouse = !world.ghostHouse().contains(ghost);
-		if (outsideHouse) {
+		if (!world.ghostHouse().contains(ghost)) {
 			ghost.setMoveAndWishDir(LEFT);
 			ghost.enterStateHuntingPac();
 		} else {
