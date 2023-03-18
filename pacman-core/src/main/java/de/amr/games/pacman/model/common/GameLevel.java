@@ -113,20 +113,25 @@ public class GameLevel {
 		int intermissionNumber)
 	//@formatter:on
 	{
-		public static Parameters createFromData(byte[] data) {
+
+		private static final float percent(byte value) {
+			return value / 100f;
+		}
+
+		public static Parameters fromBytes(byte[] data) {
 			//@formatter:off
-			float pacSpeed             = data[0] / 100f;
-			float ghostSpeed           = data[1] / 100f;
-			float ghostSpeedTunnel     = data[2] / 100f;
-			byte elroy1DotsLeft        = data[3];
-			float elroy1Speed          = data[4] / 100f;
-			byte elroy2DotsLeft        = data[5];
-			float elroy2Speed          = data[6] / 100f;
-			float pacSpeedPowered      = data[7] / 100f;
-			float ghostSpeedFrightened = data[8] / 100f;
-			byte pacPowerSeconds       = data[9];
-			byte numFlashes            = data[10];
-			byte intermissionNumber    = data[11];
+			float pacSpeed             = percent(data[0]);
+			float ghostSpeed           = percent(data[1]);
+			float ghostSpeedTunnel     = percent(data[2]);
+			byte  elroy1DotsLeft       = data[3];
+			float elroy1Speed          = percent(data[4]);
+			byte  elroy2DotsLeft       = data[5];
+			float elroy2Speed          = percent(data[6]);
+			float pacSpeedPowered      = percent(data[7]);
+			float ghostSpeedFrightened = percent(data[8]);
+			byte  pacPowerSeconds      = data[9];
+			byte  numFlashes           = data[10];
+			byte  intermissionNumber   = data[11];
 			//@formatter:on
 			return new Parameters(pacSpeed, ghostSpeed, ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft,
 					elroy2Speed, pacSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes, intermissionNumber);

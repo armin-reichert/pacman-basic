@@ -233,7 +233,7 @@ public abstract class GameModel {
 		var data = levelNumber <= LEVEL_PARAMETERS.length //
 				? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
-		return Parameters.createFromData(data);
+		return Parameters.fromBytes(data);
 	}
 
 	/**
