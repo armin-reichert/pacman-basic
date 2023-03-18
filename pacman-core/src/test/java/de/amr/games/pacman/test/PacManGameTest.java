@@ -39,7 +39,6 @@ import org.junit.Test;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
-import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.pacman.PacManGame;
@@ -64,7 +63,7 @@ public class PacManGameTest {
 		var level = game.level().get();
 		assertEquals(1, level.number());
 		assertTrue(level.bonus() instanceof Bonus);
-		assertEquals(BonusState.INACTIVE, level.bonus().state());
+		assertEquals(Bonus.STATE_INACTIVE, level.bonus().state());
 		assertEquals(0, level.numGhostsKilledInLevel());
 		assertEquals(0, level.numGhostsKilledByEnergizer());
 		assertEquals(0, level.cruiseElroyState());

@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.actors.BonusState;
+import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -148,10 +148,9 @@ public class RuleBasedSteering implements Steering {
 
 		if (!data.frightenedGhosts.isEmpty() && pac.powerTimer().remaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
-			LOG.trace("Detected frightened ghost %s %.0g tiles away", prey.name(),
-					prey.tile().manhattanDistance(pac.tile()));
+			LOG.trace("Detected frightened ghost %s %.0g tiles away", prey.name(), prey.tile().manhattanDistance(pac.tile()));
 			pac.setTargetTile(prey.tile());
-		} else if (level.bonus() != null && level.bonus().state() == BonusState.EDIBLE
+		} else if (level.bonus() != null && level.bonus().state() == Bonus.STATE_EDIBLE
 				&& World.tileAt(level.bonus().entity().position())
 						.manhattanDistance(pac.tile()) <= CollectedData.MAX_BONUS_HARVEST_DIST) {
 			LOG.trace("Detected active bonus");
@@ -258,8 +257,8 @@ public class RuleBasedSteering implements Steering {
 		time = System.nanoTime() - time;
 		LOG.trace("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
 		for (Vector2i t : foodTiles) {
-			LOG.trace("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t,
-					t.manhattanDistance(pacManTile), minDistanceFromGhosts(level));
+			LOG.trace("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t, t.manhattanDistance(pacManTile),
+					minDistanceFromGhosts(level));
 		}
 		return foodTiles;
 	}

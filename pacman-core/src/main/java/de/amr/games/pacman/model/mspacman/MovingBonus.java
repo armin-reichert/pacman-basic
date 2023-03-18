@@ -38,7 +38,6 @@ import de.amr.games.pacman.lib.steering.RouteBasedSteering;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
-import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
 
@@ -58,7 +57,7 @@ public class MovingBonus extends Creature implements Bonus {
 	private final byte symbol;
 	private final int points;
 	private long timer;
-	private BonusState state;
+	private byte state;
 	private final SimpleAnimation<Float> jumpAnimation;
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
@@ -90,7 +89,7 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public BonusState state() {
+	public byte state() {
 		return state;
 	}
 
@@ -108,14 +107,14 @@ public class MovingBonus extends Creature implements Bonus {
 	public void setInactive() {
 		visible = false;
 		canTeleport = false;
-		state = BonusState.INACTIVE;
+		state = Bonus.STATE_INACTIVE;
 		jumpAnimation.stop();
 		setPixelSpeed(0);
 	}
 
 	@Override
 	public void setEdible(long ticks) {
-		state = BonusState.EDIBLE;
+		state = Bonus.STATE_EDIBLE;
 		timer = ticks;
 		visible = true;
 		jumpAnimation.restart();
@@ -126,7 +125,7 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public void eat() {
-		state = BonusState.EATEN;
+		state = Bonus.STATE_EATEN;
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
 		LOG.info("Bonus eaten: %s", this);
 		jumpAnimation.stop();
@@ -141,9 +140,9 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public void update(GameLevel level) {
 		switch (state) {
-		case INACTIVE -> { // nothing to do
+		case STATE_INACTIVE -> { // nothing to do
 		}
-		case EDIBLE -> {
+		case STATE_EDIBLE -> {
 			if (sameTile(level.pac())) {
 				level.game().scorePoints(points);
 				eat();
@@ -160,7 +159,7 @@ public class MovingBonus extends Creature implements Bonus {
 			tryMoving(level);
 			jumpAnimation.animate();
 		}
-		case EATEN -> {
+		case STATE_EATEN -> {
 			if (--timer == 0) {
 				setInactive();
 				LOG.info("Bonus expired: %s", this);

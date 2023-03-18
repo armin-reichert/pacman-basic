@@ -31,6 +31,10 @@ import de.amr.games.pacman.model.common.GameLevel;
  */
 public interface Bonus {
 
+	public static byte STATE_INACTIVE = 0;
+	public static byte STATE_EDIBLE = 1;
+	public static byte STATE_EATEN = 2;
+
 	/**
 	 * @return Entity representing this bonus in the world.
 	 */
@@ -49,7 +53,7 @@ public interface Bonus {
 	/**
 	 * @return state of the bonus
 	 */
-	BonusState state();
+	byte state();
 
 	/**
 	 * Updates the bonus state.

@@ -33,7 +33,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
-import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
@@ -48,13 +47,13 @@ public class StaticBonus extends Entity implements Bonus {
 	private final byte symbol;
 	private final int points;
 	private long timer;
-	private BonusState state;
+	private byte state;
 
 	public StaticBonus(byte symbol, int points) {
 		this.symbol = symbol;
 		this.points = points;
 		this.timer = 0;
-		this.state = BonusState.INACTIVE;
+		this.state = Bonus.STATE_INACTIVE;
 	}
 
 	@Override
@@ -69,7 +68,7 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public BonusState state() {
+	public byte state() {
 		return state;
 	}
 
@@ -86,7 +85,7 @@ public class StaticBonus extends Entity implements Bonus {
 	@Override
 	public void setInactive() {
 		timer = 0;
-		state = BonusState.INACTIVE;
+		state = Bonus.STATE_INACTIVE;
 		hide();
 	}
 
@@ -96,14 +95,14 @@ public class StaticBonus extends Entity implements Bonus {
 			throw new IllegalArgumentException("Bonus edible time must be larger than zero");
 		}
 		timer = ticks;
-		state = BonusState.EDIBLE;
+		state = Bonus.STATE_EDIBLE;
 		show();
 	}
 
 	@Override
 	public void eat() {
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
-		state = BonusState.EATEN;
+		state = Bonus.STATE_EATEN;
 		LOG.info("Bonus eaten: %s", this);
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
 		publishSoundEvent(GameModel.SE_BONUS_EATEN);
@@ -118,10 +117,10 @@ public class StaticBonus extends Entity implements Bonus {
 	@Override
 	public void update(GameLevel level) {
 		switch (state) {
-		case INACTIVE -> {
+		case Bonus.STATE_INACTIVE -> {
 			// stay inactive
 		}
-		case EDIBLE -> {
+		case Bonus.STATE_EDIBLE -> {
 			if (sameTile(level.pac())) {
 				level.game().scorePoints(points);
 				eat();
@@ -131,7 +130,7 @@ public class StaticBonus extends Entity implements Bonus {
 				--timer;
 			}
 		}
-		case EATEN -> {
+		case Bonus.STATE_EATEN -> {
 			if (timer == 0) {
 				expire();
 			} else {
