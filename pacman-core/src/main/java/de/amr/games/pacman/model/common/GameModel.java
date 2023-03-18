@@ -225,22 +225,6 @@ public abstract class GameModel {
 
 	/**
 	 * @param levelNumber level number (starting at 1)
-	 * @return ghost house rules (dot counters etc.) used in specified level
-	 */
-	public GhostHouseRules createHouseRules(int levelNumber) {
-		var rules = new GhostHouseRules();
-		rules.setPacStarvingTimeLimit(levelNumber < 5 ? 4 * FPS : 3 * FPS);
-		rules.setGlobalGhostDotLimits(GhostHouseRules.NO_LIMIT, 7, 17, GhostHouseRules.NO_LIMIT);
-		switch (levelNumber) {
-		case 1 -> rules.setPrivateGhostDotLimits(0, 0, 30, 60);
-		case 2 -> rules.setPrivateGhostDotLimits(0, 0, 0, 50);
-		default -> rules.setPrivateGhostDotLimits(0, 0, 0, 0);
-		}
-		return rules;
-	}
-
-	/**
-	 * @param levelNumber level number (starting at 1)
 	 * @return parameter values (speed, pellet counts etc.) used in specified level. From level 21 on, level parameters
 	 *         remain the same
 	 * @see {@link GameLevel.Parameters}
@@ -469,7 +453,7 @@ public abstract class GameModel {
 		return credit > 0;
 	}
 
-	// get rid of this:
+	// TODO: get rid of this:
 
 	/** If one less life is displayed in the lives counter. */
 	public boolean isOneLessLifeDisplayed() {

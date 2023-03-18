@@ -27,6 +27,7 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
+import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
@@ -142,7 +143,6 @@ public class GameLevel {
 	private final Bonus bonus;
 	private final Parameters params;
 	private final int[] huntingDurations;
-	private final GhostHouseRules houseRules;
 	private Steering pacSteering;
 	private int huntingPhase;
 	private int numGhostsKilledInLevel;
@@ -156,9 +156,10 @@ public class GameLevel {
 		pac = game.createPac();
 		ghosts = game.createGhosts();
 		bonus = game.createBonus(number);
-		houseRules = game.createHouseRules(number);
 		huntingDurations = game.huntingDurations(number);
 		params = game.levelParameters(number);
+
+		defineGhostHouseRules();
 
 		// Red ghost attacks Pac-Man directly
 		ghost(ID_RED_GHOST).setChasingTarget(pac::tile);
@@ -264,10 +265,6 @@ public class GameLevel {
 
 	public TickTimer huntingTimer() {
 		return huntingTimer;
-	}
-
-	public GhostHouseRules houseRules() {
-		return houseRules;
 	}
 
 	/**
@@ -433,7 +430,7 @@ public class GameLevel {
 	}
 
 	private void checkIfGhostCanGetUnlocked() {
-		houseRules.checkIfGhostUnlocked(this).ifPresent(unlock -> {
+		checkIfGhostUnlocked().ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
 			LOG.trace("Unlocked %s: %s", unlock.ghost().name(), unlock.reason());
@@ -494,7 +491,7 @@ public class GameLevel {
 
 	public void onPacKilled() {
 		pac.die();
-		houseRules.resetGlobalDotCounterAndSetEnabled(true);
+		resetGlobalDotCounterAndSetEnabled(true);
 		setCruiseElroyStateEnabled(false);
 		LOG.trace("%s died at tile %s", pac.name(), pac.tile());
 	}
@@ -548,7 +545,7 @@ public class GameLevel {
 				game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 			}
 			checkIfBlinkyBecomesCruiseElroy();
-			houseRules.updateGhostDotCounters(this);
+			updateGhostDotCounters();
 			publishGameEvent(GameEventType.PAC_FINDS_FOOD, tile);
 			publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
 		} else {
@@ -557,5 +554,91 @@ public class GameLevel {
 		if (memo.bonusReached) {
 			game.onBonusReached();
 		}
+	}
+
+	/* --- Ghosthouse control rules, see Pac-Man dossier --- */
+
+	private int[] ghostDotCounters;
+	private int globalDotCounter;
+	private boolean globalDotCounterEnabled;
+	private int pacStarvingTicksLimit;
+	private byte[] globalGhostDotLimits;
+	private byte[] privateGhostDotLimits;
+
+	private void defineGhostHouseRules() {
+		ghostDotCounters = new int[4];
+		globalDotCounter = 0;
+		globalDotCounterEnabled = false;
+		pacStarvingTicksLimit = number < 5 ? 4 * GameModel.FPS : 3 * GameModel.FPS;
+		globalGhostDotLimits = new byte[] { -1, 7, 17, -1 };
+		privateGhostDotLimits = switch (number) {
+		case 1 -> new byte[] { 0, 0, 30, 60 };
+		case 2 -> new byte[] { 0, 0, 0, 50 };
+		default -> new byte[] { 0, 0, 0, 0 };
+		};
+	}
+
+	public void resetGlobalDotCounterAndSetEnabled(boolean enabled) {
+		globalDotCounter = 0;
+		globalDotCounterEnabled = enabled;
+		LOG.trace("Global dot counter reset to 0 and %s", enabled ? "enabled" : "disabled");
+	}
+
+	public void updateGhostDotCounters() {
+		if (globalDotCounterEnabled) {
+			if (ghost(ID_ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
+				LOG.trace("%s inside house when counter reached 32", ghost(ID_ORANGE_GHOST).name());
+				resetGlobalDotCounterAndSetEnabled(false);
+			} else {
+				globalDotCounter++;
+			}
+		} else {
+			var house = world.ghostHouse();
+			var preferredGhost = ghosts(LOCKED).filter(house::contains).findFirst();
+			preferredGhost.ifPresent(this::increaseGhostDotCounter);
+		}
+	}
+
+	private void increaseGhostDotCounter(Ghost ghost) {
+		ghostDotCounters[ghost.id()]++;
+		LOG.trace("Dot counter for %s increased to %d", ghost.name(), ghostDotCounters[ghost.id()]);
+	}
+
+	public Optional<GhostUnlockResult> checkIfGhostUnlocked() {
+		var ghost = ghosts(LOCKED).findFirst().orElse(null);
+		if (ghost == null) {
+			return Optional.empty();
+		}
+		var outsideHouse = !world.ghostHouse().contains(ghost);
+		if (outsideHouse) {
+			return unlockGhost(ghost, "Outside house");
+		}
+		// check private dot counter
+		if (!globalDotCounterEnabled && ghostDotCounters[ghost.id()] >= privateGhostDotLimits[ghost.id()]) {
+			return unlockGhost(ghost, "Private dot counter at limit (%d)", privateGhostDotLimits[ghost.id()]);
+		}
+		// check global dot counter
+		var globalDotLimit = globalGhostDotLimits[ghost.id()] == -1 ? Integer.MAX_VALUE : globalGhostDotLimits[ghost.id()];
+		if (globalDotCounter >= globalDotLimit) {
+			return unlockGhost(ghost, "Global dot counter at limit (%d)", globalDotLimit);
+		}
+		// check Pac-Man starving reaches limit
+		if (pac.starvingTicks() >= pacStarvingTicksLimit) {
+			pac.endStarving();
+			LOG.trace("Pac-Man starving timer reset to 0");
+			return unlockGhost(ghost, "%s reached starving limit (%d ticks)", pac.name(), pacStarvingTicksLimit);
+		}
+		return Optional.empty();
+	}
+
+	private Optional<GhostUnlockResult> unlockGhost(Ghost ghost, String reason, Object... args) {
+		var outsideHouse = !world.ghostHouse().contains(ghost);
+		if (outsideHouse) {
+			ghost.setMoveAndWishDir(LEFT);
+			ghost.enterStateHuntingPac();
+		} else {
+			ghost.enterStateLeavingHouse(this);
+		}
+		return Optional.of(new GhostUnlockResult(ghost, reason.formatted(args)));
 	}
 }
