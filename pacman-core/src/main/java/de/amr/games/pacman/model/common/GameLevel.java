@@ -593,9 +593,7 @@ public class GameLevel {
 				globalDotCounter++;
 			}
 		} else {
-			var house = world.ghostHouse();
-			var preferredGhost = ghosts(LOCKED).filter(house::contains).findFirst();
-			preferredGhost.ifPresent(this::increaseGhostDotCounter);
+			ghosts(LOCKED).filter(world.ghostHouse()::contains).findFirst().ifPresent(this::increaseGhostDotCounter);
 		}
 	}
 
