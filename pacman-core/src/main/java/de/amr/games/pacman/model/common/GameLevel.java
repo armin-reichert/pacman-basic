@@ -597,6 +597,7 @@ public class GameLevel {
 				resetGlobalDotCounterAndSetEnabled(false);
 			} else {
 				globalDotCounter++;
+				LOG.trace("Global dot counter = %d", globalDotCounter);
 			}
 		} else {
 			ghosts(LOCKED).filter(world.ghostHouse()::contains).findFirst().ifPresent(this::increaseGhostDotCounter);
