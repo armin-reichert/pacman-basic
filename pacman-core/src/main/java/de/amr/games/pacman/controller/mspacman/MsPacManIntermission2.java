@@ -85,7 +85,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 				timer.restartIndefinitely();
 				ctx.clapperboard = new Clapperboard(2, "THE CHASE");
 				ctx.clapperboard.setPosition(t(3), t(10));
-				ctx.clapperboard.show();
+				ctx.clapperboard.setVisible(true);
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
@@ -100,7 +100,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_2);
 					ctx.clapperboard.animation().ifPresent(Animated::restart);
 				} else if (timer.atSecond(2)) {
-					ctx.clapperboard.hide();
+					ctx.clapperboard.setVisible(false);
 				} else if (timer.atSecond(3)) {
 					intermission.changeState(IntermissionState.CHASING);
 				}

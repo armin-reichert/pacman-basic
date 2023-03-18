@@ -98,7 +98,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				timer.start();
 				ctx.clapperboard = new Clapperboard(1, "THEY MEET");
 				ctx.clapperboard.setPosition(t(3), t(10));
-				ctx.clapperboard.show();
+				ctx.clapperboard.setVisible(true);
 
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
@@ -134,7 +134,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 					ctx.clapperboard.animation().ifPresent(Animated::restart);
 				}
 				if (timer.hasExpired()) {
-					ctx.clapperboard.hide();
+					ctx.clapperboard.setVisible(false);
 					intermission.changeState(IntermissionState.CHASED_BY_GHOSTS);
 				}
 			}
