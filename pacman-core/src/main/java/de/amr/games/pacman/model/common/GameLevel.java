@@ -163,9 +163,12 @@ public class GameLevel {
 		bonus = game.createBonus(number);
 		huntingDurations = game.huntingDurations(number);
 		params = game.levelParameters(number);
-
 		defineGhostHouseRules();
+		defineGhostAI();
+		LOG.trace("Game level %d created. (%s)", number, game.variant());
+	}
 
+	private void defineGhostAI() {
 		// Red ghost attacks Pac-Man directly
 		ghost(ID_RED_GHOST).setChasingTarget(pac::tile);
 		// Pink ghost ambushes Pac-Man
@@ -176,8 +179,6 @@ public class GameLevel {
 		ghost(ID_ORANGE_GHOST).setChasingTarget( //
 				() -> ghost(ID_ORANGE_GHOST).tile().euclideanDistance(pac.tile()) < 8 ? //
 						world.ghostScatterTargetTile(ID_ORANGE_GHOST) : pac.tile());
-
-		LOG.trace("Game level %d created. (%s)", number, game.variant());
 	}
 
 	public void update() {
