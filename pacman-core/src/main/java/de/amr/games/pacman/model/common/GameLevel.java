@@ -558,17 +558,14 @@ public class GameLevel {
 
 	/* --- Ghosthouse control rules, see Pac-Man dossier --- */
 
-	private int[] ghostDotCounters;
-	private int globalDotCounter;
-	private boolean globalDotCounterEnabled;
 	private int pacStarvingTicksLimit;
 	private byte[] globalGhostDotLimits;
 	private byte[] privateGhostDotLimits;
+	private int[] ghostDotCounters;
+	private int globalDotCounter;
+	private boolean globalDotCounterEnabled;
 
 	private void defineGhostHouseRules() {
-		ghostDotCounters = new int[4];
-		globalDotCounter = 0;
-		globalDotCounterEnabled = false;
 		pacStarvingTicksLimit = number < 5 ? 4 * GameModel.FPS : 3 * GameModel.FPS;
 		globalGhostDotLimits = new byte[] { -1, 7, 17, -1 };
 		privateGhostDotLimits = switch (number) {
@@ -576,15 +573,18 @@ public class GameLevel {
 		case 2 -> new byte[] { 0, 0, 0, 50 };
 		default -> new byte[] { 0, 0, 0, 0 };
 		};
+		ghostDotCounters = new int[] { 0, 0, 0, 0 };
+		globalDotCounter = 0;
+		globalDotCounterEnabled = false;
 	}
 
-	public void resetGlobalDotCounterAndSetEnabled(boolean enabled) {
+	private void resetGlobalDotCounterAndSetEnabled(boolean enabled) {
 		globalDotCounter = 0;
 		globalDotCounterEnabled = enabled;
 		LOG.trace("Global dot counter reset to 0 and %s", enabled ? "enabled" : "disabled");
 	}
 
-	public void updateGhostDotCounters() {
+	private void updateGhostDotCounters() {
 		if (globalDotCounterEnabled) {
 			if (ghost(ID_ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
 				LOG.trace("%s inside house when counter reached 32", ghost(ID_ORANGE_GHOST).name());

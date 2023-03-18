@@ -33,7 +33,7 @@ import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 
 /**
- * Base class for all "entities" that are part of the game.
+ * Base class for all "entities" used inside the game, e.g. creatures and bonus entities.
  * 
  * @author Armin Reichert
  */
@@ -67,6 +67,10 @@ public class Entity {
 		visible = false;
 	}
 
+	/**
+	 * @return Entity position. This is the upper left corner of the entity collision box which is a square of size one
+	 *         tile.
+	 */
 	public Vector2f position() {
 		return position;
 	}
@@ -77,6 +81,11 @@ public class Entity {
 
 	public void setPosition(Vector2f position) {
 		this.position = Objects.requireNonNull(position, "Position of entity must not be null");
+	}
+
+	/** @return Center position of entity collision box (position property stores *upper left corner* of box). */
+	public Vector2f center() {
+		return position.plus(HTS, HTS);
 	}
 
 	public Vector2f velocity() {
@@ -111,23 +120,22 @@ public class Entity {
 		velocity = velocity.plus(acceleration);
 	}
 
-	/** Tile containing the center of the "bounding box" */
+	/** @return Tile containing the center of the entity collision box. */
 	public Vector2i tile() {
 		return tileAt(position.x() + HTS, position.y() + HTS);
 	}
 
+	/** @return Offset inside current tile: (0, 0) if centered, range: [-4, +4) */
+	public Vector2f offset() {
+		return position.minus(originOfTile(tile()));
+	}
+
+	/**
+	 * @param other some entity
+	 * @return <code>true</code> if both entities occupy same tile
+	 */
 	public boolean sameTile(Entity other) {
 		Objects.requireNonNull(other, "Entity must not be null");
 		return tile().equals(other.tile());
-	}
-
-	/** Center of "bounding box" (position stores upper left corner of bounding box). */
-	public Vector2f center() {
-		return position.plus(HTS, HTS);
-	}
-
-	/** Offset: (0, 0) if centered, range: [-4, +4) */
-	public Vector2f offset() {
-		return position.minus(originOfTile(tile()));
 	}
 }
