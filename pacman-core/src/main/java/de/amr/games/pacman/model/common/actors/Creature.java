@@ -68,7 +68,7 @@ public class Creature extends Entity {
 	protected boolean shouldReverse;
 	protected boolean canTeleport;
 
-	protected Creature(String name) {
+	public Creature(String name) {
 		this.name = (name != null) ? name : "Creature@%d".formatted(hashCode());
 	}
 
@@ -104,6 +104,14 @@ public class Creature extends Entity {
 
 	public void setNewTileEntered(boolean newTileEntered) {
 		this.newTileEntered = newTileEntered;
+	}
+
+	public void setCanTeleport(boolean canTeleport) {
+		this.canTeleport = canTeleport;
+	}
+
+	public boolean canTeleport() {
+		return canTeleport;
 	}
 
 	/** Tells if the creature got stuck. */

@@ -39,7 +39,6 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
-import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
  * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving
@@ -50,10 +49,11 @@ import de.amr.games.pacman.model.common.actors.Entity;
  * 
  * @author Armin Reichert
  */
-public class MovingBonus extends Creature implements Bonus {
+public class MovingBonus implements Bonus {
 
 	private static final Logger LOG = LogManager.getFormatterLogger();
 
+	private final Creature entity;
 	private final byte symbol;
 	private final int points;
 	private long timer;
@@ -61,12 +61,12 @@ public class MovingBonus extends Creature implements Bonus {
 	private final SimpleAnimation<Float> jumpAnimation;
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
-	public MovingBonus(byte symbol, int points) {
-		super("MovingBonus");
-		this.symbol = symbol;
+	public MovingBonus(int symbol, int points) {
+		entity = new Creature("MovingBonus");
+		this.symbol = (byte) symbol;
 		this.points = points;
-		reset();
-		canTeleport = false;
+		entity.reset();
+		entity.setCanTeleport(false);
 		jumpAnimation = new SimpleAnimation<>(1.5f, -1.5f);
 		jumpAnimation.setFrameDuration(10);
 		jumpAnimation.repeatForever();
@@ -79,13 +79,14 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public Entity entity() {
-		return this;
+	public Creature entity() {
+		return entity;
 	}
 
 	@Override
 	public String toString() {
-		return "[MovingBonus state=%s symbol=%d value=%d timer=%d tile=%s]".formatted(state, symbol, points, timer, tile());
+		return "[MovingBonus state=%s symbol=%d value=%d timer=%d tile=%s]".formatted(state, symbol, points, timer,
+				entity.tile());
 	}
 
 	@Override
@@ -105,21 +106,20 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public void setInactive() {
-		visible = false;
-		canTeleport = false;
 		state = Bonus.STATE_INACTIVE;
 		jumpAnimation.stop();
-		setPixelSpeed(0);
+		entity.hide();
+		entity.setPixelSpeed(0);
 	}
 
 	@Override
 	public void setEdible(long ticks) {
 		state = Bonus.STATE_EDIBLE;
 		timer = ticks;
-		visible = true;
 		jumpAnimation.restart();
-		setPixelSpeed(0.5f); // how fast in the original game?
-		setTargetTile(null);
+		entity.show();
+		entity.setPixelSpeed(0.5f); // how fast in the original game?
+		entity.setTargetTile(null);
 		LOG.info("Bonus gets edible: %s", this);
 	}
 
@@ -129,7 +129,7 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
 		LOG.info("Bonus eaten: %s", this);
 		jumpAnimation.stop();
-		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
+		publishGameEvent(GameEventType.BONUS_GETS_EATEN, entity.tile());
 		publishSoundEvent(GameModel.SE_BONUS_EATEN);
 	}
 
@@ -143,27 +143,27 @@ public class MovingBonus extends Creature implements Bonus {
 		case STATE_INACTIVE -> { // nothing to do
 		}
 		case STATE_EDIBLE -> {
-			if (sameTile(level.pac())) {
+			if (entity.sameTile(level.pac())) {
 				level.game().scorePoints(points);
 				eat();
 				return;
 			}
-			steering.steer(level, this);
+			steering.steer(level, entity);
 			if (steering.isComplete()) {
 				LOG.info("Bonus reached target: %s", this);
-				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
+				publishGameEvent(GameEventType.BONUS_EXPIRES, entity.tile());
 				setInactive();
 				return;
 			}
-			navigateTowardsTarget(level);
-			tryMoving(level);
+			entity.navigateTowardsTarget(level);
+			entity.tryMoving(level);
 			jumpAnimation.animate();
 		}
 		case STATE_EATEN -> {
 			if (--timer == 0) {
 				setInactive();
 				LOG.info("Bonus expired: %s", this);
-				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
+				publishGameEvent(GameEventType.BONUS_EXPIRES, entity.tile());
 			}
 		}
 		default -> throw new IllegalStateException();

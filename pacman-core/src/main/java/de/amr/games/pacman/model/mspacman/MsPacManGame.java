@@ -267,13 +267,13 @@ public class MsPacManGame extends GameModel {
 		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
 		return switch (n) {
 		//@formatter:off
-		case 1 -> new MovingBonus((byte)0,  100); // Cherries
-		case 2 -> new MovingBonus((byte)1,  200); // Strawberry
-		case 3 -> new MovingBonus((byte)2,  500); // Peach
-		case 4 -> new MovingBonus((byte)3,  700); // Pretzel (A Brezn, HerrGottSakra!)
-		case 5 -> new MovingBonus((byte)4, 1000); // Apple
-		case 6 -> new MovingBonus((byte)5, 2000); // Pear
-		case 7 -> new MovingBonus((byte)6, 5000); // Banana
+		case 1 -> new MovingBonus(0,  100); // Cherries
+		case 2 -> new MovingBonus(1,  200); // Strawberry
+		case 3 -> new MovingBonus(2,  500); // Peach
+		case 4 -> new MovingBonus(3,  700); // Pretzel (A Brezn, Herr Gott Sakra!)
+		case 5 -> new MovingBonus(4, 1000); // Apple
+		case 6 -> new MovingBonus(5, 2000); // Pear
+		case 7 -> new MovingBonus(6, 5000); // Bananas
 		default -> throw new IllegalArgumentException();
 		//@formatter:on
 		};
@@ -342,10 +342,10 @@ public class MsPacManGame extends GameModel {
 		LOG.trace("Bonus route: %s, orientation: %s", route, traverseDirection);
 		var movingBonus = (MovingBonus) level.bonus();
 		movingBonus.setRoute(route);
-		movingBonus.placeAtTile(start.tile(), 0, 0);
-		movingBonus.setMoveAndWishDir(traverseDirection);
+		movingBonus.entity().placeAtTile(start.tile(), 0, 0);
+		movingBonus.entity().setMoveAndWishDir(traverseDirection);
 		movingBonus.setEdible(TickTimer.INDEFINITE);
-		GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
+		GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, movingBonus.entity().tile());
 	}
 
 	/**
