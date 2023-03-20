@@ -34,9 +34,9 @@ import de.amr.games.pacman.model.common.actors.Pac;
 public class PacManIntroData {
 	public static final float CHASING_SPEED = 1.1f;
 	public static final int LEFT_TILE = 4;
-	public static final Pulse BLINKING = new Pulse(10, true);
 	public static final String[] CHARACTERS = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
 	public final GameController gameController;
+	public final Pulse blinking = new Pulse(10, true);
 	public final Pac pacMan = new Pac("Pac-Man");
 	public final Ghost[] ghosts = new Ghost[] { //
 			new Ghost(Ghost.ID_RED_GHOST, "Blinky"), //

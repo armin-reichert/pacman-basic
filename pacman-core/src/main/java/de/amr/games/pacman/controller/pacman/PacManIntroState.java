@@ -76,7 +76,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 	SHOWING_POINTS {
 		@Override
 		public void onEnter(PacManIntroData ctx) {
-			PacManIntroData.BLINKING.stop();
+			ctx.blinking.stop();
 		}
 
 		@Override
@@ -129,9 +129,9 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 			else {
 				// wait 1 sec before blinking
 				if (timer.atSecond(1)) {
-					PacManIntroData.BLINKING.start();
+					ctx.blinking.start();
 				}
-				PacManIntroData.BLINKING.animate();
+				ctx.blinking.animate();
 				ctx.pacMan.move();
 				ctx.pacMan.animate();
 				for (Ghost ghost : ctx.ghosts) {
@@ -194,7 +194,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 				ghost.move();
 				ghost.animate();
 			}
-			PacManIntroData.BLINKING.animate();
+			ctx.blinking.animate();
 		}
 	},
 
