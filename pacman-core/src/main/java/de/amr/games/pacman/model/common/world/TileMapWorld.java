@@ -95,7 +95,7 @@ public abstract class TileMapWorld implements World {
 	protected ArrayList<Portal> findPortals() {
 		var portalList = new ArrayList<Portal>();
 		for (int row = 0; row < numRows(); ++row) {
-			if (get(row, 0) == TILE_TUNNEL && get(row, numCols() - 1) == TILE_TUNNEL) {
+			if (content(row, 0) == TILE_TUNNEL && content(row, numCols() - 1) == TILE_TUNNEL) {
 				portalList.add(new HorizontalPortal(v2i(0, row), v2i(numCols() - 1, row)));
 			}
 		}
@@ -103,29 +103,33 @@ public abstract class TileMapWorld implements World {
 		return portalList;
 	}
 
-	public byte getOrDefault(Vector2i tile) {
-		return get(tile.y(), tile.x(), TILE_SPACE);
+	/**
+	 * @param tile some tile (may be outside world bound)
+	 * @return the content at the given tile or empty space if outside world
+	 */
+	protected byte content(Vector2i tile) {
+		return content(tile.y(), tile.x(), TILE_SPACE);
 	}
 
-	public byte get(int row, int col) {
+	protected byte content(int row, int col) {
 		if (!insideBounds(row, col)) {
 			throwOutOfBoundsError(row, col);
 		}
 		return tileMap[row][col];
 	}
 
-	public byte get(int row, int col, byte defaultContent) {
+	protected byte content(int row, int col, byte defaultContent) {
 		if (!insideBounds(row, col)) {
 			return defaultContent;
 		}
 		return tileMap[row][col];
 	}
 
-	private boolean insideBounds(int row, int col) {
+	protected boolean insideBounds(int row, int col) {
 		return 0 <= row && row < numRows() && 0 <= col && col < numCols();
 	}
 
-	private void throwOutOfBoundsError(int row, int col) {
+	protected void throwOutOfBoundsError(int row, int col) {
 		throw new IndexOutOfBoundsException(
 				"Coordinate (%d, %d) is outside of map bounds (%d rows, %d cols)".formatted(row, col, numRows(), numCols()));
 	}
@@ -153,23 +157,23 @@ public abstract class TileMapWorld implements World {
 
 	@Override
 	public boolean isWall(Vector2i tile) {
-		return getOrDefault(Objects.requireNonNull(tile)) == TILE_WALL;
+		return content(Objects.requireNonNull(tile)) == TILE_WALL;
 	}
 
 	@Override
 	public boolean isTunnel(Vector2i tile) {
-		return getOrDefault(Objects.requireNonNull(tile)) == TILE_TUNNEL;
+		return content(Objects.requireNonNull(tile)) == TILE_TUNNEL;
 	}
 
 	@Override
 	public boolean isFoodTile(Vector2i tile) {
-		byte data = getOrDefault(Objects.requireNonNull(tile));
+		byte data = content(Objects.requireNonNull(tile));
 		return data == TILE_PELLET || data == TILE_ENERGIZER;
 	}
 
 	@Override
 	public boolean isEnergizerTile(Vector2i tile) {
-		byte data = getOrDefault(Objects.requireNonNull(tile));
+		byte data = content(Objects.requireNonNull(tile));
 		return data == TILE_ENERGIZER;
 	}
 
@@ -191,7 +195,7 @@ public abstract class TileMapWorld implements World {
 	public boolean containsFood(Vector2i tile) {
 		Objects.requireNonNull(tile);
 		if (insideBounds(tile)) {
-			byte data = getOrDefault(tile);
+			byte data = content(tile);
 			return (data == TILE_PELLET || data == TILE_ENERGIZER) && !eatenSet.get(index(tile));
 		}
 		return false;
