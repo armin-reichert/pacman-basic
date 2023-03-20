@@ -157,23 +157,27 @@ public abstract class TileMapWorld implements World {
 
 	@Override
 	public boolean isWall(Vector2i tile) {
-		return content(Objects.requireNonNull(tile)) == TILE_WALL;
+		Objects.requireNonNull(tile);
+		return content(tile) == TILE_WALL;
 	}
 
 	@Override
 	public boolean isTunnel(Vector2i tile) {
-		return content(Objects.requireNonNull(tile)) == TILE_TUNNEL;
+		Objects.requireNonNull(tile);
+		return content(tile) == TILE_TUNNEL;
 	}
 
 	@Override
 	public boolean isFoodTile(Vector2i tile) {
-		byte data = content(Objects.requireNonNull(tile));
+		Objects.requireNonNull(tile);
+		byte data = content(tile);
 		return data == TILE_PELLET || data == TILE_ENERGIZER;
 	}
 
 	@Override
 	public boolean isEnergizerTile(Vector2i tile) {
-		byte data = content(Objects.requireNonNull(tile));
+		Objects.requireNonNull(tile);
+		byte data = content(tile);
 		return data == TILE_ENERGIZER;
 	}
 
