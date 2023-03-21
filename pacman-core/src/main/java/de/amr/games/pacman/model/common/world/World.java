@@ -34,7 +34,7 @@ import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 
 /**
- * Interface for accessing the game world.
+ * Tiled world.
  * 
  * @author Armin Reichert
  */
@@ -67,8 +67,8 @@ public interface World extends AnimatedEntity {
 	 * @param y y position
 	 * @return tile containing given position
 	 */
-	public static Vector2i tileAt(double x, double y) {
-		return new Vector2i((int) x / TS, (int) y / TS);
+	public static Vector2i tileAt(float x, float y) {
+		return new Vector2i((int) (x / TS), (int) (y / TS));
 	}
 
 	/**
