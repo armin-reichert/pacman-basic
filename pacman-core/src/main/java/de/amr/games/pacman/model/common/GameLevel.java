@@ -203,7 +203,7 @@ public class GameLevel {
 		ghosts().forEach(Ghost::hide);
 		bonus.setInactive();
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
-		huntingTimer.stop();
+		stopHunting();
 	}
 
 	public GameModel game() {
@@ -338,14 +338,19 @@ public class GameLevel {
 	 * 
 	 * @param phase hunting phase (0..7)
 	 */
-	public void startHuntingPhase(int phase) {
+	public void startHunting(int phase) {
 		if (phase < 0 || phase > 7) {
 			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
 		}
 		this.huntingPhase = phase;
 		huntingTimer.reset(huntingTicks(phase));
 		huntingTimer.start();
-		LOG.info("Hunting phase %d (%s) starts. %s", phase, currentHuntingPhaseName(), huntingTimer);
+		LOG.info("Hunting phase %d (%s) started. %s", phase, currentHuntingPhaseName(), huntingTimer);
+	}
+
+	private void stopHunting() {
+		huntingTimer.stop();
+		LOG.info("Hunting timer stopped");
 	}
 
 	private long huntingTicks(int phase) {
@@ -359,7 +364,7 @@ public class GameLevel {
 	private void updateHunting() {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
-			startHuntingPhase(huntingPhase + 1);
+			startHunting(huntingPhase + 1);
 			// locked and house-leaving ghost will reverse as soon as he has left the house
 			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
 		}
@@ -498,19 +503,20 @@ public class GameLevel {
 	}
 
 	public void onPacKilled() {
+		stopHunting();
 		pac.die();
 		resetGlobalDotCounterAndSetEnabled(true);
 		setCruiseElroyStateEnabled(false);
-		LOG.trace("%s died at tile %s", pac.name(), pac.tile());
+		LOG.info("%s died at tile %s", pac.name(), pac.tile());
 	}
 
 	private void checkPacPower() {
 		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
 		memo.pacPowerLost = pac.powerTimer().hasExpired();
 		if (memo.pacPowerGained) {
-			huntingTimer.stop();
+			stopHunting();
 			pac.powerTimer().restartSeconds(params().pacPowerSeconds());
-			LOG.trace("%s power starting, duration %d ticks", pac.name(), pac.powerTimer().duration());
+			LOG.info("%s power starting, duration %d ticks", pac.name(), pac.powerTimer().duration());
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 			ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
 			publishGameEventOfType(GameEventType.PAC_GETS_POWER);
@@ -518,8 +524,9 @@ public class GameLevel {
 		} else if (memo.pacPowerFading) {
 			publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
 		} else if (memo.pacPowerLost) {
-			LOG.trace("%s power ends, timer: %s", pac.name(), pac.powerTimer());
+			LOG.info("%s power ends, timer: %s", pac.name(), pac.powerTimer());
 			huntingTimer.start();
+			LOG.info("Hunting timer restarted");
 			pac.powerTimer().stop();
 			pac.powerTimer().resetIndefinitely();
 			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
