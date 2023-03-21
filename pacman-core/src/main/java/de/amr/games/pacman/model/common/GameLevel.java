@@ -28,7 +28,6 @@ import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
-import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
@@ -67,19 +66,6 @@ import de.amr.games.pacman.model.common.world.World;
 public class GameLevel {
 
 	private static final Logger LOG = LogManager.getFormatterLogger();
-
-	/**
-	 * Simulates the overflow bug from the original Arcade version.
-	 * 
-	 * @param guy a creature
-	 * @param n   number of tiles
-	 * @return tile that is located given number of tiles ahead creature (towards move direction). In case creature looks
-	 *         up, additional n tiles are added towards left which simulates an overflow error in the Arcade game version
-	 */
-	private static Vector2i tilesAhead(Creature guy, int n) {
-		var ahead = guy.tile().plus(guy.moveDir().vector().scaled(n));
-		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
-	}
 
 	/**
 	 * Individual level parameters.
@@ -180,6 +166,20 @@ public class GameLevel {
 		ghost(ID_ORANGE_GHOST).setChasingTarget( //
 				() -> ghost(ID_ORANGE_GHOST).tile().euclideanDistance(pac.tile()) < 8 ? //
 						world.ghostScatterTargetTile(ID_ORANGE_GHOST) : pac.tile());
+	}
+
+	/**
+	 * Simulates the overflow bug from the original Arcade version.
+	 * 
+	 * @param guy a creature
+	 * @param numTiles   number of tiles
+	 * @return the tile located the given number of tiles in front of the creature (towards move direction). In case
+	 *         creature looks up, additional n tiles are added towards left. This simulates an overflow error in the
+	 *         original Arcade game.
+	 */
+	private static Vector2i tilesAhead(Creature guy, int numTiles) {
+		Vector2i ahead = guy.tile().plus(guy.moveDir().vector().scaled(numTiles));
+		return guy.moveDir() == Direction.UP ? ahead.minus(numTiles, 0) : ahead;
 	}
 
 	public void update() {
