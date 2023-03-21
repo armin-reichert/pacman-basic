@@ -345,8 +345,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateStateFrightened(GameLevel level) {
-		var speed = level.world().isTunnel(tile()) ? level.params().ghostSpeedTunnel()
-				: level.params().ghostSpeedFrightened();
+		var speed = level.world().isTunnel(tile()) ? level.ghostSpeedTunnel : level.ghostSpeedFrightened;
 		setRelSpeed(speed);
 		roam(level);
 		updateFrightenedAnimation(level);
@@ -436,7 +435,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			animations().ifPresent(anims -> {
 				if (!anims.isSelected(GameModel.AK_GHOST_FLASHING)) {
 					selectAndRunAnimation(GameModel.AK_GHOST_FLASHING)
-							.ifPresent(flashing -> startFlashing(level.params().numFlashes(), flashing));
+							.ifPresent(flashing -> startFlashing(level.numFlashes, flashing));
 				}
 			});
 		}

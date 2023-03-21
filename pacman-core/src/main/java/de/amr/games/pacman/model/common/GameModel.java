@@ -42,7 +42,6 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.model.common.GameLevel.Parameters;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -252,13 +251,12 @@ public abstract class GameModel {
 	 * @param levelNumber level number (starting at 1)
 	 * @return parameter values (speed, pellet counts etc.) used in specified level. From level 21 on, level parameters
 	 *         remain the same
-	 * @see {@link GameLevel.Parameters}
 	 */
-	public Parameters levelParameters(int levelNumber) {
+	public byte[] levelData(int levelNumber) {
 		var data = levelNumber <= LEVEL_PARAMETERS.length //
 				? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
-		return Parameters.fromBytes(data);
+		return data;
 	}
 
 	/**

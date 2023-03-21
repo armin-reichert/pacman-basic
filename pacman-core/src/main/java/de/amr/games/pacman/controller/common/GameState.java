@@ -194,7 +194,7 @@ public enum GameState implements FsmState<GameModel> {
 					if (!game.hasCredit()) {
 						gc.changeState(INTRO);
 						// attract mode -> back to intro scene
-					} else if (level.params().intermissionNumber() > 0) {
+					} else if (level.intermissionNumber > 0) {
 						gc.changeState(INTERMISSION); // play intermission scene
 					} else {
 						gc.changeState(CHANGING_TO_NEXT_LEVEL); // next level
@@ -202,7 +202,7 @@ public enum GameState implements FsmState<GameModel> {
 				} else {
 					level.world().animation(GameModel.AK_MAZE_FLASHING).ifPresent(flashing -> {
 						if (timer.atSecond(1)) {
-							flashing.setRepetitions(level.params().numFlashes());
+							flashing.setRepetitions(level.numFlashes);
 							flashing.restart();
 						} else {
 							flashing.animate();
@@ -381,7 +381,7 @@ public enum GameState implements FsmState<GameModel> {
 						level.guys().forEach(Creature::hide);
 					} else if (timer.atSecond(4.5)) {
 						level.world().animation(GameModel.AK_MAZE_FLASHING).ifPresent(flashing -> {
-							flashing.setRepetitions(level.params().numFlashes());
+							flashing.setRepetitions(level.numFlashes);
 							flashing.restart();
 						});
 					} else if (timer.atSecond(6.0)) {

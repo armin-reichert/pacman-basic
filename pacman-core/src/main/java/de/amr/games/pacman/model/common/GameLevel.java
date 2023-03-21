@@ -67,76 +67,72 @@ public class GameLevel {
 
 	private static final Logger LOG = LogManager.getFormatterLogger();
 
-	/**
-	 * Individual level parameters.
-	 */
-	public record Parameters(
-	//@formatter:off
-		/** Relative Pac-Man speed in this level. */
-		float pacSpeed,
-		/** Relative ghost speed in this level. */
-		float ghostSpeed,
-		/** Relative ghost speed when inside tunnel in this level. */
-		float ghostSpeedTunnel,
-		/** Number of pellets left before player becomes "Cruise Elroy" with severity 1. */
-		int elroy1DotsLeft,
-		/** Relative speed of player being "Cruise Elroy" at severity 1. */
-		float elroy1Speed,
-		/** Number of pellets left before player becomes "Cruise Elroy" with severity 2. */
-		int elroy2DotsLeft,
-		/** Relative speed of player being "Cruise Elroy" with severity 2. */
-		float elroy2Speed,
-		/** Relative speed of Pac-Man in power mode. */
-		float pacSpeedPowered,
-		/** Relative speed of frightened ghost. */
-		float ghostSpeedFrightened,
-		/** Number of seconds Pac-Man gets power int this level. */
-		int pacPowerSeconds,
-		/** Number of maze flashes at end of this level. */
-		int numFlashes,
-		/** Number of intermission scene played after this level (1, 2, 3, 0 = no intermission). */
-		int intermissionNumber)
-	//@formatter:on
-	{
-
-		private static final float percent(byte value) {
-			return value / 100f;
-		}
-
-		public static Parameters fromBytes(byte[] data) {
-			//@formatter:off
-			float pacSpeed             = percent(data[0]);
-			float ghostSpeed           = percent(data[1]);
-			float ghostSpeedTunnel     = percent(data[2]);
-			byte  elroy1DotsLeft       = data[3];
-			float elroy1Speed          = percent(data[4]);
-			byte  elroy2DotsLeft       = data[5];
-			float elroy2Speed          = percent(data[6]);
-			float pacSpeedPowered      = percent(data[7]);
-			float ghostSpeedFrightened = percent(data[8]);
-			byte  pacPowerSeconds      = data[9];
-			byte  numFlashes           = data[10];
-			byte  intermissionNumber   = data[11];
-			//@formatter:on
-			return new Parameters(pacSpeed, ghostSpeed, ghostSpeedTunnel, elroy1DotsLeft, elroy1Speed, elroy2DotsLeft,
-					elroy2Speed, pacSpeedPowered, ghostSpeedFrightened, pacPowerSeconds, numFlashes, intermissionNumber);
-		}
+	private static final float percent(byte value) {
+		return value / 100f;
 	}
 
+	/** Relative Pac-Man speed in this level. */
+	public final float pacSpeed;
+
+	/** Relative ghost speed in this level. */
+	public final float ghostSpeed;
+
+	/** Relative ghost speed when inside tunnel in this level. */
+	public final float ghostSpeedTunnel;
+
+	/** Number of pellets left before player becomes "Cruise Elroy" with severity 1. */
+	public final int elroy1DotsLeft;
+
+	/** Relative speed of player being "Cruise Elroy" at severity 1. */
+	public final float elroy1Speed;
+
+	/** Number of pellets left before player becomes "Cruise Elroy" with severity 2. */
+	public final int elroy2DotsLeft;
+
+	/** Relative speed of player being "Cruise Elroy" with severity 2. */
+	public final float elroy2Speed;
+
+	/** Relative speed of Pac-Man in power mode. */
+	public final float pacSpeedPowered;
+
+	/** Relative speed of frightened ghost. */
+	public final float ghostSpeedFrightened;
+
+	/** Number of seconds Pac-Man gets power int this level. */
+	public final int pacPowerSeconds;
+
+	/** Number of maze flashes at end of this level. */
+	public final int numFlashes;
+
+	/** Number of intermission scene played after this level (1, 2, 3, 0 = no intermission). */
+	public final int intermissionNumber;
+
 	private final GameModel game;
+
 	private final int number;
+
 	private final TickTimer huntingTimer = new TickTimer("HuntingTimer");
+
 	private final Memory memo = new Memory();
+
 	private final World world;
+
 	private final Pac pac;
+
 	private final Ghost[] ghosts;
+
 	private final Bonus bonus;
-	private final Parameters params;
+
 	private final int[] huntingDurations;
+
 	private Steering pacSteering;
+
 	private int huntingPhase;
+
 	private int numGhostsKilledInLevel;
+
 	private int numGhostsKilledByEnergizer;
+
 	private byte cruiseElroyState;
 
 	public GameLevel(GameModel game, int number) {
@@ -149,9 +145,23 @@ public class GameLevel {
 		ghosts = game.createGhosts();
 		bonus = game.createBonus(number);
 		huntingDurations = game.huntingDurations(number);
-		params = game.levelParameters(number);
 		defineGhostHouseRules();
 		defineGhostAI();
+
+		var data = game.levelData(number);
+		pacSpeed = percent(data[0]);
+		ghostSpeed = percent(data[1]);
+		ghostSpeedTunnel = percent(data[2]);
+		elroy1DotsLeft = data[3];
+		elroy1Speed = percent(data[4]);
+		elroy2DotsLeft = data[5];
+		elroy2Speed = percent(data[6]);
+		pacSpeedPowered = percent(data[7]);
+		ghostSpeedFrightened = percent(data[8]);
+		pacPowerSeconds = data[9];
+		numFlashes = data[10];
+		intermissionNumber = data[11];
+
 		LOG.trace("Game level %d created. (%s)", number, game.variant());
 	}
 
@@ -268,10 +278,6 @@ public class GameLevel {
 
 	public Bonus bonus() {
 		return bonus;
-	}
-
-	public Parameters params() {
-		return params;
 	}
 
 	public TickTimer huntingTimer() {
@@ -428,21 +434,21 @@ public class GameLevel {
 	 */
 	public float huntingSpeed(Ghost ghost) {
 		if (world.isTunnel(ghost.tile())) {
-			return params.ghostSpeedTunnel();
+			return ghostSpeedTunnel;
 		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState == 1) {
-			return params.elroy1Speed();
+			return elroy1Speed;
 		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState == 2) {
-			return params.elroy2Speed();
+			return elroy2Speed;
 		} else {
-			return params.ghostSpeed();
+			return ghostSpeed;
 		}
 	}
 
 	private void checkIfBlinkyBecomesCruiseElroy() {
 		var foodRemaining = world.foodRemaining();
-		if (foodRemaining == params.elroy1DotsLeft()) {
+		if (foodRemaining == elroy1DotsLeft) {
 			setCruiseElroyState(1);
-		} else if (foodRemaining == params.elroy2DotsLeft()) {
+		} else if (foodRemaining == elroy2DotsLeft) {
 			setCruiseElroyState(2);
 		}
 	}
@@ -520,7 +526,7 @@ public class GameLevel {
 		memo.pacPowerLost = pac.powerTimer().hasExpired();
 		if (memo.pacPowerGained) {
 			stopHunting();
-			pac.powerTimer().restartSeconds(params().pacPowerSeconds());
+			pac.powerTimer().restartSeconds(pacPowerSeconds);
 			LOG.info("%s power starting, duration %d ticks", pac.name(), pac.powerTimer().duration());
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 			ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
@@ -553,7 +559,7 @@ public class GameLevel {
 			memo.foodFoundTile = Optional.of(tile);
 			memo.energizerFound = world.isEnergizerTile(tile);
 			memo.lastFoodFound = world.foodRemaining() == 0;
-			memo.pacPowerGained = memo.energizerFound && params().pacPowerSeconds() > 0;
+			memo.pacPowerGained = memo.energizerFound && pacPowerSeconds > 0;
 			memo.bonusReached = game.isFirstBonusReached() || game.isSecondBonusReached();
 			pac.endStarving();
 			if (memo.energizerFound) {
