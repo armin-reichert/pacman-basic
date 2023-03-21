@@ -171,8 +171,8 @@ public class GameLevel {
 	/**
 	 * Simulates the overflow bug from the original Arcade version.
 	 * 
-	 * @param guy a creature
-	 * @param numTiles   number of tiles
+	 * @param guy      a creature
+	 * @param numTiles number of tiles
 	 * @return the tile located the given number of tiles in front of the creature (towards move direction). In case
 	 *         creature looks up, additional n tiles are added towards left. This simulates an overflow error in the
 	 *         original Arcade game.
@@ -188,7 +188,10 @@ public class GameLevel {
 		pac.update(this);
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
-		updateHunting();
+		boolean newHuntingPhaseStarted = updateHuntingTimer();
+		if (newHuntingPhaseStarted) {
+			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
+		}
 		bonus.update(this);
 		checkIfPacFoundFood();
 		checkPacPower();
@@ -360,14 +363,16 @@ public class GameLevel {
 	/**
 	 * Advances the current hunting phase and enters the next phase when the current phase ends. On every change between
 	 * phases, the living ghosts outside of the ghost house reverse their move direction.
+	 * 
+	 * @return if new hunting phase has been started
 	 */
-	private void updateHunting() {
+	private boolean updateHuntingTimer() {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHunting(huntingPhase + 1);
-			// locked and house-leaving ghost will reverse as soon as he has left the house
-			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
+			return true;
 		}
+		return false;
 	}
 
 	/**
