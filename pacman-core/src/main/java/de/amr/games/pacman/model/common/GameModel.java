@@ -40,6 +40,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.GameLevel.Parameters;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -148,18 +150,41 @@ public abstract class GameModel {
 		return HUNTING_DURATIONS[index];
 	}
 
-	public static byte checkGhostID(byte id) {
-		if (id < 0 || id > 3) {
-			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
-		}
-		return id;
+	// Parameter validation
+
+	private static final String MSG_GAME_NULL = "Game model must not be null";
+	private static final String MSG_LEVEL_NULL = "Game level must not be null";
+	private static final String MSG_LEVEL_NUMBER_ILLEGAL = "Level number must be at least 1, but is: %d";
+	private static final String MSG_TILE_NULL = "Tile must not be null";
+	private static final String MSG_DIR_NULL = "Direction must not be null";
+	private static final String MSG_GHOST_ID_ILLEGAL = "Illegal ghost ID: %d";
+
+	public static void checkGameNotNull(GameModel game) {
+		Objects.requireNonNull(game, MSG_GAME_NULL);
 	}
 
-	public static int checkLevelNumber(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
+	public static void checkGhostID(byte id) {
+		if (id < 0 || id > 3) {
+			throw new IllegalArgumentException(MSG_GHOST_ID_ILLEGAL.formatted(id));
 		}
-		return levelNumber;
+	}
+
+	public static void checkLevelNumber(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException(MSG_LEVEL_NUMBER_ILLEGAL.formatted(levelNumber));
+		}
+	}
+
+	public static void checkTileNotNull(Vector2i tile) {
+		Objects.requireNonNull(tile, MSG_TILE_NULL);
+	}
+
+	public static void checkLevelNotNull(GameLevel level) {
+		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+	}
+
+	public static void checkDirectionNotNull(Direction dir) {
+		Objects.requireNonNull(dir, MSG_DIR_NULL);
 	}
 
 	protected GameLevel level;

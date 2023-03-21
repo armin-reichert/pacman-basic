@@ -31,7 +31,6 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -51,11 +50,6 @@ import de.amr.games.pacman.model.common.GameModel;
 public class Creature extends Entity {
 
 	protected static final Logger LOG = LogManager.getFormatterLogger();
-
-	protected static final String MSG_GAME_NULL = "Game must not be null";
-	protected static final String MSG_LEVEL_NULL = "Game level must not be null";
-	protected static final String MSG_TILE_NULL = "Tile must not be null";
-	protected static final String MSG_DIR_NULL = "Direction must not be null";
 
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
@@ -140,12 +134,12 @@ public class Creature extends Entity {
 	}
 
 	public void placeAtTile(Vector2i tile, float ox, float oy) {
-		Objects.requireNonNull(tile, MSG_TILE_NULL);
+		GameModel.checkTileNotNull(tile);
 		placeAtTile(tile.x(), tile.y(), ox, oy);
 	}
 
 	public void placeAtTile(Vector2i tile) {
-		Objects.requireNonNull(tile, MSG_TILE_NULL);
+		GameModel.checkTileNotNull(tile);
 		placeAtTile(tile.x(), tile.y(), 0, 0);
 	}
 
@@ -154,8 +148,8 @@ public class Creature extends Entity {
 	 * @return if this creature can access the given tile
 	 */
 	public boolean canAccessTile(Vector2i tile, GameLevel level) {
-		Objects.requireNonNull(tile, MSG_TILE_NULL);
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkTileNotNull(tile);
+		GameModel.checkLevelNotNull(level);
 		if (level.world().insideBounds(tile)) {
 			return !level.world().isWall(tile) && !level.world().ghostHouse().door().contains(tile);
 		}
@@ -168,7 +162,7 @@ public class Creature extends Entity {
 	 * @param dir the new move direction
 	 */
 	public void setMoveDir(Direction dir) {
-		Objects.requireNonNull(dir, MSG_DIR_NULL);
+		GameModel.checkDirectionNotNull(dir);
 		if (moveDir != dir) {
 			moveDir = dir;
 			LOG.trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
@@ -182,7 +176,7 @@ public class Creature extends Entity {
 	}
 
 	public void setWishDir(Direction dir) {
-		Objects.requireNonNull(dir, MSG_DIR_NULL);
+		GameModel.checkDirectionNotNull(dir);
 		if (wishDir != dir) {
 			wishDir = dir;
 			LOG.trace("%-6s: New wishDir: %s. %s", name, wishDir, this);
@@ -242,7 +236,7 @@ public class Creature extends Entity {
 	 * @param game the game model
 	 */
 	public void navigateTowardsTarget(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkLevelNotNull(level);
 		if (!newTileEntered && !stuck) {
 			return; // we don't need no navigation, dim dit diddit diddit dim dit diddit diddit...
 		}
@@ -299,7 +293,7 @@ public class Creature extends Entity {
 	 * possible, it keeps moving to its current move direction.
 	 */
 	public void tryMoving(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkLevelNotNull(level);
 		Vector2i tileBeforeMove = tile();
 		MoveResult mr = tryTeleport(level);
 		if (mr.teleported()) {

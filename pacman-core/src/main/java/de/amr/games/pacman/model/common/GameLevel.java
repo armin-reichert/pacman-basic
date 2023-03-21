@@ -29,7 +29,6 @@ import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
-import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
@@ -155,8 +154,10 @@ public class GameLevel {
 	private byte cruiseElroyState;
 
 	public GameLevel(GameModel game, int number) {
-		this.game = Objects.requireNonNull(game);
-		this.number = GameModel.checkLevelNumber(number);
+		GameModel.checkGameNotNull(game);
+		GameModel.checkLevelNumber(number);
+		this.game = game;
+		this.number = number;
 		world = game.createWorld(number);
 		pac = game.createPac();
 		ghosts = game.createGhosts();
@@ -239,7 +240,8 @@ public class GameLevel {
 	 * @return the ghost with the given ID
 	 */
 	public Ghost ghost(byte id) {
-		return ghosts[checkGhostID(id)];
+		GameModel.checkGhostID(id);
+		return ghosts[id];
 	}
 
 	/**

@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
-import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.Collection;
@@ -36,6 +35,7 @@ import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
@@ -96,7 +96,8 @@ public class ArcadeWorld extends TileMapWorld {
 
 	@Override
 	public Vector2f ghostInitialPosition(byte ghostID) {
-		return switch (checkGhostID(ghostID)) {
+		GameModel.checkGhostID(ghostID);
+		return switch (ghostID) {
 		case Ghost.ID_RED_GHOST -> ghostHouse().door().entryPosition();
 		case Ghost.ID_CYAN_GHOST -> ghostHouse().seatPositions().get(0);
 		case Ghost.ID_PINK_GHOST -> ghostHouse().seatPositions().get(1);
@@ -107,18 +108,20 @@ public class ArcadeWorld extends TileMapWorld {
 
 	@Override
 	public Direction ghostInitialDirection(byte ghostID) {
-		return GHOST_INITIAL_DIRECTIONS[checkGhostID(ghostID)];
+		GameModel.checkGhostID(ghostID);
+		return GHOST_INITIAL_DIRECTIONS[ghostID];
 	}
 
 	@Override
 	public Vector2f ghostRevivalPosition(byte ghostID) {
-		return checkGhostID(ghostID) == Ghost.ID_RED_GHOST ? ghostHouse().seatPositions().get(1)
-				: ghostInitialPosition(ghostID);
+		GameModel.checkGhostID(ghostID);
+		return ghostID == Ghost.ID_RED_GHOST ? ghostHouse().seatPositions().get(1) : ghostInitialPosition(ghostID);
 	}
 
 	@Override
 	public Vector2i ghostScatterTargetTile(byte ghostID) {
-		return GHOST_SCATTER_TARGET_TILES[checkGhostID(ghostID)];
+		GameModel.checkGhostID(ghostID);
+		return GHOST_SCATTER_TARGET_TILES[ghostID];
 	}
 
 	@Override

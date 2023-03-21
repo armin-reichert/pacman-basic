@@ -71,7 +71,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	public Ghost(byte id, String name) {
 		super(name);
-		this.id = GameModel.checkGhostID(id);
+		GameModel.checkGhostID(id);
+		this.id = id;
 		reset();
 	}
 
@@ -115,8 +116,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	public boolean canAccessTile(Vector2i tile, GameLevel level) {
-		Objects.requireNonNull(tile, MSG_TILE_NULL);
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkTileNotNull(tile);
+		GameModel.checkLevelNotNull(level);
 		var currentTile = tile();
 		if (tile.equals(currentTile.plus(UP.vector())) && !level.isSteeringAllowed(this, UP)) {
 			LOG.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
@@ -139,7 +140,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level game level
 	 */
 	public void scatter(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkLevelNotNull(level);
 		setTargetTile(level.world().ghostScatterTargetTile(id));
 		navigateTowardsTarget(level);
 		tryMoving(level);
@@ -151,7 +152,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level game level
 	 */
 	public void chase(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkLevelNotNull(level);
 		setTargetTile(fnChasingTarget.get());
 		navigateTowardsTarget(level);
 		tryMoving(level);
@@ -163,7 +164,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level game level
 	 */
 	public void roam(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkLevelNotNull(level);
 		moveRandomly(level);
 	}
 
@@ -225,7 +226,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param game the game
 	 */
 	public void update(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkLevelNotNull(level);
 		switch (state) {
 		case LOCKED -> updateStateLocked(level);
 		case LEAVING_HOUSE -> updateStateLeavingHouse(level);
@@ -281,7 +282,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * The ghost speed is slower than outside but I do not know yet the exact value.
 	 */
 	public void enterStateLeavingHouse(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkLevelNotNull(level);
 		state = LEAVING_HOUSE;
 		setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
 		publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
@@ -375,7 +376,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level the game level
 	 */
 	public void enterStateReturningToHouse(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkLevelNotNull(level);
 		state = RETURNING_TO_HOUSE;
 		setTargetTile(level.world().ghostHouse().door().entryTile());
 		selectAndRunAnimation(GameModel.AK_GHOST_EYES);
@@ -402,7 +403,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level the game level
 	 */
 	public void enterStateEnteringHouse(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		GameModel.checkLevelNotNull(level);
 		state = ENTERING_HOUSE;
 		setTargetTile(null);
 		setPixelSpeed(GameModel.SPEED_GHOST_ENTERING_HOUSE_PX);
