@@ -253,10 +253,9 @@ public abstract class GameModel {
 	 *         remain the same
 	 */
 	public byte[] levelData(int levelNumber) {
-		var data = levelNumber <= LEVEL_PARAMETERS.length //
+		return levelNumber <= LEVEL_PARAMETERS.length //
 				? LEVEL_PARAMETERS[levelNumber - 1]
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
-		return data;
 	}
 
 	/**
