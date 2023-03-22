@@ -258,7 +258,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public boolean isSecondBonusReached() {
-		return level.world().foodRemaining() == 66; // from Ms. Pac-Man FAQ, but is this correct?
+		return level.world().uneatenFoodCount() == 66; // from Ms. Pac-Man FAQ, but is this correct?
 	}
 
 	@Override

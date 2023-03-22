@@ -445,7 +445,7 @@ public class GameLevel {
 	}
 
 	private void checkIfBlinkyBecomesCruiseElroy() {
-		var foodRemaining = world.foodRemaining();
+		var foodRemaining = world.uneatenFoodCount();
 		if (foodRemaining == elroy1DotsLeft) {
 			setCruiseElroyState(1);
 		} else if (foodRemaining == elroy2DotsLeft) {
@@ -558,7 +558,7 @@ public class GameLevel {
 			world.removeFood(tile);
 			memo.foodFoundTile = Optional.of(tile);
 			memo.energizerFound = world.isEnergizerTile(tile);
-			memo.lastFoodFound = world.foodRemaining() == 0;
+			memo.lastFoodFound = world.uneatenFoodCount() == 0;
 			memo.pacPowerGained = memo.energizerFound && pacPowerSeconds > 0;
 			memo.bonusReached = game.isFirstBonusReached() || game.isSecondBonusReached();
 			pac.endStarving();

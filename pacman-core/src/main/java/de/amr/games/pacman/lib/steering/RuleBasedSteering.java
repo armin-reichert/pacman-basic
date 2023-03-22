@@ -241,7 +241,7 @@ public class RuleBasedSteering implements Steering {
 					continue;
 				}
 				if (level.world().isEnergizerTile(tile) && pac.powerTimer().remaining() > 2 * 60
-						&& level.world().foodRemaining() > 1) {
+						&& level.world().uneatenFoodCount() > 1) {
 					continue;
 				}
 				float dist = pacManTile.manhattanDistance(tile);

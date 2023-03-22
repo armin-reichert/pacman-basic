@@ -261,7 +261,7 @@ public interface World extends AnimatedEntity {
 	/**
 	 * @return number of uneaten pellets
 	 */
-	int foodRemaining();
+	int uneatenFoodCount();
 
 	/**
 	 * @return number of eaten pellets

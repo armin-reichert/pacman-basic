@@ -172,7 +172,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 				var world = level.world();
 				world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
 				publishGameEventOfType(GameEventType.PAC_FINDS_FOOD);
-				if (world.foodRemaining() == 0) {
+				if (world.uneatenFoodCount() == 0) {
 					changeState(GameState.LEVEL_COMPLETE);
 				}
 			});

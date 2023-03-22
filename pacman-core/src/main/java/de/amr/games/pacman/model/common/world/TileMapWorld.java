@@ -52,14 +52,14 @@ public abstract class TileMapWorld implements World {
 	protected List<Portal> portals;
 	protected List<Vector2i> energizerTiles;
 	protected int totalFoodCount;
-	protected int foodRemaining;
+	protected int uneatenFoodCount;
 	private final BitSet eatenSet;
 
 	protected TileMapWorld(byte[][] tileMap) {
 		this.tileMap = validateTileMapData(tileMap);
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
-		foodRemaining = totalFoodCount;
+		uneatenFoodCount = totalFoodCount;
 		portals = findPortals();
 		eatenSet = new BitSet(numRows() * numCols());
 	}
@@ -191,7 +191,7 @@ public abstract class TileMapWorld implements World {
 		Objects.requireNonNull(tile);
 		if (insideBounds(tile) && containsFood(tile)) {
 			eatenSet.set(index(tile));
-			--foodRemaining;
+			--uneatenFoodCount;
 		}
 	}
 
@@ -215,12 +215,12 @@ public abstract class TileMapWorld implements World {
 	}
 
 	@Override
-	public int foodRemaining() {
-		return foodRemaining;
+	public int uneatenFoodCount() {
+		return uneatenFoodCount;
 	}
 
 	@Override
 	public int eatenFoodCount() {
-		return totalFoodCount - foodRemaining;
+		return totalFoodCount - uneatenFoodCount;
 	}
 }
