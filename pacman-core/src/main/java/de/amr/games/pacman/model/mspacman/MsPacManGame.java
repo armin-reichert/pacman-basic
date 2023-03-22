@@ -326,24 +326,24 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public void onBonusReached() {
 		int numPortals = level.world().portals().size();
+		var leftToRight = RND.nextBoolean();
 		var entryPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
 		var exitPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
-		var traverseDirection = RND.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-		var start = traverseDirection == Direction.RIGHT ? np(entryPortal.leftTunnelEnd())
-				: np(entryPortal.rightTunnelEnd());
+		var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
+		var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
+				: np(exitPortal.leftTunnelEnd().minus(1, 0));
 		var houseEntry = level.world().ghostHouse().door().entryTile().minus(0, 1);
 		int houseHeight = level.world().ghostHouse().sizeInTiles().y();
 		var route = new ArrayList<NavigationPoint>();
 		route.add(np(houseEntry));
 		route.add(np(houseEntry.plus(0, houseHeight + 1)));
 		route.add(np(houseEntry));
-		route.add(traverseDirection == Direction.RIGHT ? np(exitPortal.rightTunnelEnd().plus(1, 0))
-				: np(exitPortal.leftTunnelEnd().minus(1, 0)));
-		LOG.trace("Bonus route: %s, orientation: %s", route, traverseDirection);
+		route.add(exitPoint);
+		LOG.trace("Bonus route: %s, orientation: %s", route, (leftToRight ? "left to right" : "right to left"));
 		var movingBonus = (MovingBonus) level.bonus();
 		movingBonus.setRoute(route);
-		movingBonus.entity().placeAtTile(start.tile(), 0, 0);
-		movingBonus.entity().setMoveAndWishDir(traverseDirection);
+		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
+		movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
 		movingBonus.setEdible(TickTimer.INDEFINITE);
 		GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, movingBonus.entity().tile());
 	}

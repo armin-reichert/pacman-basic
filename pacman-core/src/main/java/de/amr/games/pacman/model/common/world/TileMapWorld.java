@@ -66,14 +66,14 @@ public abstract class TileMapWorld implements World {
 
 	private byte[][] validateTileMapData(byte[][] data) {
 		if (data == null) {
-			throw new IllegalArgumentException("Map is null");
+			throw new IllegalArgumentException("Map data missing");
 		}
 		if (data.length == 0) {
-			throw new IllegalArgumentException("Map has no rows");
+			throw new IllegalArgumentException("Map data empty");
 		}
 		var firstRow = data[0];
 		if (firstRow.length == 0) {
-			throw new IllegalArgumentException("Map has no columns");
+			throw new IllegalArgumentException("Map data empty");
 		}
 		for (int i = 0; i < data.length; ++i) {
 			if (data[i].length != firstRow.length) {
