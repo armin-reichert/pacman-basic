@@ -83,6 +83,10 @@ public class FloorPlan {
 		return resolution;
 	}
 
+	public Vector2i tile(int x, int y) {
+		return new Vector2i(x / resolution, y / resolution);
+	}
+
 	public void print(Writer w, boolean useSymbols) {
 		PrintWriter p = new PrintWriter(w);
 		for (int y = 0; y < sizeY(); ++y) {
