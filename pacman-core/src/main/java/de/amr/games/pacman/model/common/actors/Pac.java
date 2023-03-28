@@ -144,7 +144,7 @@ public class Pac extends Creature implements AnimatedEntity {
 	}
 
 	/* Number of ticks since Pac has has eaten a pellet or energizer. */
-	public int starvingTicks() {
+	public long starvingTicks() {
 		return starvingTicks;
 	}
 

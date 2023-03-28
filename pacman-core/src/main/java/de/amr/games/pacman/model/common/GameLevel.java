@@ -584,7 +584,7 @@ public class GameLevel {
 
 	/* --- Ghosthouse control rules, see Pac-Man dossier --- */
 
-	private int pacStarvingTicksLimit;
+	private long pacStarvingTicksLimit;
 	private byte[] globalGhostDotLimits;
 	private byte[] privateGhostDotLimits;
 	private int[] ghostDotCounters;
