@@ -211,7 +211,7 @@ public class GameLevel {
 
 	public void exit() {
 		LOG.trace("Exit level %d (%s)", number, game.variant());
-		pac.rest(Pac.REST_INDEFINITE);
+		pac.rest(Pac.REST_FOREVER);
 		pac.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonus.setInactive();

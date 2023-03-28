@@ -32,18 +32,18 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
- * (Ms.) Pac-Man.
+ * Pac-Man / Ms. Pac-Man.
  * 
  * @author Armin Reichert
  */
 public class Pac extends Creature implements AnimatedEntity {
 
-	public static final int REST_INDEFINITE = -1;
+	public static final long REST_FOREVER = -1;
 
 	private final TickTimer powerTimer;
 	private boolean dead;
-	private int restingTicks;
-	private int starvingTicks;
+	private long restingTicks;
+	private long starvingTicks;
 	private AnimationMap animationMap;
 
 	public Pac(String name) {
@@ -72,8 +72,10 @@ public class Pac extends Creature implements AnimatedEntity {
 	}
 
 	private void updateAlive(GameLevel level) {
-		switch (restingTicks) {
-		case 0 -> {
+		if (restingTicks == REST_FOREVER) {
+			return;
+		}
+		if (restingTicks == 0) {
 			var speed = powerTimer.isRunning() ? level.pacSpeedPowered : level.pacSpeed;
 			setRelSpeed(speed);
 			tryMoving(level);
@@ -81,11 +83,8 @@ public class Pac extends Creature implements AnimatedEntity {
 			if (!isStuck()) {
 				animate();
 			}
-		}
-		case REST_INDEFINITE -> {
-			// Warten auf Godot
-		}
-		default -> --restingTicks;
+		} else {
+			--restingTicks;
 		}
 		powerTimer.advance();
 	}
@@ -99,6 +98,8 @@ public class Pac extends Creature implements AnimatedEntity {
 		stopAnimation();
 		setPixelSpeed(0);
 		dead = true;
+		starvingTicks = 0;
+		restingTicks = 0;
 	}
 
 	public boolean isPowerFading(GameLevel level) {
@@ -132,12 +133,12 @@ public class Pac extends Creature implements AnimatedEntity {
 	}
 
 	/* Number of ticks Pac is resting and not moving. */
-	public int restingTicks() {
+	public long restingTicks() {
 		return restingTicks;
 	}
 
-	public void rest(int ticks) {
-		if (ticks != REST_INDEFINITE && ticks < 0) {
+	public void rest(long ticks) {
+		if (ticks != REST_FOREVER && ticks < 0) {
 			throw new IllegalArgumentException("Resting time cannot be negative, but is: %d".formatted(ticks));
 		}
 		restingTicks = ticks;
