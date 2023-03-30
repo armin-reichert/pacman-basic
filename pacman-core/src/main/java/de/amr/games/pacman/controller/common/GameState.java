@@ -184,7 +184,6 @@ public enum GameState implements FsmState<GameModel> {
 			timer.restartSeconds(4);
 			game.level().ifPresent(GameLevel::exit);
 			publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
-			publishGameEventOfType(GameEventType.UNSPECIFIED_CHANGE);
 		}
 
 		@Override
