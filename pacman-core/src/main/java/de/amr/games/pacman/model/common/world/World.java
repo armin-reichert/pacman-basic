@@ -268,5 +268,13 @@ public interface World extends AnimatedEntity {
 	 */
 	int eatenFoodCount();
 
+	default Stream<Vector2i> tilesContainingFood() {
+		return tiles().filter(this::containsFood);
+	}
+
+	default Stream<Vector2i> tilesContainingEatenFood() {
+		return tiles().filter(this::containsEatenFood);
+	}
+
 	void setAnimations(AnimationMap animationMap);
 }
