@@ -31,13 +31,17 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public interface Steering {
 
-	public static final Steering NONE = new Steering() {
-		@Override
-		public void steer(GameLevel level, Creature guy) {
-		}
+	public static final Steering NONE = (level, guy) -> {
 	};
 
 	void steer(GameLevel level, Creature guy);
+
+	default boolean isEnabled() {
+		return false;
+	}
+
+	default void setEnabled(boolean enabled) {
+	}
 
 	default void init() {
 		// implement if needed
