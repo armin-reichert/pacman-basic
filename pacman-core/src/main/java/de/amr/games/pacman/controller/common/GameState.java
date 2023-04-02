@@ -90,6 +90,7 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
+			gc.getManualPacSteering().setEnabled(false);
 			publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
 			if (!game.hasCredit()) {
 				game.init();
@@ -145,6 +146,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			game.level().ifPresent(level -> {
+				gc.getManualPacSteering().setEnabled(true);
 				switch (level.huntingPhase()) {
 				case 0 -> publishSoundEvent(GameModel.SE_HUNTING_PHASE_STARTED_0);
 				case 2 -> publishSoundEvent(GameModel.SE_HUNTING_PHASE_STARTED_2);
@@ -181,6 +183,7 @@ public enum GameState implements FsmState<GameModel> {
 	LEVEL_COMPLETE {
 		@Override
 		public void onEnter(GameModel game) {
+			gc.getManualPacSteering().setEnabled(false);
 			timer.restartSeconds(4);
 			game.level().ifPresent(GameLevel::exit);
 			publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
@@ -216,6 +219,7 @@ public enum GameState implements FsmState<GameModel> {
 	CHANGING_TO_NEXT_LEVEL {
 		@Override
 		public void onEnter(GameModel game) {
+			gc.getManualPacSteering().setEnabled(false);
 			timer.restartSeconds(1);
 			game.nextLevel();
 			publishGameEventOfType(GameEventType.LEVEL_STARTING);
@@ -269,6 +273,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			game.level().ifPresent(level -> {
+				gc.getManualPacSteering().setEnabled(false);
 				timer.restartSeconds(4);
 				level.onPacKilled();
 				publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
@@ -318,6 +323,7 @@ public enum GameState implements FsmState<GameModel> {
 	GAME_OVER {
 		@Override
 		public void onEnter(GameModel game) {
+			gc.getManualPacSteering().setEnabled(false);
 			timer.restartSeconds(1.2);
 			game.changeCredit(-1);
 			game.saveNewHighscore();
