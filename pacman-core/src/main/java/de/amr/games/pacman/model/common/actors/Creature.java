@@ -270,18 +270,6 @@ public abstract class Creature extends Entity {
 		return Optional.ofNullable(targetDir);
 	}
 
-	private void tryTeleport(GameLevel level) {
-		if (canTeleport) {
-			for (var portal : level.world().portals()) {
-				portal.teleport(this);
-				if (moveResult.teleported) {
-					newTileEntered = true;
-					break;
-				}
-			}
-		}
-	}
-
 	/**
 	 * Move through the world.
 	 * <p>
@@ -294,7 +282,14 @@ public abstract class Creature extends Entity {
 
 		moveResult.reset();
 
-		tryTeleport(level);
+		if (canTeleport) {
+			for (var portal : level.world().portals()) {
+				portal.teleport(this);
+				if (moveResult.teleported) {
+					break;
+				}
+			}
+		}
 		if (moveResult.teleported) {
 			logMoveResult();
 			return;
