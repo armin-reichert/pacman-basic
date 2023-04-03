@@ -57,9 +57,12 @@ public class Creature extends Entity {
 	private Direction moveDir;
 	private Direction wishDir;
 	private Vector2i targetTile;
+
+	private MoveResult moveResult = new MoveResult();
 	private boolean newTileEntered;
 	private boolean tunnelEntered;
 	private boolean stuck;
+
 	protected boolean shouldReverse;
 	protected boolean canTeleport;
 
@@ -75,11 +78,15 @@ public class Creature extends Entity {
 		moveDir = RIGHT;
 		wishDir = RIGHT;
 		targetTile = null;
+
+		shouldReverse = false;
+		canTeleport = true;
+
 		newTileEntered = true;
 		tunnelEntered = false;
-		shouldReverse = false;
 		stuck = false;
-		canTeleport = true;
+
+		moveResult.reset();
 	}
 
 	@Override

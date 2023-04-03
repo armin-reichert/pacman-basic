@@ -33,6 +33,16 @@ public class MoveResult {
 	public boolean teleported;
 	public String message;
 
+	public MoveResult() {
+		reset();
+	}
+
+	public void reset() {
+		moved = false;
+		teleported = false;
+		message = "";
+	}
+
 	private MoveResult(boolean moved, boolean teleported, String message) {
 		this.moved = moved;
 		this.teleported = teleported;
