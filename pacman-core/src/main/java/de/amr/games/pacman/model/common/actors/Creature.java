@@ -47,7 +47,7 @@ import de.amr.games.pacman.model.common.GameModel;
  * 
  * @author Armin Reichert
  */
-public class Creature extends Entity {
+public abstract class Creature extends Entity {
 
 	protected static final Logger LOG = LogManager.getFormatterLogger();
 
@@ -206,9 +206,7 @@ public class Creature extends Entity {
 	 * @param level game level
 	 * @return if the creature can reverse its direction
 	 */
-	public boolean canReverse(GameLevel level) {
-		return newTileEntered;
-	}
+	public abstract boolean canReverse(GameLevel level);
 
 	/**
 	 * Sets the speed as a fraction of the game base speed (1.25 pixels/sec).

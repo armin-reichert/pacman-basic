@@ -62,7 +62,12 @@ public class MovingBonus implements Bonus {
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
 	public MovingBonus(int symbol, int points) {
-		creature = new Creature("MovingBonus");
+		creature = new Creature("MovingBonus") {
+			@Override
+			public boolean canReverse(GameLevel level) {
+				return false;
+			}
+		};
 		this.symbol = (byte) symbol;
 		this.points = points;
 		creature.reset();

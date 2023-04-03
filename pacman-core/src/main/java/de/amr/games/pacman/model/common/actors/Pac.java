@@ -53,6 +53,11 @@ public class Pac extends Creature implements AnimatedEntity {
 	}
 
 	@Override
+	public boolean canReverse(GameLevel level) {
+		return isNewTileEntered();
+	}
+
+	@Override
 	public void reset() {
 		super.reset();
 		dead = false;
