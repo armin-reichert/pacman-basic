@@ -64,6 +64,6 @@ public class MoveResult {
 		sb.append(moved ? " moved" : " not moved");
 		sb.append(tunnelEntered ? " tunnel entered" : "");
 		sb.append(teleported ? " teleported" : "");
-		return sb.isEmpty() ? "" : "[" + sb + "]";
+		return sb.isEmpty() ? "" : "[" + sb.toString().trim() + "]";
 	}
 }
