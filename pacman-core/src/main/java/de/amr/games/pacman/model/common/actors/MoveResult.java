@@ -44,22 +44,4 @@ public class MoveResult {
 		teleported = false;
 		message = "";
 	}
-
-	private MoveResult(boolean moved, boolean teleported, String message) {
-		this.moved = moved;
-		this.teleported = teleported;
-		this.message = message;
-	}
-
-	public static MoveResult moved(String message, Object... args) {
-		return new MoveResult(true, false, message.formatted(args));
-	}
-
-	public static MoveResult notMoved(String message, Object... args) {
-		return new MoveResult(false, false, message.formatted(args));
-	}
-
-	public static MoveResult teleported(String message, Object... args) {
-		return new MoveResult(true, true, message.formatted(args));
-	}
 }

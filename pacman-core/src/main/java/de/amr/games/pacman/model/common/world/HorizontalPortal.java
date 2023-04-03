@@ -23,13 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.model.common.actors.MoveResult.notMoved;
-import static de.amr.games.pacman.model.common.actors.MoveResult.teleported;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
-import de.amr.games.pacman.model.common.actors.MoveResult;
 
 /**
  * A portal connects two tunnel ends leading out of the map.
@@ -44,16 +41,21 @@ public record HorizontalPortal(Vector2i leftTunnelEnd, Vector2i rightTunnelEnd) 
 	private static final int DEPTH = 2;
 
 	@Override
-	public MoveResult teleport(Creature guy) {
+	public void teleport(Creature guy) {
 		var oldPos = guy.position();
 		if (guy.tile().y() == leftTunnelEnd.y() && guy.position().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
 			guy.placeAtTile(rightTunnelEnd);
-			return teleported("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
-		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
-			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
-			return teleported("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
+			guy.moveResult.teleported = true;
+			guy.moveResult.message = "Teleported %s from %s to %s".formatted(guy.name(), oldPos, guy.position());
+			return;
 		}
-		return notMoved("No teleport possible at position %s", oldPos);
+		if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
+			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
+			guy.moveResult.teleported = true;
+			guy.moveResult.message = "Teleported %s from %s to %s".formatted(guy.name(), oldPos, guy.position());
+			return;
+		}
+		guy.moveResult.message = "No teleport possible at position %s".formatted(oldPos);
 	}
 
 	@Override
