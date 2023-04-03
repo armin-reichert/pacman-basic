@@ -114,7 +114,7 @@ public class Pac extends Creature implements AnimatedEntity {
 
 	@Override
 	public String toString() {
-		return "[Pac: name='%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
+		return "['%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
 				.formatted(name(), position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
 						restingTicks, starvingTicks);
 	}
