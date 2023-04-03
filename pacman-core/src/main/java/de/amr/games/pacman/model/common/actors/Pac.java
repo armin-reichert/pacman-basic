@@ -80,7 +80,7 @@ public class Pac extends Creature implements AnimatedEntity {
 			setRelSpeed(speed);
 			tryMoving(level);
 			selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
-			if (!isStuck()) {
+			if (moveResult.moved) {
 				animate();
 			}
 		} else {

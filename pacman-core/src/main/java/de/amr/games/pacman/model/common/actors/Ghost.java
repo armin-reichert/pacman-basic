@@ -169,7 +169,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void moveRandomly(GameLevel level) {
-		if (isNewTileEntered() || isStuck()) {
+		if (isNewTileEntered() || !moveResult.moved) {
 			Direction.shuffled().stream() //
 					.filter(dir -> dir != moveDir().opposite()) //
 					.filter(dir -> canAccessTile(tile().plus(dir.vector()), level)) //
@@ -199,8 +199,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	public String toString() {
-		return "Ghost[%-6s %s tile=%s pos=%s offset=%s velocity=%s dir=%s wishDir=%s stuck=%s reverse=%s]".formatted(name(),
-				state, tile(), position, offset(), velocity, moveDir(), wishDir(), isStuck(), shouldReverse);
+		return "Ghost[%-6s %s tile=%s pos=%s offset=%s velocity=%s dir=%s wishDir=%s reverse=%s]".formatted(name(), state,
+				tile(), position, offset(), velocity, moveDir(), wishDir(), shouldReverse);
 	}
 
 	// Here begins the state machine part

@@ -60,7 +60,6 @@ public class Creature extends Entity {
 
 	public final MoveResult moveResult = new MoveResult();
 	private boolean newTileEntered;
-	private boolean stuck;
 
 	protected boolean shouldReverse;
 	protected boolean canTeleport;
@@ -82,7 +81,6 @@ public class Creature extends Entity {
 		canTeleport = true;
 
 		newTileEntered = true;
-		stuck = false;
 
 		moveResult.reset();
 	}
@@ -113,11 +111,6 @@ public class Creature extends Entity {
 
 	public boolean canTeleport() {
 		return canTeleport;
-	}
-
-	/** Tells if the creature got stuck. */
-	public boolean isStuck() {
-		return stuck;
 	}
 
 	/**
@@ -244,7 +237,7 @@ public class Creature extends Entity {
 	 */
 	public void navigateTowardsTarget(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
-		if (!newTileEntered && !stuck) {
+		if (!newTileEntered && moveResult.moved) {
 			return; // we don't need no navigation, dim dit diddit diddit dim dit diddit diddit...
 		}
 		if (targetTile == null) {
@@ -301,33 +294,35 @@ public class Creature extends Entity {
 	 */
 	public void tryMoving(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
+
+		moveResult.reset();
+
 		Vector2i tileBeforeMove = tile();
-		MoveResult mr = tryTeleport(level);
-		if (mr.teleported) {
+		tryTeleport(level);
+		if (moveResult.teleported) {
 			return;
 		}
 		if (shouldReverse && canReverse(level)) {
 			setWishDir(moveDir.opposite());
 			shouldReverse = false;
 		}
-		mr = tryMoving(wishDir, level);
-		if (mr.moved) {
+		tryMoving(wishDir, level);
+		if (moveResult.moved) {
 			setMoveDir(wishDir);
 		} else {
-			mr = tryMoving(moveDir, level);
+			tryMoving(moveDir, level);
 		}
-		stuck = !mr.moved;
 		newTileEntered = !tileBeforeMove.equals(tile());
 		moveResult.tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
 		if (moveResult.tunnelEntered) {
 			LOG.info("%s entered tunnel", name);
 		}
-		if (mr.moved) {
-			LOG.trace("%-6s: %s %s", name, mr.message, this);
+		if (moveResult.moved) {
+			LOG.trace("%-6s: %s %s", name, moveResult.message, this);
 		}
 	}
 
-	private MoveResult tryMoving(Direction dir, GameLevel level) {
+	private void tryMoving(Direction dir, GameLevel level) {
 		var aroundCorner = !dir.sameOrientation(moveDir);
 		var dirVector = dir.vector().toFloatVec();
 		var newVelocity = dirVector.scaled(velocity.length());
@@ -337,18 +332,22 @@ public class Creature extends Entity {
 			if (!aroundCorner) {
 				placeAtTile(tile()); // adjust if blocked and moving forward
 			}
-			return MoveResult.notMoved("Not moved: Cannot move into tile %s", touchedTile);
+			moveResult.message = "Not moved: Cannot move into tile %s".formatted(touchedTile);
+			return;
 		}
 		if (aroundCorner) {
 			if (atTurnPositionTo(dir)) {
 				placeAtTile(tile()); // adjust if moving around corner
 			} else {
-				return MoveResult.notMoved("Wants to take corner towards %s but not at turn position", dir);
+				moveResult.message = "Wants to take corner towards %s but not at turn position".formatted(dir);
+				return;
 			}
 		}
 		setVelocity(newVelocity);
 		move();
-		return MoveResult.moved("Moved %5s (%.2f pixels)", dir, newVelocity.length());
+
+		moveResult.moved = true;
+		moveResult.message = "Moved %5s (%.2f pixels)".formatted(dir, newVelocity.length());
 	}
 
 	private boolean atTurnPositionTo(Direction dir) {
