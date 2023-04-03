@@ -296,7 +296,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 		var outOfHouse = level.world().ghostHouse().leadOutside(this);
 		if (outOfHouse) {
-			setNewTileEntered(false);
 			setMoveAndWishDir(LEFT);
 			if (endangered) {
 				enterStateFrightened();

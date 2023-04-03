@@ -105,10 +105,6 @@ public abstract class Creature extends Entity {
 		return newTileEntered;
 	}
 
-	public void setNewTileEntered(boolean newTileEntered) {
-		this.newTileEntered = newTileEntered;
-	}
-
 	public void setCanTeleport(boolean canTeleport) {
 		this.canTeleport = canTeleport;
 	}
