@@ -278,10 +278,7 @@ public abstract class Creature extends Entity {
 	 */
 	public void tryMoving(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
-		final Vector2i tileBeforeMove = tile();
-
 		moveResult.reset();
-
 		if (canTeleport) {
 			for (var portal : level.world().portals()) {
 				portal.teleport(this);
@@ -291,12 +288,10 @@ public abstract class Creature extends Entity {
 				}
 			}
 		}
-
 		if (gotReverseCommand && canReverse(level)) {
 			setWishDir(moveDir.opposite());
 			gotReverseCommand = false;
 		}
-
 		tryMoving(wishDir, level);
 		if (moveResult.moved) {
 			setMoveDir(wishDir);
