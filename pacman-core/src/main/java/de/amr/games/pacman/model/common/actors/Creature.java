@@ -58,9 +58,8 @@ public class Creature extends Entity {
 	private Direction wishDir;
 	private Vector2i targetTile;
 
-	private MoveResult moveResult = new MoveResult();
+	public final MoveResult moveResult = new MoveResult();
 	private boolean newTileEntered;
-	private boolean tunnelEntered;
 	private boolean stuck;
 
 	protected boolean shouldReverse;
@@ -83,7 +82,6 @@ public class Creature extends Entity {
 		canTeleport = true;
 
 		newTileEntered = true;
-		tunnelEntered = false;
 		stuck = false;
 
 		moveResult.reset();
@@ -120,10 +118,6 @@ public class Creature extends Entity {
 	/** Tells if the creature got stuck. */
 	public boolean isStuck() {
 		return stuck;
-	}
-
-	public boolean isTunnelEntered() {
-		return tunnelEntered;
 	}
 
 	/**
@@ -324,8 +318,8 @@ public class Creature extends Entity {
 		}
 		stuck = !mr.moved;
 		newTileEntered = !tileBeforeMove.equals(tile());
-		tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
-		if (tunnelEntered) {
+		moveResult.tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
+		if (moveResult.tunnelEntered) {
 			LOG.info("%s entered tunnel", name);
 		}
 		if (mr.moved) {

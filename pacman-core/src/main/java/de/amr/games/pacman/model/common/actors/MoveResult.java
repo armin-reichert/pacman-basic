@@ -30,6 +30,7 @@ package de.amr.games.pacman.model.common.actors;
 public class MoveResult {
 
 	public boolean moved;
+	public boolean tunnelEntered;
 	public boolean teleported;
 	public String message;
 
@@ -39,6 +40,7 @@ public class MoveResult {
 
 	public void reset() {
 		moved = false;
+		tunnelEntered = false;
 		teleported = false;
 		message = "";
 	}
