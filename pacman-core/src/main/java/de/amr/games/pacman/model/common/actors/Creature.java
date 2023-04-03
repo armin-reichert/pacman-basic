@@ -69,7 +69,6 @@ public abstract class Creature extends Entity {
 	}
 
 	public void reset() {
-
 		// entity
 		visible = false;
 		position = Vector2f.ZERO;
@@ -83,10 +82,8 @@ public abstract class Creature extends Entity {
 		gotReverseCommand = false;
 		canTeleport = true;
 
-		// TODO can this be put into move result?
-		newTileEntered = true;
-
 		moveResult.reset();
+		newTileEntered = true;
 	}
 
 	/**
