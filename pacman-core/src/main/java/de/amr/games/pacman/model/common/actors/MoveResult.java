@@ -24,6 +24,10 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.actors;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @author Armin Reichert
  */
@@ -32,7 +36,8 @@ public class MoveResult {
 	public boolean moved;
 	public boolean tunnelEntered;
 	public boolean teleported;
-	public String message;
+
+	private List<String> messages = new ArrayList<>();
 
 	public MoveResult() {
 		reset();
@@ -42,6 +47,14 @@ public class MoveResult {
 		moved = false;
 		tunnelEntered = false;
 		teleported = false;
-		message = "";
+		messages.clear();
+	}
+
+	public void addMessage(String message) {
+		messages.add(message);
+	}
+
+	public String messages() {
+		return messages.stream().collect(Collectors.joining("###"));
 	}
 }

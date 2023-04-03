@@ -46,16 +46,12 @@ public record HorizontalPortal(Vector2i leftTunnelEnd, Vector2i rightTunnelEnd) 
 		if (guy.tile().y() == leftTunnelEnd.y() && guy.position().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
 			guy.placeAtTile(rightTunnelEnd);
 			guy.moveResult.teleported = true;
-			guy.moveResult.message = "Teleported %s from %s to %s".formatted(guy.name(), oldPos, guy.position());
-			return;
-		}
-		if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
+			guy.moveResult.addMessage("%s: Teleported from %s to %s".formatted(guy.name(), oldPos, guy.position()));
+		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
 			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
 			guy.moveResult.teleported = true;
-			guy.moveResult.message = "Teleported %s from %s to %s".formatted(guy.name(), oldPos, guy.position());
-			return;
+			guy.moveResult.addMessage("%s: Teleported from %s to %s".formatted(guy.name(), oldPos, guy.position()));
 		}
-		guy.moveResult.message = "No teleport possible at position %s".formatted(oldPos);
 	}
 
 	@Override

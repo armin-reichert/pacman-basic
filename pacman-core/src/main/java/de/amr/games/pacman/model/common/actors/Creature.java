@@ -316,7 +316,7 @@ public class Creature extends Entity {
 			LOG.info("%s entered tunnel", name);
 		}
 		if (moveResult.moved) {
-			LOG.trace("%-6s: %s %s", name, moveResult.message, this);
+			LOG.trace("%-6s: %s %s", name, moveResult.messages(), this);
 		}
 	}
 
@@ -330,14 +330,14 @@ public class Creature extends Entity {
 			if (!aroundCorner) {
 				placeAtTile(tile()); // adjust if blocked and moving forward
 			}
-			moveResult.message = "Not moved: Cannot move into tile %s".formatted(touchedTile);
+			moveResult.addMessage("Not moved: Cannot move into tile %s".formatted(touchedTile));
 			return;
 		}
 		if (aroundCorner) {
 			if (atTurnPositionTo(dir)) {
 				placeAtTile(tile()); // adjust if moving around corner
 			} else {
-				moveResult.message = "Wants to take corner towards %s but not at turn position".formatted(dir);
+				moveResult.addMessage("Wants to take corner towards %s but not at turn position".formatted(dir));
 				return;
 			}
 		}
@@ -345,7 +345,7 @@ public class Creature extends Entity {
 		move();
 
 		moveResult.moved = true;
-		moveResult.message = "Moved %5s (%.2f pixels)".formatted(dir, newVelocity.length());
+		moveResult.addMessage("Moved %5s (%.2f pixels)".formatted(dir, newVelocity.length()));
 	}
 
 	private boolean atTurnPositionTo(Direction dir) {
