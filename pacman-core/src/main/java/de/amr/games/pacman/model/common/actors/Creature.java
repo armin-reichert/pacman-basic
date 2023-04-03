@@ -320,7 +320,9 @@ public abstract class Creature extends Entity {
 			return;
 		}
 		if (aroundCorner) {
-			if (atTurnPositionTo(dir)) {
+			var offset = dir.isHorizontal() ? offset().y() : offset().x();
+			boolean atTurnPosition = Math.abs(offset) <= 1; // TODO <= pixelspeed?
+			if (atTurnPosition) {
 				placeAtTile(tile()); // adjust if moving around corner
 			} else {
 				moveResult.addMessage("Wants to take corner towards %s but not at turn position".formatted(dir));
@@ -333,10 +335,5 @@ public abstract class Creature extends Entity {
 		moveResult.moved = true;
 		moveResult.tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
 		moveResult.addMessage("%5s (%.2f pixels)".formatted(dir, newVelocity.length()));
-	}
-
-	private boolean atTurnPositionTo(Direction dir) {
-		var offset = dir.isHorizontal() ? offset().y() : offset().x();
-		return Math.abs(offset) <= 1;
 	}
 }
