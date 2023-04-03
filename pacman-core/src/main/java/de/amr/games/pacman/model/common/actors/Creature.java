@@ -59,9 +59,9 @@ public abstract class Creature extends Entity {
 	private Vector2i targetTile;
 
 	public final MoveResult moveResult = new MoveResult();
-	private boolean newTileEntered;
+	private boolean newTileEntered; // TODO put this into move result but currently it has another lifetime
 
-	protected boolean shouldReverse;
+	protected boolean gotReverseCommand;
 	protected boolean canTeleport;
 
 	public Creature(String name) {
@@ -80,7 +80,7 @@ public abstract class Creature extends Entity {
 		wishDir = RIGHT;
 		targetTile = null;
 
-		shouldReverse = false;
+		gotReverseCommand = false;
 		canTeleport = true;
 
 		// TODO can this be put into move result?
@@ -88,6 +88,12 @@ public abstract class Creature extends Entity {
 
 		moveResult.reset();
 	}
+
+	/**
+	 * @param level game level
+	 * @return if the creature can reverse its direction
+	 */
+	public abstract boolean canReverse(GameLevel level);
 
 	@Override
 	public String toString() {
@@ -193,16 +199,10 @@ public abstract class Creature extends Entity {
 		setMoveDir(dir);
 	}
 
-	public void reverseDirectionASAP() {
-		shouldReverse = true;
-		LOG.trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
+	public void reverseAsSoonAsPossible() {
+		gotReverseCommand = true;
+		LOG.trace("%s (moveDir=%s, wishDir=%s) got command to reverse direction", name, moveDir, wishDir);
 	}
-
-	/**
-	 * @param level game level
-	 * @return if the creature can reverse its direction
-	 */
-	public abstract boolean canReverse(GameLevel level);
 
 	/**
 	 * Sets the speed as a fraction of the game base speed (1.25 pixels/sec).
@@ -300,9 +300,9 @@ public abstract class Creature extends Entity {
 			return;
 		}
 
-		if (shouldReverse && canReverse(level)) {
+		if (gotReverseCommand && canReverse(level)) {
 			setWishDir(moveDir.opposite());
-			shouldReverse = false;
+			gotReverseCommand = false;
 		}
 
 		tryMoving(wishDir, level);

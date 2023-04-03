@@ -200,7 +200,7 @@ public class GameLevel {
 		ghosts().forEach(ghost -> ghost.update(this));
 		boolean newHuntingPhaseStarted = updateHuntingTimer();
 		if (newHuntingPhaseStarted) {
-			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseDirectionASAP);
+			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseAsSoonAsPossible);
 		}
 		bonus.update(this);
 		checkIfPacFoundFood();
@@ -529,7 +529,7 @@ public class GameLevel {
 			pac.powerTimer().restartSeconds(pacPowerSeconds);
 			LOG.info("%s power starting, duration %d ticks", pac.name(), pac.powerTimer().duration());
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
-			ghosts(FRIGHTENED).forEach(Ghost::reverseDirectionASAP);
+			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
 			publishGameEventOfType(GameEventType.PAC_GETS_POWER);
 			publishSoundEvent(GameModel.SE_PACMAN_POWER_STARTS);
 		} else if (memo.pacPowerFading) {
