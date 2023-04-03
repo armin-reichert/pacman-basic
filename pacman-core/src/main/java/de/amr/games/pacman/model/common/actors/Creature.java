@@ -283,7 +283,7 @@ public class Creature extends Entity {
 		if (canTeleport) {
 			for (var portal : level.world().portals()) {
 				mr = portal.teleport(this);
-				if (mr.teleported()) {
+				if (mr.teleported) {
 					newTileEntered = true;
 					break;
 				}
@@ -302,7 +302,7 @@ public class Creature extends Entity {
 		GameModel.checkLevelNotNull(level);
 		Vector2i tileBeforeMove = tile();
 		MoveResult mr = tryTeleport(level);
-		if (mr.teleported()) {
+		if (mr.teleported) {
 			return;
 		}
 		if (shouldReverse && canReverse(level)) {
@@ -310,19 +310,19 @@ public class Creature extends Entity {
 			shouldReverse = false;
 		}
 		mr = tryMoving(wishDir, level);
-		if (mr.moved()) {
+		if (mr.moved) {
 			setMoveDir(wishDir);
 		} else {
 			mr = tryMoving(moveDir, level);
 		}
-		stuck = !mr.moved();
+		stuck = !mr.moved;
 		newTileEntered = !tileBeforeMove.equals(tile());
 		tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
 		if (tunnelEntered) {
 			LOG.info("%s entered tunnel", name);
 		}
-		if (mr.moved()) {
-			LOG.trace("%-6s: %s %s", name, mr.message(), this);
+		if (mr.moved) {
+			LOG.trace("%-6s: %s %s", name, mr.message, this);
 		}
 	}
 
