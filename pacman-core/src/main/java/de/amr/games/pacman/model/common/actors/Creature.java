@@ -69,10 +69,13 @@ public class Creature extends Entity {
 	}
 
 	public void reset() {
+
+		// entity
 		visible = false;
 		position = Vector2f.ZERO;
 		velocity = Vector2f.ZERO;
 		acceleration = Vector2f.ZERO;
+
 		moveDir = RIGHT;
 		wishDir = RIGHT;
 		targetTile = null;
@@ -80,6 +83,7 @@ public class Creature extends Entity {
 		shouldReverse = false;
 		canTeleport = true;
 
+		// TODO can this be put into move result?
 		newTileEntered = true;
 
 		moveResult.reset();
@@ -165,7 +169,7 @@ public class Creature extends Entity {
 		GameModel.checkDirectionNotNull(dir);
 		if (moveDir != dir) {
 			moveDir = dir;
-			LOG.trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
+			LOG.trace("%-8s: New moveDir: %s. %s", name, moveDir, this);
 			velocity = moveDir.vector().toFloatVec().scaled(velocity.length());
 		}
 	}
@@ -179,7 +183,7 @@ public class Creature extends Entity {
 		GameModel.checkDirectionNotNull(dir);
 		if (wishDir != dir) {
 			wishDir = dir;
-			LOG.trace("%-6s: New wishDir: %s. %s", name, wishDir, this);
+			LOG.trace("%-8s: New wishDir: %s. %s", name, wishDir, this);
 		}
 	}
 
@@ -292,32 +296,37 @@ public class Creature extends Entity {
 	 */
 	public void tryMoving(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
+		final Vector2i tileBeforeMove = tile();
 
 		moveResult.reset();
 
-		Vector2i tileBeforeMove = tile();
 		tryTeleport(level);
 		if (moveResult.teleported) {
+			logMoveResult();
 			return;
 		}
+
 		if (shouldReverse && canReverse(level)) {
 			setWishDir(moveDir.opposite());
 			shouldReverse = false;
 		}
+
 		tryMoving(wishDir, level);
 		if (moveResult.moved) {
 			setMoveDir(wishDir);
 		} else {
 			tryMoving(moveDir, level);
 		}
+
 		newTileEntered = !tileBeforeMove.equals(tile());
 		moveResult.tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
-		if (moveResult.tunnelEntered) {
-			LOG.info("%s entered tunnel", name);
-		}
 		if (moveResult.moved) {
-			LOG.trace("%-6s: %s %s", name, moveResult.messages(), this);
+			logMoveResult();
 		}
+	}
+
+	private void logMoveResult() {
+		LOG.trace("%-8s: %s %s %s", name, moveResult, moveResult.messages(), this);
 	}
 
 	private void tryMoving(Direction dir, GameLevel level) {
@@ -345,7 +354,7 @@ public class Creature extends Entity {
 		move();
 
 		moveResult.moved = true;
-		moveResult.addMessage("Moved %5s (%.2f pixels)".formatted(dir, newVelocity.length()));
+		moveResult.addMessage("%5s (%.2f pixels)".formatted(dir, newVelocity.length()));
 	}
 
 	private boolean atTurnPositionTo(Direction dir) {

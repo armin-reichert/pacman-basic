@@ -57,4 +57,13 @@ public class MoveResult {
 	public String messages() {
 		return messages.stream().collect(Collectors.joining("###"));
 	}
+
+	@Override
+	public String toString() {
+		var sb = new StringBuilder("");
+		sb.append(moved ? " moved" : " not moved");
+		sb.append(tunnelEntered ? " tunnel entered" : "");
+		sb.append(teleported ? " teleported" : "");
+		return sb.isEmpty() ? "" : "[" + sb + "]";
+	}
 }
