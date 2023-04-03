@@ -286,13 +286,10 @@ public abstract class Creature extends Entity {
 			for (var portal : level.world().portals()) {
 				portal.teleport(this);
 				if (moveResult.teleported) {
-					break;
+					logMoveResult();
+					return;
 				}
 			}
-		}
-		if (moveResult.teleported) {
-			logMoveResult();
-			return;
 		}
 
 		if (gotReverseCommand && canReverse(level)) {
