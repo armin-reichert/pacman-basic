@@ -55,15 +55,15 @@ public class MoveResult {
 	}
 
 	public String messages() {
-		return messages.stream().collect(Collectors.joining("###"));
+		return messages.stream().collect(Collectors.joining(", "));
 	}
 
 	@Override
 	public String toString() {
 		var sb = new StringBuilder("");
-		sb.append(moved ? " moved" : " not moved");
-		sb.append(tunnelEntered ? " tunnel entered" : "");
+		sb.append(tunnelEntered ? " entered tunnel" : "");
 		sb.append(teleported ? " teleported" : "");
+		sb.append(moved ? " moved" : "");
 		return sb.isEmpty() ? "" : "[" + sb.toString().trim() + "]";
 	}
 }
