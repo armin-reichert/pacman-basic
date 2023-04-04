@@ -65,7 +65,7 @@ public abstract class Creature extends Entity {
 	protected boolean canTeleport;
 
 	protected Creature(String name) {
-		this.name = (name != null) ? name : "Creature@%d".formatted(hashCode());
+		this.name = (name != null) ? name : getClass().getSimpleName() + "@%d".formatted(hashCode());
 	}
 
 	public void reset() {
