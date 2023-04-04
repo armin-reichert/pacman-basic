@@ -108,10 +108,18 @@ public abstract class Creature extends Entity {
 		return newTileEntered;
 	}
 
+	/**
+	 * Set teleport capability for this creature.
+	 * 
+	 * @param canTeleport if this creature can teleport
+	 */
 	public void setCanTeleport(boolean canTeleport) {
 		this.canTeleport = canTeleport;
 	}
 
+	/**
+	 * @return if this creature can teleport
+	 */
 	public boolean canTeleport() {
 		return canTeleport;
 	}
@@ -125,29 +133,55 @@ public abstract class Creature extends Entity {
 		targetTile = tile;
 	}
 
-	/** (Optional) target tile. Can be inaccessible or outside of the world. */
+	/**
+	 * @return (Optional) target tile. Can be inaccessible or outside of the world.
+	 */
 	public Optional<Vector2i> targetTile() {
 		return Optional.ofNullable(targetTile);
 	}
 
+	/**
+	 * Places this creature at the given tile coordinate with the given tile offsets. Updates the
+	 * <code>newTileEntered</code> state.
+	 * 
+	 * @param tx tile x-coordinate (grid column)
+	 * @param ty tile y-coordinate (grid row)
+	 * @param ox x-offset inside tile
+	 * @param oy y-offset inside tile
+	 */
 	public void placeAtTile(int tx, int ty, float ox, float oy) {
 		var prevTile = tile();
 		setPosition(tx * TS + ox, ty * TS + oy);
 		newTileEntered = !tile().equals(prevTile);
 	}
 
+	/**
+	 * Places this creature at the given tile coordinate with the given tile offsets. Updates the
+	 * <code>newTileEntered</code> state.
+	 * 
+	 * @param tile tile
+	 * @param ox   x-offset inside tile
+	 * @param oy   y-offset inside tile
+	 */
 	public void placeAtTile(Vector2i tile, float ox, float oy) {
 		GameModel.checkTileNotNull(tile);
 		placeAtTile(tile.x(), tile.y(), ox, oy);
 	}
 
+	/**
+	 * Places this creature exactly (no offsets) at the given tile coordinate. Updates the <code>newTileEntered</code>
+	 * state.
+	 * 
+	 * @param tile tile
+	 */
 	public void placeAtTile(Vector2i tile) {
 		GameModel.checkTileNotNull(tile);
 		placeAtTile(tile.x(), tile.y(), 0, 0);
 	}
 
 	/**
-	 * @param tile some tile inside or outside of the world
+	 * @param tile  some tile inside or outside of the world
+	 * @param level the game level (tile access can depend on the game level where the creature exists)
 	 * @return if this creature can access the given tile
 	 */
 	public boolean canAccessTile(Vector2i tile, GameLevel level) {
@@ -173,11 +207,16 @@ public abstract class Creature extends Entity {
 		}
 	}
 
-	/** The current move direction. */
+	/** @return The current move direction. */
 	public Direction moveDir() {
 		return moveDir;
 	}
 
+	/**
+	 * Sets the wish direction and updates the velocity vector.
+	 * 
+	 * @param dir the new wish direction
+	 */
 	public void setWishDir(Direction dir) {
 		GameModel.checkDirectionNotNull(dir);
 		if (wishDir != dir) {
@@ -186,23 +225,31 @@ public abstract class Creature extends Entity {
 		}
 	}
 
-	/** The wish direction. Will be taken as soon as possible. */
+	/** @return The wish direction. Will be taken as soon as possible. */
 	public Direction wishDir() {
 		return wishDir;
 	}
 
+	/**
+	 * Sets both directions at once.
+	 * 
+	 * @param dir the new wish and move direction
+	 */
 	public void setMoveAndWishDir(Direction dir) {
 		setWishDir(dir);
 		setMoveDir(dir);
 	}
 
+	/**
+	 * Signals that this creature should reverse its move direction as soon as possible.
+	 */
 	public void reverseAsSoonAsPossible() {
 		gotReverseCommand = true;
 		LOG.trace("%s (moveDir=%s, wishDir=%s) got command to reverse direction", name, moveDir, wishDir);
 	}
 
 	/**
-	 * Sets the speed as a fraction of the game base speed (1.25 pixels/sec).
+	 * Sets the speed as a fraction of the base speed (1.25 pixels/sec).
 	 * 
 	 * @param fraction fraction of base speed
 	 */
@@ -216,19 +263,19 @@ public abstract class Creature extends Entity {
 	/**
 	 * Sets the absolute speed and updates the velocity vector.
 	 * 
-	 * @param pixels speed in pixels per tick
+	 * @param pixelSpeed speed in pixels
 	 */
-	public void setPixelSpeed(float pixels) {
-		if (pixels < 0) {
-			throw new IllegalArgumentException("Negative speed: " + pixels);
+	public void setPixelSpeed(float pixelSpeed) {
+		if (pixelSpeed < 0) {
+			throw new IllegalArgumentException("Negative pixel speed: " + pixelSpeed);
 		}
-		velocity = pixels == 0 ? Vector2f.ZERO : moveDir.vector().toFloatVec().scaled(pixels);
+		velocity = pixelSpeed == 0 ? Vector2f.ZERO : moveDir.vector().toFloatVec().scaled(pixelSpeed);
 	}
 
 	/**
 	 * Sets the new wish direction for reaching the target tile.
 	 * 
-	 * @param game the game model
+	 * @param level the game level
 	 */
 	public void navigateTowardsTarget(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
@@ -244,9 +291,6 @@ public abstract class Creature extends Entity {
 		computeTargetDirection(level).ifPresent(this::setWishDir);
 	}
 
-	/*
-	 * For each neighbor tile, compute distance to target tile, select direction with smallest distance.
-	 */
 	private Optional<Direction> computeTargetDirection(GameLevel level) {
 		Direction targetDir = null;
 		Vector2i currentTile = tile();
@@ -268,10 +312,12 @@ public abstract class Creature extends Entity {
 	}
 
 	/**
-	 * Move through the world.
+	 * Moves through the world of the given game level.
 	 * <p>
 	 * First checks if the creature can teleport, then if the creature can move to its wish direction. If this is not
 	 * possible, it keeps moving to its current move direction.
+	 * 
+	 * @param level the game level
 	 */
 	public void tryMoving(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
