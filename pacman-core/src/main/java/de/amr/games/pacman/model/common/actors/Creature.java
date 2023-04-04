@@ -349,12 +349,13 @@ public abstract class Creature extends Entity {
 	}
 
 	private void tryMoving(Direction dir, GameLevel level) {
-		final Vector2i tileBeforeMove = tile();
-		var aroundCorner = !dir.sameOrientation(moveDir);
-		var dirVector = dir.vector().toFloatVec();
-		var newVelocity = dirVector.scaled(velocity.length());
-		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
-		var touchedTile = tileAt(touchPosition);
+		final var tileBeforeMove = tile();
+		final var aroundCorner = !dir.sameOrientation(moveDir);
+		final var dirVector = dir.vector().toFloatVec();
+		final var newVelocity = dirVector.scaled(velocity.length());
+		final var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
+		final var touchedTile = tileAt(touchPosition);
+
 		if (!canAccessTile(touchedTile, level)) {
 			if (!aroundCorner) {
 				placeAtTile(tile()); // adjust if blocked and moving forward
@@ -362,6 +363,7 @@ public abstract class Creature extends Entity {
 			moveResult.addMessage("Cannot move %s into tile %s".formatted(dir, touchedTile));
 			return;
 		}
+
 		if (aroundCorner) {
 			var offset = dir.isHorizontal() ? offset().y() : offset().x();
 			boolean atTurnPosition = Math.abs(offset) <= 1; // TODO <= pixelspeed?
@@ -372,8 +374,10 @@ public abstract class Creature extends Entity {
 				return;
 			}
 		}
+
 		setVelocity(newVelocity);
 		move();
+
 		newTileEntered = !tileBeforeMove.equals(tile());
 		moveResult.moved = true;
 		moveResult.tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
