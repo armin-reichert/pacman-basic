@@ -38,10 +38,20 @@ public class U {
 
 	public static final Random RND = new Random();
 
+	/**
+	 * @param left  left interval bound (included)
+	 * @param right right interval bound (excluded)
+	 * @return random integer from interval <code>[left; right[</code>
+	 */
 	public static int randomInt(int left, int right) {
 		return left + RND.nextInt(right - left);
 	}
 
+	/**
+	 * @param left  left interval bound (included)
+	 * @param right right interval bound (excluded)
+	 * @return random double from interval <code>[left; right[</code>
+	 */
 	public static double randomDouble(double left, double right) {
 		return left + RND.nextDouble() * (right - left);
 	}
