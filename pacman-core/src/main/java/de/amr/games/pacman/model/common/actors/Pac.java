@@ -53,8 +53,24 @@ public class Pac extends Creature implements AnimatedEntity {
 	}
 
 	@Override
+	public String toString() {
+		return "['%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
+				.formatted(name(), position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
+						restingTicks, starvingTicks);
+	}
+
+	@Override
 	public boolean canReverse(GameLevel level) {
 		return isNewTileEntered();
+	}
+
+	@Override
+	public Optional<AnimationMap> animations() {
+		return Optional.ofNullable(animationMap);
+	}
+
+	public void setAnimations(AnimationMap animationMap) {
+		this.animationMap = animationMap;
 	}
 
 	@Override
@@ -112,25 +128,8 @@ public class Pac extends Creature implements AnimatedEntity {
 		return powerTimer.isRunning() && powerTimer.remaining() <= GameModel.TICKS_PAC_POWER_FADES;
 	}
 
-	@Override
-	public String toString() {
-		return "['%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
-				.formatted(name(), position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
-						restingTicks, starvingTicks);
-	}
-
-	/** Timer controlling how long Pac-Man has power. */
 	public TickTimer powerTimer() {
 		return powerTimer;
-	}
-
-	@Override
-	public Optional<AnimationMap> animations() {
-		return Optional.ofNullable(animationMap);
-	}
-
-	public void setAnimations(AnimationMap animationMap) {
-		this.animationMap = animationMap;
 	}
 
 	public boolean isDead() {
@@ -160,5 +159,9 @@ public class Pac extends Creature implements AnimatedEntity {
 
 	public void endStarving() {
 		starvingTicks = 0;
+	}
+
+	public boolean isStandingStill() {
+		return velocity().length() == 0 || !moveResult.moved || restingTicks == REST_FOREVER;
 	}
 }
