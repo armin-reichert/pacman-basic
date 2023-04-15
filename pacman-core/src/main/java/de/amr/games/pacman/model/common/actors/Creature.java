@@ -346,13 +346,14 @@ public abstract class Creature extends Entity {
 	}
 
 	private void teleport(Portal portal) {
+		var tile = tile();
 		var oldPosition = position;
-		if (tile().y() == portal.leftTunnelEnd().y() && position.x() < (portal.leftTunnelEnd().x() - portal.depth()) * TS) {
+		if (tile.y() == portal.leftTunnelEnd().y() && position.x() < (portal.leftTunnelEnd().x() - portal.depth()) * TS) {
 			placeAtTile(portal.rightTunnelEnd());
 			moveResult.teleported = true;
 			moveResult.addMessage("%s: Teleported from %s to %s".formatted(name, oldPosition, position));
-		} else if (tile().equals(portal.rightTunnelEnd().plus(portal.depth(), 0))) {
-			placeAtTile(portal.leftTunnelEnd().minus(portal.depth(), 0), 0, 0);
+		} else if (tile.equals(portal.rightTunnelEnd().plus(portal.depth(), 0))) {
+			placeAtTile(portal.leftTunnelEnd().minus(portal.depth(), 0));
 			moveResult.teleported = true;
 			moveResult.addMessage("%s: Teleported from %s to %s".formatted(name, oldPosition, position));
 		}
