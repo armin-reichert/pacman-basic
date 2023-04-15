@@ -20,23 +20,48 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-
+ */
 package de.amr.games.pacman.model.common.world;
+
+import static de.amr.games.pacman.model.common.world.World.TS;
 
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
  * A portal connects two tunnel ends leading out of the map.
+ * <p>
+ * This kind of portal prolongates the right tunnel end by <code>DEPTH</code> tiles before wrapping with the left part
+ * (also <code>DEPTH</code> tiles) of the portal.
  * 
  * @author Armin Reichert
  */
-public interface Portal {
+public record Portal(Vector2i leftTunnelEnd, Vector2i rightTunnelEnd) {
 
-	boolean contains(Vector2i tile);
+	private static final int DEPTH = 2;
 
-	void teleport(Creature guy);
+	public void teleport(Creature guy) {
+		var oldPos = guy.position();
+		if (guy.tile().y() == leftTunnelEnd.y() && guy.position().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
+			guy.placeAtTile(rightTunnelEnd);
+			guy.moveResult.teleported = true;
+			guy.moveResult.addMessage("%s: Teleported from %s to %s".formatted(guy.name(), oldPos, guy.position()));
+		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
+			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
+			guy.moveResult.teleported = true;
+			guy.moveResult.addMessage("%s: Teleported from %s to %s".formatted(guy.name(), oldPos, guy.position()));
+		}
+	}
 
-	double distance(Creature guy);
+	public boolean contains(Vector2i tile) {
+		for (int i = 1; i <= DEPTH; ++i) {
+			if (tile.equals(leftTunnelEnd.minus(i, 0))) {
+				return true;
+			}
+			if (tile.equals(rightTunnelEnd.plus(i, 0))) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
