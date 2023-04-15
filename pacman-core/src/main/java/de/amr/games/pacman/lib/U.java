@@ -47,15 +47,6 @@ public class U {
 		return left + RND.nextInt(right - left);
 	}
 
-	/**
-	 * @param left  left interval bound (included)
-	 * @param right right interval bound (excluded)
-	 * @return random double from interval <code>[left; right[</code>
-	 */
-	public static double randomDouble(double left, double right) {
-		return left + RND.nextDouble() * (right - left);
-	}
-
 	public static boolean isEven(int n) {
 		return n % 2 == 0;
 	}
