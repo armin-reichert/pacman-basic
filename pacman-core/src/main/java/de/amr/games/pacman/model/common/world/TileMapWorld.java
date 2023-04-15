@@ -96,7 +96,7 @@ public abstract class TileMapWorld implements World {
 		var portalList = new ArrayList<Portal>();
 		for (int row = 0; row < numRows(); ++row) {
 			if (content(row, 0) == TILE_TUNNEL && content(row, numCols() - 1) == TILE_TUNNEL) {
-				portalList.add(new Portal(v2i(0, row), v2i(numCols() - 1, row)));
+				portalList.add(new Portal(v2i(0, row), v2i(numCols() - 1, row), 2));
 			}
 		}
 		portalList.trimToSize();

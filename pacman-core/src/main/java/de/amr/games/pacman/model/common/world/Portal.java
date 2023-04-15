@@ -23,10 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.model.common.world.World.TS;
-
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
  * A portal connects two tunnel ends leading out of the map.
@@ -36,25 +33,10 @@ import de.amr.games.pacman.model.common.actors.Creature;
  * 
  * @author Armin Reichert
  */
-public record Portal(Vector2i leftTunnelEnd, Vector2i rightTunnelEnd) {
-
-	private static final int DEPTH = 2;
-
-	public void teleport(Creature guy) {
-		var oldPos = guy.position();
-		if (guy.tile().y() == leftTunnelEnd.y() && guy.position().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
-			guy.placeAtTile(rightTunnelEnd);
-			guy.moveResult.teleported = true;
-			guy.moveResult.addMessage("%s: Teleported from %s to %s".formatted(guy.name(), oldPos, guy.position()));
-		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
-			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
-			guy.moveResult.teleported = true;
-			guy.moveResult.addMessage("%s: Teleported from %s to %s".formatted(guy.name(), oldPos, guy.position()));
-		}
-	}
+public record Portal(Vector2i leftTunnelEnd, Vector2i rightTunnelEnd, int depth) {
 
 	public boolean contains(Vector2i tile) {
-		for (int i = 1; i <= DEPTH; ++i) {
+		for (int i = 1; i <= depth; ++i) {
 			if (tile.equals(leftTunnelEnd.minus(i, 0))) {
 				return true;
 			}

@@ -41,6 +41,7 @@ import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.world.Portal;
 
 /**
  * Base class for all creatures which can move through the world.
@@ -324,7 +325,7 @@ public abstract class Creature extends Entity {
 		moveResult.reset();
 		if (canTeleport) {
 			for (var portal : level.world().portals()) {
-				portal.teleport(this);
+				teleport(portal);
 				if (moveResult.teleported) {
 					logMoveResult();
 					return;
@@ -342,6 +343,19 @@ public abstract class Creature extends Entity {
 			tryMoving(moveDir, level);
 		}
 		logMoveResult();
+	}
+
+	private void teleport(Portal portal) {
+		var oldPosition = position;
+		if (tile().y() == portal.leftTunnelEnd().y() && position.x() < (portal.leftTunnelEnd().x() - portal.depth()) * TS) {
+			placeAtTile(portal.rightTunnelEnd());
+			moveResult.teleported = true;
+			moveResult.addMessage("%s: Teleported from %s to %s".formatted(name, oldPosition, position));
+		} else if (tile().equals(portal.rightTunnelEnd().plus(portal.depth(), 0))) {
+			placeAtTile(portal.leftTunnelEnd().minus(portal.depth(), 0), 0, 0);
+			moveResult.teleported = true;
+			moveResult.addMessage("%s: Teleported from %s to %s".formatted(name, oldPosition, position));
+		}
 	}
 
 	private void logMoveResult() {
