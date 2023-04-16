@@ -46,18 +46,31 @@ public class Door {
 		this.sizeInTiles = sizeInTiles;
 	}
 
-	public Vector2i leftUpperTile() {
+	/**
+	 * @return left upper tile
+	 */
+	public Vector2i position() {
 		return leftUpperTile;
 	}
 
-	public int sizeInTiles() {
+	/**
+	 * @return size in tiles
+	 */
+	public int size() {
 		return sizeInTiles;
 	}
 
+	/**
+	 * @return stream of all tiles occupied by this door
+	 */
 	public Stream<Vector2i> tiles() {
 		return IntStream.range(0, sizeInTiles).mapToObj(x -> leftUpperTile.plus(x, 0));
 	}
 
+	/**
+	 * @param tile some tile
+	 * @return tells if the given tile is occupied by this door
+	 */
 	public boolean contains(Vector2i tile) {
 		for (int x = 0; x < sizeInTiles; ++x) {
 			if (tile.equals(leftUpperTile.plus(x, 0))) {
@@ -67,12 +80,16 @@ public class Door {
 		return false;
 	}
 
+	/**
+	 * @return position where ghost can enter the door
+	 */
 	public Vector2f entryPosition() {
-		var x = leftUpperTile.x() * TS + HTS;
-		var y = (leftUpperTile.y() - 1) * TS;
-		return new Vector2f(x, y);
+		return entryTile().scaled(TS).toFloatVec().minus(HTS, TS);
 	}
 
+	/**
+	 * @return tile where door can be entered
+	 */
 	public Vector2i entryTile() {
 		return leftUpperTile.plus(sizeInTiles / 2, 0);
 	}
