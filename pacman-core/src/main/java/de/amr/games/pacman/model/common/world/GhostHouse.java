@@ -66,7 +66,20 @@ public interface GhostHouse {
 				&& tile.y() >= topLeft.y() && tile.y() < bottomRightExclusive.y();
 	}
 
+	/**
+	 * Leads a ghost from his seat in the house to the exit.
+	 * 
+	 * @param ghost a ghost inside the house
+	 * @return <code>true</code> if the ghost reached the house exit
+	 */
 	boolean leadOutside(Creature ghost);
 
+	/**
+	 * Leads a ghost from the house entry to his seat inside the house.
+	 * 
+	 * @param ghost          a ghost
+	 * @param targetPosition target position inside the house
+	 * @return
+	 */
 	boolean leadInside(Creature ghost, Vector2f targetPosition);
 }
