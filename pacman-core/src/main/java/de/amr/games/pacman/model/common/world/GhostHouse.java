@@ -46,9 +46,13 @@ public interface GhostHouse {
 	Vector2i size();
 
 	/**
-	 * @return the door
+	 * @return the doors
 	 */
-	Door door();
+	List<Door> doors();
+
+	default boolean hasDoorAt(Vector2i tile) {
+		return doors().stream().anyMatch(door -> door.contains(tile));
+	}
 
 	/**
 	 * @return the positions inside the house where ghosts can take a seat

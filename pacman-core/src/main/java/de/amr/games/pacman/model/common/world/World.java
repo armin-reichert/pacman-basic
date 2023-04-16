@@ -159,17 +159,7 @@ public interface World extends AnimatedEntity {
 	 * @param tile a tile
 	 * @return if the tile is an intersection (waypoint)
 	 */
-	default boolean isIntersection(Vector2i tile) {
-		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
-			return false; // exclude portal entries and tiles outside of the map
-		}
-		if (ghostHouse().contains(tile)) {
-			return false;
-		}
-		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
-		long numDoorNeighbors = tile.neighbors().filter(ghostHouse().door()::contains).count();
-		return numWallNeighbors + numDoorNeighbors < 2;
-	}
+	boolean isIntersection(Vector2i tile);
 
 	/**
 	 * @param tile a tile

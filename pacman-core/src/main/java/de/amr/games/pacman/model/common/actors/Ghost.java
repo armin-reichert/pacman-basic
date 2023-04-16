@@ -123,7 +123,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			LOG.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
 			return false;
 		}
-		if (level.world().ghostHouse().door().contains(tile)) {
+		if (level.world().ghostHouse().hasDoorAt(tile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile, level);
@@ -375,12 +375,16 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateReturningToHouse(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
 		state = RETURNING_TO_HOUSE;
-		setTargetTile(level.world().ghostHouse().door().entryTile());
+		/// TODO solution if a ghost house has more than one door
+		var door = level.world().ghostHouse().doors().get(0);
+		setTargetTile(door.entryTile());
 		selectAndRunAnimation(GameModel.AK_GHOST_EYES);
 	}
 
 	private void updateStateReturningToHouse(GameLevel level) {
-		var houseEntry = level.world().ghostHouse().door().entryPosition();
+		/// TODO what if a ghost house has more than one door?
+		var door = level.world().ghostHouse().doors().get(0);
+		var houseEntry = door.entryPosition();
 		if (position().almostEquals(houseEntry, 1, 0)) {
 			setPosition(houseEntry);
 			enterStateEnteringHouse(level);

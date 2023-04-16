@@ -189,7 +189,7 @@ public abstract class Creature extends Entity {
 		GameModel.checkTileNotNull(tile);
 		GameModel.checkLevelNotNull(level);
 		if (level.world().insideBounds(tile)) {
-			return !level.world().isWall(tile) && !level.world().ghostHouse().door().contains(tile);
+			return !level.world().isWall(tile) && !level.world().ghostHouse().hasDoorAt(tile);
 		}
 		return level.world().belongsToPortal(tile);
 	}

@@ -32,6 +32,7 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
+import java.util.Collections;
 import java.util.List;
 
 import de.amr.games.pacman.lib.math.Vector2f;
@@ -49,14 +50,15 @@ public class ArcadeGhostHouse implements GhostHouse {
 	private static final Vector2i SIZE_TILES = v2i(8, 5);
 	private static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
 	private static final Vector2i DOOR_LEFT_TILE = v2i(13, 15);
-	private static final List<Vector2f> SEAT_POSITIONS = List.of(//
-			halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
 	private static final int GROUND_Y = 17 * TS + HTS;
 
-	private final Door door;
+	private final List<Door> doors;
+	private final List<Vector2f> seatPositions;
 
 	public ArcadeGhostHouse() {
-		door = new Door(DOOR_LEFT_TILE, 2);
+		doors = Collections.singletonList(new Door(DOOR_LEFT_TILE, 2));
+		seatPositions = List.of(//
+				halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
 	}
 
 	@Override
@@ -70,13 +72,13 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public Door door() {
-		return door;
+	public List<Door> doors() {
+		return doors;
 	}
 
 	@Override
 	public List<Vector2f> seatPositions() {
-		return SEAT_POSITIONS;
+		return seatPositions;
 	}
 
 	/**
@@ -84,7 +86,8 @@ public class ArcadeGhostHouse implements GhostHouse {
 	 */
 	@Override
 	public boolean leadOutside(Creature ghost) {
-		var exitPosition = door.entryPosition();
+		var theDoor = doors.get(0);
+		var exitPosition = theDoor.entryPosition();
 		if (ghost.position().y() <= exitPosition.y()) {
 			ghost.setPosition(exitPosition);
 			return true;
@@ -106,7 +109,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 	 */
 	@Override
 	public boolean leadInside(Creature ghost, Vector2f targetPosition) {
-		var entryPosition = door.entryPosition();
+		var entryPosition = doors.get(0).entryPosition();
 		if (ghost.position().almostEquals(entryPosition, ghost.velocity().length() / 2, 0)
 				&& ghost.moveDir() != Direction.DOWN) {
 			// just reached door, start sinking

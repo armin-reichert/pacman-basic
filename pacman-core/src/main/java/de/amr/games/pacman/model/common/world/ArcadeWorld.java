@@ -98,7 +98,7 @@ public class ArcadeWorld extends TileMapWorld {
 	public Vector2f ghostInitialPosition(byte ghostID) {
 		GameModel.checkGhostID(ghostID);
 		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> ghostHouse().door().entryPosition();
+		case Ghost.ID_RED_GHOST -> ghostHouse().doors().get(0).entryPosition();
 		case Ghost.ID_CYAN_GHOST -> ghostHouse().seatPositions().get(0);
 		case Ghost.ID_PINK_GHOST -> ghostHouse().seatPositions().get(1);
 		case Ghost.ID_ORANGE_GHOST -> ghostHouse().seatPositions().get(2);
@@ -128,6 +128,19 @@ public class ArcadeWorld extends TileMapWorld {
 	public ArcadeGhostHouse ghostHouse() {
 		// WTF! I learned today, 2022-05-27, that Java allows co-variant return types since JDK 5.0!
 		return house;
+	}
+
+	@Override
+	public boolean isIntersection(Vector2i tile) {
+		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
+			return false; // exclude portal entries and tiles outside of the map
+		}
+		if (ghostHouse().contains(tile)) {
+			return false;
+		}
+		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
+		long numDoorNeighbors = tile.neighbors().filter(ghostHouse().doors().get(0)::contains).count();
+		return numWallNeighbors + numDoorNeighbors < 2;
 	}
 
 	@Override
