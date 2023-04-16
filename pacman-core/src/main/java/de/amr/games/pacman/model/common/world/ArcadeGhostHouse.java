@@ -50,7 +50,6 @@ public class ArcadeGhostHouse implements GhostHouse {
 	private static final Vector2i SIZE_TILES = v2i(8, 5);
 	private static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
 	private static final Vector2i DOOR_LEFT_TILE = v2i(13, 15);
-	private static final int GROUND_Y = 17 * TS + HTS;
 
 	private final List<Door> doors;
 	private final List<Vector2f> seatPositions;
@@ -115,8 +114,8 @@ public class ArcadeGhostHouse implements GhostHouse {
 			// just reached door, start sinking
 			ghost.setPosition(entryPosition);
 			ghost.setMoveAndWishDir(Direction.DOWN);
-		} else if (ghost.position().y() >= GROUND_Y) {
-			ghost.setPosition(ghost.position().x(), GROUND_Y);
+		} else if (ghost.position().y() >= 17 * TS + HTS) {
+			ghost.setPosition(ghost.position().x(), 17 * TS + HTS);
 			if (targetPosition.x() < entryPosition.x()) {
 				ghost.setMoveAndWishDir(LEFT);
 			} else if (targetPosition.x() > entryPosition.x()) {
