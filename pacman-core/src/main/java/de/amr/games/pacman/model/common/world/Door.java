@@ -24,7 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.util.stream.IntStream;
@@ -84,7 +83,8 @@ public class Door {
 	 * @return position where ghost can enter the door
 	 */
 	public Vector2f entryPosition() {
-		return entryTile().scaled(TS).toFloatVec().minus(HTS, TS);
+		// TODO this is only correct for a horizontal door entered from above
+		return leftUpperTile.minus(0, 1).toFloatVec().scaled(TS).plus(World.HTS + 0.5f * sizeInTiles, 0);
 	}
 
 	/**
