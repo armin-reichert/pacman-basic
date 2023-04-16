@@ -39,12 +39,35 @@ public class U {
 	public static final Random RND = new Random();
 
 	/**
-	 * @param left  left interval bound (included)
-	 * @param right right interval bound (excluded)
-	 * @return random integer from interval <code>[left; right[</code>
+	 * @param a left interval bound
+	 * @param b right interval bound
+	 * @return Random integer number from right-open interval <code>[a; b[</code>. Interval bounds are rearranged to
+	 *         guarantee <code>a<=b</code>
 	 */
-	public static int randomInt(int left, int right) {
-		return left + RND.nextInt(right - left);
+	public static int randomInt(int a, int b) {
+		if (a > b) {
+			var tmp = a;
+			a = b;
+			b = tmp;
+		}
+		return a + RND.nextInt() * (b - a);
+	}
+
+	/**
+	 * @param a left interval bound
+	 * @param b right interval bound
+	 * @return Random floating-point number from right-open interval <code>[a; b[</code>. Interval bounds are rearranged
+	 *         to guarantee <code>a<=b</code>
+	 */
+	public static float randomFloat(double a, double b) {
+		if (a > b) {
+			var tmp = a;
+			a = b;
+			b = tmp;
+		}
+		float fa = (float) a;
+		float fb = (float) b;
+		return fa + RND.nextFloat() * (fb - fa);
 	}
 
 	public static boolean isEven(int n) {
