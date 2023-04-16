@@ -153,10 +153,8 @@ public abstract class GameModel {
 
 	private static final String MSG_GAME_NULL = "Game model must not be null";
 	private static final String MSG_LEVEL_NULL = "Game level must not be null";
-	private static final String MSG_LEVEL_NUMBER_ILLEGAL = "Level number must be at least 1, but is: %d";
 	private static final String MSG_TILE_NULL = "Tile must not be null";
 	private static final String MSG_DIR_NULL = "Direction must not be null";
-	private static final String MSG_GHOST_ID_ILLEGAL = "Illegal ghost ID: %d";
 
 	public static void checkGameNotNull(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
@@ -164,13 +162,13 @@ public abstract class GameModel {
 
 	public static void checkGhostID(byte id) {
 		if (id < 0 || id > 3) {
-			throw new IllegalArgumentException(MSG_GHOST_ID_ILLEGAL.formatted(id));
+			throw new IllegalGhostIDException(id);
 		}
 	}
 
-	public static void checkLevelNumber(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException(MSG_LEVEL_NUMBER_ILLEGAL.formatted(levelNumber));
+	public static void checkLevelNumber(int number) {
+		if (number < 1) {
+			throw new IllegalLevelNumberException(number);
 		}
 	}
 

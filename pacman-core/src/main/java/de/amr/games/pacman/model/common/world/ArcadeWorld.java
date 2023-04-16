@@ -25,17 +25,17 @@ package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
+import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.IllegalGhostIDException;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
@@ -47,31 +47,26 @@ import de.amr.games.pacman.model.common.actors.Ghost;
  */
 public class ArcadeWorld extends TileMapWorld {
 
+	/** Arcade world size is 28x36 tiles. */
 	public static final Vector2i SIZE_TILES = v2i(28, 36);
 
-	private static final Vector2f PAC_INITIAL_POSITION = halfTileRightOf(13, 26);
-	private static final Direction PAC_INITIAL_DIRECTION = Direction.LEFT;
-
-	//@formatter:off
-	private static final Direction[] GHOST_INITIAL_DIRECTIONS = {
-			Direction.LEFT, Direction.DOWN, Direction.UP, Direction.UP	
-	};
-	
-	private static final Vector2i[] GHOST_SCATTER_TARGET_TILES = {
-			v2i(25, 0), v2i(2, 0), v2i(27, 34), v2i(0, 34)
-	};
-	//@formatter:on
-
 	private final ArcadeGhostHouse house;
-	private AnimationMap animationMap;
 	private final Collection<Vector2i> upwardBlockedTiles;
+	private AnimationMap animationMap;
 
+	/**
+	 * @param tileMapData        byte-array of tile map data
+	 * @param upwardBlockedTiles list of tiles where ghosts can sometimes not move upwards
+	 */
 	public ArcadeWorld(byte[][] tileMapData, Collection<Vector2i> upwardBlockedTiles) {
 		super(tileMapData);
-		this.upwardBlockedTiles = Objects.requireNonNull(upwardBlockedTiles);
+		this.upwardBlockedTiles = requireNonNull(upwardBlockedTiles);
 		house = new ArcadeGhostHouse();
 	}
 
+	/**
+	 * @param tileMapData byte-array of tile map data
+	 */
 	public ArcadeWorld(byte[][] tileMapData) {
 		this(tileMapData, Collections.emptyList());
 	}
@@ -85,42 +80,54 @@ public class ArcadeWorld extends TileMapWorld {
 
 	@Override
 	public Vector2f pacInitialPosition() {
-		return PAC_INITIAL_POSITION;
+		return halfTileRightOf(13, 26);
 	}
 
 	@Override
 	public Direction pacInitialDirection() {
-		return PAC_INITIAL_DIRECTION;
+		return Direction.LEFT;
 	}
 
 	@Override
 	public Vector2f ghostInitialPosition(byte ghostID) {
-		GameModel.checkGhostID(ghostID);
 		return switch (ghostID) {
 		case Ghost.ID_RED_GHOST -> ghostHouse().doors().get(0).entryPosition();
 		case Ghost.ID_CYAN_GHOST -> ghostHouse().seatPositions().get(0);
 		case Ghost.ID_PINK_GHOST -> ghostHouse().seatPositions().get(1);
 		case Ghost.ID_ORANGE_GHOST -> ghostHouse().seatPositions().get(2);
-		default -> throw new IllegalArgumentException();
+		default -> throw new IllegalGhostIDException(ghostID);
 		};
 	}
 
 	@Override
 	public Direction ghostInitialDirection(byte ghostID) {
-		GameModel.checkGhostID(ghostID);
-		return GHOST_INITIAL_DIRECTIONS[ghostID];
+		return switch (ghostID) {
+		case Ghost.ID_RED_GHOST -> Direction.LEFT;
+		case Ghost.ID_CYAN_GHOST -> Direction.DOWN;
+		case Ghost.ID_PINK_GHOST -> Direction.UP;
+		case Ghost.ID_ORANGE_GHOST -> Direction.UP;
+		default -> throw new IllegalGhostIDException(ghostID);
+		};
 	}
 
 	@Override
 	public Vector2f ghostRevivalPosition(byte ghostID) {
-		GameModel.checkGhostID(ghostID);
-		return ghostID == Ghost.ID_RED_GHOST ? ghostHouse().seatPositions().get(1) : ghostInitialPosition(ghostID);
+		return switch (ghostID) {
+		case Ghost.ID_RED_GHOST -> ghostHouse().seatPositions().get(1);
+		case Ghost.ID_CYAN_GHOST, Ghost.ID_PINK_GHOST, Ghost.ID_ORANGE_GHOST -> ghostInitialPosition(ghostID);
+		default -> throw new IllegalGhostIDException(ghostID);
+		};
 	}
 
 	@Override
 	public Vector2i ghostScatterTargetTile(byte ghostID) {
-		GameModel.checkGhostID(ghostID);
-		return GHOST_SCATTER_TARGET_TILES[ghostID];
+		return switch (ghostID) {
+		case Ghost.ID_RED_GHOST -> v2i(25, 0);
+		case Ghost.ID_CYAN_GHOST -> v2i(2, 0);
+		case Ghost.ID_PINK_GHOST -> v2i(27, 34);
+		case Ghost.ID_ORANGE_GHOST -> v2i(0, 34);
+		default -> throw new IllegalGhostIDException(ghostID);
+		};
 	}
 
 	@Override
@@ -131,6 +138,8 @@ public class ArcadeWorld extends TileMapWorld {
 
 	@Override
 	public boolean isIntersection(Vector2i tile) {
+		requireNonNull(tile);
+
 		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
 			return false; // exclude portal entries and tiles outside of the map
 		}
