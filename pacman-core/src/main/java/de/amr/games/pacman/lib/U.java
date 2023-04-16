@@ -59,15 +59,28 @@ public class U {
 	 * @return Random floating-point number from right-open interval <code>[a; b[</code>. Interval bounds are rearranged
 	 *         to guarantee <code>a<=b</code>
 	 */
-	public static float randomFloat(double a, double b) {
+	public static float randomFloat(float a, float b) {
 		if (a > b) {
 			var tmp = a;
 			a = b;
 			b = tmp;
 		}
-		float fa = (float) a;
-		float fb = (float) b;
-		return fa + RND.nextFloat() * (fb - fa);
+		return a + RND.nextFloat() * (b - a);
+	}
+
+	/**
+	 * @param a left interval bound
+	 * @param b right interval bound
+	 * @return Random double-precision floating-point number from right-open interval <code>[a; b[</code>. Interval bounds
+	 *         are rearranged to guarantee <code>a<=b</code>
+	 */
+	public static double randomDouble(double a, double b) {
+		if (a > b) {
+			var tmp = a;
+			a = b;
+			b = tmp;
+		}
+		return a + RND.nextDouble() * (b - a);
 	}
 
 	public static boolean isEven(int n) {
