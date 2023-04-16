@@ -57,29 +57,29 @@ public class MovingBonus extends Creature implements Bonus {
 	private final int points;
 	private long timer;
 	private byte state;
+
 	private final SimpleAnimation<Float> jumpAnimation;
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
-	public MovingBonus(int symbol, int points) {
+	public MovingBonus(byte symbol, int points) {
 		super("MovingBonus");
-		this.symbol = (byte) symbol;
-		this.points = points;
-		this.canTeleport = false;
+
 		reset();
+		this.canTeleport = false; // override setting from reset()
+
+		this.symbol = symbol;
+		this.points = points;
+		this.timer = 0;
+		this.state = Bonus.STATE_INACTIVE;
+
 		jumpAnimation = new SimpleAnimation<>(1.5f, -1.5f);
 		jumpAnimation.setFrameDuration(10);
 		jumpAnimation.repeatForever();
-		setInactive();
 	}
 
 	@Override
 	public boolean canReverse(GameLevel level) {
 		return false;
-	}
-
-	public void setRoute(List<NavigationPoint> route) {
-		steering.setRoute(route);
-		LOG.info("New route of moving bonus: %s", route);
 	}
 
 	@Override
@@ -134,6 +134,11 @@ public class MovingBonus extends Creature implements Bonus {
 		jumpAnimation.stop();
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
 		publishSoundEvent(GameModel.SE_BONUS_EATEN);
+	}
+
+	public void setRoute(List<NavigationPoint> route) {
+		steering.setRoute(route);
+		LOG.info("New route of moving bonus: %s", route);
 	}
 
 	public float dy() {
