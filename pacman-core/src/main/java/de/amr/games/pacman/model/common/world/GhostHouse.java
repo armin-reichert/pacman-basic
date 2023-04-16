@@ -83,7 +83,7 @@ public interface GhostHouse {
 	 * 
 	 * @param ghost          a ghost
 	 * @param targetPosition target position inside the house
-	 * @return
+	 * @return <code>true</code> if the ghost reached the target position
 	 */
 	boolean leadInside(Creature ghost, Vector2f targetPosition);
 }
