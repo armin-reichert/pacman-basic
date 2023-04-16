@@ -36,7 +36,6 @@ import java.util.Collections;
 import java.util.List;
 
 import de.amr.games.pacman.lib.math.Vector2f;
-import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.actors.Creature;
 
@@ -45,39 +44,13 @@ import de.amr.games.pacman.model.common.actors.Creature;
  * 
  * @author Armin Reichert
  */
-public class ArcadeGhostHouse implements GhostHouse {
-
-	private static final Vector2i SIZE_TILES = v2i(8, 5);
-	private static final Vector2i TOP_LEFT_TILE = v2i(10, 15);
-	private static final Vector2i DOOR_LEFT_TILE = v2i(13, 15);
-
-	private final List<Door> doors;
-	private final List<Vector2f> seatPositions;
+public class ArcadeGhostHouse extends GhostHouse {
 
 	public ArcadeGhostHouse() {
-		doors = Collections.singletonList(new Door(DOOR_LEFT_TILE, 2));
-		seatPositions = List.of(//
-				halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
-	}
-
-	@Override
-	public Vector2i size() {
-		return SIZE_TILES;
-	}
-
-	@Override
-	public Vector2i position() {
-		return TOP_LEFT_TILE;
-	}
-
-	@Override
-	public List<Door> doors() {
-		return doors;
-	}
-
-	@Override
-	public List<Vector2f> seatPositions() {
-		return seatPositions;
+		size = v2i(8, 5);
+		topLeftTile = v2i(10, 15);
+		doors = Collections.singletonList(new Door(v2i(13, 15), 2));
+		seatPositions = List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
 	}
 
 	/**

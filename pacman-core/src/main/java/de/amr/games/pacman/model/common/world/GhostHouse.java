@@ -33,37 +33,48 @@ import de.amr.games.pacman.model.common.actors.Creature;
 /**
  * @author Armin Reichert
  */
-public interface GhostHouse {
+public abstract class GhostHouse {
 
-	/**
-	 * @return tile position (top-left corner)
-	 */
-	Vector2i position();
+	protected Vector2i topLeftTile;
+	protected Vector2i size;
+	protected List<Door> doors;
+	protected List<Vector2f> seatPositions;
 
-	/**
-	 * @return size in tiles
-	 */
-	Vector2i size();
+	protected GhostHouse() {
+	}
 
-	/**
-	 * @return the doors
-	 */
-	List<Door> doors();
+	public Vector2i size() {
+		return size;
+	}
 
-	default boolean hasDoorAt(Vector2i tile) {
-		return doors().stream().anyMatch(door -> door.contains(tile));
+	public Vector2i position() {
+		return topLeftTile;
+	}
+
+	public List<Door> doors() {
+		return doors;
 	}
 
 	/**
 	 * @return the positions inside the house where ghosts can take a seat
 	 */
-	List<Vector2f> seatPositions();
+	public List<Vector2f> seatPositions() {
+		return seatPositions;
+	}
+
+	/**
+	 * @param tile some tile
+	 * @return tells if tile is occupied by a door
+	 */
+	public boolean hasDoorAt(Vector2i tile) {
+		return doors().stream().anyMatch(door -> door.contains(tile));
+	}
 
 	/**
 	 * @param tile some tile
 	 * @return tells if the given tile is part of this house
 	 */
-	default boolean contains(Vector2i tile) {
+	public boolean contains(Vector2i tile) {
 		Vector2i topLeft = position();
 		Vector2i bottomRightExclusive = topLeft.plus(size());
 		return tile.x() >= topLeft.x() && tile.x() < bottomRightExclusive.x() //
@@ -76,7 +87,7 @@ public interface GhostHouse {
 	 * @param ghost a ghost inside the house
 	 * @return <code>true</code> if the ghost reached the house exit
 	 */
-	boolean leadOutside(Creature ghost);
+	public abstract boolean leadOutside(Creature ghost);
 
 	/**
 	 * Leads a ghost from the house entry to his seat inside the house.
@@ -85,5 +96,5 @@ public interface GhostHouse {
 	 * @param targetPosition target position inside the house
 	 * @return <code>true</code> if the ghost reached the target position
 	 */
-	boolean leadInside(Creature ghost, Vector2f targetPosition);
+	public abstract boolean leadInside(Creature ghost, Vector2f targetPosition);
 }
