@@ -83,6 +83,19 @@ public class U {
 		return a + RND.nextDouble(b - a);
 	}
 
+	public static boolean inPercentOfCases(int percent) {
+		if (percent < 0 || percent > 100) {
+			throw new IllegalArgumentException("Percent value must be in range [0, 100] but is %d".formatted(percent));
+		}
+		if (percent == 0) {
+			return false;
+		}
+		if (percent == 100) {
+			return true;
+		}
+		return randomInt(0, 100) < percent;
+	}
+
 	public static boolean isEven(int n) {
 		return n % 2 == 0;
 	}
