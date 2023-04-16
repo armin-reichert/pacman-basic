@@ -50,7 +50,7 @@ public class U {
 			a = b;
 			b = tmp;
 		}
-		return a + RND.nextInt() * (b - a);
+		return a + RND.nextInt(b - a);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class U {
 			a = b;
 			b = tmp;
 		}
-		return a + RND.nextFloat() * (b - a);
+		return a + RND.nextFloat(b - a);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class U {
 			a = b;
 			b = tmp;
 		}
-		return a + RND.nextDouble() * (b - a);
+		return a + RND.nextDouble(b - a);
 	}
 
 	public static boolean isEven(int n) {
