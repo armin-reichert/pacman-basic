@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
-public class WorldTest {
+public class TestWorld {
 
 	@Test(expected = NullPointerException.class)
 	public void testNullTileArg() {

@@ -47,7 +47,7 @@ import de.amr.games.pacman.model.pacman.StaticBonus;
 /**
  * @author Armin Reichert
  */
-public class PacManGameTest {
+public class TestPacManGame {
 
 	private GameModel game;
 
