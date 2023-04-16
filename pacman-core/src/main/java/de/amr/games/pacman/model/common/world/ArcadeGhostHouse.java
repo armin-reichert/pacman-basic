@@ -60,12 +60,12 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public Vector2i sizeInTiles() {
+	public Vector2i size() {
 		return SIZE_TILES;
 	}
 
 	@Override
-	public Vector2i topLeftTile() {
+	public Vector2i position() {
 		return TOP_LEFT_TILE;
 	}
 

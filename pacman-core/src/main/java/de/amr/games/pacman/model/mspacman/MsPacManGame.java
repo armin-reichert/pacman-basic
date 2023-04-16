@@ -43,7 +43,6 @@ import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
-import de.amr.games.pacman.model.common.world.Portal;
 
 /**
  * The Ms. Pac-Man game.
@@ -327,13 +326,13 @@ public class MsPacManGame extends GameModel {
 	public void onBonusReached() {
 		int numPortals = level.world().portals().size();
 		var leftToRight = RND.nextBoolean();
-		var entryPortal = (Portal) level.world().portals().get(RND.nextInt(numPortals));
-		var exitPortal = (Portal) level.world().portals().get(RND.nextInt(numPortals));
+		var entryPortal = level.world().portals().get(RND.nextInt(numPortals));
+		var exitPortal = level.world().portals().get(RND.nextInt(numPortals));
 		var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
 		var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
 				: np(exitPortal.leftTunnelEnd().minus(1, 0));
 		var houseEntry = level.world().ghostHouse().door().entryTile().minus(0, 1);
-		int houseHeight = level.world().ghostHouse().sizeInTiles().y();
+		int houseHeight = level.world().ghostHouse().size().y();
 		var route = new ArrayList<NavigationPoint>();
 		route.add(np(houseEntry));
 		route.add(np(houseEntry.plus(0, houseHeight + 1)));

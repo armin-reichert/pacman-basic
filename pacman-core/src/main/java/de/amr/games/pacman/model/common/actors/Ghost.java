@@ -253,7 +253,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private void updateStateLocked(GameLevel level) {
 		var initialPosition = level.world().ghostInitialPosition(id);
-		if (level.world().ghostHouse().contains(this)) {
+		if (level.world().ghostHouse().contains(tile())) {
 			if (position.y() <= initialPosition.y() - World.HTS) {
 				setMoveAndWishDir(DOWN);
 			} else if (position.y() >= initialPosition.y() + World.HTS) {

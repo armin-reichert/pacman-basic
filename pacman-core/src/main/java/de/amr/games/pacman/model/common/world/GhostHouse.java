@@ -35,23 +35,35 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public interface GhostHouse {
 
-	Vector2i topLeftTile();
+	/**
+	 * @return tile position (top-left corner)
+	 */
+	Vector2i position();
 
-	Vector2i sizeInTiles();
+	/**
+	 * @return size in tiles
+	 */
+	Vector2i size();
 
+	/**
+	 * @return the door
+	 */
 	Door door();
 
+	/**
+	 * @return the positions inside the house where ghosts can take a seat
+	 */
 	List<Vector2f> seatPositions();
 
+	/**
+	 * @param tile some tile
+	 * @return tells if the given tile is part of this house
+	 */
 	default boolean contains(Vector2i tile) {
-		Vector2i topLeft = topLeftTile();
-		Vector2i bottomRightOutside = topLeft.plus(sizeInTiles());
-		return tile.x() >= topLeft.x() && tile.x() < bottomRightOutside.x() //
-				&& tile.y() >= topLeft.y() && tile.y() < bottomRightOutside.y();
-	}
-
-	default boolean contains(Creature ghost) {
-		return contains(ghost.tile());
+		Vector2i topLeft = position();
+		Vector2i bottomRightExclusive = topLeft.plus(size());
+		return tile.x() >= topLeft.x() && tile.x() < bottomRightExclusive.x() //
+				&& tile.y() >= topLeft.y() && tile.y() < bottomRightExclusive.y();
 	}
 
 	boolean leadOutside(Creature ghost);

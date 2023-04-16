@@ -620,7 +620,8 @@ public class GameLevel {
 				LOG.trace("Global dot counter = %d", globalDotCounter);
 			}
 		} else {
-			ghosts(LOCKED).filter(world.ghostHouse()::contains).findFirst().ifPresent(this::increaseGhostDotCounter);
+			ghosts(LOCKED).filter(ghost -> world.ghostHouse().contains(ghost.tile())).findFirst()
+					.ifPresent(this::increaseGhostDotCounter);
 		}
 	}
 
@@ -634,7 +635,7 @@ public class GameLevel {
 		if (ghost == null) {
 			return Optional.empty();
 		}
-		if (!world.ghostHouse().contains(ghost)) {
+		if (!world.ghostHouse().contains(ghost.tile())) {
 			return unlockGhost(ghost, "Already outside house");
 		}
 		var id = ghost.id();
@@ -657,7 +658,7 @@ public class GameLevel {
 	}
 
 	private Optional<GhostUnlockResult> unlockGhost(Ghost ghost, String reason, Object... args) {
-		if (!world.ghostHouse().contains(ghost)) {
+		if (!world.ghostHouse().contains(ghost.tile())) {
 			ghost.setMoveAndWishDir(LEFT);
 			ghost.enterStateHuntingPac();
 		} else {
