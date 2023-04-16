@@ -49,20 +49,9 @@ import de.amr.games.pacman.model.common.actors.Creature;
  * 
  * @author Armin Reichert
  */
-public class MovingBonus implements Bonus {
+public class MovingBonus extends Creature implements Bonus {
 
 	private static final Logger LOG = LogManager.getFormatterLogger();
-
-	private final Creature bonusCreature = new Creature("MovingBonus") {
-		{
-			canTeleport = false;
-		}
-
-		@Override
-		public boolean canReverse(GameLevel level) {
-			return false;
-		}
-	};
 
 	private final byte symbol;
 	private final int points;
@@ -72,13 +61,20 @@ public class MovingBonus implements Bonus {
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
 	public MovingBonus(int symbol, int points) {
+		super("MovingBonus");
 		this.symbol = (byte) symbol;
 		this.points = points;
-		bonusCreature.reset();
+		this.canTeleport = false;
+		reset();
 		jumpAnimation = new SimpleAnimation<>(1.5f, -1.5f);
 		jumpAnimation.setFrameDuration(10);
 		jumpAnimation.repeatForever();
 		setInactive();
+	}
+
+	@Override
+	public boolean canReverse(GameLevel level) {
+		return false;
 	}
 
 	public void setRoute(List<NavigationPoint> route) {
@@ -88,13 +84,12 @@ public class MovingBonus implements Bonus {
 
 	@Override
 	public Creature entity() {
-		return bonusCreature;
+		return this;
 	}
 
 	@Override
 	public String toString() {
-		return "[MovingBonus state=%s symbol=%d value=%d timer=%d tile=%s]".formatted(state, symbol, points, timer,
-				bonusCreature.tile());
+		return "[MovingBonus state=%s symbol=%d value=%d timer=%d tile=%s]".formatted(state, symbol, points, timer, tile());
 	}
 
 	@Override
@@ -116,8 +111,8 @@ public class MovingBonus implements Bonus {
 	public void setInactive() {
 		state = Bonus.STATE_INACTIVE;
 		jumpAnimation.stop();
-		bonusCreature.hide();
-		bonusCreature.setPixelSpeed(0);
+		hide();
+		setPixelSpeed(0);
 	}
 
 	@Override
@@ -125,9 +120,9 @@ public class MovingBonus implements Bonus {
 		state = Bonus.STATE_EDIBLE;
 		timer = ticks;
 		jumpAnimation.restart();
-		bonusCreature.show();
-		bonusCreature.setPixelSpeed(0.5f); // how fast in the original game?
-		bonusCreature.setTargetTile(null);
+		show();
+		setPixelSpeed(0.5f); // how fast in the original game?
+		setTargetTile(null);
 		LOG.info("Bonus gets edible: %s", this);
 	}
 
@@ -137,7 +132,7 @@ public class MovingBonus implements Bonus {
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
 		LOG.info("Bonus eaten: %s", this);
 		jumpAnimation.stop();
-		publishGameEvent(GameEventType.BONUS_GETS_EATEN, bonusCreature.tile());
+		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
 		publishSoundEvent(GameModel.SE_BONUS_EATEN);
 	}
 
@@ -151,27 +146,27 @@ public class MovingBonus implements Bonus {
 		case STATE_INACTIVE -> { // nothing to do
 		}
 		case STATE_EDIBLE -> {
-			if (bonusCreature.sameTile(level.pac())) {
+			if (sameTile(level.pac())) {
 				level.game().scorePoints(points);
 				eat();
 				return;
 			}
-			steering.steer(level, bonusCreature);
+			steering.steer(level, this);
 			if (steering.isComplete()) {
 				LOG.info("Bonus reached target: %s", this);
-				publishGameEvent(GameEventType.BONUS_EXPIRES, bonusCreature.tile());
+				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
 			}
-			bonusCreature.navigateTowardsTarget(level);
-			bonusCreature.tryMoving(level);
+			navigateTowardsTarget(level);
+			tryMoving(level);
 			jumpAnimation.animate();
 		}
 		case STATE_EATEN -> {
 			if (--timer == 0) {
 				setInactive();
 				LOG.info("Bonus expired: %s", this);
-				publishGameEvent(GameEventType.BONUS_EXPIRES, bonusCreature.tile());
+				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		default -> throw new IllegalStateException();
