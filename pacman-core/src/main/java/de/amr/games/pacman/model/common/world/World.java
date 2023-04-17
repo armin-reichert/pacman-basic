@@ -33,8 +33,6 @@ import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 
 /**
- * Tiled world.
- * 
  * @author Armin Reichert
  */
 public interface World extends AnimatedEntity {
@@ -207,13 +205,8 @@ public interface World extends AnimatedEntity {
 	 */
 	int eatenFoodCount();
 
-	default Stream<Vector2i> tilesContainingFood() {
-		return tiles().filter(this::containsFood);
-	}
-
-	default Stream<Vector2i> tilesContainingEatenFood() {
-		return tiles().filter(this::containsEatenFood);
-	}
-
+	/**
+	 * @param animationMap map of animations for this world
+	 */
 	void setAnimations(AnimationMap animationMap);
 }
