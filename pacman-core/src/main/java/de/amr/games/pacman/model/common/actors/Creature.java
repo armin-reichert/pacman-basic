@@ -31,6 +31,7 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -66,7 +67,7 @@ public abstract class Creature extends Entity {
 	protected boolean canTeleport;
 
 	protected Creature(String name) {
-		this.name = (name != null) ? name : getClass().getSimpleName() + "@%d".formatted(hashCode());
+		this.name = (name != null) ? name : "%s@%d".formatted(getClass().getSimpleName(), hashCode());
 	}
 
 	public void reset() {
@@ -313,7 +314,7 @@ public abstract class Creature extends Entity {
 	}
 
 	/**
-	 * Moves through the world of the given game level.
+	 * Tries moving through the given game level.
 	 * <p>
 	 * First checks if the creature can teleport, then if the creature can move to its wish direction. If this is not
 	 * possible, it keeps moving to its current move direction.
@@ -323,26 +324,36 @@ public abstract class Creature extends Entity {
 	public void tryMoving(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
 		moveResult.reset();
+
+		tryTeleport(level.world().portals());
+		if (!moveResult.teleported) {
+			// process reverse signal
+			if (gotReverseCommand && canReverse(level)) {
+				setWishDir(moveDir.opposite());
+				gotReverseCommand = false;
+			}
+
+			tryMoving(wishDir, level);
+			if (moveResult.moved) {
+				setMoveDir(wishDir);
+			} else {
+				tryMoving(moveDir, level);
+			}
+		}
+		if (moveResult.teleported || moveResult.moved) {
+			LOG.trace("%-8s: %s %s %s", name, moveResult, moveResult.messages(), this);
+		}
+	}
+
+	private void tryTeleport(List<Portal> portals) {
 		if (canTeleport) {
-			for (var portal : level.world().portals()) {
+			for (var portal : portals) {
 				teleport(portal);
 				if (moveResult.teleported) {
-					logMoveResult();
 					return;
 				}
 			}
 		}
-		if (gotReverseCommand && canReverse(level)) {
-			setWishDir(moveDir.opposite());
-			gotReverseCommand = false;
-		}
-		tryMoving(wishDir, level);
-		if (moveResult.moved) {
-			setMoveDir(wishDir);
-		} else {
-			tryMoving(moveDir, level);
-		}
-		logMoveResult();
 	}
 
 	private void teleport(Portal portal) {
@@ -357,10 +368,6 @@ public abstract class Creature extends Entity {
 			moveResult.teleported = true;
 			moveResult.addMessage("%s: Teleported from %s to %s".formatted(name, oldPosition, position));
 		}
-	}
-
-	private void logMoveResult() {
-		LOG.trace("%-8s: %s %s %s", name, moveResult, moveResult.messages(), this);
 	}
 
 	private void tryMoving(Direction dir, GameLevel level) {
