@@ -38,8 +38,10 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
+import static java.util.Objects.requireNonNull;
 
-import java.util.Objects;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
@@ -60,7 +62,6 @@ import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -138,6 +139,8 @@ public class GameLevel {
 
 	private byte cruiseElroyState;
 
+	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
+
 	public GameLevel(GameModel game, int number) {
 		GameModel.checkGameNotNull(game);
 		GameModel.checkLevelNumber(number);
@@ -193,6 +196,14 @@ public class GameLevel {
 	private static Vector2i tilesAhead(Creature guy, int numTiles) {
 		Vector2i ahead = guy.tile().plus(guy.moveDir().vector().scaled(numTiles));
 		return guy.moveDir() == Direction.UP ? ahead.minus(numTiles, 0) : ahead;
+	}
+
+	public List<Vector2i> upwardsBlockedTiles() {
+		return switch (game.variant()) {
+		case MS_PACMAN -> Collections.emptyList();
+		case PACMAN -> RED_ZONE;
+		default -> throw new IllegalGameVariantException(game.variant());
+		};
 	}
 
 	public void update() {
@@ -332,13 +343,10 @@ public class GameLevel {
 	 * @return tells if the ghost can steer towards the given direction
 	 */
 	public boolean isSteeringAllowed(Ghost ghost, Direction dir) {
-		Objects.requireNonNull(ghost);
-		Objects.requireNonNull(dir);
-		// TODO how to avoid this check?
-		if (world instanceof ArcadeWorld arcadeWorld) {
-			boolean blocked = dir == Direction.UP && ghost.is(HUNTING_PAC)
-					&& arcadeWorld.upwardBlockedTiles().contains(ghost.tile());
-			return !blocked;
+		requireNonNull(ghost);
+		requireNonNull(dir);
+		if (dir == Direction.UP && ghost.is(HUNTING_PAC) && upwardsBlockedTiles().contains(ghost.tile())) {
+			return false;
 		}
 		return true;
 	}

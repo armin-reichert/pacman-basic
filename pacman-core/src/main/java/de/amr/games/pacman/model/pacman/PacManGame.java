@@ -23,18 +23,14 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
-import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
-import java.util.List;
-
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -95,9 +91,6 @@ public class PacManGame extends GameModel {
 	public static final String AK_BLINKY_PATCHED = "blinky_patched";
 	public static final String AK_BLINKY_NAKED = "blinky_naked";
 
-	// Tiles where chasing ghosts cannot move upwards
-	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
-
 	@Override
 	public Pac createPac() {
 		return new Pac("Pac-Man");
@@ -116,7 +109,7 @@ public class PacManGame extends GameModel {
 	@Override
 	public ArcadeWorld createWorld(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		var world = new ArcadeWorld(MAP, RED_ZONE);
+		var world = new ArcadeWorld(MAP);
 		return world;
 	}
 

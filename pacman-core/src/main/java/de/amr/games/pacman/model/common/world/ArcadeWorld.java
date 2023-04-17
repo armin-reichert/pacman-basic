@@ -26,8 +26,6 @@ package de.amr.games.pacman.model.common.world;
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static java.util.Objects.requireNonNull;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.anim.AnimationMap;
@@ -46,31 +44,15 @@ public class ArcadeWorld extends TileMapWorld {
 	public static final Vector2i SIZE_TILES = v2i(28, 36);
 
 	private final ArcadeGhostHouse house;
-	private final Collection<Vector2i> upwardBlockedTiles;
 	private AnimationMap animationMap;
 
 	/**
 	 * @param tileMapData        byte-array of tile map data
 	 * @param upwardBlockedTiles list of tiles where ghosts can sometimes not move upwards
 	 */
-	public ArcadeWorld(byte[][] tileMapData, Collection<Vector2i> upwardBlockedTiles) {
-		super(tileMapData);
-		this.upwardBlockedTiles = requireNonNull(upwardBlockedTiles);
-		house = new ArcadeGhostHouse();
-	}
-
-	/**
-	 * @param tileMapData byte-array of tile map data
-	 */
 	public ArcadeWorld(byte[][] tileMapData) {
-		this(tileMapData, Collections.emptyList());
-	}
-
-	/**
-	 * @return tiles where chasing ghosts cannot move upwards
-	 */
-	public Collection<Vector2i> upwardBlockedTiles() {
-		return Collections.unmodifiableCollection(upwardBlockedTiles);
+		super(tileMapData);
+		house = new ArcadeGhostHouse();
 	}
 
 	@Override
