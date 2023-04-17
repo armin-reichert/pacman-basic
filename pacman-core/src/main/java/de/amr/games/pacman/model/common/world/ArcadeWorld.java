@@ -92,8 +92,8 @@ public class ArcadeWorld extends TileMapWorld {
 	public Vector2f ghostInitialPosition(byte ghostID) {
 		return switch (ghostID) {
 		case Ghost.ID_RED_GHOST -> ghostHouse().doors().get(0).entryPosition();
-		case Ghost.ID_PINK_GHOST -> ghostHouse().seatPositions().get(0);
-		case Ghost.ID_CYAN_GHOST -> ghostHouse().seatPositions().get(1);
+		case Ghost.ID_PINK_GHOST -> ghostHouse().seatPositions().get(1);
+		case Ghost.ID_CYAN_GHOST -> ghostHouse().seatPositions().get(0);
 		case Ghost.ID_ORANGE_GHOST -> ghostHouse().seatPositions().get(2);
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
