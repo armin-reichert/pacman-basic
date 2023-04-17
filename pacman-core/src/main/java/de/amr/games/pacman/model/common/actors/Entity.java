@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.actors;
 
 import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.originOfTile;
+import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
 
 import java.util.Objects;
@@ -127,7 +127,9 @@ public class Entity {
 
 	/** @return Offset inside current tile: (0, 0) if centered, range: [-4, +4) */
 	public Vector2f offset() {
-		return position.minus(originOfTile(tile()));
+		var tile = tile();
+		var tileOrigin = new Vector2f(tile.x() * TS, tile.y() * TS);
+		return position.minus(tileOrigin);
 	}
 
 	/**

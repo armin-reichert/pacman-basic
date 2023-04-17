@@ -72,28 +72,12 @@ public interface World extends AnimatedEntity {
 	}
 
 	/**
-	 * @param tile a tile
-	 * @return position of the left-upper corner of given tile
-	 */
-	public static Vector2f originOfTile(Vector2i tile) {
-		return tile.scaled(TS).toFloatVec();
-	}
-
-	/**
 	 * @param tileX tile x coordinate
 	 * @param tileY tile y coordinate
 	 * @return position half tile right of tile origin
 	 */
 	public static Vector2f halfTileRightOf(int tileX, int tileY) {
 		return new Vector2f(tileX * TS + HTS, tileY * TS);
-	}
-
-	/**
-	 * @param tile tile
-	 * @return position half tile right of tile origin
-	 */
-	public static Vector2f halfTileRightOf(Vector2i tile) {
-		return halfTileRightOf(tile.x(), tile.y());
 	}
 
 	/**
