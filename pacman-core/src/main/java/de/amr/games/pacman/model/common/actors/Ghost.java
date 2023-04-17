@@ -169,7 +169,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void moveRandomly(GameLevel level) {
-		if (isNewTileEntered() || !moveResult.moved) {
+		if (isNewTileEntered() || !moved()) {
 			Direction.shuffled().stream() //
 					.filter(dir -> dir != moveDir().opposite()) //
 					.filter(dir -> canAccessTile(tile().plus(dir.vector()), level)) //

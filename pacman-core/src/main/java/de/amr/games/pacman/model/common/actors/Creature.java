@@ -60,7 +60,7 @@ public abstract class Creature extends Entity {
 	private Direction wishDir;
 	private Vector2i targetTile;
 
-	public final MoveResult moveResult = new MoveResult();
+	private MoveResult moveResult;
 	protected boolean newTileEntered; // TODO put this into move result but currently it has another lifetime
 	protected boolean gotReverseCommand;
 	protected boolean canTeleport;
@@ -83,7 +83,7 @@ public abstract class Creature extends Entity {
 		gotReverseCommand = false;
 		canTeleport = true;
 
-		moveResult.reset();
+		moveResult = null;
 		newTileEntered = true;
 	}
 
@@ -281,7 +281,7 @@ public abstract class Creature extends Entity {
 	 */
 	public void navigateTowardsTarget(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
-		if (!newTileEntered && moveResult.moved) {
+		if (!newTileEntered && moved()) {
 			return; // we don't need no navigation, dim dit diddit diddit dim dit diddit diddit...
 		}
 		if (targetTile == null) {
@@ -313,6 +313,18 @@ public abstract class Creature extends Entity {
 		return Optional.ofNullable(targetDir);
 	}
 
+	public boolean moved() {
+		return moveResult != null && moveResult.moved;
+	}
+
+	public boolean teleported() {
+		return moveResult != null && moveResult.teleported;
+	}
+
+	public boolean enteredTunnel() {
+		return moveResult != null && moveResult.tunnelEntered;
+	}
+
 	/**
 	 * Tries moving through the given game level.
 	 * <p>
@@ -323,7 +335,7 @@ public abstract class Creature extends Entity {
 	 */
 	public void tryMoving(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
-		moveResult.reset();
+		moveResult = new MoveResult();
 
 		tryTeleport(level.world().portals());
 		if (!moveResult.teleported) {

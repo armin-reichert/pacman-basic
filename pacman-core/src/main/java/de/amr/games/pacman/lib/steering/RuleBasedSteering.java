@@ -95,7 +95,7 @@ public class RuleBasedSteering implements Steering {
 
 	@Override
 	public void steer(GameLevel level, Creature guy) {
-		if (guy.moveResult.moved && !guy.isNewTileEntered()) {
+		if (guy.moved() && !guy.isNewTileEntered()) {
 			return;
 		}
 		var data = collectData(level);
@@ -143,7 +143,7 @@ public class RuleBasedSteering implements Steering {
 		}
 
 		// when not escaping ghost, keep move direction at least until next intersection
-		if (pac.moveResult.moved && !level.world().isIntersection(pac.tile()))
+		if (pac.moved() && !level.world().isIntersection(pac.tile()))
 			return;
 
 		if (!data.frightenedGhosts.isEmpty() && pac.powerTimer().remaining() >= 1 * 60) {

@@ -31,23 +31,18 @@ import java.util.stream.Collectors;
 /**
  * @author Armin Reichert
  */
-public class MoveResult {
+class MoveResult {
 
-	public boolean moved;
-	public boolean tunnelEntered;
-	public boolean teleported;
-
-	private List<String> messages = new ArrayList<>();
+	boolean moved;
+	boolean tunnelEntered;
+	boolean teleported;
+	private List<String> messages;
 
 	public MoveResult() {
-		reset();
-	}
-
-	public void reset() {
 		moved = false;
 		tunnelEntered = false;
 		teleported = false;
-		messages.clear();
+		messages = new ArrayList<>(3);
 	}
 
 	public void addMessage(String message) {

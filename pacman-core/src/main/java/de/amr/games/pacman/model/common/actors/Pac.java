@@ -101,7 +101,7 @@ public class Pac extends Creature implements AnimatedEntity {
 			setRelSpeed(speed);
 			tryMoving(level);
 			selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
-			if (moveResult.moved) {
+			if (moved()) {
 				animate();
 			}
 		} else {
@@ -162,6 +162,6 @@ public class Pac extends Creature implements AnimatedEntity {
 	}
 
 	public boolean isStandingStill() {
-		return velocity().length() == 0 || !moveResult.moved || restingTicks == REST_FOREVER;
+		return velocity().length() == 0 || !moved() || restingTicks == REST_FOREVER;
 	}
 }
