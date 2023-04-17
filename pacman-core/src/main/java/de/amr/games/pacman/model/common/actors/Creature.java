@@ -57,10 +57,10 @@ public abstract class Creature extends Entity {
 
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
-	protected static class MoveResult {
-		boolean moved;
-		boolean tunnelEntered;
-		boolean teleported;
+	private static class MoveResult {
+		private boolean moved;
+		private boolean tunnelEntered;
+		private boolean teleported;
 		private List<String> messages;
 
 		public MoveResult() {
@@ -70,7 +70,7 @@ public abstract class Creature extends Entity {
 			messages = new ArrayList<>(3);
 		}
 
-		public String messages() {
+		public String summary() {
 			return messages.stream().collect(Collectors.joining(", "));
 		}
 
@@ -232,7 +232,7 @@ public abstract class Creature extends Entity {
 		GameModel.checkDirectionNotNull(dir);
 		if (moveDir != dir) {
 			moveDir = dir;
-			LOG.trace("%-8s: New moveDir: %s. %s", name, moveDir, this);
+			LOG.trace("%-11s: New moveDir: %s. %s", name, moveDir, this);
 			velocity = moveDir.vector().toFloatVec().scaled(velocity.length());
 		}
 	}
@@ -251,7 +251,7 @@ public abstract class Creature extends Entity {
 		GameModel.checkDirectionNotNull(dir);
 		if (wishDir != dir) {
 			wishDir = dir;
-			LOG.trace("%-8s: New wishDir: %s. %s", name, wishDir, this);
+			LOG.trace("%-11s: New wishDir: %s. %s", name, wishDir, this);
 		}
 	}
 
@@ -372,7 +372,7 @@ public abstract class Creature extends Entity {
 			if (gotReverseCommand && canReverse(level)) {
 				setWishDir(moveDir.opposite());
 				gotReverseCommand = false;
-				LOG.trace("%-8s: Reverse direction", name);
+				LOG.trace("%-11s: [turned around]", name);
 			}
 
 			tryMoving(wishDir, level);
@@ -383,7 +383,7 @@ public abstract class Creature extends Entity {
 			}
 		}
 		if (moveResult.teleported || moveResult.moved) {
-			LOG.trace("%-8s: %s %s %s", name, moveResult, moveResult.messages(), this);
+			LOG.trace("%-11s: %s %s %s", name, moveResult, moveResult.summary(), this);
 		}
 	}
 
