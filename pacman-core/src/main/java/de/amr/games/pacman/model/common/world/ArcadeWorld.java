@@ -92,8 +92,8 @@ public class ArcadeWorld extends TileMapWorld {
 	public Vector2f ghostInitialPosition(byte ghostID) {
 		return switch (ghostID) {
 		case Ghost.ID_RED_GHOST -> ghostHouse().doors().get(0).entryPosition();
-		case Ghost.ID_CYAN_GHOST -> ghostHouse().seatPositions().get(0);
-		case Ghost.ID_PINK_GHOST -> ghostHouse().seatPositions().get(1);
+		case Ghost.ID_PINK_GHOST -> ghostHouse().seatPositions().get(0);
+		case Ghost.ID_CYAN_GHOST -> ghostHouse().seatPositions().get(1);
 		case Ghost.ID_ORANGE_GHOST -> ghostHouse().seatPositions().get(2);
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
@@ -103,8 +103,8 @@ public class ArcadeWorld extends TileMapWorld {
 	public Direction ghostInitialDirection(byte ghostID) {
 		return switch (ghostID) {
 		case Ghost.ID_RED_GHOST -> Direction.LEFT;
-		case Ghost.ID_CYAN_GHOST -> Direction.DOWN;
-		case Ghost.ID_PINK_GHOST -> Direction.UP;
+		case Ghost.ID_PINK_GHOST -> Direction.DOWN;
+		case Ghost.ID_CYAN_GHOST -> Direction.UP;
 		case Ghost.ID_ORANGE_GHOST -> Direction.UP;
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
@@ -114,7 +114,7 @@ public class ArcadeWorld extends TileMapWorld {
 	public Vector2f ghostRevivalPosition(byte ghostID) {
 		return switch (ghostID) {
 		case Ghost.ID_RED_GHOST -> ghostHouse().seatPositions().get(1);
-		case Ghost.ID_CYAN_GHOST, Ghost.ID_PINK_GHOST, Ghost.ID_ORANGE_GHOST -> ghostInitialPosition(ghostID);
+		case Ghost.ID_PINK_GHOST, Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> ghostInitialPosition(ghostID);
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
 	}
@@ -123,8 +123,8 @@ public class ArcadeWorld extends TileMapWorld {
 	public Vector2i ghostScatterTargetTile(byte ghostID) {
 		return switch (ghostID) {
 		case Ghost.ID_RED_GHOST -> v2i(25, 0);
-		case Ghost.ID_CYAN_GHOST -> v2i(2, 0);
-		case Ghost.ID_PINK_GHOST -> v2i(27, 34);
+		case Ghost.ID_PINK_GHOST -> v2i(2, 0);
+		case Ghost.ID_CYAN_GHOST -> v2i(27, 34);
 		case Ghost.ID_ORANGE_GHOST -> v2i(0, 34);
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
