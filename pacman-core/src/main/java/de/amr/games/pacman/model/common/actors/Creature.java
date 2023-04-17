@@ -61,8 +61,7 @@ public abstract class Creature extends Entity {
 	private Vector2i targetTile;
 
 	public final MoveResult moveResult = new MoveResult();
-	private boolean newTileEntered; // TODO put this into move result but currently it has another lifetime
-
+	protected boolean newTileEntered; // TODO put this into move result but currently it has another lifetime
 	protected boolean gotReverseCommand;
 	protected boolean canTeleport;
 
@@ -247,6 +246,7 @@ public abstract class Creature extends Entity {
 	 */
 	public void reverseAsSoonAsPossible() {
 		gotReverseCommand = true;
+		newTileEntered = false;
 		LOG.trace("%s (moveDir=%s, wishDir=%s) got command to reverse direction", name, moveDir, wishDir);
 	}
 
@@ -331,6 +331,7 @@ public abstract class Creature extends Entity {
 			if (gotReverseCommand && canReverse(level)) {
 				setWishDir(moveDir.opposite());
 				gotReverseCommand = false;
+				LOG.trace("%-8s: Reverse direction", name);
 			}
 
 			tryMoving(wishDir, level);
