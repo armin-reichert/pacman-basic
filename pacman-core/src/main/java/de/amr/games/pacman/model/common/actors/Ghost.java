@@ -141,7 +141,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 */
 	public void scatter(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
-		setTargetTile(level.world().ghostScatterTargetTile(id));
+		setTargetTile(level.ghostScatterTargetTile(id));
 		navigateTowardsTarget(level);
 		tryMoving(level);
 	}
@@ -252,7 +252,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateStateLocked(GameLevel level) {
-		var initialPosition = level.world().ghostInitialPosition(id);
+		var initialPosition = level.ghostInitialPosition(id);
 		if (level.world().ghostHouse().contains(tile())) {
 			if (position.y() <= initialPosition.y() - World.HTS) {
 				setMoveAndWishDir(DOWN);
@@ -413,7 +413,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateStateEnteringHouse(GameLevel level) {
-		boolean atRevivalPosition = level.world().ghostHouse().leadInside(this, level.world().ghostRevivalPosition(id));
+		boolean atRevivalPosition = level.world().ghostHouse().leadInside(this, level.ghostRevivalPosition(id));
 		if (atRevivalPosition) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();

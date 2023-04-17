@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
-import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
@@ -32,11 +31,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.anim.AnimationMap;
-import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.model.common.IllegalGhostIDException;
-import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * The world used in the Arcade versions of Pac-Man and Ms. Pac-Man. Maze structure varies but ghost house
@@ -76,58 +71,6 @@ public class ArcadeWorld extends TileMapWorld {
 	 */
 	public Collection<Vector2i> upwardBlockedTiles() {
 		return Collections.unmodifiableCollection(upwardBlockedTiles);
-	}
-
-	@Override
-	public Vector2f pacInitialPosition() {
-		return halfTileRightOf(13, 26);
-	}
-
-	@Override
-	public Direction pacInitialDirection() {
-		return Direction.LEFT;
-	}
-
-	@Override
-	public Vector2f ghostInitialPosition(byte ghostID) {
-		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> ghostHouse().doors().get(0).entryPosition();
-		case Ghost.ID_PINK_GHOST -> ghostHouse().seatPositions().get(1);
-		case Ghost.ID_CYAN_GHOST -> ghostHouse().seatPositions().get(0);
-		case Ghost.ID_ORANGE_GHOST -> ghostHouse().seatPositions().get(2);
-		default -> throw new IllegalGhostIDException(ghostID);
-		};
-	}
-
-	@Override
-	public Direction ghostInitialDirection(byte ghostID) {
-		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> Direction.LEFT;
-		case Ghost.ID_PINK_GHOST -> Direction.DOWN;
-		case Ghost.ID_CYAN_GHOST -> Direction.UP;
-		case Ghost.ID_ORANGE_GHOST -> Direction.UP;
-		default -> throw new IllegalGhostIDException(ghostID);
-		};
-	}
-
-	@Override
-	public Vector2f ghostRevivalPosition(byte ghostID) {
-		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> ghostHouse().seatPositions().get(1);
-		case Ghost.ID_PINK_GHOST, Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> ghostInitialPosition(ghostID);
-		default -> throw new IllegalGhostIDException(ghostID);
-		};
-	}
-
-	@Override
-	public Vector2i ghostScatterTargetTile(byte ghostID) {
-		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> v2i(25, 0);
-		case Ghost.ID_PINK_GHOST -> v2i(2, 0);
-		case Ghost.ID_CYAN_GHOST -> v2i(27, 34);
-		case Ghost.ID_ORANGE_GHOST -> v2i(0, 34);
-		default -> throw new IllegalGhostIDException(ghostID);
-		};
 	}
 
 	@Override

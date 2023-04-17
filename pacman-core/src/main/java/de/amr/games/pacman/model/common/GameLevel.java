@@ -27,6 +27,7 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
+import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
@@ -36,6 +37,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
+import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -49,6 +51,7 @@ import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.Animated;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -175,7 +178,7 @@ public class GameLevel {
 		// Orange ghost attacks directly but retreats if too near
 		ghost(ID_ORANGE_GHOST).setChasingTarget( //
 				() -> ghost(ID_ORANGE_GHOST).tile().euclideanDistance(pac.tile()) < 8 ? //
-						world.ghostScatterTargetTile(ID_ORANGE_GHOST) : pac.tile());
+						ghostScatterTargetTile(ID_ORANGE_GHOST) : pac.tile());
 	}
 
 	/**
@@ -414,18 +417,56 @@ public class GameLevel {
 	 */
 	public void letsGetReadyToRumbleAndShowGuys(boolean guysVisible) {
 		pac.reset();
-		pac.setPosition(world.pacInitialPosition());
-		pac.setMoveAndWishDir(world.pacInitialDirection());
+		pac.setPosition(halfTileRightOf(13, 26));
+		pac.setMoveAndWishDir(Direction.LEFT);
 		pac.setVisible(guysVisible);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
-			ghost.setPosition(world.ghostInitialPosition(ghost.id()));
-			ghost.setMoveAndWishDir(world.ghostInitialDirection(ghost.id()));
+			ghost.setPosition(ghostInitialPosition(ghost.id()));
+			ghost.setMoveAndWishDir(ghostInitialDirection(ghost.id()));
 			ghost.setVisible(guysVisible);
 			ghost.enterStateLocked();
 		});
 		bonus.setInactive();
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
+	}
+
+	public Vector2f ghostInitialPosition(byte ghostID) {
+		return switch (ghostID) {
+		case Ghost.ID_RED_GHOST -> world.ghostHouse().doors().get(0).entryPosition();
+		case Ghost.ID_PINK_GHOST -> world.ghostHouse().seatPositions().get(1);
+		case Ghost.ID_CYAN_GHOST -> world.ghostHouse().seatPositions().get(0);
+		case Ghost.ID_ORANGE_GHOST -> world.ghostHouse().seatPositions().get(2);
+		default -> throw new IllegalGhostIDException(ghostID);
+		};
+	}
+
+	public Vector2f ghostRevivalPosition(byte ghostID) {
+		return switch (ghostID) {
+		case Ghost.ID_RED_GHOST -> world.ghostHouse().seatPositions().get(1);
+		case Ghost.ID_PINK_GHOST, Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> ghostInitialPosition(ghostID);
+		default -> throw new IllegalGhostIDException(ghostID);
+		};
+	}
+
+	public Vector2i ghostScatterTargetTile(byte ghostID) {
+		return switch (ghostID) {
+		case Ghost.ID_RED_GHOST -> v2i(25, 0);
+		case Ghost.ID_PINK_GHOST -> v2i(2, 0);
+		case Ghost.ID_CYAN_GHOST -> v2i(27, 34);
+		case Ghost.ID_ORANGE_GHOST -> v2i(0, 34);
+		default -> throw new IllegalGhostIDException(ghostID);
+		};
+	}
+
+	public Direction ghostInitialDirection(byte ghostID) {
+		return switch (ghostID) {
+		case Ghost.ID_RED_GHOST -> Direction.LEFT;
+		case Ghost.ID_PINK_GHOST -> Direction.DOWN;
+		case Ghost.ID_CYAN_GHOST -> Direction.UP;
+		case Ghost.ID_ORANGE_GHOST -> Direction.UP;
+		default -> throw new IllegalGhostIDException(ghostID);
+		};
 	}
 
 	/**

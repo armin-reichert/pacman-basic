@@ -31,7 +31,6 @@ import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.lib.steering.Direction;
 
 /**
  * Tiled world.
@@ -158,43 +157,9 @@ public interface World extends AnimatedEntity {
 	boolean isTunnel(Vector2i tile);
 
 	/**
-	 * @return start position of Pac-Man in this world
-	 */
-	Vector2f pacInitialPosition();
-
-	/**
-	 * @return start direction of Pac-Man in this world
-	 */
-	Direction pacInitialDirection();
-
-	/**
 	 * @return the ghost house in this world
 	 */
 	GhostHouse ghostHouse();
-
-	/**
-	 * @param ghostID ghost ID
-	 * @return scatter target tile of ghost with given ID
-	 */
-	Vector2i ghostScatterTargetTile(byte ghostID);
-
-	/**
-	 * @param ghostID ghost ID
-	 * @return initial position of ghost with given ID
-	 */
-	Vector2f ghostInitialPosition(byte ghostID);
-
-	/**
-	 * @param ghostID ghost ID
-	 * @return initial direction of ghost with given ID
-	 */
-	Direction ghostInitialDirection(byte ghostID);
-
-	/**
-	 * @param ghostID ghost ID
-	 * @return revival position of ghost with given ID
-	 */
-	Vector2f ghostRevivalPosition(byte ghostID);
 
 	/**
 	 * @param tile a tile

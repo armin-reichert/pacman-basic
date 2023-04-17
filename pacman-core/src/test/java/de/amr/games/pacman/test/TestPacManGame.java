@@ -82,34 +82,33 @@ public class TestPacManGame {
 	@Test
 	public void testGhostsCreatedAndInitialized() {
 		var level = game.level().get();
-		var world = level.world();
 		var redGhost = level.ghost(ID_RED_GHOST);
 		assertTrue(redGhost instanceof Ghost);
 		assertEquals(-1, redGhost.killedIndex());
-		assertNotNull(world.ghostInitialPosition(ID_RED_GHOST));
-		assertNotNull(world.ghostRevivalPosition(ID_RED_GHOST));
-		assertNotNull(world.ghostScatterTargetTile(ID_RED_GHOST));
+		assertNotNull(level.ghostInitialPosition(ID_RED_GHOST));
+		assertNotNull(level.ghostRevivalPosition(ID_RED_GHOST));
+		assertNotNull(level.ghostScatterTargetTile(ID_RED_GHOST));
 
 		var pinkGhost = level.ghost(ID_PINK_GHOST);
 		assertTrue(pinkGhost instanceof Ghost);
 		assertEquals(-1, pinkGhost.killedIndex());
-		assertNotNull(world.ghostInitialPosition(ID_PINK_GHOST));
-		assertNotNull(world.ghostRevivalPosition(ID_PINK_GHOST));
-		assertNotNull(world.ghostScatterTargetTile(ID_PINK_GHOST));
+		assertNotNull(level.ghostInitialPosition(ID_PINK_GHOST));
+		assertNotNull(level.ghostRevivalPosition(ID_PINK_GHOST));
+		assertNotNull(level.ghostScatterTargetTile(ID_PINK_GHOST));
 
 		var cyanGhost = level.ghost(ID_CYAN_GHOST);
 		assertTrue(cyanGhost instanceof Ghost);
 		assertEquals(-1, cyanGhost.killedIndex());
-		assertNotNull(world.ghostInitialPosition(ID_CYAN_GHOST));
-		assertNotNull(world.ghostRevivalPosition(ID_CYAN_GHOST));
-		assertNotNull(world.ghostScatterTargetTile(ID_CYAN_GHOST));
+		assertNotNull(level.ghostInitialPosition(ID_CYAN_GHOST));
+		assertNotNull(level.ghostRevivalPosition(ID_CYAN_GHOST));
+		assertNotNull(level.ghostScatterTargetTile(ID_CYAN_GHOST));
 
 		var orangeGhost = level.ghost(ID_ORANGE_GHOST);
 		assertTrue(orangeGhost instanceof Ghost);
 		assertEquals(-1, orangeGhost.killedIndex());
-		assertNotNull(world.ghostInitialPosition(ID_ORANGE_GHOST));
-		assertNotNull(world.ghostRevivalPosition(ID_ORANGE_GHOST));
-		assertNotNull(world.ghostScatterTargetTile(ID_ORANGE_GHOST));
+		assertNotNull(level.ghostInitialPosition(ID_ORANGE_GHOST));
+		assertNotNull(level.ghostRevivalPosition(ID_ORANGE_GHOST));
+		assertNotNull(level.ghostScatterTargetTile(ID_ORANGE_GHOST));
 	}
 
 	@Test
