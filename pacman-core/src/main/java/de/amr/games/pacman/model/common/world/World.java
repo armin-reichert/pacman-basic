@@ -27,6 +27,7 @@ import static de.amr.games.pacman.lib.U.differsAtMost;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
 
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class World implements AnimatedEntity {
 	 * @return tile containing given position
 	 */
 	public static Vector2i tileAt(Vector2f position) {
+		checkNotNull(position);
 		return tileAt(position.x(), position.y());
 	}
 
@@ -106,10 +108,10 @@ public class World implements AnimatedEntity {
 
 	private final byte[][] tileMap;
 	private AnimationMap animationMap;
-	private Vector2i houseTopLeftTile = new Vector2i(10, 15);
-	private Vector2i houseSize = new Vector2i(8, 5);
-	private Door houseDoor = new Door(new Vector2i(13, 15), 2);
-	private List<Vector2f> seatPositions = List.of(//
+	private final Vector2i houseTopLeftTile = new Vector2i(10, 15);
+	private final Vector2i houseSize = new Vector2i(8, 5);
+	private final Door houseDoor = new Door(new Vector2i(13, 15), 2);
+	private final List<Vector2f> seatPositions = List.of(//
 			halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
 	private List<Portal> portals;
 	private List<Vector2i> energizerTiles;
@@ -118,11 +120,10 @@ public class World implements AnimatedEntity {
 	private final BitSet eatenSet;
 
 	/**
-	 * @param tileMapData        byte-array of tile map data
-	 * @param upwardBlockedTiles list of tiles where ghosts can sometimes not move upwards
+	 * @param tileMapData byte-array of tile map data
 	 */
 	public World(byte[][] tileMapData) {
-		this.tileMap = validateTileMapData(tileMapData);
+		tileMap = validateTileMapData(tileMapData);
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
@@ -158,14 +159,23 @@ public class World implements AnimatedEntity {
 		return data;
 	}
 
+	/**
+	 * @return house size in tiles
+	 */
 	public Vector2i houseSize() {
 		return houseSize;
 	}
 
+	/**
+	 * @return house left-upper corner pixel position
+	 */
 	public Vector2i housePosition() {
 		return houseTopLeftTile;
 	}
 
+	/**
+	 * @return the unique house door
+	 */
 	public Door houseDoor() {
 		return houseDoor;
 	}
