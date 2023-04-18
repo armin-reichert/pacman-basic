@@ -34,6 +34,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
+import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -49,7 +50,6 @@ import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -78,7 +78,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	public String toString() {
-		return "['%-6s' %s position=%s tile=%s offset=%s velocity=%s dir=%s wishDir=%s reverse=%s]".formatted(name(), state,
+		return "[%-6s (%s) position=%s tile=%s offset=%s velocity=%s dir=%s wishDir=%s reverse=%s]".formatted(name(), state,
 				position, tile(), offset(), velocity, moveDir(), wishDir(), gotReverseCommand);
 	}
 
@@ -137,6 +137,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	public boolean canReverse(GameLevel level) {
+		GameModel.checkLevelNotNull(level);
 		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 
@@ -234,7 +235,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		case EATEN -> updateStateEaten();
 		case RETURNING_TO_HOUSE -> updateStateReturningToHouse(level);
 		case ENTERING_HOUSE -> updateStateEnteringHouse(level);
-		default -> throw new IllegalArgumentException("Unknown state: " + state);
+		default -> throw new IllegalArgumentException("Unknown ghost state: '%s'".formatted(state));
 		}
 		animate();
 	}
@@ -252,20 +253,21 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateStateLocked(GameLevel level) {
-		var initialPosition = level.ghostInitialPosition(id);
+		var baseLevel = level.ghostInitialPosition(id).y();
 		if (level.world().ghostHouse().contains(tile())) {
-			if (position.y() <= initialPosition.y() - World.HTS) {
+			if (position.y() <= baseLevel - HTS) {
 				setMoveAndWishDir(DOWN);
-			} else if (position.y() >= initialPosition.y() + World.HTS) {
+			} else if (position.y() >= baseLevel + HTS) {
 				setMoveAndWishDir(UP);
 			}
 			setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
 			move();
 		}
-		boolean endangered = level.pac().powerTimer().isRunning() && killedIndex == -1;
-		if (endangered) {
+		boolean frightened = level.pac().powerTimer().isRunning() && killedIndex == -1;
+		if (frightened) {
 			updateFrightenedAnimation(level);
 		} else {
+			// got already killed in this power phase, not frightened anymore
 			selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
 		}
 	}
@@ -278,18 +280,21 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * Pac-Man, the ghost first moves towards the vertical center of the house and then raises up until he has passed the
 	 * door on top of the house.
 	 * <p>
-	 * The ghost speed is slower than outside but I do not know yet the exact value.
+	 * The ghost speed is slower than outside but I do not know the exact value.
+	 * 
+	 * @param level the game level
 	 */
 	public void enterStateLeavingHouse(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
 		state = LEAVING_HOUSE;
 		setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
+		// TODO is this event needed/handled at all?
 		publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
 	}
 
 	private void updateStateLeavingHouse(GameLevel level) {
-		boolean endangered = level.pac().powerTimer().isRunning() && killedIndex == -1;
-		if (endangered) {
+		boolean frightened = level.pac().powerTimer().isRunning() && killedIndex == -1;
+		if (frightened) {
 			updateFrightenedAnimation(level);
 		} else {
 			selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
@@ -298,7 +303,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (outOfHouse) {
 			setMoveAndWishDir(LEFT);
 			newTileEntered = false; // force moving left until next tile is entered
-			if (endangered) {
+			if (frightened) {
 				enterStateFrightened();
 				LOG.trace("Ghost %s leaves house frightened", name());
 			} else {
@@ -306,6 +311,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 				enterStateHuntingPac();
 				LOG.trace("Ghost %s leaves house hunting", name());
 			}
+			// TODO is this event needed/handled at all?
 			publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
 		}
 	}
@@ -362,7 +368,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateStateEaten() {
-		// nothing to do
+		// wait for timeout
 	}
 
 	// --- RETURNING_TO_HOUSE ---
@@ -376,16 +382,16 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateReturningToHouse(GameLevel level) {
 		GameModel.checkLevelNotNull(level);
 		state = RETURNING_TO_HOUSE;
-		/// TODO solution if a ghost house has more than one door
+		/// TODO what if ghosthouse has more than one door?
 		var door = level.world().ghostHouse().doors().get(0);
 		setTargetTile(door.entryTile());
 		selectAndRunAnimation(GameModel.AK_GHOST_EYES);
 	}
 
 	private void updateStateReturningToHouse(GameLevel level) {
-		/// TODO what if a ghost house has more than one door?
 		var door = level.world().ghostHouse().doors().get(0);
 		var houseEntry = door.entryPosition();
+		// TODO should this check for difference by speed instead of 1?
 		if (position().almostEquals(houseEntry, 1, 0)) {
 			setPosition(houseEntry);
 			enterStateEnteringHouse(level);
@@ -409,6 +415,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		state = ENTERING_HOUSE;
 		setTargetTile(null);
 		setPixelSpeed(GameModel.SPEED_GHOST_ENTERING_HOUSE_PX);
+		// TODO is this event needed/handled at all?
 		publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this));
 	}
 
@@ -432,28 +439,30 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateFrightenedAnimation(GameLevel level) {
-		if (level.pac().powerTimer().remaining() > GameModel.TICKS_PAC_POWER_FADES) {
+		if (animations == null) {
+			return;
+		}
+		var remainingTime = level.pac().powerTimer().remaining();
+		if (remainingTime > GameModel.TICKS_PAC_POWER_FADES) {
 			selectAndRunAnimation(GameModel.AK_GHOST_BLUE);
-		} else {
-			animations().ifPresent(anims -> {
-				if (!anims.isSelected(GameModel.AK_GHOST_FLASHING)) {
-					selectAndRunAnimation(GameModel.AK_GHOST_FLASHING)
-							.ifPresent(flashing -> startFlashing(level.numFlashes, flashing));
-				}
-			});
+		} else if (remainingTime == GameModel.TICKS_PAC_POWER_FADES) {
+			animations.animation(GameModel.AK_GHOST_FLASHING)
+					.ifPresent(flashingAnimation -> startFlashing(level.numFlashes, flashingAnimation));
 		}
 	}
 
-	private void startFlashing(int numFlashes, Animated flashing) {
-		long frameTicks = GameModel.TICKS_PAC_POWER_FADES / (numFlashes * flashing.numFrames());
-		flashing.setFrameDuration(frameTicks);
-		flashing.setRepetitions(numFlashes);
-		flashing.restart();
+	private void startFlashing(int numFlashes, Animated flashingAnimation) {
+		selectAndResetAnimation(GameModel.AK_GHOST_FLASHING);
+		long frameTicks = GameModel.TICKS_PAC_POWER_FADES / (numFlashes * flashingAnimation.numFrames());
+		flashingAnimation.setFrameDuration(frameTicks);
+		flashingAnimation.setRepetitions(numFlashes);
+		flashingAnimation.restart();
+		LOG.trace("%s: Flashing %d times", name(), numFlashes);
 	}
 
-	public void stopFlashing(boolean stopped) {
+	public void stopFlashing(boolean stop) {
 		animation(GameModel.AK_GHOST_FLASHING).ifPresent(flashing -> {
-			if (stopped) {
+			if (stop) {
 				flashing.stop();
 				flashing.setFrameIndex(0);
 			} else {
