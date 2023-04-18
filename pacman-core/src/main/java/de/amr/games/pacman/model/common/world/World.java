@@ -166,14 +166,14 @@ public class World implements AnimatedEntity {
 		return houseTopLeftTile;
 	}
 
-	public List<Door> doors() {
+	public List<Door> houseDoors() {
 		return doors;
 	}
 
 	/**
 	 * @return the positions inside the house where ghosts can take a seat
 	 */
-	public List<Vector2f> seatPositions() {
+	public List<Vector2f> houseSeatPositions() {
 		return seatPositions;
 	}
 
@@ -181,8 +181,8 @@ public class World implements AnimatedEntity {
 	 * @param tile some tile
 	 * @return tells if tile is occupied by a door
 	 */
-	public boolean hasDoorAt(Vector2i tile) {
-		return doors().stream().anyMatch(door -> door.contains(tile));
+	public boolean houseHasDoorAt(Vector2i tile) {
+		return houseDoors().stream().anyMatch(door -> door.contains(tile));
 	}
 
 	/**
@@ -420,7 +420,7 @@ public class World implements AnimatedEntity {
 			return false;
 		}
 		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
-		long numDoorNeighbors = tile.neighbors().filter(doors().get(0)::contains).count();
+		long numDoorNeighbors = tile.neighbors().filter(houseDoors().get(0)::contains).count();
 		return numWallNeighbors + numDoorNeighbors < 2;
 	}
 }
