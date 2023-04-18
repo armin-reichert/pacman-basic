@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.model.common.Validator.checkGameVariant;
+import static de.amr.games.pacman.model.common.Validator.checkLevelNotNull;
 import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 
 import java.io.File;
@@ -271,6 +272,8 @@ public abstract class GameModel {
 	}
 
 	public void doGhostHuntingAction(GameLevel level, Ghost ghost) {
+		checkLevelNotNull(level);
+		checkNotNull(ghost);
 		if (level.chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && level.cruiseElroyState() > 0) {
 			ghost.chase(level);
 		} else {
