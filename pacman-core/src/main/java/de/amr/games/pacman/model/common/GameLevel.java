@@ -447,7 +447,7 @@ public class GameLevel {
 
 	public Vector2f ghostInitialPosition(byte ghostID) {
 		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> world.houseDoors().get(0).entryPosition();
+		case Ghost.ID_RED_GHOST -> world.houseDoor().entryPosition();
 		case Ghost.ID_PINK_GHOST -> world.houseSeatPositions().get(1);
 		case Ghost.ID_CYAN_GHOST -> world.houseSeatPositions().get(0);
 		case Ghost.ID_ORANGE_GHOST -> world.houseSeatPositions().get(2);

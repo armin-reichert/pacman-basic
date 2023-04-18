@@ -108,7 +108,7 @@ public class World implements AnimatedEntity {
 	private AnimationMap animationMap;
 	private Vector2i houseTopLeftTile = new Vector2i(10, 15);
 	private Vector2i houseSize = new Vector2i(8, 5);
-	private List<Door> doors = Collections.singletonList(new Door(new Vector2i(13, 15), 2));
+	private Door houseDoor = new Door(new Vector2i(13, 15), 2);
 	private List<Vector2f> seatPositions = List.of(//
 			halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
 	private List<Portal> portals;
@@ -166,8 +166,8 @@ public class World implements AnimatedEntity {
 		return houseTopLeftTile;
 	}
 
-	public List<Door> houseDoors() {
-		return doors;
+	public Door houseDoor() {
+		return houseDoor;
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class World implements AnimatedEntity {
 	 * @return tells if tile is occupied by a door
 	 */
 	public boolean houseHasDoorAt(Vector2i tile) {
-		return houseDoors().stream().anyMatch(door -> door.contains(tile));
+		return houseDoor.contains(tile);
 	}
 
 	/**
@@ -200,8 +200,7 @@ public class World implements AnimatedEntity {
 	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
 	 */
 	public boolean leadOutsideHouse(Creature ghost) {
-		var theDoor = doors.get(0);
-		var exitPosition = theDoor.entryPosition();
+		var exitPosition = houseDoor.entryPosition();
 		if (ghost.position().y() <= exitPosition.y()) {
 			ghost.setPosition(exitPosition);
 			return true;
@@ -222,7 +221,7 @@ public class World implements AnimatedEntity {
 	 * Ghost moves down on the vertical axis to the center, then returns or moves sidewards to its seat.
 	 */
 	public boolean leadInsideHouse(Creature ghost, Vector2f targetPosition) {
-		var entryPosition = doors.get(0).entryPosition();
+		var entryPosition = houseDoor.entryPosition();
 		if (ghost.position().almostEquals(entryPosition, ghost.velocity().length() / 2, 0)
 				&& ghost.moveDir() != Direction.DOWN) {
 			// just reached door, start sinking
@@ -420,7 +419,7 @@ public class World implements AnimatedEntity {
 			return false;
 		}
 		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
-		long numDoorNeighbors = tile.neighbors().filter(houseDoors().get(0)::contains).count();
+		long numDoorNeighbors = tile.neighbors().filter(houseDoor::contains).count();
 		return numWallNeighbors + numDoorNeighbors < 2;
 	}
 }

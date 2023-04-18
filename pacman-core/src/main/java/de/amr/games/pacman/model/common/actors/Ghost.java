@@ -386,14 +386,12 @@ public class Ghost extends Creature implements AnimatedEntity {
 		checkLevelNotNull(level);
 		state = RETURNING_TO_HOUSE;
 		/// TODO what if ghosthouse has more than one door?
-		var door = level.world().houseDoors().get(0);
-		setTargetTile(door.entryTile());
+		setTargetTile(level.world().houseDoor().entryTile());
 		selectAndRunAnimation(GameModel.AK_GHOST_EYES);
 	}
 
 	private void updateStateReturningToHouse(GameLevel level) {
-		var door = level.world().houseDoors().get(0);
-		var houseEntry = door.entryPosition();
+		var houseEntry = level.world().houseDoor().entryPosition();
 		// TODO should this check for difference by speed instead of 1?
 		if (position().almostEquals(houseEntry, 1, 0)) {
 			setPosition(houseEntry);
