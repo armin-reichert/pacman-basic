@@ -23,7 +23,13 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
+
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -33,9 +39,24 @@ import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 
 /**
+ * The world used in the Arcade versions of Pac-Man and Ms. Pac-Man. Maze structure varies but ghost house
+ * structure/position, ghost starting positions/directions and Pac-Man starting position/direction are the same for each
+ * world.
+ * 
  * @author Armin Reichert
  */
-public interface World extends AnimatedEntity {
+public class World implements AnimatedEntity {
+
+	public static final int TILES_X = 28;
+	public static final int TILES_Y = 36;
+
+	//@formatter:off
+	private static final byte TILE_SPACE           = 0;
+	private static final byte TILE_WALL            = 1;
+	private static final byte TILE_TUNNEL          = 2;
+	private static final byte TILE_PELLET          = 3;
+	private static final byte TILE_ENERGIZER       = 4;
+	//@formatter:on
 
 	/** Tile size in pixels (8). */
 	public static final int TS = 8;
@@ -77,20 +98,71 @@ public interface World extends AnimatedEntity {
 		return new Vector2f(tileX * TS + HTS, tileY * TS);
 	}
 
-	/**
-	 * @return world size (number of tiles) in horizontal direction
-	 */
-	int numCols();
+	private final byte[][] tileMap;
+	private final GhostHouse house = new GhostHouse();
+	private AnimationMap animationMap;
+	private List<Portal> portals;
+	private List<Vector2i> energizerTiles;
+	private int totalFoodCount;
+	private int uneatenFoodCount;
+	private final BitSet eatenSet;
 
 	/**
-	 * @return world size (number of tiles) in vertical direction
+	 * @param tileMapData        byte-array of tile map data
+	 * @param upwardBlockedTiles list of tiles where ghosts can sometimes not move upwards
 	 */
-	int numRows();
+	public World(byte[][] tileMapData) {
+		this.tileMap = validateTileMapData(tileMapData);
+		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
+		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
+		uneatenFoodCount = totalFoodCount;
+		portals = findPortals();
+		eatenSet = new BitSet(numRows() * numCols());
+	}
+
+	private byte[][] validateTileMapData(byte[][] data) {
+		if (data == null) {
+			throw new IllegalArgumentException("Map data missing");
+		}
+		if (data.length == 0) {
+			throw new IllegalArgumentException("Map data empty");
+		}
+		var firstRow = data[0];
+		if (firstRow.length == 0) {
+			throw new IllegalArgumentException("Map data empty");
+		}
+		for (int i = 0; i < data.length; ++i) {
+			if (data[i].length != firstRow.length) {
+				throw new IllegalArgumentException("Map has differently sized rows");
+			}
+		}
+		for (int i = 0; i < data.length; ++i) {
+			for (int j = 0; j < firstRow.length; ++j) {
+				byte content = data[i][j];
+				if (content < TILE_SPACE || content > TILE_ENERGIZER) {
+					throw new IllegalArgumentException(
+							"Map has invalid content '%s' at row %d column %d".formatted(content, i, j));
+				}
+			}
+		}
+		return data;
+	}
+
+	private ArrayList<Portal> findPortals() {
+		var portalList = new ArrayList<Portal>();
+		for (int row = 0; row < numRows(); ++row) {
+			if (content(row, 0) == TILE_TUNNEL && content(row, numCols() - 1) == TILE_TUNNEL) {
+				portalList.add(new Portal(new Vector2i(0, row), new Vector2i(numCols() - 1, row), 2));
+			}
+		}
+		portalList.trimToSize();
+		return portalList;
+	}
 
 	/**
 	 * @return tiles in order top-to-bottom, left-to-right
 	 */
-	default Stream<Vector2i> tiles() {
+	public Stream<Vector2i> tiles() {
 		return IntStream.range(0, numCols() * numRows()).mapToObj(this::tile);
 	}
 
@@ -98,7 +170,7 @@ public interface World extends AnimatedEntity {
 	 * @param tile a tile
 	 * @return tile index in order top-to-bottom, left-to-right
 	 */
-	default int index(Vector2i tile) {
+	public int index(Vector2i tile) {
 		return numCols() * tile.y() + tile.x();
 	}
 
@@ -106,7 +178,7 @@ public interface World extends AnimatedEntity {
 	 * @param index tile index in order top-to-bottom, left-to-right
 	 * @return tile with given index
 	 */
-	default Vector2i tile(int index) {
+	public Vector2i tile(int index) {
 		return new Vector2i(index % numCols(), index / numCols());
 	}
 
@@ -114,99 +186,148 @@ public interface World extends AnimatedEntity {
 	 * @param tile a tile
 	 * @return if this tile is located inside the world bounds
 	 */
-	default boolean insideBounds(Vector2i tile) {
+	public boolean insideBounds(Vector2i tile) {
 		return 0 <= tile.x() && tile.x() < numCols() && 0 <= tile.y() && tile.y() < numRows();
 	}
 
 	/**
 	 * @return if this position is located inside the world bounds
 	 */
-	default boolean insideBounds(double x, double y) {
+	public boolean insideBounds(double x, double y) {
 		return 0 <= x && x < numCols() * TS && 0 <= y && y < numRows() * TS;
 	}
 
 	/**
-	 * @return list of all portals in this world
+	 * @param tile some tile (may be outside world bound)
+	 * @return the content at the given tile or empty space if outside world
 	 */
-	List<Portal> portals();
+	private byte content(Vector2i tile) {
+		return content(tile.y(), tile.x(), TILE_SPACE);
+	}
 
-	/**
-	 * @param tile a tile
-	 * @return if the tile is part of a portal
-	 */
-	boolean belongsToPortal(Vector2i tile);
+	private byte content(int row, int col) {
+		if (!insideBounds(row, col)) {
+			throwOutOfBoundsError(row, col);
+		}
+		return tileMap[row][col];
+	}
 
-	/**
-	 * @param tile a tile
-	 * @return if the tile is an intersection (waypoint)
-	 */
-	boolean isIntersection(Vector2i tile);
+	private byte content(int row, int col, byte defaultContent) {
+		if (!insideBounds(row, col)) {
+			return defaultContent;
+		}
+		return tileMap[row][col];
+	}
 
-	/**
-	 * @param tile a tile
-	 * @return if the tile is a wall
-	 */
-	boolean isWall(Vector2i tile);
+	private boolean insideBounds(int row, int col) {
+		return 0 <= row && row < numRows() && 0 <= col && col < numCols();
+	}
 
-	/**
-	 * @param tile a tile
-	 * @return if the tile is part of a tunnel
-	 */
-	boolean isTunnel(Vector2i tile);
+	private void throwOutOfBoundsError(int row, int col) {
+		throw new IndexOutOfBoundsException(
+				"Coordinate (%d, %d) is outside of map bounds (%d rows, %d cols)".formatted(row, col, numRows(), numCols()));
+	}
 
-	/**
-	 * @return the ghost house in this world
-	 */
-	GhostHouse ghostHouse();
+	@Override
+	public Optional<AnimationMap> animations() {
+		return Optional.ofNullable(animationMap);
+	}
 
-	/**
-	 * @param tile a tile
-	 * @return tells if the tile contains food initially
-	 */
-	boolean isFoodTile(Vector2i tile);
+	public void setAnimations(AnimationMap animationMap) {
+		this.animationMap = animationMap;
+	}
 
-	/**
-	 * @param tile a tile
-	 * @return if the tile contains an energizer initially
-	 */
-	boolean isEnergizerTile(Vector2i tile);
+	public int numCols() {
+		return TILES_X;
+	}
 
-	/**
-	 * @return all tiles containing an energizer initially
-	 */
-	Stream<Vector2i> energizerTiles();
+	public int numRows() {
+		return TILES_Y;
+	}
 
-	/**
-	 * Removes food at given tile.
-	 * 
-	 * @param tile some tile
-	 */
-	void removeFood(Vector2i tile);
+	public List<Portal> portals() {
+		return Collections.unmodifiableList(portals);
+	}
 
-	/**
-	 * @param tile some tile
-	 * @return if there is food at the given tile
-	 */
-	boolean containsFood(Vector2i tile);
+	public boolean belongsToPortal(Vector2i tile) {
+		checkTileNotNull(tile);
+		return portals.stream().anyMatch(portal -> portal.contains(tile));
+	}
 
-	/**
-	 * @param tile some tile
-	 * @return if there is eaten food at the given tile
-	 */
-	boolean containsEatenFood(Vector2i tile);
+	public boolean isWall(Vector2i tile) {
+		checkTileNotNull(tile);
+		return content(tile) == TILE_WALL;
+	}
 
-	/**
-	 * @return number of uneaten pellets
-	 */
-	int uneatenFoodCount();
+	public boolean isTunnel(Vector2i tile) {
+		checkTileNotNull(tile);
+		return content(tile) == TILE_TUNNEL;
+	}
 
-	/**
-	 * @return number of eaten pellets
-	 */
-	int eatenFoodCount();
+	public boolean isFoodTile(Vector2i tile) {
+		checkTileNotNull(tile);
+		byte data = content(tile);
+		return data == TILE_PELLET || data == TILE_ENERGIZER;
+	}
 
-	/**
-	 * @param animationMap map of animations for this world
-	 */
-	void setAnimations(AnimationMap animationMap);
+	public boolean isEnergizerTile(Vector2i tile) {
+		checkTileNotNull(tile);
+		byte data = content(tile);
+		return data == TILE_ENERGIZER;
+	}
+
+	public Stream<Vector2i> energizerTiles() {
+		return energizerTiles.stream();
+	}
+
+	public void removeFood(Vector2i tile) {
+		checkTileNotNull(tile);
+		if (insideBounds(tile) && containsFood(tile)) {
+			eatenSet.set(index(tile));
+			--uneatenFoodCount;
+		}
+	}
+
+	public boolean containsFood(Vector2i tile) {
+		checkTileNotNull(tile);
+		if (insideBounds(tile)) {
+			byte data = content(tile);
+			return (data == TILE_PELLET || data == TILE_ENERGIZER) && !eatenSet.get(index(tile));
+		}
+		return false;
+	}
+
+	public boolean containsEatenFood(Vector2i tile) {
+		checkTileNotNull(tile);
+		if (insideBounds(tile)) {
+			return eatenSet.get(index(tile));
+		}
+		return false;
+	}
+
+	public int uneatenFoodCount() {
+		return uneatenFoodCount;
+	}
+
+	public int eatenFoodCount() {
+		return totalFoodCount - uneatenFoodCount;
+	}
+
+	public GhostHouse ghostHouse() {
+		return house;
+	}
+
+	public boolean isIntersection(Vector2i tile) {
+		checkTileNotNull(tile);
+
+		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
+			return false; // exclude portal entries and tiles outside of the map
+		}
+		if (ghostHouse().contains(tile)) {
+			return false;
+		}
+		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
+		long numDoorNeighbors = tile.neighbors().filter(ghostHouse().doors().get(0)::contains).count();
+		return numWallNeighbors + numDoorNeighbors < 2;
+	}
 }

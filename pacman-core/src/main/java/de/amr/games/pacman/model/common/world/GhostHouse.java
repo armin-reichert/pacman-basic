@@ -25,7 +25,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.U.differsAtMost;
-import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
@@ -46,9 +45,9 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class GhostHouse {
 
-	protected Vector2i topLeftTile = v2i(10, 15);
-	protected Vector2i size = v2i(8, 5);
-	protected List<Door> doors = Collections.singletonList(new Door(v2i(13, 15), 2));
+	protected Vector2i topLeftTile = new Vector2i(10, 15);
+	protected Vector2i size = new Vector2i(8, 5);
+	protected List<Door> doors = Collections.singletonList(new Door(new Vector2i(13, 15), 2));
 	protected List<Vector2f> seatPositions = List.of(//
 			halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
 

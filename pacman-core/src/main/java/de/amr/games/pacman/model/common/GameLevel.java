@@ -24,10 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
-import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
-import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
-import static de.amr.games.pacman.lib.math.Vector2i.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.model.common.Validator.checkGameNotNull;
 import static de.amr.games.pacman.model.common.Validator.checkGhostID;
@@ -54,6 +50,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.math.Vector2f;
@@ -74,7 +71,8 @@ public class GameLevel {
 
 	private static final Logger LOG = LogManager.getFormatterLogger();
 
-	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
+	private static final List<Vector2i> RED_ZONE = List.of(new Vector2i(12, 14), new Vector2i(15, 14),
+			new Vector2i(12, 26), new Vector2i(15, 26));
 
 	private record GhostUnlockResult(Ghost ghost, String reason) {
 	}
@@ -467,10 +465,10 @@ public class GameLevel {
 
 	public Vector2i ghostScatterTargetTile(byte ghostID) {
 		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> v2i(25, 0);
-		case Ghost.ID_PINK_GHOST -> v2i(2, 0);
-		case Ghost.ID_CYAN_GHOST -> v2i(27, 34);
-		case Ghost.ID_ORANGE_GHOST -> v2i(0, 34);
+		case Ghost.ID_RED_GHOST -> new Vector2i(25, 0);
+		case Ghost.ID_PINK_GHOST -> new Vector2i(2, 0);
+		case Ghost.ID_CYAN_GHOST -> new Vector2i(27, 34);
+		case Ghost.ID_ORANGE_GHOST -> new Vector2i(0, 34);
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
 	}
@@ -587,10 +585,10 @@ public class GameLevel {
 			LOG.info("%s power starting, duration %d ticks", pac.name(), pac.powerTimer().duration());
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
-			publishGameEventOfType(GameEventType.PAC_GETS_POWER);
-			publishSoundEvent(GameModel.SE_PACMAN_POWER_STARTS);
+			GameEvents.publishGameEventOfType(GameEventType.PAC_GETS_POWER);
+			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_STARTS);
 		} else if (memo.pacPowerFading) {
-			publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
+			GameEvents.publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
 		} else if (memo.pacPowerLost) {
 			LOG.info("%s power ends, timer: %s", pac.name(), pac.powerTimer());
 			huntingTimer.start();
@@ -598,8 +596,8 @@ public class GameLevel {
 			pac.powerTimer().stop();
 			pac.powerTimer().resetIndefinitely();
 			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-			publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
-			publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS);
+			GameEvents.publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
+			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS);
 		}
 	}
 
@@ -629,8 +627,8 @@ public class GameLevel {
 			}
 			checkIfBlinkyBecomesCruiseElroy();
 			updateGhostDotCounters();
-			publishGameEvent(GameEventType.PAC_FINDS_FOOD, tile);
-			publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
+			GameEvents.publishGameEvent(GameEventType.PAC_FINDS_FOOD, tile);
+			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
 		} else {
 			pac.starve();
 		}

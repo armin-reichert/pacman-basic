@@ -43,7 +43,7 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * The Ms. Pac-Man game.
@@ -237,7 +237,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public ArcadeWorld createWorld(int levelNumber) {
+	public World createWorld(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		int mapNumber = mapNumber(levelNumber);
 		var map = switch (mapNumber) {
@@ -248,7 +248,7 @@ public class MsPacManGame extends GameModel {
 		default -> throw new IllegalArgumentException(
 				"Illegal map number: %d. Allowed values: 1, 2, 3, 4.".formatted(mapNumber));
 		};
-		return new ArcadeWorld(map);
+		return new World(map);
 	}
 
 	@Override

@@ -37,7 +37,7 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Model of the Pac-Man game.
@@ -108,9 +108,9 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public ArcadeWorld createWorld(int levelNumber) {
+	public World createWorld(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		var world = new ArcadeWorld(MAP);
+		var world = new World(MAP);
 		return world;
 	}
 

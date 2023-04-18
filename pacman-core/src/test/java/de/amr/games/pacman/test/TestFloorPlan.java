@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.FloorPlan;
 import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -49,11 +48,11 @@ public class TestFloorPlan {
 	@Test
 	public void test() {
 		List.of(8, 4, 2, 1).forEach(res -> {
-			createFloorPlan(new ArcadeWorld(PacManGame.MAP), file(PACMAN_PATTERN, 1, res), res);
-			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP1), file(MS_PACMAN_PATTERN, 1, res), res);
-			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP2), file(MS_PACMAN_PATTERN, 2, res), res);
-			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP3), file(MS_PACMAN_PATTERN, 3, res), res);
-			createFloorPlan(new ArcadeWorld(MsPacManGame.MAP4), file(MS_PACMAN_PATTERN, 4, res), res);
+			createFloorPlan(new World(PacManGame.MAP), file(PACMAN_PATTERN, 1, res), res);
+			createFloorPlan(new World(MsPacManGame.MAP1), file(MS_PACMAN_PATTERN, 1, res), res);
+			createFloorPlan(new World(MsPacManGame.MAP2), file(MS_PACMAN_PATTERN, 2, res), res);
+			createFloorPlan(new World(MsPacManGame.MAP3), file(MS_PACMAN_PATTERN, 3, res), res);
+			createFloorPlan(new World(MsPacManGame.MAP4), file(MS_PACMAN_PATTERN, 4, res), res);
 		});
 		List.of(8, 4, 2, 1).forEach(res -> {
 			assertTrue(file(PACMAN_PATTERN, 1, res).exists());
