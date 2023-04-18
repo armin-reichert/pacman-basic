@@ -27,6 +27,9 @@ import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.lib.steering.Direction.DOWN;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
+import static de.amr.games.pacman.model.common.GameModel.checkGhostID;
+import static de.amr.games.pacman.model.common.GameModel.checkLevelNotNull;
+import static de.amr.games.pacman.model.common.GameModel.checkTileNotNull;
 import static de.amr.games.pacman.model.common.actors.GhostState.EATEN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
@@ -70,7 +73,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	public Ghost(byte id, String name) {
 		super(name);
-		GameModel.checkGhostID(id);
+		checkGhostID(id);
 		this.id = id;
 		reset();
 	}
@@ -121,8 +124,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	public boolean canAccessTile(Vector2i tile, GameLevel level) {
-		GameModel.checkTileNotNull(tile);
-		GameModel.checkLevelNotNull(level);
+		checkTileNotNull(tile);
+		checkLevelNotNull(level);
 		var currentTile = tile();
 		if (tile.equals(currentTile.plus(UP.vector())) && !level.isSteeringAllowed(this, UP)) {
 			LOG.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
@@ -136,7 +139,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	public boolean canReverse(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 
@@ -146,7 +149,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level game level
 	 */
 	public void scatter(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		setTargetTile(level.ghostScatterTargetTile(id));
 		navigateTowardsTarget(level);
 		tryMoving(level);
@@ -158,7 +161,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level game level
 	 */
 	public void chase(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		setTargetTile(fnChasingTarget.get());
 		navigateTowardsTarget(level);
 		tryMoving(level);
@@ -170,7 +173,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level game level
 	 */
 	public void roam(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		moveRandomly(level);
 	}
 
@@ -225,7 +228,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param game the game
 	 */
 	public void update(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		switch (state) {
 		case LOCKED -> updateStateLocked(level);
 		case LEAVING_HOUSE -> updateStateLeavingHouse(level);
@@ -284,7 +287,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level the game level
 	 */
 	public void enterStateLeavingHouse(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		state = LEAVING_HOUSE;
 		setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
 		// TODO is this event needed/handled at all?
@@ -379,7 +382,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level the game level
 	 */
 	public void enterStateReturningToHouse(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		state = RETURNING_TO_HOUSE;
 		/// TODO what if ghosthouse has more than one door?
 		var door = level.world().ghostHouse().doors().get(0);
@@ -410,7 +413,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param level the game level
 	 */
 	public void enterStateEnteringHouse(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		state = ENTERING_HOUSE;
 		setTargetTile(null);
 		setPixelSpeed(GameModel.SPEED_GHOST_ENTERING_HOUSE_PX);
