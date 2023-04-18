@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
+import static de.amr.games.pacman.model.common.Validator.checkLevelNotNull;
+
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
@@ -84,7 +86,7 @@ public class Pac extends Creature implements AnimatedEntity {
 	}
 
 	public void update(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		if (dead) {
 			updateDead();
 		} else {
@@ -124,7 +126,7 @@ public class Pac extends Creature implements AnimatedEntity {
 	}
 
 	public boolean isPowerFading(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		return powerTimer.isRunning() && powerTimer.remaining() <= GameModel.TICKS_PAC_POWER_FADES;
 	}
 

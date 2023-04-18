@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
+import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;

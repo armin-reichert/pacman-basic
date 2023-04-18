@@ -40,8 +40,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -147,41 +145,6 @@ public abstract class GameModel {
 		default -> 2;
 		};
 		return HUNTING_DURATIONS[index];
-	}
-
-	// Parameter validation
-
-	private static final String MSG_GAME_NULL = "Game model must not be null";
-	private static final String MSG_LEVEL_NULL = "Game level must not be null";
-	private static final String MSG_TILE_NULL = "Tile must not be null";
-	private static final String MSG_DIR_NULL = "Direction must not be null";
-
-	public static void checkGameNotNull(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
-	}
-
-	public static void checkGhostID(byte id) {
-		if (id < 0 || id > 3) {
-			throw new IllegalGhostIDException(id);
-		}
-	}
-
-	public static void checkLevelNumber(int number) {
-		if (number < 1) {
-			throw new IllegalLevelNumberException(number);
-		}
-	}
-
-	public static void checkTileNotNull(Vector2i tile) {
-		Objects.requireNonNull(tile, MSG_TILE_NULL);
-	}
-
-	public static void checkLevelNotNull(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
-	}
-
-	public static void checkDirectionNotNull(Direction dir) {
-		Objects.requireNonNull(dir, MSG_DIR_NULL);
 	}
 
 	protected GameLevel level;
