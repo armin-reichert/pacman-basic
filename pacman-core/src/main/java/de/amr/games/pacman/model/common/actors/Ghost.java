@@ -43,7 +43,6 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.U;
-import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -446,18 +445,19 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (remainingTime > GameModel.TICKS_PAC_POWER_FADES) {
 			selectAndRunAnimation(GameModel.AK_GHOST_BLUE);
 		} else if (remainingTime == GameModel.TICKS_PAC_POWER_FADES) {
-			animations.animation(GameModel.AK_GHOST_FLASHING)
-					.ifPresent(flashingAnimation -> startFlashing(level.numFlashes, flashingAnimation));
+			startFlashing(level.numFlashes, remainingTime);
 		}
 	}
 
-	private void startFlashing(int numFlashes, Animated flashingAnimation) {
-		selectAndResetAnimation(GameModel.AK_GHOST_FLASHING);
-		long frameTicks = GameModel.TICKS_PAC_POWER_FADES / (numFlashes * flashingAnimation.numFrames());
-		flashingAnimation.setFrameDuration(frameTicks);
-		flashingAnimation.setRepetitions(numFlashes);
-		flashingAnimation.restart();
-		LOG.trace("%s: Flashing %d times", name(), numFlashes);
+	private void startFlashing(int numFlashes, long completeTime) {
+		animations.animation(GameModel.AK_GHOST_FLASHING).ifPresent(flashing -> {
+			selectAndResetAnimation(GameModel.AK_GHOST_FLASHING);
+			long frameDuration = completeTime / (numFlashes * flashing.numFrames());
+			flashing.setFrameDuration(frameDuration);
+			flashing.setRepetitions(numFlashes);
+			flashing.restart();
+			LOG.trace("%s: Flashing %d times", name(), numFlashes);
+		});
 	}
 
 	public void stopFlashing(boolean stop) {
