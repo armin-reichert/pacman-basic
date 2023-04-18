@@ -24,24 +24,33 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.lib.U.differsAtMost;
+import static de.amr.games.pacman.lib.math.Vector2i.v2i;
+import static de.amr.games.pacman.lib.steering.Direction.LEFT;
+import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
+import static de.amr.games.pacman.lib.steering.Direction.UP;
+import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.TS;
+import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
+
+import java.util.Collections;
 import java.util.List;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
  * @author Armin Reichert
  */
-public abstract class GhostHouse {
+public class GhostHouse {
 
-	protected Vector2i topLeftTile;
-	protected Vector2i size;
-	protected List<Door> doors;
-	protected List<Vector2f> seatPositions;
-
-	protected GhostHouse() {
-	}
+	protected Vector2i topLeftTile = v2i(10, 15);
+	protected Vector2i size = v2i(8, 5);
+	protected List<Door> doors = Collections.singletonList(new Door(v2i(13, 15), 2));
+	protected List<Vector2f> seatPositions = List.of(//
+			halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
 
 	public Vector2i size() {
 		return size;
@@ -82,19 +91,51 @@ public abstract class GhostHouse {
 	}
 
 	/**
-	 * Leads a ghost from his seat in the house to the exit.
-	 * 
-	 * @param ghost a ghost inside the house
-	 * @return <code>true</code> if the ghost reached the house exit
+	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
 	 */
-	public abstract boolean leadOutside(Creature ghost);
+	public boolean leadOutside(Creature ghost) {
+		var theDoor = doors.get(0);
+		var exitPosition = theDoor.entryPosition();
+		if (ghost.position().y() <= exitPosition.y()) {
+			ghost.setPosition(exitPosition);
+			return true;
+		}
+		if (differsAtMost(ghost.velocity().length() / 2, ghost.position().x(), exitPosition.x())) {
+			// center reached: start rising
+			ghost.setPosition(exitPosition.x(), ghost.position().y());
+			ghost.setMoveAndWishDir(UP);
+		} else {
+			// move sidewards until middle axis is reached
+			ghost.setMoveAndWishDir(ghost.position().x() < exitPosition.x() ? RIGHT : LEFT);
+		}
+		ghost.move();
+		return false;
+	}
 
 	/**
-	 * Leads a ghost from the house entry to his seat inside the house.
-	 * 
-	 * @param ghost          a ghost
-	 * @param targetPosition target position inside the house
-	 * @return <code>true</code> if the ghost reached the target position
+	 * Ghost moves down on the vertical axis to the center, then returns or moves sidewards to its seat.
 	 */
-	public abstract boolean leadInside(Creature ghost, Vector2f targetPosition);
+	public boolean leadInside(Creature ghost, Vector2f targetPosition) {
+		var entryPosition = doors.get(0).entryPosition();
+		if (ghost.position().almostEquals(entryPosition, ghost.velocity().length() / 2, 0)
+				&& ghost.moveDir() != Direction.DOWN) {
+			// just reached door, start sinking
+			ghost.setPosition(entryPosition);
+			ghost.setMoveAndWishDir(Direction.DOWN);
+		} else if (ghost.position().y() >= 17 * TS + HTS) {
+			ghost.setPosition(ghost.position().x(), 17 * TS + HTS);
+			if (targetPosition.x() < entryPosition.x()) {
+				ghost.setMoveAndWishDir(LEFT);
+			} else if (targetPosition.x() > entryPosition.x()) {
+				ghost.setMoveAndWishDir(RIGHT);
+			}
+		}
+		ghost.move();
+		boolean reachedTarget = differsAtMost(1, ghost.position().x(), targetPosition.x())
+				&& ghost.position().y() >= targetPosition.y();
+		if (reachedTarget) {
+			ghost.setPosition(targetPosition);
+		}
+		return reachedTarget;
+	}
 }

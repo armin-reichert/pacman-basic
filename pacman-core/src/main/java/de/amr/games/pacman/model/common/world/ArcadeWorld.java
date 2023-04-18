@@ -57,7 +57,7 @@ public class ArcadeWorld implements World {
 	//@formatter:on
 
 	private final byte[][] tileMap;
-	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
+	private final GhostHouse house = new GhostHouse();
 	private AnimationMap animationMap;
 	private List<Portal> portals;
 	private List<Vector2i> energizerTiles;
@@ -241,8 +241,7 @@ public class ArcadeWorld implements World {
 	}
 
 	@Override
-	public ArcadeGhostHouse ghostHouse() {
-		// WTF! I learned today, 2022-05-27, that Java allows co-variant return types since JDK 5.0!
+	public GhostHouse ghostHouse() {
 		return house;
 	}
 
