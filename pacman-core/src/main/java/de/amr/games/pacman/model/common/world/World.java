@@ -23,6 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.lib.U.differsAtMost;
+import static de.amr.games.pacman.lib.steering.Direction.LEFT;
+import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
+import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
 
 import java.util.ArrayList;
@@ -37,6 +41,8 @@ import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
  * The world used in the Arcade versions of Pac-Man and Ms. Pac-Man. Maze structure varies but ghost house
@@ -99,8 +105,12 @@ public class World implements AnimatedEntity {
 	}
 
 	private final byte[][] tileMap;
-	private final GhostHouse house = new GhostHouse();
 	private AnimationMap animationMap;
+	private Vector2i houseTopLeftTile = new Vector2i(10, 15);
+	private Vector2i houseSize = new Vector2i(8, 5);
+	private List<Door> doors = Collections.singletonList(new Door(new Vector2i(13, 15), 2));
+	private List<Vector2f> seatPositions = List.of(//
+			halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
 	private List<Portal> portals;
 	private List<Vector2i> energizerTiles;
 	private int totalFoodCount;
@@ -146,6 +156,93 @@ public class World implements AnimatedEntity {
 			}
 		}
 		return data;
+	}
+
+	public Vector2i houseSize() {
+		return houseSize;
+	}
+
+	public Vector2i housePosition() {
+		return houseTopLeftTile;
+	}
+
+	public List<Door> doors() {
+		return doors;
+	}
+
+	/**
+	 * @return the positions inside the house where ghosts can take a seat
+	 */
+	public List<Vector2f> seatPositions() {
+		return seatPositions;
+	}
+
+	/**
+	 * @param tile some tile
+	 * @return tells if tile is occupied by a door
+	 */
+	public boolean hasDoorAt(Vector2i tile) {
+		return doors().stream().anyMatch(door -> door.contains(tile));
+	}
+
+	/**
+	 * @param tile some tile
+	 * @return tells if the given tile is part of this house
+	 */
+	public boolean houseContains(Vector2i tile) {
+		Vector2i topLeft = housePosition();
+		Vector2i bottomRightExclusive = topLeft.plus(houseSize());
+		return tile.x() >= topLeft.x() && tile.x() < bottomRightExclusive.x() //
+				&& tile.y() >= topLeft.y() && tile.y() < bottomRightExclusive.y();
+	}
+
+	/**
+	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
+	 */
+	public boolean leadOutsideHouse(Creature ghost) {
+		var theDoor = doors.get(0);
+		var exitPosition = theDoor.entryPosition();
+		if (ghost.position().y() <= exitPosition.y()) {
+			ghost.setPosition(exitPosition);
+			return true;
+		}
+		if (differsAtMost(ghost.velocity().length() / 2, ghost.position().x(), exitPosition.x())) {
+			// center reached: start rising
+			ghost.setPosition(exitPosition.x(), ghost.position().y());
+			ghost.setMoveAndWishDir(UP);
+		} else {
+			// move sidewards until middle axis is reached
+			ghost.setMoveAndWishDir(ghost.position().x() < exitPosition.x() ? RIGHT : LEFT);
+		}
+		ghost.move();
+		return false;
+	}
+
+	/**
+	 * Ghost moves down on the vertical axis to the center, then returns or moves sidewards to its seat.
+	 */
+	public boolean leadInsideHouse(Creature ghost, Vector2f targetPosition) {
+		var entryPosition = doors.get(0).entryPosition();
+		if (ghost.position().almostEquals(entryPosition, ghost.velocity().length() / 2, 0)
+				&& ghost.moveDir() != Direction.DOWN) {
+			// just reached door, start sinking
+			ghost.setPosition(entryPosition);
+			ghost.setMoveAndWishDir(Direction.DOWN);
+		} else if (ghost.position().y() >= 17 * TS + HTS) {
+			ghost.setPosition(ghost.position().x(), 17 * TS + HTS);
+			if (targetPosition.x() < entryPosition.x()) {
+				ghost.setMoveAndWishDir(LEFT);
+			} else if (targetPosition.x() > entryPosition.x()) {
+				ghost.setMoveAndWishDir(RIGHT);
+			}
+		}
+		ghost.move();
+		boolean reachedTarget = differsAtMost(1, ghost.position().x(), targetPosition.x())
+				&& ghost.position().y() >= targetPosition.y();
+		if (reachedTarget) {
+			ghost.setPosition(targetPosition);
+		}
+		return reachedTarget;
 	}
 
 	private ArrayList<Portal> findPortals() {
@@ -313,21 +410,17 @@ public class World implements AnimatedEntity {
 		return totalFoodCount - uneatenFoodCount;
 	}
 
-	public GhostHouse ghostHouse() {
-		return house;
-	}
-
 	public boolean isIntersection(Vector2i tile) {
 		checkTileNotNull(tile);
 
 		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
 			return false; // exclude portal entries and tiles outside of the map
 		}
-		if (ghostHouse().contains(tile)) {
+		if (houseContains(tile)) {
 			return false;
 		}
 		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
-		long numDoorNeighbors = tile.neighbors().filter(ghostHouse().doors().get(0)::contains).count();
+		long numDoorNeighbors = tile.neighbors().filter(doors().get(0)::contains).count();
 		return numWallNeighbors + numDoorNeighbors < 2;
 	}
 }

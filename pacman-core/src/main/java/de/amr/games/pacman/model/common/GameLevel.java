@@ -447,17 +447,17 @@ public class GameLevel {
 
 	public Vector2f ghostInitialPosition(byte ghostID) {
 		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> world.ghostHouse().doors().get(0).entryPosition();
-		case Ghost.ID_PINK_GHOST -> world.ghostHouse().seatPositions().get(1);
-		case Ghost.ID_CYAN_GHOST -> world.ghostHouse().seatPositions().get(0);
-		case Ghost.ID_ORANGE_GHOST -> world.ghostHouse().seatPositions().get(2);
+		case Ghost.ID_RED_GHOST -> world.doors().get(0).entryPosition();
+		case Ghost.ID_PINK_GHOST -> world.seatPositions().get(1);
+		case Ghost.ID_CYAN_GHOST -> world.seatPositions().get(0);
+		case Ghost.ID_ORANGE_GHOST -> world.seatPositions().get(2);
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
 	}
 
 	public Vector2f ghostRevivalPosition(byte ghostID) {
 		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> world.ghostHouse().seatPositions().get(1);
+		case Ghost.ID_RED_GHOST -> world.seatPositions().get(1);
 		case Ghost.ID_PINK_GHOST, Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> ghostInitialPosition(ghostID);
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
@@ -675,7 +675,7 @@ public class GameLevel {
 				LOG.trace("Global dot counter = %d", globalDotCounter);
 			}
 		} else {
-			ghosts(LOCKED).filter(ghost -> world.ghostHouse().contains(ghost.tile())).findFirst()
+			ghosts(LOCKED).filter(ghost -> world.houseContains(ghost.tile())).findFirst()
 					.ifPresent(this::increaseGhostDotCounter);
 		}
 	}
@@ -690,7 +690,7 @@ public class GameLevel {
 		if (ghost == null) {
 			return Optional.empty();
 		}
-		if (!world.ghostHouse().contains(ghost.tile())) {
+		if (!world.houseContains(ghost.tile())) {
 			return unlockGhost(ghost, "Already outside house");
 		}
 		var id = ghost.id();
@@ -713,7 +713,7 @@ public class GameLevel {
 	}
 
 	private Optional<GhostUnlockResult> unlockGhost(Ghost ghost, String reason, Object... args) {
-		if (!world.ghostHouse().contains(ghost.tile())) {
+		if (!world.houseContains(ghost.tile())) {
 			ghost.setMoveAndWishDir(LEFT);
 			ghost.enterStateHuntingPac();
 		} else {

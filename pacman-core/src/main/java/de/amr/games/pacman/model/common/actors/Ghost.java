@@ -132,7 +132,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			LOG.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
 			return false;
 		}
-		if (level.world().ghostHouse().hasDoorAt(tile)) {
+		if (level.world().hasDoorAt(tile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile, level);
@@ -257,7 +257,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private void updateStateLocked(GameLevel level) {
 		var baseLevel = level.ghostInitialPosition(id).y();
-		if (level.world().ghostHouse().contains(tile())) {
+		if (level.world().houseContains(tile())) {
 			if (position.y() <= baseLevel - HTS) {
 				setMoveAndWishDir(DOWN);
 			} else if (position.y() >= baseLevel + HTS) {
@@ -302,7 +302,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		} else {
 			selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
 		}
-		var outOfHouse = level.world().ghostHouse().leadOutside(this);
+		var outOfHouse = level.world().leadOutsideHouse(this);
 		if (outOfHouse) {
 			setMoveAndWishDir(LEFT);
 			newTileEntered = false; // force moving left until next tile is entered
@@ -386,13 +386,13 @@ public class Ghost extends Creature implements AnimatedEntity {
 		checkLevelNotNull(level);
 		state = RETURNING_TO_HOUSE;
 		/// TODO what if ghosthouse has more than one door?
-		var door = level.world().ghostHouse().doors().get(0);
+		var door = level.world().doors().get(0);
 		setTargetTile(door.entryTile());
 		selectAndRunAnimation(GameModel.AK_GHOST_EYES);
 	}
 
 	private void updateStateReturningToHouse(GameLevel level) {
-		var door = level.world().ghostHouse().doors().get(0);
+		var door = level.world().doors().get(0);
 		var houseEntry = door.entryPosition();
 		// TODO should this check for difference by speed instead of 1?
 		if (position().almostEquals(houseEntry, 1, 0)) {
@@ -423,7 +423,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateStateEnteringHouse(GameLevel level) {
-		boolean atRevivalPosition = level.world().ghostHouse().leadInside(this, level.ghostRevivalPosition(id));
+		boolean atRevivalPosition = level.world().leadInsideHouse(this, level.ghostRevivalPosition(id));
 		if (atRevivalPosition) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();

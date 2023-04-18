@@ -333,8 +333,8 @@ public class MsPacManGame extends GameModel {
 		var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
 				: np(exitPortal.leftTunnelEnd().minus(1, 0));
 		/// TODO solution if a ghost house has more than one door
-		var houseEntry = level.world().ghostHouse().doors().get(0).entryTile().minus(0, 1);
-		int houseHeight = level.world().ghostHouse().size().y();
+		var houseEntry = level.world().doors().get(0).entryTile().minus(0, 1);
+		int houseHeight = level.world().houseSize().y();
 		var route = new ArrayList<NavigationPoint>();
 		route.add(np(houseEntry));
 		route.add(np(houseEntry.plus(0, houseHeight + 1)));
