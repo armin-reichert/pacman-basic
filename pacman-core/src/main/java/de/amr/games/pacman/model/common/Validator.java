@@ -30,11 +30,8 @@ import de.amr.games.pacman.lib.steering.Direction;
 
 /**
  * @author Armin Reichert
- *
  */
 public class Validator {
-	// Parameter validation
-
 	private static final String MSG_GAME_NULL = "Game model must not be null";
 	private static final String MSG_LEVEL_NULL = "Game level must not be null";
 	private static final String MSG_TILE_NULL = "Tile must not be null";
