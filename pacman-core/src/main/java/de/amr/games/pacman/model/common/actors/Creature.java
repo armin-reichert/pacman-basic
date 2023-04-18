@@ -27,6 +27,9 @@ import static de.amr.games.pacman.lib.steering.Direction.DOWN;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
+import static de.amr.games.pacman.model.common.GameModel.checkDirectionNotNull;
+import static de.amr.games.pacman.model.common.GameModel.checkLevelNotNull;
+import static de.amr.games.pacman.model.common.GameModel.checkTileNotNull;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
@@ -124,8 +127,8 @@ public abstract class Creature extends Entity {
 
 	@Override
 	public String toString() {
-		return "%s: pos=%s, tile=%s, velocity=%s, speed=%.2f, moveDir=%s, wishDir=%s".formatted(name, position, tile(),
-				velocity, velocity.length(), moveDir(), wishDir());
+		return "%s: position=%s, tile=%s (%s), velocity=%s, moveDir=%s, wishDir=%s".formatted(name, position, tile(),
+				offset(), velocity, moveDir, wishDir);
 	}
 
 	/** Readable name, for display and logging purposes. */
@@ -194,7 +197,7 @@ public abstract class Creature extends Entity {
 	 * @param oy   y-offset inside tile
 	 */
 	public void placeAtTile(Vector2i tile, float ox, float oy) {
-		GameModel.checkTileNotNull(tile);
+		checkTileNotNull(tile);
 		placeAtTile(tile.x(), tile.y(), ox, oy);
 	}
 
@@ -205,7 +208,7 @@ public abstract class Creature extends Entity {
 	 * @param tile tile
 	 */
 	public void placeAtTile(Vector2i tile) {
-		GameModel.checkTileNotNull(tile);
+		checkTileNotNull(tile);
 		placeAtTile(tile.x(), tile.y(), 0, 0);
 	}
 
@@ -215,8 +218,8 @@ public abstract class Creature extends Entity {
 	 * @return if this creature can access the given tile
 	 */
 	public boolean canAccessTile(Vector2i tile, GameLevel level) {
-		GameModel.checkTileNotNull(tile);
-		GameModel.checkLevelNotNull(level);
+		checkTileNotNull(tile);
+		checkLevelNotNull(level);
 		if (level.world().insideBounds(tile)) {
 			return !level.world().isWall(tile) && !level.world().ghostHouse().hasDoorAt(tile);
 		}
@@ -229,7 +232,7 @@ public abstract class Creature extends Entity {
 	 * @param dir the new move direction
 	 */
 	public void setMoveDir(Direction dir) {
-		GameModel.checkDirectionNotNull(dir);
+		checkDirectionNotNull(dir);
 		if (moveDir != dir) {
 			moveDir = dir;
 			LOG.trace("%-11s: New moveDir: %s. %s", name, moveDir, this);
@@ -248,7 +251,7 @@ public abstract class Creature extends Entity {
 	 * @param dir the new wish direction
 	 */
 	public void setWishDir(Direction dir) {
-		GameModel.checkDirectionNotNull(dir);
+		checkDirectionNotNull(dir);
 		if (wishDir != dir) {
 			wishDir = dir;
 			LOG.trace("%-11s: New wishDir: %s. %s", name, wishDir, this);
@@ -309,7 +312,7 @@ public abstract class Creature extends Entity {
 	 * @param level the game level
 	 */
 	public void navigateTowardsTarget(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		if (!newTileEntered && moved()) {
 			return; // we don't need no navigation, dim dit diddit diddit dim dit diddit diddit...
 		}
@@ -363,18 +366,11 @@ public abstract class Creature extends Entity {
 	 * @param level the game level
 	 */
 	public void tryMoving(GameLevel level) {
-		GameModel.checkLevelNotNull(level);
+		checkLevelNotNull(level);
 		moveResult = new MoveResult();
-
 		tryTeleport(level.world().portals());
 		if (!moveResult.teleported) {
-			// process reverse signal
-			if (gotReverseCommand && canReverse(level)) {
-				setWishDir(moveDir.opposite());
-				gotReverseCommand = false;
-				LOG.trace("%-11s: [turned around]", name);
-			}
-
+			checkReverseCommand(level);
 			tryMoving(wishDir, level);
 			if (moveResult.moved) {
 				setMoveDir(wishDir);
@@ -384,6 +380,14 @@ public abstract class Creature extends Entity {
 		}
 		if (moveResult.teleported || moveResult.moved) {
 			LOG.trace("%-11s: %s %s %s", name, moveResult, moveResult.summary(), this);
+		}
+	}
+
+	private void checkReverseCommand(GameLevel level) {
+		if (gotReverseCommand && canReverse(level)) {
+			setWishDir(moveDir.opposite());
+			gotReverseCommand = false;
+			LOG.trace("%-11s: [turned around]", name);
 		}
 	}
 

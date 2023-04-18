@@ -76,6 +76,12 @@ public class Ghost extends Creature implements AnimatedEntity {
 		reset();
 	}
 
+	@Override
+	public String toString() {
+		return "['%-6s' %s position=%s tile=%s offset=%s velocity=%s dir=%s wishDir=%s reverse=%s]".formatted(name(), state,
+				position, tile(), offset(), velocity, moveDir(), wishDir(), gotReverseCommand);
+	}
+
 	/**
 	 * The ghost ID. One of {@link #ID_RED_GHOST}, {@link #ID_PINK_GHOST}, {@link #ID_CYAN_GHOST},
 	 * {@link #ID_ORANGE_GHOST}.
@@ -196,12 +202,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 //			tryMoving(level);
 //		}
 //	}
-
-	@Override
-	public String toString() {
-		return "['%-6s' %s tile=%s pos=%s offset=%s velocity=%s dir=%s wishDir=%s reverse command=%s]".formatted(name(),
-				state, tile(), position, offset(), velocity, moveDir(), wishDir(), gotReverseCommand);
-	}
 
 	// Here begins the state machine part
 
