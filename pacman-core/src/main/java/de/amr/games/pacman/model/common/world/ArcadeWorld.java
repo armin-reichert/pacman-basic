@@ -45,8 +45,8 @@ import de.amr.games.pacman.lib.math.Vector2i;
  */
 public class ArcadeWorld implements World {
 
-	/** Arcade world size is 28x36 tiles. */
-	public static final Vector2i SIZE_TILES = v2i(28, 36);
+	public static final int TILES_X = 28;
+	public static final int TILES_Y = 36;
 
 	//@formatter:off
 	private static final byte TILE_SPACE           = 0;
@@ -152,12 +152,12 @@ public class ArcadeWorld implements World {
 
 	@Override
 	public int numCols() {
-		return SIZE_TILES.x();
+		return TILES_X;
 	}
 
 	@Override
 	public int numRows() {
-		return SIZE_TILES.y();
+		return TILES_Y;
 	}
 
 	@Override

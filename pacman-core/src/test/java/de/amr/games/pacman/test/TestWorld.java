@@ -60,8 +60,8 @@ public class TestWorld {
 	@Test
 	public void testPacManWorld() {
 		var world = new ArcadeWorld(PacManGame.MAP);
-		assertEquals(ArcadeWorld.SIZE_TILES.y(), world.numRows());
-		assertEquals(ArcadeWorld.SIZE_TILES.x(), world.numCols());
+		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
+		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
 		assertEquals(244, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(240, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
@@ -71,8 +71,8 @@ public class TestWorld {
 	@Test
 	public void testMsPacManWorld1() {
 		var world = new ArcadeWorld(MsPacManGame.MAP1);
-		assertEquals(ArcadeWorld.SIZE_TILES.y(), world.numRows());
-		assertEquals(ArcadeWorld.SIZE_TILES.x(), world.numCols());
+		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
+		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
 		assertEquals(220 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(220, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
@@ -82,8 +82,8 @@ public class TestWorld {
 	@Test
 	public void testMsPacManWorld2() {
 		var world = new ArcadeWorld(MsPacManGame.MAP2);
-		assertEquals(ArcadeWorld.SIZE_TILES.y(), world.numRows());
-		assertEquals(ArcadeWorld.SIZE_TILES.x(), world.numCols());
+		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
+		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
 		assertEquals(240 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(240, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
@@ -93,8 +93,8 @@ public class TestWorld {
 	@Test
 	public void testMsPacManWorld3() {
 		var world = new ArcadeWorld(MsPacManGame.MAP3);
-		assertEquals(ArcadeWorld.SIZE_TILES.y(), world.numRows());
-		assertEquals(ArcadeWorld.SIZE_TILES.x(), world.numCols());
+		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
+		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
 		assertEquals(238 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(238, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
@@ -104,8 +104,8 @@ public class TestWorld {
 	@Test
 	public void testMsPacManWorld4() {
 		var world = new ArcadeWorld(MsPacManGame.MAP4);
-		assertEquals(ArcadeWorld.SIZE_TILES.y(), world.numRows());
-		assertEquals(ArcadeWorld.SIZE_TILES.x(), world.numCols());
+		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
+		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
 		assertEquals(234 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(234, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
