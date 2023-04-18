@@ -23,7 +23,7 @@ SOFTWARE.
 */
 package de.amr.games.pacman.event;
 
-import java.util.Objects;
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 
 import de.amr.games.pacman.model.common.GameModel;
 
@@ -36,7 +36,8 @@ public class SoundEvent extends GameEvent {
 
 	public SoundEvent(GameModel game, String id) {
 		super(game, GameEventType.SOUND_EVENT, null);
-		this.id = Objects.requireNonNull(id);
+		checkNotNull(id);
+		this.id = id;
 	}
 
 	@Override

@@ -24,9 +24,10 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib.anim;
 
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -43,23 +44,28 @@ public class AnimationMap {
 	}
 
 	public void put(String key, Animated animation) {
-		animationsByKey.put(key, Objects.requireNonNull(animation));
+		checkNotNull(key);
+		checkNotNull(animation);
+		animationsByKey.put(key, animation);
 	}
 
 	public void select(String key) {
-		selectedKey = Objects.requireNonNull(key);
+		checkNotNull(key);
+		selectedKey = key;
 	}
 
 	public void selectAndRestart(String key) {
+		checkNotNull(key);
 		select(key);
 		animation(selectedKey).ifPresent(Animated::restart);
 	}
 
 	public boolean isSelected(String key) {
+		checkNotNull(key);
 		if (selectedKey == null) {
 			return false;
 		}
-		return selectedKey.equals(Objects.requireNonNull(key));
+		return selectedKey.equals(key);
 	}
 
 	public String selectedKey() {

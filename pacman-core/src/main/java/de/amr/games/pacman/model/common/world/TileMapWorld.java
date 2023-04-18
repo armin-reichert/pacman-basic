@@ -25,12 +25,12 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
+import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -151,32 +151,32 @@ public abstract class TileMapWorld implements World {
 
 	@Override
 	public boolean belongsToPortal(Vector2i tile) {
-		Objects.requireNonNull(tile);
+		checkTileNotNull(tile);
 		return portals.stream().anyMatch(portal -> portal.contains(tile));
 	}
 
 	@Override
 	public boolean isWall(Vector2i tile) {
-		Objects.requireNonNull(tile);
+		checkTileNotNull(tile);
 		return content(tile) == TILE_WALL;
 	}
 
 	@Override
 	public boolean isTunnel(Vector2i tile) {
-		Objects.requireNonNull(tile);
+		checkTileNotNull(tile);
 		return content(tile) == TILE_TUNNEL;
 	}
 
 	@Override
 	public boolean isFoodTile(Vector2i tile) {
-		Objects.requireNonNull(tile);
+		checkTileNotNull(tile);
 		byte data = content(tile);
 		return data == TILE_PELLET || data == TILE_ENERGIZER;
 	}
 
 	@Override
 	public boolean isEnergizerTile(Vector2i tile) {
-		Objects.requireNonNull(tile);
+		checkTileNotNull(tile);
 		byte data = content(tile);
 		return data == TILE_ENERGIZER;
 	}
@@ -188,7 +188,7 @@ public abstract class TileMapWorld implements World {
 
 	@Override
 	public void removeFood(Vector2i tile) {
-		Objects.requireNonNull(tile);
+		checkTileNotNull(tile);
 		if (insideBounds(tile) && containsFood(tile)) {
 			eatenSet.set(index(tile));
 			--uneatenFoodCount;
@@ -197,7 +197,7 @@ public abstract class TileMapWorld implements World {
 
 	@Override
 	public boolean containsFood(Vector2i tile) {
-		Objects.requireNonNull(tile);
+		checkTileNotNull(tile);
 		if (insideBounds(tile)) {
 			byte data = content(tile);
 			return (data == TILE_PELLET || data == TILE_ENERGIZER) && !eatenSet.get(index(tile));
@@ -207,7 +207,7 @@ public abstract class TileMapWorld implements World {
 
 	@Override
 	public boolean containsEatenFood(Vector2i tile) {
-		Objects.requireNonNull(tile);
+		checkTileNotNull(tile);
 		if (insideBounds(tile)) {
 			return eatenSet.get(index(tile));
 		}

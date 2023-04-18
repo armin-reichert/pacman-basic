@@ -23,11 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
-
-import java.util.Objects;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -80,7 +79,8 @@ public class Entity {
 	}
 
 	public void setPosition(Vector2f position) {
-		this.position = Objects.requireNonNull(position, "Position of entity must not be null");
+		checkNotNull(position, "Position of entity must not be null");
+		this.position = position;
 	}
 
 	/** @return Center position of entity collision box (position property stores *upper left corner* of box). */
@@ -93,7 +93,8 @@ public class Entity {
 	}
 
 	public void setVelocity(Vector2f velocity) {
-		this.velocity = Objects.requireNonNull(velocity, "Velocity of entity must not be null");
+		checkNotNull(velocity, "Velocity of entity must not be null");
+		this.velocity = velocity;
 	}
 
 	public void setVelocity(float vx, float vy) {
@@ -105,7 +106,8 @@ public class Entity {
 	}
 
 	public void setAcceleration(Vector2f acceleration) {
-		this.acceleration = Objects.requireNonNull(acceleration, "Acceleration of entity must not be null");
+		checkNotNull(acceleration, "Acceleration of entity must not be null");
+		this.acceleration = acceleration;
 	}
 
 	public void setAcceleration(float ax, float ay) {
@@ -137,7 +139,7 @@ public class Entity {
 	 * @return <code>true</code> if both entities occupy same tile
 	 */
 	public boolean sameTile(Entity other) {
-		Objects.requireNonNull(other, "Entity must not be null");
+		checkNotNull(other, "Entity to check for same tile must not be null");
 		return tile().equals(other.tile());
 	}
 }

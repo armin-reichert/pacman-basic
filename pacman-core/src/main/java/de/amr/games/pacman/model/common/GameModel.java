@@ -23,6 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.model.common.Validator.checkGameVariant;
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,7 +34,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
@@ -363,7 +365,7 @@ public abstract class GameModel {
 	}
 
 	private static File highscoreFile(GameVariant variant) {
-		Objects.requireNonNull(variant, "Game variant is null");
+		checkGameVariant(variant);
 		var dir = System.getProperty("user.home");
 		return switch (variant) {
 		case PACMAN -> new File(dir, "highscore-pacman.xml");
@@ -373,6 +375,7 @@ public abstract class GameModel {
 	}
 
 	private static Score loadHighscore(File file) {
+		checkNotNull(file);
 		try (var in = new FileInputStream(file)) {
 			var props = new Properties();
 			props.loadFromXML(in);

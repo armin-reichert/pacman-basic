@@ -23,8 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.event;
 
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
+
 import java.util.Collection;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +49,8 @@ public class GameEvents {
 	}
 
 	public static void setGameController(GameController gameController) {
-		GameEvents.gameController = Objects.requireNonNull(gameController);
+		checkNotNull(gameController);
+		GameEvents.gameController = gameController;
 	}
 
 	public static void setSoundEventsEnabled(boolean enabled) {
@@ -57,21 +59,24 @@ public class GameEvents {
 	}
 
 	public static void addListener(GameEventListener subscriber) {
-		GameEvents.subscribers.add(Objects.requireNonNull(subscriber));
+		checkNotNull(subscriber);
+		GameEvents.subscribers.add(subscriber);
 	}
 
 	public static void removeListener(GameEventListener subscriber) {
-		GameEvents.subscribers.remove(Objects.requireNonNull(subscriber));
+		checkNotNull(subscriber);
+		GameEvents.subscribers.remove(subscriber);
 	}
 
 	public static void publishGameEvent(GameEvent event) {
-		Objects.requireNonNull(event);
+		checkNotNull(event);
 		LOG.trace("Publish game event: %s", event);
 		GameEvents.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 
 	public static void publishGameEvent(GameEventType type, Vector2i tile) {
-		Objects.requireNonNull(type);
+		checkNotNull(type);
+		checkNotNull(tile);
 		publishGameEvent(new GameEvent(gameController.game(), type, tile));
 	}
 
@@ -80,7 +85,7 @@ public class GameEvents {
 	}
 
 	public static void publishSoundEvent(String soundCommand) {
-		Objects.requireNonNull(soundCommand);
+		checkNotNull(soundCommand);
 		if (GameEvents.soundEventsEnabled) {
 			publishGameEvent(new SoundEvent(gameController.game(), soundCommand));
 		}

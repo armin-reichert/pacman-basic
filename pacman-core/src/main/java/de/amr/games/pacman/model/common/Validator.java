@@ -40,13 +40,32 @@ public class Validator {
 	private static final String MSG_TILE_NULL = "Tile must not be null";
 	private static final String MSG_DIR_NULL = "Direction must not be null";
 
+	public static void checkNotNull(Object value) {
+		Objects.requireNonNull(value, "");
+	}
+
+	public static void checkNotNull(Object value, String message) {
+		Objects.requireNonNull(value, message);
+	}
+
 	public static void checkGameNotNull(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
+		checkNotNull(game, MSG_GAME_NULL);
 	}
 
 	public static void checkGhostID(byte id) {
 		if (id < 0 || id > 3) {
 			throw new IllegalGhostIDException(id);
+		}
+	}
+
+	public static void checkGameVariant(GameVariant variant) {
+		if (variant == null) {
+			throw new IllegalGameVariantException(variant);
+		}
+		switch (variant) {
+		case MS_PACMAN, PACMAN -> { // ok
+		}
+		default -> throw new IllegalGameVariantException(variant);
 		}
 	}
 
@@ -57,15 +76,15 @@ public class Validator {
 	}
 
 	public static void checkTileNotNull(Vector2i tile) {
-		Objects.requireNonNull(tile, MSG_TILE_NULL);
+		checkNotNull(tile, MSG_TILE_NULL);
 	}
 
 	public static void checkLevelNotNull(GameLevel level) {
-		Objects.requireNonNull(level, MSG_LEVEL_NULL);
+		checkNotNull(level, MSG_LEVEL_NULL);
 	}
 
 	public static void checkDirectionNotNull(Direction dir) {
-		Objects.requireNonNull(dir, MSG_DIR_NULL);
+		checkNotNull(dir, MSG_DIR_NULL);
 	}
 
 	public static double requirePositive(double value, String messageFormat) {

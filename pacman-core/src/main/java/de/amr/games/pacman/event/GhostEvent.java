@@ -23,7 +23,7 @@ SOFTWARE.
 */
 package de.amr.games.pacman.event;
 
-import java.util.Objects;
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -37,7 +37,8 @@ public class GhostEvent extends GameEvent {
 
 	public GhostEvent(GameModel game, GameEventType type, Ghost ghost) {
 		super(game, type, ghost.tile());
-		this.ghost = Objects.requireNonNull(ghost);
+		checkNotNull(ghost);
+		this.ghost = ghost;
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.model.common.Validator.checkGameNotNull;
 import static de.amr.games.pacman.model.common.Validator.checkGhostID;
 import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
@@ -41,7 +42,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
-import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -349,8 +349,8 @@ public class GameLevel {
 	 * @return tells if the ghost can steer towards the given direction
 	 */
 	public boolean isSteeringAllowed(Ghost ghost, Direction dir) {
-		requireNonNull(ghost);
-		requireNonNull(dir);
+		checkNotNull(ghost);
+		checkNotNull(dir);
 		if (upwardsBlockedTiles().isEmpty()) {
 			return true;
 		}

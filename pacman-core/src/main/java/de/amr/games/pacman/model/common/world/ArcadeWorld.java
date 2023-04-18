@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.math.Vector2i.v2i;
-import static java.util.Objects.requireNonNull;
+import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
 
 import java.util.Optional;
 
@@ -63,7 +63,7 @@ public class ArcadeWorld extends TileMapWorld {
 
 	@Override
 	public boolean isIntersection(Vector2i tile) {
-		requireNonNull(tile);
+		checkTileNotNull(tile);
 
 		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
 			return false; // exclude portal entries and tiles outside of the map

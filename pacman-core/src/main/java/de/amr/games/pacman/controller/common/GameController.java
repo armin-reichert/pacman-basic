@@ -26,9 +26,8 @@ package de.amr.games.pacman.controller.common;
 import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 import static java.util.function.Predicate.not;
-
-import java.util.Objects;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -37,6 +36,7 @@ import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.steering.RuleBasedSteering;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.Validator;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -79,7 +79,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private boolean autoControlled;
 
 	public GameController(GameVariant variant) {
-		Objects.requireNonNull(variant);
+		Validator.checkNotNull(variant);
 		states = GameState.values();
 		for (var state : states) {
 			state.gc = this;
@@ -121,7 +121,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void setManualPacSteering(Steering steering) {
-		this.manualPacSteering = Objects.requireNonNull(steering);
+		checkNotNull(steering);
+		this.manualPacSteering = steering;
 	}
 
 	// Game commands

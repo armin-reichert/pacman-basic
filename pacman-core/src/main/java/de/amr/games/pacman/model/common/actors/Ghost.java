@@ -29,6 +29,7 @@ import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.Validator.checkGhostID;
 import static de.amr.games.pacman.model.common.Validator.checkLevelNotNull;
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
 import static de.amr.games.pacman.model.common.actors.GhostState.EATEN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
@@ -39,7 +40,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -104,7 +104,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param fnChasingTarget function providing the chasing target tile
 	 */
 	public void setChasingTarget(Supplier<Vector2i> fnChasingTarget) {
-		this.fnChasingTarget = Objects.requireNonNull(fnChasingTarget);
+		checkNotNull(fnChasingTarget);
+		this.fnChasingTarget = fnChasingTarget;
 	}
 
 	/**

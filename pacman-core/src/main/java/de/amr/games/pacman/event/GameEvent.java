@@ -23,7 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.event;
 
-import java.util.Objects;
+import static de.amr.games.pacman.model.common.Validator.checkGameNotNull;
+import static de.amr.games.pacman.model.common.Validator.checkNotNull;
+
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -47,8 +49,10 @@ public class GameEvent {
 	 * @param tile tile related to event, may be {@code null}
 	 */
 	public GameEvent(GameModel game, GameEventType type, Vector2i tile) {
-		this.game = Objects.requireNonNull(game);
-		this.type = Objects.requireNonNull(type);
+		checkGameNotNull(game);
+		checkNotNull(type);
+		this.game = game;
+		this.type = type;
 		this.tile = Optional.ofNullable(tile);
 	}
 
