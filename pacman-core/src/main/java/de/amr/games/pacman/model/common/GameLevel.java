@@ -71,6 +71,11 @@ public class GameLevel {
 
 	private static final Logger LOG = LogManager.getFormatterLogger();
 
+	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
+
+	private record GhostUnlockResult(Ghost ghost, String reason) {
+	}
+
 	private static final float percent(byte value) {
 		return value / 100f;
 	}
@@ -138,8 +143,6 @@ public class GameLevel {
 	private int numGhostsKilledByEnergizer;
 
 	private byte cruiseElroyState;
-
-	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
 	public GameLevel(GameModel game, int number) {
 		GameModel.checkGameNotNull(game);
@@ -345,10 +348,12 @@ public class GameLevel {
 	public boolean isSteeringAllowed(Ghost ghost, Direction dir) {
 		requireNonNull(ghost);
 		requireNonNull(dir);
-		if (dir == Direction.UP && ghost.is(HUNTING_PAC) && upwardsBlockedTiles().contains(ghost.tile())) {
-			return false;
+		if (upwardsBlockedTiles().isEmpty()) {
+			return true;
 		}
-		return true;
+		// In the Pac-Man game, hunting ghosts cannot move upwards at specific tiles
+		boolean upwardsBlocked = upwardsBlockedTiles().contains(ghost.tile());
+		return dir != Direction.UP || !ghost.is(HUNTING_PAC) || !upwardsBlocked;
 	}
 
 	/**
