@@ -366,7 +366,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public void enterDemoLevel() {
-		level = new MsPacManGameDemoLevel(this);
+		level = new MsPacManDemoLevel(this);
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		scoringEnabled = false;
 		GameEvents.setSoundEventsEnabled(false);

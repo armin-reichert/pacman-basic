@@ -168,7 +168,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public void enterDemoLevel() {
-		level = new PacManGameDemoLevel(this);
+		level = new PacManDemoLevel(this);
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		scoringEnabled = false;
 		GameEvents.setSoundEventsEnabled(false);

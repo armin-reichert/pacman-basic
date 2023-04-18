@@ -30,12 +30,12 @@ import de.amr.games.pacman.model.common.GameModel;
 /**
  * @author Armin Reichert
  */
-public class MsPacManGameDemoLevel extends GameLevel {
+public class MsPacManDemoLevel extends GameLevel {
 
 	/**
 	 * @param game
 	 */
-	public MsPacManGameDemoLevel(GameModel game) {
+	public MsPacManDemoLevel(GameModel game) {
 		super(game, 1);
 		setPacSteering(new RuleBasedSteering());
 	}
