@@ -29,7 +29,8 @@ import java.io.Writer;
 import de.amr.games.pacman.lib.math.Vector2i;
 
 /**
- * Provides information about rooms, walls, doors etc.
+ * Provides information about rooms, walls, doors etc. Used to construct 3D representation of a world from simple 2D
+ * tile map data.
  * 
  * @author Armin Reichert
  */
@@ -189,15 +190,15 @@ public class FloorPlan {
 			for (int x = 0; x < numBlocksX; ++x) {
 				int tileX = x / resolution;
 				int i = (y % resolution) * resolution + (x % resolution);
-				Vector2i n = northOf(tileX, tileY, i);
-				Vector2i e = eastOf(tileX, tileY, i);
-				Vector2i s = southOf(tileX, tileY, i);
-				Vector2i w = westOf(tileX, tileY, i);
+				var n = northOf(tileX, tileY, i);
+				var e = eastOf(tileX, tileY, i);
+				var s = southOf(tileX, tileY, i);
+				var w = westOf(tileX, tileY, i);
 				if (world.isWall(n) && world.isWall(e) && world.isWall(s) && world.isWall(w)) {
-					Vector2i se = southOf(e.x(), e.y(), i);
-					Vector2i sw = southOf(w.x(), w.y(), i);
-					Vector2i ne = northOf(e.x(), e.y(), i);
-					Vector2i nw = northOf(w.x(), w.y(), i);
+					var se = southOf(e.x(), e.y(), i);
+					var sw = southOf(w.x(), w.y(), i);
+					var ne = northOf(e.x(), e.y(), i);
+					var nw = northOf(w.x(), w.y(), i);
 					if (world.isWall(se) && !world.isWall(nw) || !world.isWall(se) && world.isWall(nw)
 							|| world.isWall(sw) && !world.isWall(ne) || !world.isWall(sw) && world.isWall(ne)) {
 						// keep corner of wall region
