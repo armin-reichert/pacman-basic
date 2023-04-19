@@ -121,12 +121,13 @@ public class World implements AnimatedEntity {
 		return new Vector2f(tileX * TS + HTS, tileY * TS);
 	}
 
-	private static List<Portal> findPortals(TileMap tileMap) {
+	private static List<Portal> buildPortals(TileMap tileMap) {
 		var portals = new ArrayList<Portal>();
+		int lastColumn = tileMap.numCols() - 1;
 		for (int row = 0; row < tileMap.numRows(); ++row) {
 			var leftBorderTile = new Vector2i(0, row);
-			var rightBorderTile = new Vector2i(tileMap.numCols() - 1, row);
-			if (tileMap.content(row, 0) == TUNNEL && tileMap.content(row, tileMap.numCols() - 1) == TUNNEL) {
+			var rightBorderTile = new Vector2i(lastColumn, row);
+			if (tileMap.content(row, 0) == TUNNEL && tileMap.content(row, lastColumn) == TUNNEL) {
 				portals.add(new Portal(leftBorderTile, rightBorderTile, 2));
 			}
 		}
@@ -150,7 +151,7 @@ public class World implements AnimatedEntity {
 	 */
 	public World(byte[][] tileMapData) {
 		tileMap = new TileMap(tileMapData);
-		portals = findPortals(tileMap);
+		portals = buildPortals(tileMap);
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
