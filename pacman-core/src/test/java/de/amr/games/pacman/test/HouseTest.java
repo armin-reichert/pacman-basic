@@ -45,6 +45,16 @@ public class HouseTest {
 	static final List<Vector2f> SEATS = List.of(new Vector2f(5, 12), new Vector2f(7, 12), new Vector2f(9, 12));
 
 	@Test(expected = NullPointerException.class)
+	public void testLeftDoorWingNotNull() {
+		new Door(null, new Vector2i(0, 0));
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testRightDoorWingNotNull() {
+		new Door(new Vector2i(0, 0), null);
+	}
+
+	@Test(expected = NullPointerException.class)
 	public void testPositionNotNull() {
 		new House(null, SIZE, DOOR, SEATS);
 	}
