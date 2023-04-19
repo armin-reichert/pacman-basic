@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.TileMap;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
@@ -111,9 +112,9 @@ public class World implements AnimatedEntity {
 	private final List<Portal> portals;
 	private final List<Vector2i> energizerTiles;
 
+	private final BitSet eatenSet = new BitSet(TILES_X * TILES_Y);
 	private final int totalFoodCount;
 	private int uneatenFoodCount;
-	private final BitSet eatenSet = new BitSet(TILES_X * TILES_Y);
 
 	private AnimationMap animationMap;
 
@@ -255,25 +256,33 @@ public class World implements AnimatedEntity {
 		return portals.stream().anyMatch(portal -> portal.contains(tile));
 	}
 
+	/**
+	 * @param tile some tile (may be outside world bound)
+	 * @return the content at the given tile or empty space if outside world
+	 */
+	private byte content(Vector2i tile) {
+		return tileMap.content(tile.y(), tile.x(), TileContent.SPACE);
+	}
+
 	public boolean isWall(Vector2i tile) {
 		checkTileNotNull(tile);
-		return tileMap.content(tile) == TileContent.WALL;
+		return content(tile) == TileContent.WALL;
 	}
 
 	public boolean isTunnel(Vector2i tile) {
 		checkTileNotNull(tile);
-		return tileMap.content(tile) == TileContent.TUNNEL;
+		return content(tile) == TileContent.TUNNEL;
 	}
 
 	public boolean isFoodTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		byte data = tileMap.content(tile);
+		byte data = content(tile);
 		return data == TileContent.PELLET || data == TileContent.ENERGIZER;
 	}
 
 	public boolean isEnergizerTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		return tileMap.content(tile) == TileContent.ENERGIZER;
+		return content(tile) == TileContent.ENERGIZER;
 	}
 
 	public Stream<Vector2i> energizerTiles() {
@@ -291,7 +300,7 @@ public class World implements AnimatedEntity {
 	public boolean containsFood(Vector2i tile) {
 		checkTileNotNull(tile);
 		if (insideBounds(tile)) {
-			byte data = tileMap.content(tile);
+			byte data = content(tile);
 			return (data == TileContent.PELLET || data == TileContent.ENERGIZER) && !eatenSet.get(index(tile));
 		}
 		return false;

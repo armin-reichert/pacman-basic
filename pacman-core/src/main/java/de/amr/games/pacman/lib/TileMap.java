@@ -22,9 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.model.common.world;
+package de.amr.games.pacman.lib;
 
-import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.model.common.world.TileContent;
 
 /**
  * @author Armin Reichert
@@ -34,7 +34,7 @@ public class TileMap {
 	private final byte[][] content;
 
 	public TileMap(byte[][] data) {
-		content = validateTileMapData(data);
+		content = validate(data);
 	}
 
 	public int numRows() {
@@ -45,7 +45,7 @@ public class TileMap {
 		return content[0].length;
 	}
 
-	private byte[][] validateTileMapData(byte[][] data) {
+	private byte[][] validate(byte[][] data) {
 		if (data == null) {
 			throw new IllegalArgumentException("Map data missing");
 		}
@@ -72,17 +72,9 @@ public class TileMap {
 		return data;
 	}
 
-	/**
-	 * @param tile some tile (may be outside world bound)
-	 * @return the content at the given tile or empty space if outside world
-	 */
-	public byte content(Vector2i tile) {
-		return content(tile.y(), tile.x(), TileContent.SPACE);
-	}
-
 	public byte content(int row, int col) {
 		if (!insideBounds(row, col)) {
-			throwOutOfBoundsError(row, col);
+			throwOutOfBounds(row, col);
 		}
 		return content[row][col];
 	}
@@ -98,7 +90,7 @@ public class TileMap {
 		return 0 <= row && row < numRows() && 0 <= col && col < numCols();
 	}
 
-	private void throwOutOfBoundsError(int row, int col) {
+	private void throwOutOfBounds(int row, int col) {
 		throw new IndexOutOfBoundsException(
 				"Coordinate (%d, %d) is outside of map bounds (%d rows, %d cols)".formatted(row, col, numRows(), numCols()));
 	}
