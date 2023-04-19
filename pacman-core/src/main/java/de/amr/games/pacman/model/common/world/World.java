@@ -110,7 +110,7 @@ public class World implements AnimatedEntity {
 	private AnimationMap animationMap;
 	private final Vector2i houseTopLeftTile = new Vector2i(10, 15);
 	private final Vector2i houseSize = new Vector2i(8, 5);
-	private final Door houseDoor = new Door(new Vector2i(13, 15), 2);
+	private final Door houseDoor = new Door(new Vector2i(13, 15), new Vector2i(14, 15));
 	private final List<Vector2f> houseSeatPositions = List.of(//
 			halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
 	private List<Portal> portals;

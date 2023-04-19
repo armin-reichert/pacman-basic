@@ -26,7 +26,7 @@ package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import java.util.stream.IntStream;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.math.Vector2f;
@@ -37,33 +37,31 @@ import de.amr.games.pacman.lib.math.Vector2i;
  */
 public class Door {
 
-	private Vector2i leftUpperTile;
-	private int sizeInTiles;
+	private Vector2i[] tiles;
 
-	public Door(Vector2i leftUpperTile, int sizeInTiles) {
-		this.leftUpperTile = leftUpperTile;
-		this.sizeInTiles = sizeInTiles;
+	public Door(Vector2i... tiles) {
+		this.tiles = tiles;
 	}
 
 	/**
 	 * @return left upper tile
 	 */
 	public Vector2i position() {
-		return leftUpperTile;
+		return tiles[0];
 	}
 
 	/**
 	 * @return size in tiles
 	 */
 	public int size() {
-		return sizeInTiles;
+		return tiles.length;
 	}
 
 	/**
 	 * @return stream of all tiles occupied by this door
 	 */
 	public Stream<Vector2i> tiles() {
-		return IntStream.range(0, sizeInTiles).mapToObj(x -> leftUpperTile.plus(x, 0));
+		return Arrays.stream(tiles);
 	}
 
 	/**
@@ -71,12 +69,7 @@ public class Door {
 	 * @return tells if the given tile is occupied by this door
 	 */
 	public boolean contains(Vector2i tile) {
-		for (int x = 0; x < sizeInTiles; ++x) {
-			if (tile.equals(leftUpperTile.plus(x, 0))) {
-				return true;
-			}
-		}
-		return false;
+		return tiles().anyMatch(t -> t.equals(tile));
 	}
 
 	/**
@@ -84,13 +77,15 @@ public class Door {
 	 */
 	public Vector2f entryPosition() {
 		// TODO this is only correct for a horizontal door entered from above
-		return leftUpperTile.minus(0, 1).toFloatVec().scaled(TS).plus(World.HTS + 0.5f * sizeInTiles, 0);
+		float x = tiles[0].x() * TS + 0.5f * tiles.length * TS - World.HTS;
+		float y = (tiles[0].y() - 1) * TS;
+		return new Vector2f(x, y);
 	}
 
 	/**
 	 * @return tile where door can be entered
 	 */
 	public Vector2i entryTile() {
-		return leftUpperTile.plus(sizeInTiles / 2, 0);
+		return tiles[0].plus(tiles.length / 2, 0);
 	}
 }
