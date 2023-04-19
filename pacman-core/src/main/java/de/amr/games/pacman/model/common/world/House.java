@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.common.Validator;
 /**
  * @author Armin Reichert
  */
-public record House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2f> seatPositions) {
+public record House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2f> seatPositions, Vector2f center) {
 
 	public House {
 		Validator.checkTileNotNull(topLeftTile);
@@ -47,6 +47,7 @@ public record House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2
 		if (seatPositions.stream().anyMatch(Objects::isNull)) {
 			throw new IllegalArgumentException("House seat position must not be null");
 		}
+		Validator.checkNotNull(center);
 	}
 
 	/**

@@ -23,8 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
+import static de.amr.games.pacman.lib.U.differsAtMost;
 import static de.amr.games.pacman.lib.steering.Direction.DOWN;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
+import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.Validator.checkGhostID;
 import static de.amr.games.pacman.model.common.Validator.checkLevelNotNull;
@@ -48,10 +50,12 @@ import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
+import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.world.House;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -302,7 +306,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		} else {
 			selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
 		}
-		var outOfHouse = level.world().leadOutsideHouse(this);
+		var outOfHouse = moveOutsideHouse(level.world().house());
 		if (outOfHouse) {
 			setMoveAndWishDir(LEFT);
 			newTileEntered = false; // force moving left until next tile is entered
@@ -317,6 +321,53 @@ public class Ghost extends Creature implements AnimatedEntity {
 			// TODO is this event needed/handled at all?
 			GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
 		}
+	}
+
+	/**
+	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
+	 */
+	private boolean moveOutsideHouse(House house) {
+		var exitPosition = house.door().entryPosition();
+		if (position().y() <= exitPosition.y()) {
+			setPosition(exitPosition);
+			return true;
+		}
+		if (differsAtMost(velocity().length() / 2, position().x(), exitPosition.x())) {
+			// center reached: start rising
+			setPosition(exitPosition.x(), position().y());
+			setMoveAndWishDir(UP);
+		} else {
+			// move sidewards until middle axis is reached
+			setMoveAndWishDir(position().x() < exitPosition.x() ? RIGHT : LEFT);
+		}
+		move();
+		return false;
+	}
+
+	/**
+	 * Ghost moves down on the vertical axis to the center, then returns or moves sidewards to its seat.
+	 */
+	private boolean moveInsideHouse(House house, Vector2f targetPosition) {
+		var entryPosition = house.door().entryPosition();
+		if (position().almostEquals(entryPosition, velocity().length() / 2, 0) && moveDir() != Direction.DOWN) {
+			// just reached door, start sinking
+			setPosition(entryPosition);
+			setMoveAndWishDir(Direction.DOWN);
+		} else if (position().y() >= house.center().y()) {
+			setPosition(position().x(), house.center().y());
+			if (targetPosition.x() < entryPosition.x()) {
+				setMoveAndWishDir(LEFT);
+			} else if (targetPosition.x() > entryPosition.x()) {
+				setMoveAndWishDir(RIGHT);
+			}
+		}
+		move();
+		boolean reachedTarget = differsAtMost(1, position().x(), targetPosition.x())
+				&& position().y() >= targetPosition.y();
+		if (reachedTarget) {
+			setPosition(targetPosition);
+		}
+		return reachedTarget;
 	}
 
 	// --- HUNTING_PAC ---
@@ -421,7 +472,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateStateEnteringHouse(GameLevel level) {
-		boolean atRevivalPosition = level.world().leadInsideHouse(this, level.ghostRevivalPosition(id));
+		boolean atRevivalPosition = moveInsideHouse(level.world().house(), level.ghostRevivalPosition(id));
 		if (atRevivalPosition) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();

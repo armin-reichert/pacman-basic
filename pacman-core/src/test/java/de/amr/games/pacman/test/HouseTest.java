@@ -33,6 +33,7 @@ import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.world.Door;
 import de.amr.games.pacman.model.common.world.House;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * @author Armin Reichert
@@ -42,7 +43,11 @@ public class HouseTest {
 	static final Vector2i POSITION = new Vector2i(16, 20);
 	static final Vector2i SIZE = new Vector2i(10, 8);
 	static final Door DOOR = new Door(new Vector2i(5, 10), new Vector2i(6, 10));
-	static final List<Vector2f> SEATS = List.of(new Vector2f(5, 12), new Vector2f(7, 12), new Vector2f(9, 12));
+	static final List<Vector2f> SEATS = List.of(//
+			World.halfTileRightOf(5, 12), //
+			World.halfTileRightOf(7, 12), //
+			World.halfTileRightOf(9, 12));
+	static final Vector2f CENTER = World.halfTileRightOf(7, 12).plus(0, World.HTS);
 
 	@Test(expected = NullPointerException.class)
 	public void testLeftDoorWingNotNull() {
@@ -56,37 +61,37 @@ public class HouseTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testPositionNotNull() {
-		new House(null, SIZE, DOOR, SEATS);
+		new House(null, SIZE, DOOR, SEATS, CENTER);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSizeNotNull() {
-		new House(POSITION, null, DOOR, SEATS);
+		new House(POSITION, null, DOOR, SEATS, CENTER);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testDoorNotNull() {
-		new House(POSITION, SIZE, null, SEATS);
+		new House(POSITION, SIZE, null, SEATS, CENTER);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSeatsNotNull() {
-		new House(POSITION, SIZE, DOOR, null);
+		new House(POSITION, SIZE, DOOR, null, CENTER);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testSeatCount() {
-		new House(POSITION, SIZE, DOOR, List.of());
+		new House(POSITION, SIZE, DOOR, List.of(), CENTER);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSeatContainsNull() {
-		new House(POSITION, SIZE, DOOR, List.of(null, SEATS.get(0)));
+		new House(POSITION, SIZE, DOOR, List.of(null, SEATS.get(0)), CENTER);
 	}
 
 	@Test
 	public void testHouseProperties() {
-		var house = new House(POSITION, SIZE, DOOR, SEATS);
+		var house = new House(POSITION, SIZE, DOOR, SEATS, CENTER);
 		Assert.assertEquals(POSITION, house.topLeftTile());
 		Assert.assertEquals(SIZE, house.size());
 		Assert.assertEquals(DOOR, house.door());

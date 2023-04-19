@@ -23,10 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.lib.U.differsAtMost;
-import static de.amr.games.pacman.lib.steering.Direction.LEFT;
-import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
-import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
 
@@ -43,8 +39,6 @@ import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
  * The tiled world used in the Arcade versions of Pac-Man and Ms. Pac-Man.
@@ -83,7 +77,8 @@ public class World implements AnimatedEntity {
 			new Vector2i(10, 15), // top-left corner
 			new Vector2i(8, 5), // size in tiles
 			new Door(new Vector2i(13, 15), new Vector2i(14, 15)), //
-			List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17))//
+			List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17)), // seats
+			halfTileRightOf(13, 17).plus(0, HTS) // center
 	);
 
 	/**
@@ -159,54 +154,6 @@ public class World implements AnimatedEntity {
 
 	public House house() {
 		return house;
-	}
-
-	/**
-	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
-	 */
-	public boolean leadOutsideHouse(Creature ghost) {
-		var exitPosition = house().door().entryPosition();
-		if (ghost.position().y() <= exitPosition.y()) {
-			ghost.setPosition(exitPosition);
-			return true;
-		}
-		if (differsAtMost(ghost.velocity().length() / 2, ghost.position().x(), exitPosition.x())) {
-			// center reached: start rising
-			ghost.setPosition(exitPosition.x(), ghost.position().y());
-			ghost.setMoveAndWishDir(UP);
-		} else {
-			// move sidewards until middle axis is reached
-			ghost.setMoveAndWishDir(ghost.position().x() < exitPosition.x() ? RIGHT : LEFT);
-		}
-		ghost.move();
-		return false;
-	}
-
-	/**
-	 * Ghost moves down on the vertical axis to the center, then returns or moves sidewards to its seat.
-	 */
-	public boolean leadInsideHouse(Creature ghost, Vector2f targetPosition) {
-		var entryPosition = house.door().entryPosition();
-		if (ghost.position().almostEquals(entryPosition, ghost.velocity().length() / 2, 0)
-				&& ghost.moveDir() != Direction.DOWN) {
-			// just reached door, start sinking
-			ghost.setPosition(entryPosition);
-			ghost.setMoveAndWishDir(Direction.DOWN);
-		} else if (ghost.position().y() >= 17 * TS + HTS) {
-			ghost.setPosition(ghost.position().x(), 17 * TS + HTS);
-			if (targetPosition.x() < entryPosition.x()) {
-				ghost.setMoveAndWishDir(LEFT);
-			} else if (targetPosition.x() > entryPosition.x()) {
-				ghost.setMoveAndWishDir(RIGHT);
-			}
-		}
-		ghost.move();
-		boolean reachedTarget = differsAtMost(1, ghost.position().x(), targetPosition.x())
-				&& ghost.position().y() >= targetPosition.y();
-		if (reachedTarget) {
-			ghost.setPosition(targetPosition);
-		}
-		return reachedTarget;
 	}
 
 	/**
