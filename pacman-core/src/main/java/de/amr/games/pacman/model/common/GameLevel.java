@@ -447,17 +447,17 @@ public class GameLevel {
 
 	public Vector2f ghostInitialPosition(byte ghostID) {
 		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> world.houseDoor().entryPosition();
-		case Ghost.ID_PINK_GHOST -> world.houseSeatPositions().get(1);
-		case Ghost.ID_CYAN_GHOST -> world.houseSeatPositions().get(0);
-		case Ghost.ID_ORANGE_GHOST -> world.houseSeatPositions().get(2);
+		case Ghost.ID_RED_GHOST -> world.house().door().entryPosition();
+		case Ghost.ID_PINK_GHOST -> world.house().seatPositions().get(1);
+		case Ghost.ID_CYAN_GHOST -> world.house().seatPositions().get(0);
+		case Ghost.ID_ORANGE_GHOST -> world.house().seatPositions().get(2);
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
 	}
 
 	public Vector2f ghostRevivalPosition(byte ghostID) {
 		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> world.houseSeatPositions().get(1);
+		case Ghost.ID_RED_GHOST -> world.house().seatPositions().get(1);
 		case Ghost.ID_PINK_GHOST, Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> ghostInitialPosition(ghostID);
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
@@ -675,7 +675,7 @@ public class GameLevel {
 				LOG.trace("Global dot counter = %d", globalDotCounter);
 			}
 		} else {
-			ghosts(LOCKED).filter(ghost -> world.houseContains(ghost.tile())).findFirst()
+			ghosts(LOCKED).filter(ghost -> world.house().contains(ghost.tile())).findFirst()
 					.ifPresent(this::increaseGhostDotCounter);
 		}
 	}
@@ -690,7 +690,7 @@ public class GameLevel {
 		if (ghost == null) {
 			return Optional.empty();
 		}
-		if (!world.houseContains(ghost.tile())) {
+		if (!world.house().contains(ghost.tile())) {
 			return unlockGhost(ghost, "Already outside house");
 		}
 		var id = ghost.id();
@@ -713,7 +713,7 @@ public class GameLevel {
 	}
 
 	private Optional<GhostUnlockResult> unlockGhost(Ghost ghost, String reason, Object... args) {
-		if (!world.houseContains(ghost.tile())) {
+		if (!world.house().contains(ghost.tile())) {
 			ghost.setMoveAndWishDir(LEFT);
 			ghost.enterStateHuntingPac();
 		} else {

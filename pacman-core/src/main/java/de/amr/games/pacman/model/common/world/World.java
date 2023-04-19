@@ -100,16 +100,33 @@ public class World implements AnimatedEntity {
 	}
 
 	private final TileMap tileMap;
-	private final Vector2i houseTopLeftTile = new Vector2i(10, 15);
-	private final Vector2i houseSize = new Vector2i(8, 5);
-	private final Door houseDoor = new Door(new Vector2i(13, 15), new Vector2i(14, 15));
-	private final List<Vector2f> houseSeatPositions = List.of(//
-			halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
-	private List<Portal> portals;
-	private List<Vector2i> energizerTiles;
-	private int totalFoodCount;
+
+	public record House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2f> seatPositions) {
+
+		/**
+		 * @param tile some tile
+		 * @return tells if the given tile is part of this house
+		 */
+		public boolean contains(Vector2i tile) {
+			Vector2i bottomRightTileOutside = topLeftTile.plus(size());
+			return tile.x() >= topLeftTile.x() && tile.x() < bottomRightTileOutside.x() //
+					&& tile.y() >= topLeftTile.y() && tile.y() < bottomRightTileOutside.y();
+		}
+	}
+
+	private final House house = new House(//
+			new Vector2i(10, 15), //
+			new Vector2i(8, 5), new Door(new Vector2i(13, 15), new Vector2i(14, 15)), //
+			List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17))//
+	);
+
+	private final List<Portal> portals;
+	private final List<Vector2i> energizerTiles;
+
+	private final int totalFoodCount;
 	private int uneatenFoodCount;
 	private final BitSet eatenSet = new BitSet(TILES_X * TILES_Y);
+
 	private AnimationMap animationMap;
 
 	/**
@@ -123,49 +140,15 @@ public class World implements AnimatedEntity {
 		portals = findPortals();
 	}
 
-	/**
-	 * @return house size in tiles
-	 */
-	public Vector2i houseSize() {
-		return houseSize;
-	}
-
-	/**
-	 * @return house top-left tile position
-	 */
-	public Vector2i houseTopLeftTile() {
-		return houseTopLeftTile;
-	}
-
-	/**
-	 * @return the unique house door
-	 */
-	public Door houseDoor() {
-		return houseDoor;
-	}
-
-	/**
-	 * @return the positions inside the house where ghosts can take a seat
-	 */
-	public List<Vector2f> houseSeatPositions() {
-		return houseSeatPositions;
-	}
-
-	/**
-	 * @param tile some tile
-	 * @return tells if the given tile is part of this house
-	 */
-	public boolean houseContains(Vector2i tile) {
-		Vector2i bottomRightTileOutside = houseTopLeftTile.plus(houseSize());
-		return tile.x() >= houseTopLeftTile.x() && tile.x() < bottomRightTileOutside.x() //
-				&& tile.y() >= houseTopLeftTile.y() && tile.y() < bottomRightTileOutside.y();
+	public House house() {
+		return house;
 	}
 
 	/**
 	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
 	 */
 	public boolean leadOutsideHouse(Creature ghost) {
-		var exitPosition = houseDoor.entryPosition();
+		var exitPosition = house().door().entryPosition();
 		if (ghost.position().y() <= exitPosition.y()) {
 			ghost.setPosition(exitPosition);
 			return true;
@@ -186,7 +169,7 @@ public class World implements AnimatedEntity {
 	 * Ghost moves down on the vertical axis to the center, then returns or moves sidewards to its seat.
 	 */
 	public boolean leadInsideHouse(Creature ghost, Vector2f targetPosition) {
-		var entryPosition = houseDoor.entryPosition();
+		var entryPosition = house.door().entryPosition();
 		if (ghost.position().almostEquals(entryPosition, ghost.velocity().length() / 2, 0)
 				&& ghost.moveDir() != Direction.DOWN) {
 			// just reached door, start sinking
@@ -348,11 +331,11 @@ public class World implements AnimatedEntity {
 		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
 			return false; // exclude portal entries and tiles outside of the map
 		}
-		if (houseContains(tile)) {
+		if (house.contains(tile)) {
 			return false;
 		}
 		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
-		long numDoorNeighbors = tile.neighbors().filter(houseDoor::occupies).count();
+		long numDoorNeighbors = tile.neighbors().filter(house.door()::occupies).count();
 		return numWallNeighbors + numDoorNeighbors < 2;
 	}
 }
