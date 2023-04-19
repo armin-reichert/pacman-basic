@@ -101,22 +101,10 @@ public class World implements AnimatedEntity {
 
 	private final TileMap tileMap;
 
-	public record House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2f> seatPositions) {
-
-		/**
-		 * @param tile some tile
-		 * @return tells if the given tile is part of this house
-		 */
-		public boolean contains(Vector2i tile) {
-			Vector2i bottomRightTileOutside = topLeftTile.plus(size());
-			return tile.x() >= topLeftTile.x() && tile.x() < bottomRightTileOutside.x() //
-					&& tile.y() >= topLeftTile.y() && tile.y() < bottomRightTileOutside.y();
-		}
-	}
-
 	private final House house = new House(//
 			new Vector2i(10, 15), //
-			new Vector2i(8, 5), new Door(new Vector2i(13, 15), new Vector2i(14, 15)), //
+			new Vector2i(8, 5), //
+			new Door(new Vector2i(13, 15), new Vector2i(14, 15)), //
 			List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17))//
 	);
 
