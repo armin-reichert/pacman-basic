@@ -33,7 +33,6 @@ import de.amr.games.pacman.lib.anim.FrameSequence;
 
 /**
  * @author Armin Reichert
- *
  */
 public class FixedEntityAnimationTest {
 

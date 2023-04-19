@@ -31,7 +31,6 @@ import de.amr.games.pacman.lib.U;
 
 /**
  * @author Armin Reichert
- *
  */
 public class RandomNumberTest {
 

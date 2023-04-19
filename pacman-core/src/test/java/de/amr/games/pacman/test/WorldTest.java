@@ -14,6 +14,9 @@ import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
+/**
+ * @author Armin Reichert
+ */
 public class WorldTest {
 
 	@Test(expected = NullPointerException.class)
