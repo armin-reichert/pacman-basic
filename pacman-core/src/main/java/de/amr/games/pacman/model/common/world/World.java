@@ -166,9 +166,9 @@ public class World implements AnimatedEntity {
 	}
 
 	/**
-	 * @return house left-upper corner pixel position
+	 * @return house left-upper corner tile position
 	 */
-	public Vector2i housePosition() {
+	public Vector2i houseLeftUpperTile() {
 		return houseTopLeftTile;
 	}
 
@@ -191,10 +191,9 @@ public class World implements AnimatedEntity {
 	 * @return tells if the given tile is part of this house
 	 */
 	public boolean houseContains(Vector2i tile) {
-		Vector2i topLeftInside = housePosition();
-		Vector2i bottomRightOutside = topLeftInside.plus(houseSize());
-		return tile.x() >= topLeftInside.x() && tile.x() < bottomRightOutside.x() //
-				&& tile.y() >= topLeftInside.y() && tile.y() < bottomRightOutside.y();
+		Vector2i bottomRightTileOutside = houseTopLeftTile.plus(houseSize());
+		return tile.x() >= houseTopLeftTile.x() && tile.x() < bottomRightTileOutside.x() //
+				&& tile.y() >= houseTopLeftTile.y() && tile.y() < bottomRightTileOutside.y();
 	}
 
 	/**
