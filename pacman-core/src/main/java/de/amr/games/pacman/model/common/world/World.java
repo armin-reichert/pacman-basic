@@ -166,9 +166,9 @@ public class World implements AnimatedEntity {
 	}
 
 	/**
-	 * @return house left-upper corner tile position
+	 * @return house top-left tile position
 	 */
-	public Vector2i houseLeftUpperTile() {
+	public Vector2i houseTopLeftTile() {
 		return houseTopLeftTile;
 	}
 
