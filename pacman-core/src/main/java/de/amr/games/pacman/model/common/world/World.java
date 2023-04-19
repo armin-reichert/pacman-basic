@@ -57,14 +57,6 @@ public class World implements AnimatedEntity {
 	public static final int TILES_X = 28;
 	public static final int TILES_Y = 36;
 
-	//@formatter:off
-	private static final byte TILE_SPACE           = 0;
-	private static final byte TILE_WALL            = 1;
-	private static final byte TILE_TUNNEL          = 2;
-	private static final byte TILE_PELLET          = 3;
-	private static final byte TILE_ENERGIZER       = 4;
-	//@formatter:on
-
 	/** Tile size in pixels (8). */
 	public static final int TS = 8;
 
@@ -149,9 +141,9 @@ public class World implements AnimatedEntity {
 		for (int i = 0; i < data.length; ++i) {
 			for (int j = 0; j < firstRow.length; ++j) {
 				byte content = data[i][j];
-				if (content < TILE_SPACE || content > TILE_ENERGIZER) {
+				if (!Tile.isValid(content)) {
 					throw new IllegalArgumentException(
-							"Map has invalid content '%s' at row %d column %d".formatted(content, i, j));
+							"Invalid tile map content '%s' at row %d column %d".formatted(content, i, j));
 				}
 			}
 		}
@@ -247,7 +239,7 @@ public class World implements AnimatedEntity {
 	private ArrayList<Portal> findPortals() {
 		var portalList = new ArrayList<Portal>();
 		for (int row = 0; row < numRows(); ++row) {
-			if (content(row, 0) == TILE_TUNNEL && content(row, numCols() - 1) == TILE_TUNNEL) {
+			if (content(row, 0) == Tile.TUNNEL && content(row, numCols() - 1) == Tile.TUNNEL) {
 				portalList.add(new Portal(new Vector2i(0, row), new Vector2i(numCols() - 1, row), 2));
 			}
 		}
@@ -298,7 +290,7 @@ public class World implements AnimatedEntity {
 	 * @return the content at the given tile or empty space if outside world
 	 */
 	private byte content(Vector2i tile) {
-		return content(tile.y(), tile.x(), TILE_SPACE);
+		return content(tile.y(), tile.x(), Tile.SPACE);
 	}
 
 	private byte content(int row, int col) {
@@ -352,24 +344,24 @@ public class World implements AnimatedEntity {
 
 	public boolean isWall(Vector2i tile) {
 		checkTileNotNull(tile);
-		return content(tile) == TILE_WALL;
+		return content(tile) == Tile.WALL;
 	}
 
 	public boolean isTunnel(Vector2i tile) {
 		checkTileNotNull(tile);
-		return content(tile) == TILE_TUNNEL;
+		return content(tile) == Tile.TUNNEL;
 	}
 
 	public boolean isFoodTile(Vector2i tile) {
 		checkTileNotNull(tile);
 		byte data = content(tile);
-		return data == TILE_PELLET || data == TILE_ENERGIZER;
+		return data == Tile.PELLET || data == Tile.ENERGIZER;
 	}
 
 	public boolean isEnergizerTile(Vector2i tile) {
 		checkTileNotNull(tile);
 		byte data = content(tile);
-		return data == TILE_ENERGIZER;
+		return data == Tile.ENERGIZER;
 	}
 
 	public Stream<Vector2i> energizerTiles() {
@@ -388,7 +380,7 @@ public class World implements AnimatedEntity {
 		checkTileNotNull(tile);
 		if (insideBounds(tile)) {
 			byte data = content(tile);
-			return (data == TILE_PELLET || data == TILE_ENERGIZER) && !eatenSet.get(index(tile));
+			return (data == Tile.PELLET || data == Tile.ENERGIZER) && !eatenSet.get(index(tile));
 		}
 		return false;
 	}
