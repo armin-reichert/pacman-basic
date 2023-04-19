@@ -77,6 +77,16 @@ public class World implements AnimatedEntity {
 	public static final int HTS = 4;
 
 	/**
+	 * The ghosthouse as it looks in the Arcade version of Pac-Man and Ms. Pac-Man.
+	 */
+	private static final House ARCADE_HOUSE = new House(//
+			new Vector2i(10, 15), // top-left corner
+			new Vector2i(8, 5), // size in tiles
+			new Door(new Vector2i(13, 15), new Vector2i(14, 15)), //
+			List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17))//
+	);
+
+	/**
 	 * @param numTiles number of tiles
 	 * @return pixels corresponding to the given number of tiles
 	 */
@@ -125,14 +135,7 @@ public class World implements AnimatedEntity {
 	}
 
 	private final TileMap tileMap;
-
-	private final House house = new House(//
-			new Vector2i(10, 15), //
-			new Vector2i(8, 5), //
-			new Door(new Vector2i(13, 15), new Vector2i(14, 15)), //
-			List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17))//
-	);
-
+	private final House house = ARCADE_HOUSE;
 	private final List<Portal> portals;
 	private final List<Vector2i> energizerTiles;
 
