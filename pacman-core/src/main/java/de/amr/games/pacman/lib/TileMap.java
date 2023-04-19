@@ -43,6 +43,24 @@ public class TileMap {
 		return content[0].length;
 	}
 
+	public byte content(int row, int col) {
+		if (!insideBounds(row, col)) {
+			throwOutOfBounds(row, col);
+		}
+		return content[row][col];
+	}
+
+	public byte content(int row, int col, byte defaultContent) {
+		if (!insideBounds(row, col)) {
+			return defaultContent;
+		}
+		return content[row][col];
+	}
+
+	private boolean insideBounds(int row, int col) {
+		return 0 <= row && row < numRows() && 0 <= col && col < numCols();
+	}
+
 	private byte[][] validate(byte[][] data) {
 		if (data == null) {
 			throw new IllegalArgumentException("Map data missing");
@@ -60,24 +78,6 @@ public class TileMap {
 			}
 		}
 		return data;
-	}
-
-	public byte content(int row, int col) {
-		if (!insideBounds(row, col)) {
-			throwOutOfBounds(row, col);
-		}
-		return content[row][col];
-	}
-
-	public byte content(int row, int col, byte defaultContent) {
-		if (!insideBounds(row, col)) {
-			return defaultContent;
-		}
-		return content[row][col];
-	}
-
-	public boolean insideBounds(int row, int col) {
-		return 0 <= row && row < numRows() && 0 <= col && col < numCols();
 	}
 
 	private void throwOutOfBounds(int row, int col) {
