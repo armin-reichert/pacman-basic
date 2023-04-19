@@ -23,7 +23,7 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller.pacman;
 
-import static de.amr.games.pacman.model.common.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.toPx;
 
 import java.util.stream.Stream;
 
@@ -91,7 +91,7 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 		@Override
 		public void onEnter(PacManIntroData ctx) {
 			timer.restartIndefinitely();
-			ctx.pacMan.setPosition(t(36), t(20));
+			ctx.pacMan.setPosition(toPx(36), toPx(20));
 			ctx.pacMan.setMoveDir(Direction.LEFT);
 			ctx.pacMan.setPixelSpeed(PacManIntroData.CHASING_SPEED);
 			ctx.pacMan.show();
@@ -109,11 +109,11 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 		@Override
 		public void onUpdate(PacManIntroData ctx) {
 			// Pac-Man reaches the energizer
-			if (ctx.pacMan.position().x() <= t(PacManIntroData.LEFT_TILE)) {
+			if (ctx.pacMan.position().x() <= toPx(PacManIntroData.LEFT_TILE)) {
 				controller.changeState(PacManIntroState.CHASING_GHOSTS);
 			}
 			// ghosts already reverse direction before Pac-man eats the energizer and turns right!
-			else if (ctx.pacMan.position().x() <= t(PacManIntroData.LEFT_TILE) + 4) {
+			else if (ctx.pacMan.position().x() <= toPx(PacManIntroData.LEFT_TILE) + 4) {
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterStateFrightened();
 					ghost.selectAndRunAnimation(GameModel.AK_GHOST_BLUE);

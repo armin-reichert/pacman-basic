@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
-import static de.amr.games.pacman.model.common.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.toPx;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.IntermissionData;
@@ -70,9 +70,9 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 
 	public static class IntermissionData {
 		public final GameController gameController;
-		public final int upperY = t(12);
-		public final int middleY = t(18);
-		public final int lowerY = t(24);
+		public final int upperY = toPx(12);
+		public final int middleY = toPx(18);
+		public final int lowerY = toPx(24);
 		public final float pacSpeedChased = 1.125f;
 		public final float pacSpeedRising = 0.75f;
 		public final float ghostSpeedAfterColliding = 0.3f;
@@ -97,30 +97,30 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				timer.resetSeconds(2);
 				timer.start();
 				ctx.clapperboard = new Clapperboard(1, "THEY MEET");
-				ctx.clapperboard.setPosition(t(3), t(10));
+				ctx.clapperboard.setPosition(toPx(3), toPx(10));
 				ctx.clapperboard.setVisible(true);
 
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.setPosition(-t(2), ctx.upperY);
+				ctx.pacMan.setPosition(-toPx(2), ctx.upperY);
 				ctx.pacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.inky = new Ghost(Ghost.ID_CYAN_GHOST, "Inky");
 				ctx.inky.setMoveAndWishDir(Direction.RIGHT);
-				ctx.inky.setPosition(ctx.pacMan.position().minus(t(6), 0));
+				ctx.inky.setPosition(ctx.pacMan.position().minus(toPx(6), 0));
 				ctx.inky.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
 				ctx.inky.show();
 
 				ctx.msPac = new Pac("Ms. Pac-Man");
 				ctx.msPac.setMoveDir(Direction.LEFT);
-				ctx.msPac.setPosition(t(30), ctx.lowerY);
+				ctx.msPac.setPosition(toPx(30), ctx.lowerY);
 				ctx.msPac.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.msPac.show();
 
 				ctx.pinky = new Ghost(ID_PINK_GHOST, "Pinky");
 				ctx.pinky.setMoveAndWishDir(Direction.LEFT);
-				ctx.pinky.setPosition(ctx.msPac.position().plus(t(6), 0));
+				ctx.pinky.setPosition(ctx.msPac.position().plus(toPx(6), 0));
 				ctx.pinky.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
 				ctx.pinky.show();
 
@@ -151,7 +151,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 
 			@Override
 			public void onUpdate(IntermissionData ctx) {
-				if (ctx.inky.position().x() > t(30)) {
+				if (ctx.inky.position().x() > toPx(30)) {
 					intermission.changeState(IntermissionState.COMING_TOGETHER);
 					return;
 				}
@@ -169,16 +169,16 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 		COMING_TOGETHER {
 			@Override
 			public void onEnter(IntermissionData ctx) {
-				ctx.msPac.setPosition(t(-3), ctx.middleY);
+				ctx.msPac.setPosition(toPx(-3), ctx.middleY);
 				ctx.msPac.setMoveDir(Direction.RIGHT);
 
-				ctx.pinky.setPosition(ctx.msPac.position().minus(t(5), 0));
+				ctx.pinky.setPosition(ctx.msPac.position().minus(toPx(5), 0));
 				ctx.pinky.setMoveAndWishDir(Direction.RIGHT);
 
-				ctx.pacMan.setPosition(t(31), ctx.middleY);
+				ctx.pacMan.setPosition(toPx(31), ctx.middleY);
 				ctx.pacMan.setMoveDir(Direction.LEFT);
 
-				ctx.inky.setPosition(ctx.pacMan.position().plus(t(5), 0));
+				ctx.inky.setPosition(ctx.pacMan.position().plus(toPx(5), 0));
 				ctx.inky.setMoveAndWishDir(Direction.LEFT);
 			}
 
@@ -190,14 +190,14 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				}
 				// Pac-Man and Ms. Pac-Man meet?
 				else if (ctx.pacMan.moveDir() == Direction.LEFT
-						&& ctx.pacMan.position().x() - ctx.msPac.position().x() < t(2)) {
+						&& ctx.pacMan.position().x() - ctx.msPac.position().x() < toPx(2)) {
 					ctx.pacMan.setMoveDir(Direction.UP);
 					ctx.pacMan.setPixelSpeed(ctx.pacSpeedRising);
 					ctx.msPac.setMoveDir(Direction.UP);
 					ctx.msPac.setPixelSpeed(ctx.pacSpeedRising);
 				}
 				// Inky and Pinky collide?
-				else if (ctx.inky.moveDir() == Direction.LEFT && ctx.inky.position().x() - ctx.pinky.position().x() < t(2)) {
+				else if (ctx.inky.moveDir() == Direction.LEFT && ctx.inky.position().x() - ctx.pinky.position().x() < toPx(2)) {
 					ctx.inky.setMoveAndWishDir(Direction.RIGHT);
 					ctx.inky.setPixelSpeed(ctx.ghostSpeedAfterColliding);
 					ctx.inky.setVelocity(ctx.inky.velocity().minus(0, 2.0f));
@@ -244,7 +244,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				ctx.pinky.setPixelSpeed(0);
 				ctx.pinky.hide();
 				ctx.heart.setPosition((ctx.pacMan.position().x() + ctx.msPac.position().x()) / 2,
-						ctx.pacMan.position().y() - t(2));
+						ctx.pacMan.position().y() - toPx(2));
 				ctx.heart.show();
 			}
 

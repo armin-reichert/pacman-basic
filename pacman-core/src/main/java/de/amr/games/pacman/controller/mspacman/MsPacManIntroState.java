@@ -29,7 +29,7 @@ import static de.amr.games.pacman.controller.mspacman.MsPacManIntroData.MS_PACMA
 import static de.amr.games.pacman.controller.mspacman.MsPacManIntroData.TURNING_POSITION;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
-import static de.amr.games.pacman.model.common.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.toPx;
 
 import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.lib.anim.Animated;
@@ -49,13 +49,13 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		@Override
 		public void onEnter(MsPacManIntroData ctx) {
 			ctx.lightsTimer.restartIndefinitely();
-			ctx.msPacMan.setPosition(t(34), TURNING_POSITION.y());
+			ctx.msPacMan.setPosition(toPx(34), TURNING_POSITION.y());
 			ctx.msPacMan.setMoveDir(LEFT);
 			ctx.msPacMan.setPixelSpeed(GUYS_SPEED);
 			ctx.msPacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 			ctx.msPacMan.show();
 			ctx.ghosts.forEach(ghost -> {
-				ghost.setPosition(t(34), TURNING_POSITION.y());
+				ghost.setPosition(toPx(34), TURNING_POSITION.y());
 				ghost.setMoveAndWishDir(LEFT);
 				ghost.setPixelSpeed(GUYS_SPEED);
 				ghost.enterStateHuntingPac();

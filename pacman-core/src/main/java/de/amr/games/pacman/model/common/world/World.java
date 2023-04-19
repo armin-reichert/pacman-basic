@@ -56,20 +56,23 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class World implements AnimatedEntity {
 
+	/** World size in x direction in tiles. */
 	public static final int TILES_X = 28;
+
+	/** World size in y direction in tiles. */
 	public static final int TILES_Y = 36;
 
-	/** Tile size in pixels (8). */
+	/** Tile size (8px). */
 	public static final int TS = 8;
 
-	/** Half tile size in pixels (4). */
+	/** Half tile size (4px). */
 	public static final int HTS = 4;
 
 	/**
 	 * @param numTiles number of tiles
 	 * @return pixels corresponding to the given number of tiles
 	 */
-	public static int t(int numTiles) {
+	public static int toPx(int numTiles) {
 		return numTiles * TS;
 	}
 
