@@ -191,10 +191,10 @@ public class World implements AnimatedEntity {
 	 * @return tells if the given tile is part of this house
 	 */
 	public boolean houseContains(Vector2i tile) {
-		Vector2i topLeft = housePosition();
-		Vector2i bottomRightExclusive = topLeft.plus(houseSize());
-		return tile.x() >= topLeft.x() && tile.x() < bottomRightExclusive.x() //
-				&& tile.y() >= topLeft.y() && tile.y() < bottomRightExclusive.y();
+		Vector2i topLeftInside = housePosition();
+		Vector2i bottomRightOutside = topLeftInside.plus(houseSize());
+		return tile.x() >= topLeftInside.x() && tile.x() < bottomRightOutside.x() //
+				&& tile.y() >= topLeftInside.y() && tile.y() < bottomRightOutside.y();
 	}
 
 	/**
