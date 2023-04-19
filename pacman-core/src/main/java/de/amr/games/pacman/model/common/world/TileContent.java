@@ -26,9 +26,8 @@ package de.amr.games.pacman.model.common.world;
 
 /**
  * @author Armin Reichert
- *
  */
-public class Tile {
+public class TileContent {
 
 	//@formatter:off
 	public static final byte SPACE           = 0;

@@ -46,9 +46,10 @@ import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
- * The world used in the Arcade versions of Pac-Man and Ms. Pac-Man. Maze structure varies but ghost house
- * structure/position, ghost starting positions/directions and Pac-Man starting position/direction are the same for each
- * world.
+ * The tiled world used in the Arcade versions of Pac-Man and Ms. Pac-Man.
+ * <p>
+ * Maze structure varies, but ghost house, ghost starting positions/directions and Pac-Man starting position/direction
+ * are the same for each level/world.
  * 
  * @author Armin Reichert
  */
@@ -98,8 +99,7 @@ public class World implements AnimatedEntity {
 		return new Vector2f(tileX * TS + HTS, tileY * TS);
 	}
 
-	private final byte[][] tileMap;
-	private AnimationMap animationMap;
+	private final TileMap tileMap;
 	private final Vector2i houseTopLeftTile = new Vector2i(10, 15);
 	private final Vector2i houseSize = new Vector2i(8, 5);
 	private final Door houseDoor = new Door(new Vector2i(13, 15), new Vector2i(14, 15));
@@ -110,44 +110,17 @@ public class World implements AnimatedEntity {
 	private int totalFoodCount;
 	private int uneatenFoodCount;
 	private final BitSet eatenSet = new BitSet(TILES_X * TILES_Y);
+	private AnimationMap animationMap;
 
 	/**
 	 * @param tileMapData byte-array of tile map data
 	 */
 	public World(byte[][] tileMapData) {
-		tileMap = validateTileMapData(tileMapData);
+		tileMap = new TileMap(tileMapData);
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
 		portals = findPortals();
-	}
-
-	private byte[][] validateTileMapData(byte[][] data) {
-		if (data == null) {
-			throw new IllegalArgumentException("Map data missing");
-		}
-		if (data.length == 0) {
-			throw new IllegalArgumentException("Map data empty");
-		}
-		var firstRow = data[0];
-		if (firstRow.length == 0) {
-			throw new IllegalArgumentException("Map data empty");
-		}
-		for (int i = 0; i < data.length; ++i) {
-			if (data[i].length != firstRow.length) {
-				throw new IllegalArgumentException("Map has differently sized rows");
-			}
-		}
-		for (int i = 0; i < data.length; ++i) {
-			for (int j = 0; j < firstRow.length; ++j) {
-				byte content = data[i][j];
-				if (!Tile.isValid(content)) {
-					throw new IllegalArgumentException(
-							"Invalid tile map content '%s' at row %d column %d".formatted(content, i, j));
-				}
-			}
-		}
-		return data;
 	}
 
 	/**
@@ -239,7 +212,7 @@ public class World implements AnimatedEntity {
 	private ArrayList<Portal> findPortals() {
 		var portalList = new ArrayList<Portal>();
 		for (int row = 0; row < numRows(); ++row) {
-			if (content(row, 0) == Tile.TUNNEL && content(row, numCols() - 1) == Tile.TUNNEL) {
+			if (tileMap.content(row, 0) == TileContent.TUNNEL && tileMap.content(row, numCols() - 1) == TileContent.TUNNEL) {
 				portalList.add(new Portal(new Vector2i(0, row), new Vector2i(numCols() - 1, row), 2));
 			}
 		}
@@ -285,37 +258,6 @@ public class World implements AnimatedEntity {
 		return 0 <= x && x < numCols() * TS && 0 <= y && y < numRows() * TS;
 	}
 
-	/**
-	 * @param tile some tile (may be outside world bound)
-	 * @return the content at the given tile or empty space if outside world
-	 */
-	private byte content(Vector2i tile) {
-		return content(tile.y(), tile.x(), Tile.SPACE);
-	}
-
-	private byte content(int row, int col) {
-		if (!insideBounds(row, col)) {
-			throwOutOfBoundsError(row, col);
-		}
-		return tileMap[row][col];
-	}
-
-	private byte content(int row, int col, byte defaultContent) {
-		if (!insideBounds(row, col)) {
-			return defaultContent;
-		}
-		return tileMap[row][col];
-	}
-
-	private boolean insideBounds(int row, int col) {
-		return 0 <= row && row < numRows() && 0 <= col && col < numCols();
-	}
-
-	private void throwOutOfBoundsError(int row, int col) {
-		throw new IndexOutOfBoundsException(
-				"Coordinate (%d, %d) is outside of map bounds (%d rows, %d cols)".formatted(row, col, numRows(), numCols()));
-	}
-
 	@Override
 	public Optional<AnimationMap> animations() {
 		return Optional.ofNullable(animationMap);
@@ -344,24 +286,23 @@ public class World implements AnimatedEntity {
 
 	public boolean isWall(Vector2i tile) {
 		checkTileNotNull(tile);
-		return content(tile) == Tile.WALL;
+		return tileMap.content(tile) == TileContent.WALL;
 	}
 
 	public boolean isTunnel(Vector2i tile) {
 		checkTileNotNull(tile);
-		return content(tile) == Tile.TUNNEL;
+		return tileMap.content(tile) == TileContent.TUNNEL;
 	}
 
 	public boolean isFoodTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		byte data = content(tile);
-		return data == Tile.PELLET || data == Tile.ENERGIZER;
+		byte data = tileMap.content(tile);
+		return data == TileContent.PELLET || data == TileContent.ENERGIZER;
 	}
 
 	public boolean isEnergizerTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		byte data = content(tile);
-		return data == Tile.ENERGIZER;
+		return tileMap.content(tile) == TileContent.ENERGIZER;
 	}
 
 	public Stream<Vector2i> energizerTiles() {
@@ -379,8 +320,8 @@ public class World implements AnimatedEntity {
 	public boolean containsFood(Vector2i tile) {
 		checkTileNotNull(tile);
 		if (insideBounds(tile)) {
-			byte data = content(tile);
-			return (data == Tile.PELLET || data == Tile.ENERGIZER) && !eatenSet.get(index(tile));
+			byte data = tileMap.content(tile);
+			return (data == TileContent.PELLET || data == TileContent.ENERGIZER) && !eatenSet.get(index(tile));
 		}
 		return false;
 	}
