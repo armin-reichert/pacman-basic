@@ -113,6 +113,20 @@ public class World implements AnimatedEntity {
 		return new Vector2f(tileX * TS + HTS, tileY * TS);
 	}
 
+	private static List<Portal> findPortals(TileMap tileMap) {
+		var portals = new ArrayList<Portal>();
+		for (int row = 0; row < tileMap.numRows(); ++row) {
+			var leftBorderTile = new Vector2i(0, row);
+			var rightBorderTile = new Vector2i(tileMap.numCols() - 1, row);
+			if (tileMap.content(row, 0) == TileContent.TUNNEL
+					&& tileMap.content(row, tileMap.numCols() - 1) == TileContent.TUNNEL) {
+				portals.add(new Portal(leftBorderTile, rightBorderTile, 2));
+			}
+		}
+		portals.trimToSize();
+		return portals;
+	}
+
 	private final TileMap tileMap;
 
 	private final House house = new House(//
@@ -136,10 +150,10 @@ public class World implements AnimatedEntity {
 	 */
 	public World(byte[][] tileMapData) {
 		tileMap = new TileMap(tileMapData);
+		portals = findPortals(tileMap);
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
-		portals = findPortals();
 	}
 
 	public House house() {
@@ -192,17 +206,6 @@ public class World implements AnimatedEntity {
 			ghost.setPosition(targetPosition);
 		}
 		return reachedTarget;
-	}
-
-	private ArrayList<Portal> findPortals() {
-		var portalList = new ArrayList<Portal>();
-		for (int row = 0; row < numRows(); ++row) {
-			if (tileMap.content(row, 0) == TileContent.TUNNEL && tileMap.content(row, numCols() - 1) == TileContent.TUNNEL) {
-				portalList.add(new Portal(new Vector2i(0, row), new Vector2i(numCols() - 1, row), 2));
-			}
-		}
-		portalList.trimToSize();
-		return portalList;
 	}
 
 	/**
@@ -273,29 +276,30 @@ public class World implements AnimatedEntity {
 	 * @param tile some tile (may be outside world bound)
 	 * @return the content at the given tile or empty space if outside world
 	 */
-	private byte content(Vector2i tile) {
+	private byte contentOrSpace(Vector2i tile) {
+		// Note: content is stored row-wise, so use (y,x) to index content
 		return tileMap.content(tile.y(), tile.x(), TileContent.SPACE);
 	}
 
 	public boolean isWall(Vector2i tile) {
 		checkTileNotNull(tile);
-		return content(tile) == TileContent.WALL;
+		return contentOrSpace(tile) == TileContent.WALL;
 	}
 
 	public boolean isTunnel(Vector2i tile) {
 		checkTileNotNull(tile);
-		return content(tile) == TileContent.TUNNEL;
+		return contentOrSpace(tile) == TileContent.TUNNEL;
 	}
 
 	public boolean isFoodTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		byte data = content(tile);
+		byte data = contentOrSpace(tile);
 		return data == TileContent.PELLET || data == TileContent.ENERGIZER;
 	}
 
 	public boolean isEnergizerTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		return content(tile) == TileContent.ENERGIZER;
+		return contentOrSpace(tile) == TileContent.ENERGIZER;
 	}
 
 	public Stream<Vector2i> energizerTiles() {
@@ -313,7 +317,7 @@ public class World implements AnimatedEntity {
 	public boolean containsFood(Vector2i tile) {
 		checkTileNotNull(tile);
 		if (insideBounds(tile)) {
-			byte data = content(tile);
+			byte data = contentOrSpace(tile);
 			return (data == TileContent.PELLET || data == TileContent.ENERGIZER) && !eatenSet.get(index(tile));
 		}
 		return false;
