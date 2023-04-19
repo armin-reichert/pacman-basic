@@ -386,7 +386,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		checkLevelNotNull(level);
 		state = RETURNING_TO_HOUSE;
 		/// TODO what if ghosthouse has more than one door?
-		setTargetTile(level.world().houseDoor().entryTile());
+		setTargetTile(level.world().houseDoor().leftWing());
 		selectAndRunAnimation(GameModel.AK_GHOST_EYES);
 	}
 

@@ -191,7 +191,7 @@ public class World implements AnimatedEntity {
 	 * @return tells if tile is occupied by a door
 	 */
 	public boolean houseDoorAt(Vector2i tile) {
-		return houseDoor.contains(tile);
+		return houseDoor.occupies(tile);
 	}
 
 	/**
@@ -428,7 +428,7 @@ public class World implements AnimatedEntity {
 			return false;
 		}
 		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
-		long numDoorNeighbors = tile.neighbors().filter(houseDoor::contains).count();
+		long numDoorNeighbors = tile.neighbors().filter(houseDoor::occupies).count();
 		return numWallNeighbors + numDoorNeighbors < 2;
 	}
 }

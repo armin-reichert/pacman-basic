@@ -24,10 +24,8 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -35,57 +33,20 @@ import de.amr.games.pacman.lib.math.Vector2i;
 /**
  * @author Armin Reichert
  */
-public class Door {
-
-	private Vector2i[] tiles;
-
-	public Door(Vector2i... tiles) {
-		this.tiles = tiles;
-	}
-
-	/**
-	 * @return left upper tile
-	 */
-	public Vector2i position() {
-		return tiles[0];
-	}
-
-	/**
-	 * @return size in tiles
-	 */
-	public int size() {
-		return tiles.length;
-	}
-
-	/**
-	 * @return stream of all tiles occupied by this door
-	 */
-	public Stream<Vector2i> tiles() {
-		return Arrays.stream(tiles);
-	}
+public record Door(Vector2i leftWing, Vector2i rightWing) {
 
 	/**
 	 * @param tile some tile
 	 * @return tells if the given tile is occupied by this door
 	 */
-	public boolean contains(Vector2i tile) {
-		return tiles().anyMatch(t -> t.equals(tile));
+	public boolean occupies(Vector2i tile) {
+		return leftWing.equals(tile) || rightWing.equals(tile);
 	}
 
 	/**
 	 * @return position where ghost can enter the door
 	 */
 	public Vector2f entryPosition() {
-		// TODO this is only correct for a horizontal door entered from above
-		float x = tiles[0].x() * TS + 0.5f * tiles.length * TS - World.HTS;
-		float y = (tiles[0].y() - 1) * TS;
-		return new Vector2f(x, y);
-	}
-
-	/**
-	 * @return tile where door can be entered
-	 */
-	public Vector2i entryTile() {
-		return tiles[0].plus(tiles.length / 2, 0);
+		return new Vector2f(rightWing.x() * TS - HTS, (rightWing.y() - 1) * TS);
 	}
 }
