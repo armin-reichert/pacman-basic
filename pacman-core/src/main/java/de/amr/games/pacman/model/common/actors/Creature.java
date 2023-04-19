@@ -221,7 +221,7 @@ public abstract class Creature extends Entity {
 		checkTileNotNull(tile);
 		checkLevelNotNull(level);
 		if (level.world().insideBounds(tile)) {
-			return !level.world().isWall(tile) && !level.world().houseDoorAt(tile);
+			return !level.world().isWall(tile) && !level.world().houseDoor().occupies(tile);
 		}
 		return level.world().belongsToPortal(tile);
 	}

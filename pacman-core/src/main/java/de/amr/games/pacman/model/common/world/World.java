@@ -188,14 +188,6 @@ public class World implements AnimatedEntity {
 
 	/**
 	 * @param tile some tile
-	 * @return tells if tile is occupied by a door
-	 */
-	public boolean houseDoorAt(Vector2i tile) {
-		return houseDoor.occupies(tile);
-	}
-
-	/**
-	 * @param tile some tile
 	 * @return tells if the given tile is part of this house
 	 */
 	public boolean houseContains(Vector2i tile) {
