@@ -111,13 +111,13 @@ public class World implements AnimatedEntity {
 	private final Vector2i houseTopLeftTile = new Vector2i(10, 15);
 	private final Vector2i houseSize = new Vector2i(8, 5);
 	private final Door houseDoor = new Door(new Vector2i(13, 15), 2);
-	private final List<Vector2f> seatPositions = List.of(//
+	private final List<Vector2f> houseSeatPositions = List.of(//
 			halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17));
 	private List<Portal> portals;
 	private List<Vector2i> energizerTiles;
 	private int totalFoodCount;
 	private int uneatenFoodCount;
-	private final BitSet eatenSet;
+	private final BitSet eatenSet = new BitSet(TILES_X * TILES_Y);
 
 	/**
 	 * @param tileMapData byte-array of tile map data
@@ -128,7 +128,6 @@ public class World implements AnimatedEntity {
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
 		portals = findPortals();
-		eatenSet = new BitSet(numRows() * numCols());
 	}
 
 	private byte[][] validateTileMapData(byte[][] data) {
@@ -184,14 +183,14 @@ public class World implements AnimatedEntity {
 	 * @return the positions inside the house where ghosts can take a seat
 	 */
 	public List<Vector2f> houseSeatPositions() {
-		return seatPositions;
+		return houseSeatPositions;
 	}
 
 	/**
 	 * @param tile some tile
 	 * @return tells if tile is occupied by a door
 	 */
-	public boolean houseHasDoorAt(Vector2i tile) {
+	public boolean houseDoorAt(Vector2i tile) {
 		return houseDoor.contains(tile);
 	}
 
