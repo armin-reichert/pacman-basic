@@ -329,15 +329,15 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private boolean moveOutsideHouse(House house) {
 		var endPosition = house.door().entryPosition();
 		if (position().y() <= endPosition.y()) {
-			setPosition(endPosition); // align vertically at house entry
+			setPosition(endPosition); // valign at house entry
 			return true;
 		}
 		if (differsAtMost(velocity().length() / 2, position().x(), house.center().x())) {
-			// center reached: start rising
+			// center reached: halign and start rising
 			setPosition(house.center().x(), position().y());
 			setMoveAndWishDir(UP);
 		} else {
-			// move sidewards until middle axis is reached
+			// move sidewards until center axis is reached
 			setMoveAndWishDir(position().x() < house.center().x() ? RIGHT : LEFT);
 		}
 		move();
