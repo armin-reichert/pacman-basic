@@ -24,8 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib;
 
-import de.amr.games.pacman.model.common.world.TileContent;
-
 /**
  * @author Armin Reichert
  */
@@ -59,14 +57,6 @@ public class TileMap {
 		for (int i = 0; i < data.length; ++i) {
 			if (data[i].length != firstRow.length) {
 				throw new IllegalArgumentException("Map has differently sized rows");
-			}
-		}
-		for (int i = 0; i < data.length; ++i) {
-			for (int j = 0; j < firstRow.length; ++j) {
-				byte b = data[i][j];
-				if (!TileContent.isValid(b)) {
-					throw new IllegalArgumentException("Invalid tile map content '%s' at row %d column %d".formatted(b, i, j));
-				}
 			}
 		}
 		return data;

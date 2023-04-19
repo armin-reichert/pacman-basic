@@ -56,6 +56,16 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class World implements AnimatedEntity {
 
+	private static class TileContent {
+		//@formatter:off
+		public static final byte SPACE           = 0;
+		public static final byte WALL            = 1;
+		public static final byte TUNNEL          = 2;
+		public static final byte PELLET          = 3;
+		public static final byte ENERGIZER       = 4;
+		//@formatter:on
+	}
+
 	/** World size in x direction in tiles. */
 	public static final int TILES_X = 28;
 
