@@ -327,18 +327,18 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
 	 */
 	private boolean moveOutsideHouse(House house) {
-		var exitPosition = house.door().entryPosition();
-		if (position().y() <= exitPosition.y()) {
-			setPosition(exitPosition);
+		var endPosition = house.door().entryPosition();
+		if (position().y() <= endPosition.y()) {
+			setPosition(endPosition); // align vertically at house entry
 			return true;
 		}
-		if (differsAtMost(velocity().length() / 2, position().x(), exitPosition.x())) {
+		if (differsAtMost(velocity().length() / 2, position().x(), house.center().x())) {
 			// center reached: start rising
-			setPosition(exitPosition.x(), position().y());
+			setPosition(house.center().x(), position().y());
 			setMoveAndWishDir(UP);
 		} else {
 			// move sidewards until middle axis is reached
-			setMoveAndWishDir(position().x() < exitPosition.x() ? RIGHT : LEFT);
+			setMoveAndWishDir(position().x() < house.center().x() ? RIGHT : LEFT);
 		}
 		move();
 		return false;
@@ -350,14 +350,14 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private boolean moveInsideHouse(House house, Vector2f targetPosition) {
 		var entryPosition = house.door().entryPosition();
 		if (position().almostEquals(entryPosition, velocity().length() / 2, 0) && moveDir() != Direction.DOWN) {
-			// just reached door, start sinking
+			// near entry, start entering
 			setPosition(entryPosition);
 			setMoveAndWishDir(Direction.DOWN);
 		} else if (position().y() >= house.center().y()) {
 			setPosition(position().x(), house.center().y());
-			if (targetPosition.x() < entryPosition.x()) {
+			if (targetPosition.x() < house.center().x()) {
 				setMoveAndWishDir(LEFT);
-			} else if (targetPosition.x() > entryPosition.x()) {
+			} else if (targetPosition.x() > house.center().x()) {
 				setMoveAndWishDir(RIGHT);
 			}
 		}
