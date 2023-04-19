@@ -29,11 +29,17 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.model.common.Validator;
 
 /**
  * @author Armin Reichert
  */
 public record Door(Vector2i leftWing, Vector2i rightWing) {
+
+	public Door {
+		Validator.checkNotNull(leftWing);
+		Validator.checkNotNull(rightWing);
+	}
 
 	/**
 	 * @param tile some tile

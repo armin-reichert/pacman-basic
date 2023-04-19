@@ -23,10 +23,10 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  * 
  * @author Armin Reichert
  */
-public class TestFloorPlan {
+public class FloorPlanTest {
 
 	public static void main(String[] args) {
-		new TestFloorPlan().test();
+		new FloorPlanTest().test();
 	}
 
 	private static final Logger LOG = LogManager.getFormatterLogger();

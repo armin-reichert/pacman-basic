@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Armin Reichert
+Copyright (c) 2023 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,53 +24,33 @@ SOFTWARE.
 
 package de.amr.games.pacman.test;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
 
-import de.amr.games.pacman.lib.anim.FrameSequence;
+import de.amr.games.pacman.lib.U;
 
 /**
  * @author Armin Reichert
  *
  */
-public class TestFixedEntityAnimation {
+public class RandomNumberTest {
 
-	private FrameSequence<String> animation;
+	static final int N = 1_000_000;
 
-	@Before
-	public void setUp() {
-		animation = new FrameSequence<>("A", "B", "C");
+	@Test
+	public void testRandomInt() {
+		for (int i = 0; i < N; ++i) {
+			var number = U.randomInt(10, 100);
+			Assert.assertTrue(10 <= number && number < 100);
+		}
 	}
 
 	@Test
-	public void testInit() {
-		assertEquals(3, animation.numFrames());
-		assertEquals(0, animation.frameIndex());
-		assertEquals("A", animation.frame());
+	public void testRandomFloat() {
+		for (int i = 0; i < N; ++i) {
+			var number = U.randomFloat(10.0f, 100.0f);
+			Assert.assertTrue(10.0f <= number && number < 100.0f);
+		}
 	}
 
-	@Test
-	public void testAnimate() {
-		var frame = animation.animate();
-		assertEquals(3, animation.numFrames());
-		assertEquals(0, animation.frameIndex());
-		assertEquals("A", frame);
-	}
-
-	@Test
-	public void testSetFrameIndex() {
-		animation.setFrameIndex(2);
-		assertEquals(2, animation.frameIndex());
-		assertEquals("C", animation.frame());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testIllegalFrameIndex() {
-		animation.setFrameIndex(0);
-		animation.setFrameIndex(1);
-		animation.setFrameIndex(2);
-		animation.setFrameIndex(3);
-	}
 }
