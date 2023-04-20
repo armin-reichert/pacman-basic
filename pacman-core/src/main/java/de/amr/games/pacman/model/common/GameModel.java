@@ -37,7 +37,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,7 +55,6 @@ import de.amr.games.pacman.model.common.world.World;
 public abstract class GameModel {
 
 	protected static final Logger LOG = LogManager.getFormatterLogger();
-	protected static final Random RND = new Random();
 
 	/** Game loop speed in ticks/sec. */
 	public static final short FPS = 60;

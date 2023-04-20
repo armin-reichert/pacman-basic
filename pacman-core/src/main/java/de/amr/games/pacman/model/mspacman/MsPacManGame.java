@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
+import static de.amr.games.pacman.lib.Globals.RND;
 import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
 import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
