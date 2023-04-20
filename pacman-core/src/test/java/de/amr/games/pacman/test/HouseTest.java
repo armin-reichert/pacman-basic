@@ -24,6 +24,8 @@ SOFTWARE.
 
 package de.amr.games.pacman.test;
 
+import static de.amr.games.pacman.lib.Globals.HTS;
+
 import java.util.List;
 
 import org.junit.Assert;
@@ -47,7 +49,7 @@ public class HouseTest {
 			World.halfTileRightOf(5, 12), //
 			World.halfTileRightOf(7, 12), //
 			World.halfTileRightOf(9, 12));
-	static final Vector2f CENTER = World.halfTileRightOf(7, 12).plus(0, World.HTS);
+	static final Vector2f CENTER = World.halfTileRightOf(7, 12).plus(0, HTS);
 
 	@Test(expected = NullPointerException.class)
 	public void testLeftDoorWingNotNull() {

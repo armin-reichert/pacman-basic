@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
-import static de.amr.games.pacman.model.common.world.World.toPx;
+import static de.amr.games.pacman.lib.Globals.TS;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionData;
@@ -65,9 +65,9 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 
 	public static class IntermissionData {
 		public final GameController gameController;
-		public final int upperY = toPx(12);
-		public final int middleY = toPx(18);
-		public final int lowerY = toPx(24);
+		public final int upperY = TS * (12);
+		public final int middleY = TS * (18);
+		public final int lowerY = TS * (24);
 		public Clapperboard clapperboard;
 		public Pac pacMan;
 		public Pac msPacMan;
@@ -84,7 +84,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 			public void onEnter(IntermissionData ctx) {
 				timer.restartIndefinitely();
 				ctx.clapperboard = new Clapperboard(2, "THE CHASE");
-				ctx.clapperboard.setPosition(toPx(3), toPx(10));
+				ctx.clapperboard.setPosition(TS * (3), TS * (10));
 				ctx.clapperboard.setVisible(true);
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
@@ -116,40 +116,40 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 			@Override
 			public void onUpdate(IntermissionData ctx) {
 				if (timer.atSecond(2.5)) {
-					ctx.pacMan.setPosition(-toPx(2), ctx.upperY);
+					ctx.pacMan.setPosition(-TS * (2), ctx.upperY);
 					ctx.pacMan.setMoveDir(Direction.RIGHT);
 					ctx.pacMan.setPixelSpeed(2.0f);
 					ctx.pacMan.show();
-					ctx.msPacMan.setPosition(-toPx(8), ctx.upperY);
+					ctx.msPacMan.setPosition(-TS * (8), ctx.upperY);
 					ctx.msPacMan.setMoveDir(Direction.RIGHT);
 					ctx.msPacMan.setPixelSpeed(2.0f);
 					ctx.msPacMan.show();
 				} else if (timer.atSecond(7)) {
-					ctx.pacMan.setPosition(toPx(36), ctx.lowerY);
+					ctx.pacMan.setPosition(TS * (36), ctx.lowerY);
 					ctx.pacMan.setMoveDir(Direction.LEFT);
 					ctx.pacMan.setPixelSpeed(2.0f);
-					ctx.msPacMan.setPosition(toPx(30), ctx.lowerY);
+					ctx.msPacMan.setPosition(TS * (30), ctx.lowerY);
 					ctx.msPacMan.setMoveDir(Direction.LEFT);
 					ctx.msPacMan.setPixelSpeed(2.0f);
 				} else if (timer.atSecond(11.5)) {
 					ctx.pacMan.setMoveDir(Direction.RIGHT);
 					ctx.pacMan.setPixelSpeed(2.0f);
-					ctx.msPacMan.setPosition(toPx(-8), ctx.middleY);
+					ctx.msPacMan.setPosition(TS * (-8), ctx.middleY);
 					ctx.msPacMan.setMoveDir(Direction.RIGHT);
 					ctx.msPacMan.setPixelSpeed(2.0f);
-					ctx.pacMan.setPosition(toPx(-2), ctx.middleY);
+					ctx.pacMan.setPosition(TS * (-2), ctx.middleY);
 				} else if (timer.atSecond(15.5)) {
-					ctx.pacMan.setPosition(toPx(42), ctx.upperY);
+					ctx.pacMan.setPosition(TS * (42), ctx.upperY);
 					ctx.pacMan.setMoveDir(Direction.LEFT);
 					ctx.pacMan.setPixelSpeed(4.0f);
-					ctx.msPacMan.setPosition(toPx(30), ctx.upperY);
+					ctx.msPacMan.setPosition(TS * (30), ctx.upperY);
 					ctx.msPacMan.setMoveDir(Direction.LEFT);
 					ctx.msPacMan.setPixelSpeed(4.0f);
 				} else if (timer.atSecond(16.5)) {
-					ctx.pacMan.setPosition(toPx(-2), ctx.lowerY);
+					ctx.pacMan.setPosition(TS * (-2), ctx.lowerY);
 					ctx.pacMan.setMoveDir(Direction.RIGHT);
 					ctx.pacMan.setPixelSpeed(4.0f);
-					ctx.msPacMan.setPosition(toPx(-14), ctx.lowerY);
+					ctx.msPacMan.setPosition(TS * (-14), ctx.lowerY);
 					ctx.msPacMan.setMoveDir(Direction.RIGHT);
 					ctx.msPacMan.setPixelSpeed(4.0f);
 				} else if (timer.atSecond(21)) {

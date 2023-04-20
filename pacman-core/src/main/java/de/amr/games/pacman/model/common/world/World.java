@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.lib.Globals.HTS;
+import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
 
@@ -58,17 +60,11 @@ public class World implements AnimatedEntity {
 	private static final byte ENERGIZER       = 4;
 	//@formatter:on
 
-	/** World size in x direction in tiles. */
+	/** World size in x-direction in tiles. */
 	public static final int TILES_X = 28;
 
-	/** World size in y direction in tiles. */
+	/** World size in y-direction in tiles. */
 	public static final int TILES_Y = 36;
-
-	/** Tile size (8px). */
-	public static final int TS = 8;
-
-	/** Half tile size (4px). */
-	public static final int HTS = 4;
 
 	/**
 	 * The ghosthouse as it looks in the Arcade version of Pac-Man and Ms. Pac-Man.
@@ -80,14 +76,6 @@ public class World implements AnimatedEntity {
 			List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17)), // seats
 			halfTileRightOf(13, 17).plus(0, HTS) // center
 	);
-
-	/**
-	 * @param numTiles number of tiles
-	 * @return pixels corresponding to the given number of tiles
-	 */
-	public static int toPx(int numTiles) {
-		return numTiles * TS;
-	}
 
 	/**
 	 * @param position a position

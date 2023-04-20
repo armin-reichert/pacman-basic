@@ -36,10 +36,6 @@ public record Vector2i(int x, int y) {
 
 	public static final Vector2i ZERO = new Vector2i(0, 0);
 
-	public static Vector2i v2i(int x, int y) {
-		return new Vector2i(x, y);
-	}
-
 	public Vector2i scaled(int s) {
 		return new Vector2i(s * x, s * y);
 	}

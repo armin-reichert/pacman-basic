@@ -23,9 +23,9 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller.mspacman;
 
-import static de.amr.games.pacman.lib.math.Vector2i.v2i;
-import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.toPx;
+import static de.amr.games.pacman.lib.Globals.HTS;
+import static de.amr.games.pacman.lib.Globals.TS;
+import static de.amr.games.pacman.lib.Globals.v2i;
 
 import java.util.List;
 
@@ -42,10 +42,10 @@ import de.amr.games.pacman.model.common.actors.Pac;
 public class MsPacManIntroData {
 	public final GameController gameController;
 	public static final float GUYS_SPEED = 1.1f;
-	public static final Vector2i BLINKY_END_TILE = v2i(toPx(8), toPx(11));
-	public static final Vector2i TURNING_POSITION = v2i(toPx(6), toPx(20)).plus(0, HTS);
-	public static final int MS_PACMAN_STOP_X = toPx(15);
-	public static final Vector2i TITLE_TILE = v2i(toPx(10), toPx(8));
+	public static final Vector2i BLINKY_END_TILE = v2i(TS * (8), TS * (11));
+	public static final Vector2i TURNING_POSITION = v2i(TS * (6), TS * (20)).plus(0, HTS);
+	public static final int MS_PACMAN_STOP_X = TS * (15);
+	public static final Vector2i TITLE_TILE = v2i(TS * (10), TS * (8));
 	public final Pulse blinking = new Pulse(30, true);
 	public final TickTimer lightsTimer = new TickTimer("lights-timer");
 	public final Pac msPacMan = new Pac("Ms. Pac-Man");

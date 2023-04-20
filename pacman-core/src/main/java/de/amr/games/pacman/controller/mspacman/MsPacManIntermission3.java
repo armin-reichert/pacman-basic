@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
-import static de.amr.games.pacman.model.common.world.World.toPx;
+import static de.amr.games.pacman.lib.Globals.TS;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionData;
@@ -69,7 +69,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 
 	public static class IntermissionData {
 		public final GameController gameController;
-		public final int groundY = toPx(24);
+		public final int groundY = TS * (24);
 		public Clapperboard clapperboard;
 		public Pac pacMan;
 		public Pac msPacMan;
@@ -90,7 +90,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 			public void onEnter(IntermissionData ctx) {
 				timer.restartIndefinitely();
 				ctx.clapperboard = new Clapperboard(3, "JUNIOR");
-				ctx.clapperboard.setPosition(toPx(3), toPx(10));
+				ctx.clapperboard.setPosition(TS * (3), TS * (10));
 				ctx.clapperboard.setVisible(true);
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
@@ -118,16 +118,16 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 				timer.restartIndefinitely();
 
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.setPosition(toPx(3), ctx.groundY - 4);
+				ctx.pacMan.setPosition(TS * (3), ctx.groundY - 4);
 				ctx.pacMan.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
-				ctx.msPacMan.setPosition(toPx(5), ctx.groundY - 4);
+				ctx.msPacMan.setPosition(TS * (5), ctx.groundY - 4);
 				ctx.msPacMan.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.msPacMan.show();
 
-				ctx.stork.setPosition(toPx(30), toPx(12));
+				ctx.stork.setPosition(TS * (30), TS * (12));
 				ctx.stork.setVelocity(-0.8f, 0);
 				ctx.stork.show();
 
@@ -145,7 +145,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 				ctx.bag.move();
 
 				// release bag from storks beak?
-				if ((int) ctx.stork.position().x() == toPx(20)) {
+				if ((int) ctx.stork.position().x() == TS * (20)) {
 					ctx.bag.setAcceleration(0, 0.04f);
 					ctx.stork.setVelocity(-1, 0);
 				}

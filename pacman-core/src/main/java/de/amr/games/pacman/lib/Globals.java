@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-2023 Armin Reichert
+Copyright (c) 2023 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,37 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.model.common.world;
-
-import static de.amr.games.pacman.lib.Globals.HTS;
-import static de.amr.games.pacman.lib.Globals.TS;
+package de.amr.games.pacman.lib;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.Validator;
 
 /**
  * @author Armin Reichert
  */
-public record Door(Vector2i leftWing, Vector2i rightWing) {
+public class Globals {
 
-	public Door {
-		Validator.checkNotNull(leftWing);
-		Validator.checkNotNull(rightWing);
+	/** Tile size (8px). */
+	public static final int TS = 8;
+
+	/** Half tile size (4px). */
+	public static final int HTS = 4;
+
+	public static Vector2i v2i(int x, int y) {
+		return new Vector2i(x, y);
 	}
 
-	/**
-	 * @param tile some tile
-	 * @return tells if the given tile is occupied by this door
-	 */
-	public boolean occupies(Vector2i tile) {
-		return leftWing.equals(tile) || rightWing.equals(tile);
-	}
-
-	/**
-	 * @return position where ghost can enter the door
-	 */
-	public Vector2f entryPosition() {
-		return new Vector2f(rightWing.x() * TS - HTS, (rightWing.y() - 1) * TS);
+	public static Vector2f v2f(double x, double y) {
+		return new Vector2f((float) x, (float) y);
 	}
 }
