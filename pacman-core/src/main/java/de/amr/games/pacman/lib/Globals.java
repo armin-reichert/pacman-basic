@@ -179,14 +179,6 @@ public class Globals {
 		return Arrays.stream(array).map(byte[]::clone).toArray(byte[][]::new);
 	}
 
-	public static String yesNo(boolean b) {
-		return b ? "YES" : "NO";
-	}
-
-	public static String onOff(boolean b) {
-		return b ? "ON" : "OFF";
-	}
-
 	@SafeVarargs
 	public static <T> boolean oneOf(T value, T... alternatives) {
 		return switch (alternatives.length) {
