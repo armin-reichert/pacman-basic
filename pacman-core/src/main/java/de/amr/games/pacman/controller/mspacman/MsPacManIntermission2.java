@@ -26,7 +26,7 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.lib.Globals.TS;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionData;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.Data;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionState;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.Animated;
@@ -46,42 +46,42 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionData> {
+public class MsPacManIntermission2 extends Fsm<IntermissionState, Data> {
 
-	private final IntermissionData intermissionData;
+	private final Data intermissionData;
 
 	public MsPacManIntermission2(GameController gameController) {
 		states = IntermissionState.values();
 		for (var state : IntermissionState.values()) {
 			state.intermission = this;
 		}
-		this.intermissionData = new IntermissionData(gameController);
+		this.intermissionData = new Data(gameController);
 	}
 
 	@Override
-	public IntermissionData context() {
+	public Data context() {
 		return intermissionData;
 	}
 
-	public static class IntermissionData {
-		public final GameController gameController;
-		public final int upperY = TS * (12);
-		public final int middleY = TS * (18);
-		public final int lowerY = TS * (24);
+	public static class Data {
+		public GameController gameController;
+		public int upperY = TS * (12);
+		public int middleY = TS * (18);
+		public int lowerY = TS * (24);
 		public Clapperboard clapperboard;
 		public Pac pacMan;
 		public Pac msPacMan;
 
-		public IntermissionData(GameController gameController) {
+		public Data(GameController gameController) {
 			this.gameController = gameController;
 		}
 	}
 
-	public enum IntermissionState implements FsmState<IntermissionData> {
+	public enum IntermissionState implements FsmState<Data> {
 
 		FLAP {
 			@Override
-			public void onEnter(IntermissionData ctx) {
+			public void onEnter(Data ctx) {
 				timer.restartIndefinitely();
 				ctx.clapperboard = new Clapperboard(2, "THE CHASE");
 				ctx.clapperboard.setPosition(TS * (3), TS * (10));
@@ -95,7 +95,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 			}
 
 			@Override
-			public void onUpdate(IntermissionData ctx) {
+			public void onUpdate(Data ctx) {
 				if (timer.atSecond(1)) {
 					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_2);
 					ctx.clapperboard.animation().ifPresent(Animated::restart);
@@ -109,12 +109,12 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 
 		CHASING {
 			@Override
-			public void onEnter(IntermissionData ctx) {
+			public void onEnter(Data ctx) {
 				timer.restartIndefinitely();
 			}
 
 			@Override
-			public void onUpdate(IntermissionData ctx) {
+			public void onUpdate(Data ctx) {
 				if (timer.atSecond(2.5)) {
 					ctx.pacMan.setPosition(-TS * (2), ctx.upperY);
 					ctx.pacMan.setMoveDir(Direction.RIGHT);

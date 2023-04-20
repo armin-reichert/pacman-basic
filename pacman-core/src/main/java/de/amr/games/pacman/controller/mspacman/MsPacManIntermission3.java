@@ -26,7 +26,7 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.lib.Globals.TS;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionData;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.Data;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionState;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.Animated;
@@ -50,26 +50,26 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionData> {
+public class MsPacManIntermission3 extends Fsm<IntermissionState, Data> {
 
-	private final IntermissionData intermissionData;
+	private final Data intermissionData;
 
 	public MsPacManIntermission3(GameController gameController) {
 		states = IntermissionState.values();
 		for (var state : states) {
 			state.intermission = this;
 		}
-		this.intermissionData = new IntermissionData(gameController);
+		this.intermissionData = new Data(gameController);
 	}
 
 	@Override
-	public IntermissionData context() {
+	public Data context() {
 		return intermissionData;
 	}
 
-	public static class IntermissionData {
-		public final GameController gameController;
-		public final int groundY = TS * (24);
+	public static class Data {
+		public GameController gameController;
+		public int groundY = TS * (24);
 		public Clapperboard clapperboard;
 		public Pac pacMan;
 		public Pac msPacMan;
@@ -78,16 +78,16 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 		public boolean bagOpen;
 		public int numBagBounces;
 
-		public IntermissionData(GameController gameController) {
+		public Data(GameController gameController) {
 			this.gameController = gameController;
 		}
 	}
 
-	public enum IntermissionState implements FsmState<IntermissionData> {
+	public enum IntermissionState implements FsmState<Data> {
 
 		FLAP {
 			@Override
-			public void onEnter(IntermissionData ctx) {
+			public void onEnter(Data ctx) {
 				timer.restartIndefinitely();
 				ctx.clapperboard = new Clapperboard(3, "JUNIOR");
 				ctx.clapperboard.setPosition(TS * (3), TS * (10));
@@ -100,7 +100,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 			}
 
 			@Override
-			public void onUpdate(IntermissionData ctx) {
+			public void onUpdate(Data ctx) {
 				if (timer.atSecond(1)) {
 					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_3);
 					ctx.clapperboard.animation().ifPresent(Animated::restart);
@@ -114,7 +114,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 
 		ACTION {
 			@Override
-			public void onEnter(IntermissionData ctx) {
+			public void onEnter(Data ctx) {
 				timer.restartIndefinitely();
 
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
@@ -140,7 +140,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 			}
 
 			@Override
-			public void onUpdate(IntermissionData ctx) {
+			public void onUpdate(Data ctx) {
 				ctx.stork.move();
 				ctx.bag.move();
 
@@ -167,13 +167,13 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 
 		DONE {
 			@Override
-			public void onEnter(IntermissionData ctx) {
+			public void onEnter(Data ctx) {
 				timer.resetSeconds(3);
 				timer.start();
 			}
 
 			@Override
-			public void onUpdate(IntermissionData ctx) {
+			public void onUpdate(Data ctx) {
 				ctx.stork.move();
 				if (timer.hasExpired()) {
 					ctx.gameController.terminateCurrentState();
