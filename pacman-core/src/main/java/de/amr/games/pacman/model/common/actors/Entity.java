@@ -25,6 +25,7 @@ package de.amr.games.pacman.model.common.actors;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
+import static de.amr.games.pacman.lib.Globals.v2f;
 import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
 
@@ -75,7 +76,7 @@ public class Entity {
 	}
 
 	public void setPosition(float x, float y) {
-		position = new Vector2f(x, y);
+		position = v2f(x, y);
 	}
 
 	public void setPosition(Vector2f position) {
@@ -98,7 +99,7 @@ public class Entity {
 	}
 
 	public void setVelocity(float vx, float vy) {
-		velocity = new Vector2f(vx, vy);
+		velocity = v2f(vx, vy);
 	}
 
 	public Vector2f acceleration() {
@@ -111,7 +112,7 @@ public class Entity {
 	}
 
 	public void setAcceleration(float ax, float ay) {
-		acceleration = new Vector2f(ax, ay);
+		acceleration = v2f(ax, ay);
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class Entity {
 	/** @return Offset inside current tile: (0, 0) if centered, range: [-4, +4) */
 	public Vector2f offset() {
 		var tile = tile();
-		var tileOrigin = new Vector2f(tile.x() * TS, tile.y() * TS);
+		var tileOrigin = v2f(TS * tile.x(), TS * tile.y());
 		return position.minus(tileOrigin);
 	}
 

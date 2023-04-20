@@ -25,6 +25,7 @@ SOFTWARE.
 package de.amr.games.pacman.test;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
+import static de.amr.games.pacman.lib.Globals.v2i;
 
 import java.util.List;
 
@@ -42,9 +43,9 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class HouseTest {
 
-	static final Vector2i POSITION = new Vector2i(16, 20);
-	static final Vector2i SIZE = new Vector2i(10, 8);
-	static final Door DOOR = new Door(new Vector2i(5, 10), new Vector2i(6, 10));
+	static final Vector2i POSITION = v2i(16, 20);
+	static final Vector2i SIZE = v2i(10, 8);
+	static final Door DOOR = new Door(v2i(5, 10), v2i(6, 10));
 	static final List<Vector2f> SEATS = List.of(//
 			World.halfTileRightOf(5, 12), //
 			World.halfTileRightOf(7, 12), //
@@ -53,12 +54,12 @@ public class HouseTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testLeftDoorWingNotNull() {
-		new Door(null, new Vector2i(0, 0));
+		new Door(null, v2i(0, 0));
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testRightDoorWingNotNull() {
-		new Door(new Vector2i(0, 0), null);
+		new Door(v2i(0, 0), null);
 	}
 
 	@Test(expected = NullPointerException.class)

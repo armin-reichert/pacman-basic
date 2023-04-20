@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.model.common.Validator.checkGameNotNull;
 import static de.amr.games.pacman.model.common.Validator.checkGhostID;
@@ -71,8 +72,7 @@ public class GameLevel {
 
 	private static final Logger LOG = LogManager.getFormatterLogger();
 
-	private static final List<Vector2i> RED_ZONE = List.of(new Vector2i(12, 14), new Vector2i(15, 14),
-			new Vector2i(12, 26), new Vector2i(15, 26));
+	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
 	private record GhostUnlockResult(Ghost ghost, String reason) {
 	}
@@ -465,10 +465,10 @@ public class GameLevel {
 
 	public Vector2i ghostScatterTargetTile(byte ghostID) {
 		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> new Vector2i(25, 0);
-		case Ghost.ID_PINK_GHOST -> new Vector2i(2, 0);
-		case Ghost.ID_CYAN_GHOST -> new Vector2i(27, 34);
-		case Ghost.ID_ORANGE_GHOST -> new Vector2i(0, 34);
+		case Ghost.ID_RED_GHOST -> v2i(25, 0);
+		case Ghost.ID_PINK_GHOST -> v2i(2, 0);
+		case Ghost.ID_CYAN_GHOST -> v2i(27, 34);
+		case Ghost.ID_ORANGE_GHOST -> v2i(0, 34);
 		default -> throw new IllegalGhostIDException(ghostID);
 		};
 	}

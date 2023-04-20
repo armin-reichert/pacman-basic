@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
+import static de.amr.games.pacman.lib.Globals.v2f;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -53,6 +54,6 @@ public record Door(Vector2i leftWing, Vector2i rightWing) {
 	 * @return position where ghost can enter the door
 	 */
 	public Vector2f entryPosition() {
-		return new Vector2f(rightWing.x() * TS - HTS, (rightWing.y() - 1) * TS);
+		return v2f(TS * rightWing.x() - HTS, TS * (rightWing.y() - 1));
 	}
 }

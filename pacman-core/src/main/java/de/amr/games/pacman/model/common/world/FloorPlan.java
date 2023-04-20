@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.lib.Globals.v2i;
+
 import java.io.PrintWriter;
 import java.io.Writer;
 
@@ -85,7 +87,7 @@ public class FloorPlan {
 	}
 
 	public Vector2i tile(int x, int y) {
-		return new Vector2i(x / resolution, y / resolution);
+		return v2i(x / resolution, y / resolution);
 	}
 
 	public void print(Writer w, boolean useSymbols) {
@@ -100,22 +102,22 @@ public class FloorPlan {
 
 	private Vector2i northOf(int tileX, int tileY, int i) {
 		int dy = i / resolution == 0 ? -1 : 0;
-		return new Vector2i(tileX, tileY + dy);
+		return v2i(tileX, tileY + dy);
 	}
 
 	private Vector2i southOf(int tileX, int tileY, int i) {
 		int dy = i / resolution == resolution - 1 ? 1 : 0;
-		return new Vector2i(tileX, tileY + dy);
+		return v2i(tileX, tileY + dy);
 	}
 
 	private Vector2i westOf(int tileX, int tileY, int i) {
 		int dx = i % resolution == 0 ? -1 : 0;
-		return new Vector2i(tileX + dx, tileY);
+		return v2i(tileX + dx, tileY);
 	}
 
 	private Vector2i eastOf(int tileX, int tileY, int i) {
 		int dx = i % resolution == resolution - 1 ? 1 : 0;
-		return new Vector2i(tileX + dx, tileY);
+		return v2i(tileX + dx, tileY);
 	}
 
 	private void separateWallsAndCorners(int numBlocksX, int numBlocksY) {
@@ -178,7 +180,7 @@ public class FloorPlan {
 	private void scanForWalls(int numBlocksX, int numBlocksY) {
 		for (int y = 0; y < numBlocksY; ++y) {
 			for (int x = 0; x < numBlocksX; ++x) {
-				Vector2i tile = new Vector2i(x / resolution, y / resolution);
+				Vector2i tile = v2i(x / resolution, y / resolution);
 				info[y][x] = world.isWall(tile) ? CORNER : EMPTY;
 			}
 		}

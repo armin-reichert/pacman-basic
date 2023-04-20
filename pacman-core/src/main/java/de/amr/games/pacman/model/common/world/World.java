@@ -25,6 +25,8 @@ package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
+import static de.amr.games.pacman.lib.Globals.v2f;
+import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
 
@@ -70,9 +72,9 @@ public class World implements AnimatedEntity {
 	 * The ghosthouse as it looks in the Arcade version of Pac-Man and Ms. Pac-Man.
 	 */
 	private static final House ARCADE_HOUSE = new House(//
-			new Vector2i(10, 15), // top-left corner
-			new Vector2i(8, 5), // size in tiles
-			new Door(new Vector2i(13, 15), new Vector2i(14, 15)), //
+			v2i(10, 15), // top-left corner
+			v2i(8, 5), // size in tiles
+			new Door(v2i(13, 15), v2i(14, 15)), //
 			List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17)), // seats
 			halfTileRightOf(13, 17).plus(0, HTS) // center
 	);
@@ -92,7 +94,7 @@ public class World implements AnimatedEntity {
 	 * @return tile containing given position
 	 */
 	public static Vector2i tileAt(float x, float y) {
-		return new Vector2i((int) (x / TS), (int) (y / TS));
+		return v2i((int) (x / TS), (int) (y / TS));
 	}
 
 	/**
@@ -101,15 +103,15 @@ public class World implements AnimatedEntity {
 	 * @return position half tile right of tile origin
 	 */
 	public static Vector2f halfTileRightOf(int tileX, int tileY) {
-		return new Vector2f(tileX * TS + HTS, tileY * TS);
+		return v2f(TS * tileX + HTS, TS * tileY);
 	}
 
 	private static List<Portal> buildPortals(TileMap tileMap) {
 		var portals = new ArrayList<Portal>();
 		int lastColumn = tileMap.numCols() - 1;
 		for (int row = 0; row < tileMap.numRows(); ++row) {
-			var leftBorderTile = new Vector2i(0, row);
-			var rightBorderTile = new Vector2i(lastColumn, row);
+			var leftBorderTile = v2i(0, row);
+			var rightBorderTile = v2i(lastColumn, row);
 			if (tileMap.content(row, 0) == TUNNEL && tileMap.content(row, lastColumn) == TUNNEL) {
 				portals.add(new Portal(leftBorderTile, rightBorderTile, 2));
 			}
@@ -164,7 +166,7 @@ public class World implements AnimatedEntity {
 	 * @return tile with given index
 	 */
 	public Vector2i tile(int index) {
-		return new Vector2i(index % numCols(), index / numCols());
+		return v2i(index % numCols(), index / numCols());
 	}
 
 	/**

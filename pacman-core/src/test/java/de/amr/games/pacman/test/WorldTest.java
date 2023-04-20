@@ -1,5 +1,7 @@
 package de.amr.games.pacman.test;
 
+import static de.amr.games.pacman.lib.Globals.v2f;
+import static de.amr.games.pacman.lib.Globals.v2i;
 import static java.util.function.Predicate.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -37,26 +39,26 @@ public class WorldTest {
 
 	@Test
 	public void testTileCoordinates() {
-		Vector2f pos = new Vector2f(0, 0);
+		Vector2f pos = v2f(0, 0);
 		assertEquals(Vector2i.ZERO, World.tileAt(pos));
-		pos = new Vector2f(7.9f, 7.9f);
-		assertEquals(new Vector2i(0, 0), World.tileAt(pos));
-		pos = new Vector2f(8.0f, 7.9f);
-		assertEquals(new Vector2i(1, 0), World.tileAt(pos));
-		pos = new Vector2f(8.0f, 0.0f);
-		assertEquals(new Vector2i(1, 0), World.tileAt(pos));
-		pos = new Vector2f(0.0f, 8.0f);
-		assertEquals(new Vector2i(0, 1), World.tileAt(pos));
+		pos = v2f(7.9f, 7.9f);
+		assertEquals(v2i(0, 0), World.tileAt(pos));
+		pos = v2f(8.0f, 7.9f);
+		assertEquals(v2i(1, 0), World.tileAt(pos));
+		pos = v2f(8.0f, 0.0f);
+		assertEquals(v2i(1, 0), World.tileAt(pos));
+		pos = v2f(0.0f, 8.0f);
+		assertEquals(v2i(0, 1), World.tileAt(pos));
 
 		var guy = new Ghost(Ghost.ID_RED_GHOST, "Guy");
 
 		guy.setPosition(3.99f, 0);
-		assertEquals(new Vector2i(0, 0), guy.tile());
-		assertEquals(new Vector2f(3.99f, 0.0f), guy.offset());
+		assertEquals(v2i(0, 0), guy.tile());
+		assertEquals(v2f(3.99f, 0.0f), guy.offset());
 
 		guy.setPosition(4.0f, 0);
-		assertEquals(new Vector2i(1, 0), guy.tile());
-		assertEquals(new Vector2f(-4.0f, 0.0f), guy.offset());
+		assertEquals(v2i(1, 0), guy.tile());
+		assertEquals(v2f(-4.0f, 0.0f), guy.offset());
 	}
 
 	@Test
