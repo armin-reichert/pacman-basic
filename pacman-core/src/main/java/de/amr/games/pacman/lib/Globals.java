@@ -163,16 +163,16 @@ public class Globals {
 	}
 
 	/**
-	 * @param difference maximum allowed deviation
-	 * @param value      value
-	 * @param target     target value
+	 * @param delta  maximum allowed deviation (non-negative number)
+	 * @param value  value
+	 * @param target target value
 	 * @return {@code true} if the given values differ at most by the given difference
 	 */
-	public static boolean differsAtMost(double difference, double value, double target) {
-		if (difference < 0) {
-			throw new IllegalArgumentException("Difference must be positive but is %f".formatted(difference));
+	public static boolean differsAtMost(double delta, double value, double target) {
+		if (delta < 0) {
+			throw new IllegalArgumentException("Difference must not be negative but is %f".formatted(delta));
 		}
-		return value >= (target - difference) && value <= (target + difference);
+		return value >= (target - delta) && value <= (target + delta);
 	}
 
 	public static byte[][] copyByteArray2D(byte[][] array) {
