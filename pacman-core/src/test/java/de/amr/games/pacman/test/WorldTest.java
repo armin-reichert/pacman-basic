@@ -1,5 +1,6 @@
 package de.amr.games.pacman.test;
 
+import static de.amr.games.pacman.lib.Globals.copyByteArray2D;
 import static de.amr.games.pacman.lib.Globals.v2f;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static java.util.function.Predicate.not;
@@ -8,7 +9,6 @@ import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
-import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -119,7 +119,7 @@ public class WorldTest {
 	@Test
 	public void testCopyMapData() {
 		byte[][] map = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } };
-		byte[][] copy = U.copyByteArray2D(map);
+		byte[][] copy = copyByteArray2D(map);
 		assertEquals(map.length, copy.length);
 		for (int i = 0; i < map.length; ++i) {
 			assertEquals(map[i].length, copy[i].length);

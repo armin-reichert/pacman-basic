@@ -24,10 +24,11 @@ SOFTWARE.
 
 package de.amr.games.pacman.test;
 
+import static de.amr.games.pacman.lib.Globals.randomFloat;
+import static de.amr.games.pacman.lib.Globals.randomInt;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import de.amr.games.pacman.lib.U;
 
 /**
  * @author Armin Reichert
@@ -39,7 +40,7 @@ public class RandomNumberTest {
 	@Test
 	public void testRandomInt() {
 		for (int i = 0; i < N; ++i) {
-			var number = U.randomInt(10, 100);
+			var number = randomInt(10, 100);
 			Assert.assertTrue(10 <= number && number < 100);
 		}
 	}
@@ -47,9 +48,8 @@ public class RandomNumberTest {
 	@Test
 	public void testRandomFloat() {
 		for (int i = 0; i < N; ++i) {
-			var number = U.randomFloat(10.0f, 100.0f);
+			var number = randomFloat(10.0f, 100.0f);
 			Assert.assertTrue(10.0f <= number && number < 100.0f);
 		}
 	}
-
 }

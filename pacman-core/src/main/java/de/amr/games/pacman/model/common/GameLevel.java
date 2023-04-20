@@ -24,6 +24,8 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.Globals.isEven;
+import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.model.common.Validator.checkGameNotNull;
@@ -52,7 +54,6 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -409,18 +410,18 @@ public class GameLevel {
 	 * @return (optional) number of current scattering phase <code>(0-3)</code>
 	 */
 	public OptionalInt scatterPhase() {
-		return U.isEven(huntingPhase) ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
+		return isEven(huntingPhase) ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
 	}
 
 	/**
 	 * @return (optional) number of current chasing phase <code>(0-3)</code>
 	 */
 	public OptionalInt chasingPhase() {
-		return U.isOdd(huntingPhase) ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
+		return isOdd(huntingPhase) ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
 	}
 
 	public String currentHuntingPhaseName() {
-		return U.isEven(huntingPhase) ? "Scattering" : "Chasing";
+		return isEven(huntingPhase) ? "Scattering" : "Chasing";
 	}
 
 	/**

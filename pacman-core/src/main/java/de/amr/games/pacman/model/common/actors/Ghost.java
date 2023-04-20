@@ -24,7 +24,8 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.actors;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
-import static de.amr.games.pacman.lib.U.differsAtMost;
+import static de.amr.games.pacman.lib.Globals.differsAtMost;
+import static de.amr.games.pacman.lib.Globals.oneOf;
 import static de.amr.games.pacman.lib.steering.Direction.DOWN;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
@@ -47,7 +48,6 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GhostEvent;
-import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
@@ -224,7 +224,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 *         <code>false</code>
 	 */
 	public boolean is(GhostState... alternatives) {
-		return U.oneOf(state, alternatives);
+		return oneOf(state, alternatives);
 	}
 
 	/**
