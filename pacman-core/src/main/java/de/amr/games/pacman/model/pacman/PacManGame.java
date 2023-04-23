@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
-import static de.amr.games.pacman.lib.Globals.RND;
 import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
@@ -31,7 +30,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
-import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -147,25 +145,6 @@ public class PacManGame extends GameModel {
 	@Override
 	public int numCutScenes() {
 		return 3;
-	}
-
-	@Override
-	public boolean isFirstBonusReached() {
-		return level.world().eatenFoodCount() == 70;
-	}
-
-	@Override
-	public boolean isSecondBonusReached() {
-		return level.world().eatenFoodCount() == 170;
-	}
-
-	@Override
-	public void onBonusReached() {
-		var bonus = level.bonus();
-		int ticks = 10 * FPS - RND.nextInt(FPS); // between 9 and 10 seconds
-		bonus.setEdible(ticks);
-		LOG.info("Bonus activated for %d ticks (%.2f seconds): %s", ticks, (float) ticks / FPS, bonus);
-		GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 	}
 
 	@Override

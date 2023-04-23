@@ -220,15 +220,6 @@ public abstract class GameModel {
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
 	}
 
-	/**
-	 * Called when the bonus gets activated.
-	 */
-	public abstract void onBonusReached();
-
-	public abstract boolean isFirstBonusReached();
-
-	public abstract boolean isSecondBonusReached();
-
 	public abstract int numCutScenes();
 
 	/** @return (optional) current game level. */

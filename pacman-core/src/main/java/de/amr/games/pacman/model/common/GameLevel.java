@@ -24,10 +24,12 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.Globals.RND;
 import static de.amr.games.pacman.lib.Globals.isEven;
 import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
+import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
 import static de.amr.games.pacman.model.common.Validator.checkGameNotNull;
 import static de.amr.games.pacman.model.common.Validator.checkGhostID;
 import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
@@ -42,6 +44,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +61,7 @@ import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -65,6 +69,7 @@ import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
+import de.amr.games.pacman.model.mspacman.MovingBonus;
 
 /**
  * @author Armin Reichert
@@ -297,6 +302,58 @@ public class GameLevel {
 
 	public Bonus bonus() {
 		return bonus;
+	}
+
+	public void onBonusReached() {
+		switch (game.variant()) {
+		case MS_PACMAN -> {
+			int numPortals = world.portals().size();
+			var leftToRight = RND.nextBoolean();
+			var entryPortal = world.portals().get(RND.nextInt(numPortals));
+			var exitPortal = world.portals().get(RND.nextInt(numPortals));
+			var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
+			var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
+					: np(exitPortal.leftTunnelEnd().minus(1, 0));
+			/// TODO solution if a ghost house has more than one door
+			var houseEntry = world.house().door().leftWing().minus(0, 1);
+			int houseHeight = world.house().size().y();
+			var route = new ArrayList<NavigationPoint>();
+			route.add(np(houseEntry));
+			route.add(np(houseEntry.plus(0, houseHeight + 1)));
+			route.add(np(houseEntry));
+			route.add(exitPoint);
+			LOG.trace("Bonus route: %s, orientation: %s", route, (leftToRight ? "left to right" : "right to left"));
+			var movingBonus = (MovingBonus) bonus;
+			movingBonus.setRoute(route);
+			movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
+			movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
+			movingBonus.setEdible(TickTimer.INDEFINITE);
+			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, movingBonus.entity().tile());
+		}
+		case PACMAN -> {
+			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
+			bonus.setEdible(ticks);
+			LOG.info("Bonus activated for %d ticks (%.2f seconds): %s", ticks, (float) ticks / GameModel.FPS, bonus);
+			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
+		}
+		default -> throw new IllegalGameVariantException(game.variant());
+		}
+	}
+
+	public boolean isFirstBonusReached() {
+		return switch (game.variant()) {
+		case MS_PACMAN -> world.eatenFoodCount() == 64; // from Ms. Pac-Man FAQ, but is this correct?
+		case PACMAN -> world.eatenFoodCount() == 70;
+		default -> throw new IllegalGameVariantException(game.variant());
+		};
+	}
+
+	public boolean isSecondBonusReached() {
+		return switch (game.variant()) {
+		case MS_PACMAN -> world.uneatenFoodCount() == 66; // from Ms. Pac-Man FAQ, but is this correct?
+		case PACMAN -> world.eatenFoodCount() == 170;
+		default -> throw new IllegalGameVariantException(game.variant());
+		};
 	}
 
 	public TickTimer huntingTimer() {
@@ -616,7 +673,7 @@ public class GameLevel {
 			memo.energizerFound = world.isEnergizerTile(tile);
 			memo.lastFoodFound = world.uneatenFoodCount() == 0;
 			memo.pacPowerGained = memo.energizerFound && pacPowerSeconds > 0;
-			memo.bonusReached = game.isFirstBonusReached() || game.isSecondBonusReached();
+			memo.bonusReached = isFirstBonusReached() || isSecondBonusReached();
 			pac.endStarving();
 			if (memo.energizerFound) {
 				numGhostsKilledByEnergizer = 0;
@@ -634,7 +691,7 @@ public class GameLevel {
 			pac.starve();
 		}
 		if (memo.bonusReached) {
-			game.onBonusReached();
+			onBonusReached();
 		}
 	}
 

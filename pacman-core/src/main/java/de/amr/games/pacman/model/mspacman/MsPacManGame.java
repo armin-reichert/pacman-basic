@@ -24,20 +24,13 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.Globals.RND;
-import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
 import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 
-import java.util.ArrayList;
-
-import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.lib.steering.NavigationPoint;
-import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -253,16 +246,6 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public boolean isFirstBonusReached() {
-		return level.world().eatenFoodCount() == 64; // from Ms. Pac-Man FAQ, but is this correct?
-	}
-
-	@Override
-	public boolean isSecondBonusReached() {
-		return level.world().uneatenFoodCount() == 66; // from Ms. Pac-Man FAQ, but is this correct?
-	}
-
-	@Override
 	public Bonus createBonus(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
@@ -322,32 +305,6 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public int numCutScenes() {
 		return 3;
-	}
-
-	@Override
-	public void onBonusReached() {
-		int numPortals = level.world().portals().size();
-		var leftToRight = RND.nextBoolean();
-		var entryPortal = level.world().portals().get(RND.nextInt(numPortals));
-		var exitPortal = level.world().portals().get(RND.nextInt(numPortals));
-		var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
-		var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
-				: np(exitPortal.leftTunnelEnd().minus(1, 0));
-		/// TODO solution if a ghost house has more than one door
-		var houseEntry = level.world().house().door().leftWing().minus(0, 1);
-		int houseHeight = level.world().house().size().y();
-		var route = new ArrayList<NavigationPoint>();
-		route.add(np(houseEntry));
-		route.add(np(houseEntry.plus(0, houseHeight + 1)));
-		route.add(np(houseEntry));
-		route.add(exitPoint);
-		LOG.trace("Bonus route: %s, orientation: %s", route, (leftToRight ? "left to right" : "right to left"));
-		var movingBonus = (MovingBonus) level.bonus();
-		movingBonus.setRoute(route);
-		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
-		movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
-		movingBonus.setEdible(TickTimer.INDEFINITE);
-		GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, movingBonus.entity().tile());
 	}
 
 	/**
