@@ -333,7 +333,7 @@ public class GameModel {
 	public static final String SE_STOP_ALL_SOUNDS = "stop_all_sounds";
 
 	//@formatter:off
-	protected static final byte[][] LEVEL_PARAMETERS = {
+	private static final byte[][] LEVEL_PARAMETERS = {
 	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5, 0},
 	/* 2*/ { 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5, 1},
 	/* 3*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5, 0},
@@ -374,17 +374,17 @@ public class GameModel {
 		return HUNTING_DURATIONS[index];
 	}
 
-	protected final GameVariant variant;
-	protected GameLevel level;
-	protected final List<Byte> levelCounter = new LinkedList<>();
-	protected Score score;
-	protected Score highScore;
-	protected int credit;
-	protected int lives;
-	protected boolean playing;
-	protected boolean scoringEnabled;
-	protected boolean immune; // extra feature
-	protected boolean oneLessLifeDisplayed; // TODO get rid of this
+	private final GameVariant variant;
+	private GameLevel level;
+	private final List<Byte> levelCounter = new LinkedList<>();
+	private Score score;
+	private Score highScore;
+	private int credit;
+	private int lives;
+	private boolean playing;
+	private boolean scoringEnabled;
+	private boolean immune; // extra feature
+	private boolean oneLessLifeDisplayed; // TODO get rid of this
 	public int intermissionTestNumber; // intermission test mode
 
 	public GameModel(GameVariant variant) {
