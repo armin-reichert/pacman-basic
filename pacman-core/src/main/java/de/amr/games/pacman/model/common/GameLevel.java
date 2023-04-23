@@ -89,24 +89,19 @@ public class GameLevel {
 	// factory methods
 
 	private static World createWorld(GameVariant variant, int levelNumber) {
-		switch (variant) {
-		case MS_PACMAN -> {
-			int mapNumber = mapNumber(variant, levelNumber);
-			var map = switch (mapNumber) {
-			case 1 -> GameModel.MS_PACMAN_MAP1;
-			case 2 -> GameModel.MS_PACMAN_MAP2;
-			case 3 -> GameModel.MS_PACMAN_MAP3;
-			case 4 -> GameModel.MS_PACMAN_MAP4;
-			default -> throw new IllegalArgumentException(
-					"Illegal map number: %d. Allowed values: 1, 2, 3, 4.".formatted(mapNumber));
-			};
-			return new World(map);
-		}
-		case PACMAN -> {
-			return new World(GameModel.PACMAN_MAP);
-		}
+		int mapNumber = mapNumber(variant, levelNumber);
+		var map = switch (variant) {
+		case MS_PACMAN -> switch (mapNumber) {
+		case 1 -> GameModel.MS_PACMAN_MAP1;
+		case 2 -> GameModel.MS_PACMAN_MAP2;
+		case 3 -> GameModel.MS_PACMAN_MAP3;
+		case 4 -> GameModel.MS_PACMAN_MAP4;
+		default -> throw new IllegalArgumentException("Illegal map number: %d.".formatted(mapNumber));
+		};
+		case PACMAN -> GameModel.PACMAN_MAP;
 		default -> throw new IllegalGameVariantException(variant);
-		}
+		};
+		return new World(map);
 	}
 
 	/**
