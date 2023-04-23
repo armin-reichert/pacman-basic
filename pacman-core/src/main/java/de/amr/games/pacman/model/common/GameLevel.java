@@ -70,8 +70,6 @@ import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MovingBonus;
-import de.amr.games.pacman.model.mspacman.MsPacManGame;
-import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.model.pacman.StaticBonus;
 
 /**
@@ -97,17 +95,17 @@ public class GameLevel {
 		case MS_PACMAN -> {
 			int mapNumber = mapNumber(variant, levelNumber);
 			var map = switch (mapNumber) {
-			case 1 -> MsPacManGame.MAP1;
-			case 2 -> MsPacManGame.MAP2;
-			case 3 -> MsPacManGame.MAP3;
-			case 4 -> MsPacManGame.MAP4;
+			case 1 -> GameModel.MS_PACMAN_MAP1;
+			case 2 -> GameModel.MS_PACMAN_MAP2;
+			case 3 -> GameModel.MS_PACMAN_MAP3;
+			case 4 -> GameModel.MS_PACMAN_MAP4;
 			default -> throw new IllegalArgumentException(
 					"Illegal map number: %d. Allowed values: 1, 2, 3, 4.".formatted(mapNumber));
 			};
 			return new World(map);
 		}
 		case PACMAN -> {
-			return new World(PacManGame.MAP);
+			return new World(GameModel.PACMAN_MAP);
 		}
 		default -> throw new IllegalGameVariantException(variant);
 		}

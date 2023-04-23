@@ -37,15 +37,13 @@ import de.amr.games.pacman.lib.steering.RuleBasedSteering;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Validator;
-import de.amr.games.pacman.model.mspacman.MsPacManGame;
-import de.amr.games.pacman.model.pacman.PacManGame;
 
 /**
  * Controller (in the sense of MVC) for both (Pac-Man, Ms. Pac-Man) game variants.
  * <p>
  * A finite-state machine with states defined in {@link GameState}. The game data are stored in the model of the
- * selected game, see {@link MsPacManGame} and {@link PacManGame}. Scene selection is not controlled by this class but
- * left to the specific user interface implementations.
+ * selected game, see {@link GameModel}. Scene selection is not controlled by this class but left to the specific user
+ * interface implementations.
  * <p>
  * Missing functionality:
  * <ul>

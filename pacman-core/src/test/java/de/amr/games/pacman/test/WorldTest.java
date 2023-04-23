@@ -11,10 +11,9 @@ import org.junit.Test;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.world.World;
-import de.amr.games.pacman.model.mspacman.MsPacManGame;
-import de.amr.games.pacman.model.pacman.PacManGame;
 
 /**
  * @author Armin Reichert
@@ -23,7 +22,7 @@ public class WorldTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testNullTileArg() {
-		var world = new World(PacManGame.MAP);
+		var world = new World(GameModel.PACMAN_MAP);
 		world.index(null);
 		world.insideBounds(null);
 		world.belongsToPortal(null);
@@ -63,7 +62,7 @@ public class WorldTest {
 
 	@Test
 	public void testPacManWorld() {
-		var world = new World(PacManGame.MAP);
+		var world = new World(GameModel.PACMAN_MAP);
 		assertEquals(World.TILES_Y, world.numRows());
 		assertEquals(World.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -74,7 +73,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld1() {
-		var world = new World(MsPacManGame.MAP1);
+		var world = new World(GameModel.MS_PACMAN_MAP1);
 		assertEquals(World.TILES_Y, world.numRows());
 		assertEquals(World.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -85,7 +84,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld2() {
-		var world = new World(MsPacManGame.MAP2);
+		var world = new World(GameModel.MS_PACMAN_MAP2);
 		assertEquals(World.TILES_Y, world.numRows());
 		assertEquals(World.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -96,7 +95,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld3() {
-		var world = new World(MsPacManGame.MAP3);
+		var world = new World(GameModel.MS_PACMAN_MAP3);
 		assertEquals(World.TILES_Y, world.numRows());
 		assertEquals(World.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -107,7 +106,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld4() {
-		var world = new World(MsPacManGame.MAP4);
+		var world = new World(GameModel.MS_PACMAN_MAP4);
 		assertEquals(World.TILES_Y, world.numRows());
 		assertEquals(World.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
