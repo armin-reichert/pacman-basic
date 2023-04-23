@@ -197,5 +197,4 @@ public class MsPacManGame {
 	};
 	//@formatter:on
 
-	public static final String AK_CLAPPERBOARD = "clapperboard";
 }

@@ -71,8 +71,4 @@ public class PacManGame {
 	};
 	//@formatter:on
 
-	public static final String AK_PAC_BIG = "big_pacman";
-	public static final String AK_BLINKY_DAMAGED = "blinky_damaged";
-	public static final String AK_BLINKY_PATCHED = "blinky_patched";
-	public static final String AK_BLINKY_NAKED = "blinky_naked";
 }
