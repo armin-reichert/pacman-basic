@@ -189,8 +189,6 @@ public abstract class GameModel {
 				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
 	}
 
-	public abstract int numCutScenes();
-
 	/** @return (optional) current game level. */
 	public Optional<GameLevel> level() {
 		return Optional.ofNullable(level);

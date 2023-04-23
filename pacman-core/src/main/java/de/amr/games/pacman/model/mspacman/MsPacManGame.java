@@ -210,11 +210,6 @@ public class MsPacManGame extends GameModel {
 		return GameVariant.MS_PACMAN;
 	}
 
-	@Override
-	public int numCutScenes() {
-		return 3;
-	}
-
 	/**
 	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* hunting/scatter phase. Some say, the original
 	 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the
