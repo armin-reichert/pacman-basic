@@ -88,6 +88,57 @@ public class GameLevel {
 		return value / 100f;
 	}
 
+	private static Pac createPac(GameVariant variant) {
+		return new Pac(variant == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
+	}
+
+	private static Ghost[] createGhosts(GameVariant variant) {
+		return new Ghost[] { //
+				new Ghost(ID_RED_GHOST, "Blinky"), //
+				new Ghost(ID_PINK_GHOST, "Pinky"), //
+				new Ghost(ID_CYAN_GHOST, "Inky"), //
+				new Ghost(ID_ORANGE_GHOST, variant == GameVariant.MS_PACMAN ? "Sue" : "Clyde") //
+		};
+	}
+
+	private static Bonus createBonus(GameVariant variant, int levelNumber) {
+		switch (variant) {
+		case MS_PACMAN -> {
+			int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
+			Bonus bonus = switch (n) {
+			//@formatter:off
+			case 1 -> new MovingBonus((byte)0,  100); // Cherries
+			case 2 -> new MovingBonus((byte)1,  200); // Strawberry
+			case 3 -> new MovingBonus((byte)2,  500); // Peach
+			case 4 -> new MovingBonus((byte)3,  700); // Pretzel (A Brezn, Herr Gott Sakra!)
+			case 5 -> new MovingBonus((byte)4, 1000); // Apple
+			case 6 -> new MovingBonus((byte)5, 2000); // Pear
+			case 7 -> new MovingBonus((byte)6, 5000); // Bananas
+			default -> throw new IllegalArgumentException();
+			//@formatter:on
+			};
+			return bonus;
+		}
+		case PACMAN -> {
+			//@formatter:off
+			Bonus bonus = switch (levelNumber) {
+			case 1      -> new StaticBonus((byte)0,  100); // Cherries
+			case 2      -> new StaticBonus((byte)1,  300); // Strawberry
+			case 3, 4   -> new StaticBonus((byte)2,  500); // Peach
+			case 5, 6   -> new StaticBonus((byte)3,  700); // Apple
+			case 7, 8   -> new StaticBonus((byte)4, 1000); // Grapes
+			case 9, 10  -> new StaticBonus((byte)5, 2000); // Galaxian
+			case 11, 12 -> new StaticBonus((byte)6, 3000); // Bell
+			default     -> new StaticBonus((byte)7, 5000); // Key
+			};
+			//@formatter:on
+			bonus.entity().setPosition(halfTileRightOf(13, 20));
+			return bonus;
+		}
+		default -> throw new IllegalGameVariantException(variant);
+		}
+	}
+
 	/** Relative Pac-Man speed in this level. */
 	public final float pacSpeed;
 
@@ -158,8 +209,8 @@ public class GameLevel {
 		this.game = game;
 		this.number = number;
 		world = game.createWorld(number);
-		pac = game.createPac();
-		ghosts = game.createGhosts();
+		pac = createPac(game.variant());
+		ghosts = createGhosts(game.variant());
 		bonus = createBonus(game.variant(), number);
 		huntingDurations = game.huntingDurations(number);
 		defineGhostHouseRules();
@@ -301,47 +352,6 @@ public class GameLevel {
 		return Stream.of(pac, ghosts[ID_RED_GHOST], ghosts[ID_PINK_GHOST], ghosts[ID_CYAN_GHOST], ghosts[ID_ORANGE_GHOST]);
 	}
 
-	/**
-	 * @return bonus used in specified game variant and level
-	 */
-	private static Bonus createBonus(GameVariant variant, int levelNumber) {
-		switch (variant) {
-		case MS_PACMAN -> {
-			int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
-			Bonus bonus = switch (n) {
-			//@formatter:off
-			case 1 -> new MovingBonus((byte)0,  100); // Cherries
-			case 2 -> new MovingBonus((byte)1,  200); // Strawberry
-			case 3 -> new MovingBonus((byte)2,  500); // Peach
-			case 4 -> new MovingBonus((byte)3,  700); // Pretzel (A Brezn, Herr Gott Sakra!)
-			case 5 -> new MovingBonus((byte)4, 1000); // Apple
-			case 6 -> new MovingBonus((byte)5, 2000); // Pear
-			case 7 -> new MovingBonus((byte)6, 5000); // Bananas
-			default -> throw new IllegalArgumentException();
-			//@formatter:on
-			};
-			return bonus;
-		}
-		case PACMAN -> {
-			//@formatter:off
-			Bonus bonus = switch (levelNumber) {
-			case 1      -> new StaticBonus((byte)0,  100); // Cherries
-			case 2      -> new StaticBonus((byte)1,  300); // Strawberry
-			case 3, 4   -> new StaticBonus((byte)2,  500); // Peach
-			case 5, 6   -> new StaticBonus((byte)3,  700); // Apple
-			case 7, 8   -> new StaticBonus((byte)4, 1000); // Grapes
-			case 9, 10  -> new StaticBonus((byte)5, 2000); // Galaxian
-			case 11, 12 -> new StaticBonus((byte)6, 3000); // Bell
-			default     -> new StaticBonus((byte)7, 5000); // Key
-			};
-			//@formatter:on
-			bonus.entity().setPosition(halfTileRightOf(13, 20));
-			return bonus;
-		}
-		default -> throw new IllegalGameVariantException(variant);
-		}
-	}
-
 	public Bonus bonus() {
 		return bonus;
 	}
@@ -365,7 +375,6 @@ public class GameLevel {
 			route.add(exitPoint);
 			LOG.trace("Bonus route: %s, orientation: %s", route, (leftToRight ? "left to right" : "right to left"));
 
-			// TODO create entity here, not on level entry
 			var movingBonus = (MovingBonus) bonus;
 			movingBonus.setRoute(route);
 			movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);

@@ -24,17 +24,12 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -212,21 +207,6 @@ public class MsPacManGame extends GameModel {
 	//@formatter:on
 
 	public static final String AK_CLAPPERBOARD = "clapperboard";
-
-	@Override
-	public Pac createPac() {
-		return new Pac("Ms. Pac-Man");
-	}
-
-	@Override
-	public Ghost[] createGhosts() {
-		return new Ghost[] { //
-				new Ghost(ID_RED_GHOST, "Blinky"), //
-				new Ghost(ID_PINK_GHOST, "Pinky"), //
-				new Ghost(ID_CYAN_GHOST, "Inky"), //
-				new Ghost(ID_ORANGE_GHOST, "Sue") //
-		};
-	}
 
 	@Override
 	public World createWorld(int levelNumber) {

@@ -43,7 +43,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -179,16 +178,6 @@ public abstract class GameModel {
 	 * @return the game variant realized by this model
 	 */
 	public abstract GameVariant variant();
-
-	/**
-	 * @return new Pac-Man or Ms. Pac-Man
-	 */
-	public abstract Pac createPac();
-
-	/**
-	 * @return set of new ghosts
-	 */
-	public abstract Ghost[] createGhosts();
 
 	/**
 	 * @param levelNumber level number (starting at 1)
