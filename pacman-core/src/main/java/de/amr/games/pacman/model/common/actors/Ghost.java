@@ -493,22 +493,24 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (animations == null) {
 			return;
 		}
-		var remainingTime = level.pac().powerTimer().remaining();
-		if (remainingTime > GameModel.TICKS_PAC_POWER_FADES) {
+		var timer = level.pac().powerTimer();
+		if (timer.remaining() == GameModel.TICKS_PAC_POWER_FADES
+				|| timer.duration() < GameModel.TICKS_PAC_POWER_FADES && timer.tick() == 1) {
+			startFlashing(level.numFlashes, timer.remaining());
+		} else if (timer.remaining() > GameModel.TICKS_PAC_POWER_FADES) {
 			selectAndRunAnimation(GameModel.AK_GHOST_BLUE);
-		} else if (remainingTime == GameModel.TICKS_PAC_POWER_FADES) {
-			startFlashing(level.numFlashes, remainingTime);
 		}
 	}
 
-	private void startFlashing(int numFlashes, long completeTime) {
+	private void startFlashing(int numFlashes, long totalTicks) {
 		animations.animation(GameModel.AK_GHOST_FLASHING).ifPresent(flashing -> {
 			selectAndResetAnimation(GameModel.AK_GHOST_FLASHING);
-			long frameDuration = completeTime / (numFlashes * flashing.numFrames());
-			flashing.setFrameDuration(frameDuration);
+			long frameTicks = totalTicks / (numFlashes * flashing.numFrames());
+			flashing.setFrameDuration(frameTicks);
 			flashing.setRepetitions(numFlashes);
 			flashing.restart();
-			LOG.trace("%s: Flashing %d times", name(), numFlashes);
+			LOG.info("%s: Start flashing for %d ticks: %d flashes, %d ticks per flash", name(), totalTicks, numFlashes,
+					frameTicks);
 		});
 	}
 

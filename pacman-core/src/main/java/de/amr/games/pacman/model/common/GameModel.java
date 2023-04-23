@@ -74,7 +74,7 @@ public abstract class GameModel {
 	public static final short[] POINTS_GHOSTS_SEQUENCE = { 200, 400, 800, 1600 };
 	public static final short SCORE_EXTRA_LIFE = 10_000;
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
-	public static final short TICKS_PAC_POWER_FADES = 2 * FPS; // unsure
+	public static final short TICKS_PAC_POWER_FADES = 2 * FPS - 1; // unsure
 
 	// Animation keys
 	public static final String AK_GHOST_BLUE = "ghost_blue";
