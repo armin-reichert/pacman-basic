@@ -51,7 +51,7 @@ import de.amr.games.pacman.model.pacman.PacManDemoLevel;
  */
 public class GameModel {
 
-	protected static final Logger LOG = LogManager.getFormatterLogger();
+	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	//@formatter:off
 	public static final byte[][] PACMAN_MAP = {
