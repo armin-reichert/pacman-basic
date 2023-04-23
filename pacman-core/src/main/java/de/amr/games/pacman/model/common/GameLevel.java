@@ -79,8 +79,6 @@ public class GameLevel {
 
 	private static final Logger LOG = LogManager.getFormatterLogger();
 
-	private static final List<Vector2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
-
 	private record GhostUnlockResult(Ghost ghost, String reason) {
 	}
 
@@ -130,8 +128,6 @@ public class GameLevel {
 	 * @return number (starting at 1) of maze used in this level
 	 */
 	private static int mazeNumber(GameVariant variant, int levelNumber) {
-		checkLevelNumber(levelNumber);
-
 		switch (variant) {
 		case MS_PACMAN -> {
 			return switch (levelNumber) {
@@ -149,7 +145,7 @@ public class GameLevel {
 		}
 	}
 
-	public static int mapNumber(GameVariant variant, int levelNumber) {
+	private static int mapNumber(GameVariant variant, int levelNumber) {
 		return switch (variant) {
 		case MS_PACMAN -> levelNumber < 14 ? mazeNumber(variant, levelNumber) : mazeNumber(variant, levelNumber) - 2;
 		case PACMAN -> 1;
@@ -335,7 +331,7 @@ public class GameLevel {
 	public List<Vector2i> upwardsBlockedTiles() {
 		return switch (game.variant()) {
 		case MS_PACMAN -> Collections.emptyList();
-		case PACMAN -> RED_ZONE;
+		case PACMAN -> GameModel.PACMAN_RED_ZONE;
 		default -> throw new IllegalGameVariantException(game.variant());
 		};
 	}
