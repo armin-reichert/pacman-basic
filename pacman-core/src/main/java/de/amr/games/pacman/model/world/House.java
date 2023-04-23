@@ -24,12 +24,14 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.world;
 
+import static de.amr.games.pacman.lib.Globals.checkNotNull;
+import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
+
 import java.util.List;
 import java.util.Objects;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.Validator;
 
 /**
  * @author Armin Reichert
@@ -37,17 +39,18 @@ import de.amr.games.pacman.model.Validator;
 public record House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2f> seatPositions, Vector2f center) {
 
 	public House {
-		Validator.checkTileNotNull(topLeftTile);
-		Validator.checkNotNull(size);
-		Validator.checkNotNull(door);
-		Validator.checkNotNull(seatPositions);
+		checkTileNotNull(topLeftTile);
+		checkNotNull(size);
+		checkNotNull(door);
+		checkNotNull(seatPositions);
+		checkNotNull(center);
+
 		if (seatPositions.size() != 3) {
 			throw new IllegalArgumentException("There must be exactly 3 seat positions");
 		}
 		if (seatPositions.stream().anyMatch(Objects::isNull)) {
 			throw new IllegalArgumentException("House seat position must not be null");
 		}
-		Validator.checkNotNull(center);
 	}
 
 	/**

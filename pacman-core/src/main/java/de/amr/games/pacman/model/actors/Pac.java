@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.actors;
 
-import static de.amr.games.pacman.model.Validator.checkLevelNotNull;
+import static de.amr.games.pacman.lib.Globals.checkLevelNotNull;
 
 import java.util.Optional;
 

@@ -26,11 +26,11 @@ package de.amr.games.pacman.model.world;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
+import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.v2f;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.Validator;
 
 /**
  * @author Armin Reichert
@@ -38,8 +38,8 @@ import de.amr.games.pacman.model.Validator;
 public record Door(Vector2i leftWing, Vector2i rightWing) {
 
 	public Door {
-		Validator.checkNotNull(leftWing);
-		Validator.checkNotNull(rightWing);
+		checkNotNull(leftWing);
+		checkNotNull(rightWing);
 	}
 
 	/**

@@ -25,10 +25,10 @@ package de.amr.games.pacman.model.world;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
+import static de.amr.games.pacman.lib.Globals.checkNotNull;
+import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
 import static de.amr.games.pacman.lib.Globals.v2f;
 import static de.amr.games.pacman.lib.Globals.v2i;
-import static de.amr.games.pacman.model.Validator.checkNotNull;
-import static de.amr.games.pacman.model.Validator.checkTileNotNull;
 
 import java.util.ArrayList;
 import java.util.BitSet;

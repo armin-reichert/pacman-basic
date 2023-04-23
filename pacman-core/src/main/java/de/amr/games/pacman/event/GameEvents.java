@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.event;
 
-import static de.amr.games.pacman.model.Validator.checkNotNull;
+import static de.amr.games.pacman.lib.Globals.checkNotNull;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;

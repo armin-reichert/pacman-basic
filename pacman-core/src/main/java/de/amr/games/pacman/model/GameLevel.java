@@ -25,15 +25,15 @@ SOFTWARE.
 package de.amr.games.pacman.model;
 
 import static de.amr.games.pacman.lib.Globals.RND;
+import static de.amr.games.pacman.lib.Globals.checkGameNotNull;
+import static de.amr.games.pacman.lib.Globals.checkGhostID;
+import static de.amr.games.pacman.lib.Globals.checkLevelNumber;
+import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.isEven;
 import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
-import static de.amr.games.pacman.model.Validator.checkGameNotNull;
-import static de.amr.games.pacman.model.Validator.checkGhostID;
-import static de.amr.games.pacman.model.Validator.checkLevelNumber;
-import static de.amr.games.pacman.model.Validator.checkNotNull;
 import static de.amr.games.pacman.model.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.actors.Ghost.ID_PINK_GHOST;

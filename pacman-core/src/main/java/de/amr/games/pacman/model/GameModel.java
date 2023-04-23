@@ -23,10 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model;
 
+import static de.amr.games.pacman.lib.Globals.checkGameVariant;
+import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
-import static de.amr.games.pacman.model.Validator.checkGameVariant;
-import static de.amr.games.pacman.model.Validator.checkNotNull;
 
 import java.io.File;
 import java.io.FileInputStream;

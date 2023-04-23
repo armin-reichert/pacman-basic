@@ -25,11 +25,19 @@ SOFTWARE.
 package de.amr.games.pacman.lib;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.GameVariant;
+import de.amr.games.pacman.model.IllegalGameVariantException;
+import de.amr.games.pacman.model.IllegalGhostIDException;
+import de.amr.games.pacman.model.IllegalLevelNumberException;
 
 /**
  * @author Armin Reichert
@@ -42,6 +50,13 @@ public class Globals {
 	/** Half tile size (4px). */
 	public static final int HTS = 4;
 
+	public static final Random RND = new Random();
+
+	private static final String MSG_GAME_NULL = "Game model must not be null";
+	private static final String MSG_LEVEL_NULL = "Game level must not be null";
+	private static final String MSG_TILE_NULL = "Tile must not be null";
+	private static final String MSG_DIR_NULL = "Direction must not be null";
+
 	public static Vector2i v2i(int x, int y) {
 		return new Vector2i(x, y);
 	}
@@ -50,7 +65,63 @@ public class Globals {
 		return new Vector2f((float) x, (float) y);
 	}
 
-	public static final Random RND = new Random();
+	public static void checkNotNull(Object value) {
+		Objects.requireNonNull(value, "");
+	}
+
+	public static void checkNotNull(Object value, String message) {
+		Objects.requireNonNull(value, message);
+	}
+
+	public static void checkGameNotNull(GameModel game) {
+		checkNotNull(game, MSG_GAME_NULL);
+	}
+
+	public static void checkGhostID(byte id) {
+		if (id < 0 || id > 3) {
+			throw new IllegalGhostIDException(id);
+		}
+	}
+
+	public static void checkGameVariant(GameVariant variant) {
+		if (variant == null) {
+			throw new IllegalGameVariantException(variant);
+		}
+		switch (variant) {
+		case MS_PACMAN, PACMAN -> { // ok
+		}
+		default -> throw new IllegalGameVariantException(variant);
+		}
+	}
+
+	public static void checkLevelNumber(int number) {
+		if (number < 1) {
+			throw new IllegalLevelNumberException(number);
+		}
+	}
+
+	public static void checkTileNotNull(Vector2i tile) {
+		checkNotNull(tile, MSG_TILE_NULL);
+	}
+
+	public static void checkLevelNotNull(GameLevel level) {
+		checkNotNull(level, MSG_LEVEL_NULL);
+	}
+
+	public static void checkDirectionNotNull(Direction dir) {
+		checkNotNull(dir, MSG_DIR_NULL);
+	}
+
+	public static double requirePositive(double value, String messageFormat) {
+		if (value < 0) {
+			throw new IllegalArgumentException(messageFormat.formatted(value));
+		}
+		return value;
+	}
+
+	public static double requirePositive(double value) {
+		return requirePositive(value, "%f must be positive");
+	}
 
 	/**
 	 * @param a left interval bound

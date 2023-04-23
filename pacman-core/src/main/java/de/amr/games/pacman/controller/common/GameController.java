@@ -26,7 +26,7 @@ package de.amr.games.pacman.controller.common;
 import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
-import static de.amr.games.pacman.model.Validator.checkNotNull;
+import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static java.util.function.Predicate.not;
 
 import de.amr.games.pacman.event.GameEventType;
@@ -36,7 +36,6 @@ import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.steering.RuleBasedSteering;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.GameVariant;
-import de.amr.games.pacman.model.Validator;
 
 /**
  * Controller (in the sense of MVC) for both (Pac-Man, Ms. Pac-Man) game variants.
@@ -73,7 +72,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private boolean autoControlled;
 
 	public GameController(GameVariant variant) {
-		Validator.checkNotNull(variant);
+		checkNotNull(variant);
 		states = GameState.values();
 		for (var state : states) {
 			state.gc = this;

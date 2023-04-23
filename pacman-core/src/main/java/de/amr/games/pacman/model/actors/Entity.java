@@ -25,8 +25,8 @@ package de.amr.games.pacman.model.actors;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
+import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.v2f;
-import static de.amr.games.pacman.model.Validator.checkNotNull;
 import static de.amr.games.pacman.model.world.World.tileAt;
 
 import de.amr.games.pacman.lib.math.Vector2f;
