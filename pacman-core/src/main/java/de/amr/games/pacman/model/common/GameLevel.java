@@ -594,6 +594,38 @@ public class GameLevel {
 	}
 
 	/**
+	 * Specifies the hunting behavior of the given ghost.
+	 * 
+	 * @param ghost one of the guys
+	 */
+	public void doGhostHuntingAction(Ghost ghost) {
+		switch (game.variant()) {
+		case MS_PACMAN -> {
+			/*
+			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* hunting/scatter phase. Some say, the original
+			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
+			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
+			 */
+			if (huntingPhase == 0 && (ghost.id() == Ghost.ID_RED_GHOST || ghost.id() == Ghost.ID_PINK_GHOST)) {
+				ghost.roam(this); // not sure
+			} else if (chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && cruiseElroyState > 0) {
+				ghost.chase(this);
+			} else {
+				ghost.scatter(this);
+			}
+		}
+		case PACMAN -> {
+			if (chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && cruiseElroyState > 0) {
+				ghost.chase(this);
+			} else {
+				ghost.scatter(this);
+			}
+		}
+		default -> throw new IllegalGameVariantException(game.variant());
+		}
+	}
+
+	/**
 	 * @return (optional) number of current scattering phase <code>(0-3)</code>
 	 */
 	public OptionalInt scatterPhase() {

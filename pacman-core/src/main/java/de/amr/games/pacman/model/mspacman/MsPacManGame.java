@@ -24,10 +24,8 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman;
 
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * The Ms. Pac-Man game.
@@ -208,22 +206,6 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public GameVariant variant() {
 		return GameVariant.MS_PACMAN;
-	}
-
-	/**
-	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* hunting/scatter phase. Some say, the original
-	 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the
-	 * scatter target of Blinky and Pinky would have been affected. Who knows?
-	 */
-	@Override
-	public void doGhostHuntingAction(GameLevel level, Ghost ghost) {
-		if (level.huntingPhase() == 0 && (ghost.id() == Ghost.ID_RED_GHOST || ghost.id() == Ghost.ID_PINK_GHOST)) {
-			ghost.roam(level); // not sure
-		} else if (level.chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && level.cruiseElroyState() > 0) {
-			ghost.chase(level);
-		} else {
-			ghost.scatter(level);
-		}
 	}
 
 	@Override

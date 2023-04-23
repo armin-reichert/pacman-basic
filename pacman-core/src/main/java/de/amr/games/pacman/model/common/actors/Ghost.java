@@ -386,7 +386,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private void updateStateHuntingPac(GameLevel level) {
 		setRelSpeed(level.huntingSpeed(this));
-		level.game().doGhostHuntingAction(level, this);
+		level.doGhostHuntingAction(this);
 	}
 
 	// --- FRIGHTENED ---
