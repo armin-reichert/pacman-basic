@@ -23,12 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
-import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
-
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Model of the Pac-Man game.
@@ -82,18 +79,6 @@ public class PacManGame extends GameModel {
 	public static final String AK_BLINKY_DAMAGED = "blinky_damaged";
 	public static final String AK_BLINKY_PATCHED = "blinky_patched";
 	public static final String AK_BLINKY_NAKED = "blinky_naked";
-
-	@Override
-	public World createWorld(int levelNumber) {
-		checkLevelNumber(levelNumber);
-		var world = new World(MAP);
-		return world;
-	}
-
-	@Override
-	public int mazeNumber(int levelNumber) {
-		return 1;
-	}
 
 	@Override
 	public GameVariant variant() {

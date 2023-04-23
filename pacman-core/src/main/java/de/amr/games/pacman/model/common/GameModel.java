@@ -43,7 +43,6 @@ import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -178,18 +177,6 @@ public abstract class GameModel {
 	 * @return the game variant realized by this model
 	 */
 	public abstract GameVariant variant();
-
-	/**
-	 * @param levelNumber level number (starting at 1)
-	 * @return world used in specified level
-	 */
-	public abstract World createWorld(int levelNumber);
-
-	/**
-	 * @param levelNumber level number (starting at 1)
-	 * @return number of maze used in specified level
-	 */
-	public abstract int mazeNumber(int levelNumber);
 
 	/**
 	 * @param levelNumber level number (starting at 1)

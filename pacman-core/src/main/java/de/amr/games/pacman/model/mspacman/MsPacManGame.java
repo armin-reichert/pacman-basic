@@ -23,14 +23,11 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
-
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * The Ms. Pac-Man game.
@@ -207,55 +204,6 @@ public class MsPacManGame extends GameModel {
 	//@formatter:on
 
 	public static final String AK_CLAPPERBOARD = "clapperboard";
-
-	@Override
-	public World createWorld(int levelNumber) {
-		checkLevelNumber(levelNumber);
-		int mapNumber = mapNumber(levelNumber);
-		var map = switch (mapNumber) {
-		case 1 -> MAP1;
-		case 2 -> MAP2;
-		case 3 -> MAP3;
-		case 4 -> MAP4;
-		default -> throw new IllegalArgumentException(
-				"Illegal map number: %d. Allowed values: 1, 2, 3, 4.".formatted(mapNumber));
-		};
-		return new World(map);
-	}
-
-	/**
-	 * There are 4 different maps used by the 6 different mazes. Up to level 13, the used mazes are:
-	 * <ul>
-	 * <li>Maze #1: pink maze, white dots (level 1-2)
-	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
-	 * <li>Maze #3: orange maze, red dots (level 6-9)
-	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
-	 * </ul>
-	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
-	 * <ul>
-	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
-	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
-	 * </ul>
-	 * <p>
-	 * 
-	 * @param levelNumber level number (starting at 1)
-	 * @return number (starting at 1) of maze used in this level
-	 */
-	@Override
-	public int mazeNumber(int levelNumber) {
-		checkLevelNumber(levelNumber);
-		return switch (levelNumber) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
-		};
-	}
-
-	private int mapNumber(int levelNumber) {
-		return levelNumber < 14 ? mazeNumber(levelNumber) : mazeNumber(levelNumber) - 2;
-	}
 
 	@Override
 	public GameVariant variant() {

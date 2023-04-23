@@ -70,6 +70,8 @@ import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MovingBonus;
+import de.amr.games.pacman.model.mspacman.MsPacManGame;
+import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.model.pacman.StaticBonus;
 
 /**
@@ -86,6 +88,75 @@ public class GameLevel {
 
 	private static final float percent(byte value) {
 		return value / 100f;
+	}
+
+	// factory methods
+
+	private static World createWorld(GameVariant variant, int levelNumber) {
+		switch (variant) {
+		case MS_PACMAN -> {
+			int mapNumber = mapNumber(variant, levelNumber);
+			var map = switch (mapNumber) {
+			case 1 -> MsPacManGame.MAP1;
+			case 2 -> MsPacManGame.MAP2;
+			case 3 -> MsPacManGame.MAP3;
+			case 4 -> MsPacManGame.MAP4;
+			default -> throw new IllegalArgumentException(
+					"Illegal map number: %d. Allowed values: 1, 2, 3, 4.".formatted(mapNumber));
+			};
+			return new World(map);
+		}
+		case PACMAN -> {
+			return new World(PacManGame.MAP);
+		}
+		default -> throw new IllegalGameVariantException(variant);
+		}
+	}
+
+	/**
+	 * There are 4 different maps used by the 6 different mazes. Up to level 13, the used mazes are:
+	 * <ul>
+	 * <li>Maze #1: pink maze, white dots (level 1-2)
+	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
+	 * <li>Maze #3: orange maze, red dots (level 6-9)
+	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
+	 * </ul>
+	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
+	 * <ul>
+	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
+	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
+	 * </ul>
+	 * <p>
+	 * 
+	 * @param levelNumber level number (starting at 1)
+	 * @return number (starting at 1) of maze used in this level
+	 */
+	private static int mazeNumber(GameVariant variant, int levelNumber) {
+		checkLevelNumber(levelNumber);
+
+		switch (variant) {
+		case MS_PACMAN -> {
+			return switch (levelNumber) {
+			case 1, 2 -> 1;
+			case 3, 4, 5 -> 2;
+			case 6, 7, 8, 9 -> 3;
+			case 10, 11, 12, 13 -> 4;
+			default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
+			};
+		}
+		case PACMAN -> {
+			return 1;
+		}
+		default -> throw new IllegalGameVariantException(variant);
+		}
+	}
+
+	public static int mapNumber(GameVariant variant, int levelNumber) {
+		return switch (variant) {
+		case MS_PACMAN -> levelNumber < 14 ? mazeNumber(variant, levelNumber) : mazeNumber(variant, levelNumber) - 2;
+		case PACMAN -> 1;
+		default -> throw new IllegalGameVariantException(variant);
+		};
 	}
 
 	private static Pac createPac(GameVariant variant) {
@@ -208,7 +279,7 @@ public class GameLevel {
 		checkLevelNumber(number);
 		this.game = game;
 		this.number = number;
-		world = game.createWorld(number);
+		world = createWorld(game.variant(), number);
 		pac = createPac(game.variant());
 		ghosts = createGhosts(game.variant());
 		bonus = createBonus(game.variant(), number);
@@ -306,6 +377,13 @@ public class GameLevel {
 
 	public World world() {
 		return world;
+	}
+
+	/**
+	 * @return number of maze (not map) used in this level, 1-based.
+	 */
+	public int mazeNumber() {
+		return mazeNumber(game.variant(), number);
 	}
 
 	/**
