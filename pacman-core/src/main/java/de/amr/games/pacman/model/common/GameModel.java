@@ -42,7 +42,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
@@ -202,12 +201,6 @@ public abstract class GameModel {
 	 * @return number of maze used in specified level
 	 */
 	public abstract int mazeNumber(int levelNumber);
-
-	/**
-	 * @param levelNumber level number (starting at 1)
-	 * @return bonus used in specified level
-	 */
-	public abstract Bonus createBonus(int levelNumber);
 
 	/**
 	 * @param levelNumber level number (starting at 1)

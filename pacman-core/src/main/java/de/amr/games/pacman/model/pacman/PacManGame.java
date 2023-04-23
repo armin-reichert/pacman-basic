@@ -28,12 +28,10 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
-import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
@@ -116,25 +114,6 @@ public class PacManGame extends GameModel {
 	@Override
 	public int mazeNumber(int levelNumber) {
 		return 1;
-	}
-
-	@Override
-	public Bonus createBonus(int levelNumber) {
-		checkLevelNumber(levelNumber);
-		//@formatter:off
-		var bonus = switch (levelNumber) {
-		case 1      -> new StaticBonus((byte)0,  100); // Cherries
-		case 2      -> new StaticBonus((byte)1,  300); // Strawberry
-		case 3, 4   -> new StaticBonus((byte)2,  500); // Peach
-		case 5, 6   -> new StaticBonus((byte)3,  700); // Apple
-		case 7, 8   -> new StaticBonus((byte)4, 1000); // Grapes
-		case 9, 10  -> new StaticBonus((byte)5, 2000); // Galaxian
-		case 11, 12 -> new StaticBonus((byte)6, 3000); // Bell
-		default     -> new StaticBonus((byte)7, 5000); // Key
-		};
-		//@formatter:on
-		bonus.entity().setPosition(halfTileRightOf(13, 20));
-		return bonus;
 	}
 
 	@Override

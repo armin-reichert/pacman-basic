@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.lib.Globals.RND;
 import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
@@ -34,7 +33,6 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
@@ -243,24 +241,6 @@ public class MsPacManGame extends GameModel {
 				"Illegal map number: %d. Allowed values: 1, 2, 3, 4.".formatted(mapNumber));
 		};
 		return new World(map);
-	}
-
-	@Override
-	public Bonus createBonus(int levelNumber) {
-		checkLevelNumber(levelNumber);
-		int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
-		return switch (n) {
-		//@formatter:off
-		case 1 -> new MovingBonus((byte)0,  100); // Cherries
-		case 2 -> new MovingBonus((byte)1,  200); // Strawberry
-		case 3 -> new MovingBonus((byte)2,  500); // Peach
-		case 4 -> new MovingBonus((byte)3,  700); // Pretzel (A Brezn, Herr Gott Sakra!)
-		case 5 -> new MovingBonus((byte)4, 1000); // Apple
-		case 6 -> new MovingBonus((byte)5, 2000); // Pear
-		case 7 -> new MovingBonus((byte)6, 5000); // Bananas
-		default -> throw new IllegalArgumentException();
-		//@formatter:on
-		};
 	}
 
 	/**

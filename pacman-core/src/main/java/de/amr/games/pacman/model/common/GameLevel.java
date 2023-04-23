@@ -70,6 +70,7 @@ import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MovingBonus;
+import de.amr.games.pacman.model.pacman.StaticBonus;
 
 /**
  * @author Armin Reichert
@@ -159,7 +160,7 @@ public class GameLevel {
 		world = game.createWorld(number);
 		pac = game.createPac();
 		ghosts = game.createGhosts();
-		bonus = game.createBonus(number);
+		bonus = createBonus(game.variant(), number);
 		huntingDurations = game.huntingDurations(number);
 		defineGhostHouseRules();
 		defineGhostAI();
@@ -300,6 +301,47 @@ public class GameLevel {
 		return Stream.of(pac, ghosts[ID_RED_GHOST], ghosts[ID_PINK_GHOST], ghosts[ID_CYAN_GHOST], ghosts[ID_ORANGE_GHOST]);
 	}
 
+	/**
+	 * @return bonus used in specified game variant and level
+	 */
+	private static Bonus createBonus(GameVariant variant, int levelNumber) {
+		switch (variant) {
+		case MS_PACMAN -> {
+			int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
+			Bonus bonus = switch (n) {
+			//@formatter:off
+			case 1 -> new MovingBonus((byte)0,  100); // Cherries
+			case 2 -> new MovingBonus((byte)1,  200); // Strawberry
+			case 3 -> new MovingBonus((byte)2,  500); // Peach
+			case 4 -> new MovingBonus((byte)3,  700); // Pretzel (A Brezn, Herr Gott Sakra!)
+			case 5 -> new MovingBonus((byte)4, 1000); // Apple
+			case 6 -> new MovingBonus((byte)5, 2000); // Pear
+			case 7 -> new MovingBonus((byte)6, 5000); // Bananas
+			default -> throw new IllegalArgumentException();
+			//@formatter:on
+			};
+			return bonus;
+		}
+		case PACMAN -> {
+			//@formatter:off
+			Bonus bonus = switch (levelNumber) {
+			case 1      -> new StaticBonus((byte)0,  100); // Cherries
+			case 2      -> new StaticBonus((byte)1,  300); // Strawberry
+			case 3, 4   -> new StaticBonus((byte)2,  500); // Peach
+			case 5, 6   -> new StaticBonus((byte)3,  700); // Apple
+			case 7, 8   -> new StaticBonus((byte)4, 1000); // Grapes
+			case 9, 10  -> new StaticBonus((byte)5, 2000); // Galaxian
+			case 11, 12 -> new StaticBonus((byte)6, 3000); // Bell
+			default     -> new StaticBonus((byte)7, 5000); // Key
+			};
+			//@formatter:on
+			bonus.entity().setPosition(halfTileRightOf(13, 20));
+			return bonus;
+		}
+		default -> throw new IllegalGameVariantException(variant);
+		}
+	}
+
 	public Bonus bonus() {
 		return bonus;
 	}
@@ -307,14 +349,13 @@ public class GameLevel {
 	public void onBonusReached() {
 		switch (game.variant()) {
 		case MS_PACMAN -> {
-			int numPortals = world.portals().size();
+			var portals = world.portals();
 			var leftToRight = RND.nextBoolean();
-			var entryPortal = world.portals().get(RND.nextInt(numPortals));
-			var exitPortal = world.portals().get(RND.nextInt(numPortals));
+			var entryPortal = portals.get(RND.nextInt(portals.size()));
+			var exitPortal = portals.get(RND.nextInt(portals.size()));
 			var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
 			var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
 					: np(exitPortal.leftTunnelEnd().minus(1, 0));
-			/// TODO solution if a ghost house has more than one door
 			var houseEntry = world.house().door().leftWing().minus(0, 1);
 			int houseHeight = world.house().size().y();
 			var route = new ArrayList<NavigationPoint>();
@@ -323,6 +364,8 @@ public class GameLevel {
 			route.add(np(houseEntry));
 			route.add(exitPoint);
 			LOG.trace("Bonus route: %s, orientation: %s", route, (leftToRight ? "left to right" : "right to left"));
+
+			// TODO create entity here, not on level entry
 			var movingBonus = (MovingBonus) bonus;
 			movingBonus.setRoute(route);
 			movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
