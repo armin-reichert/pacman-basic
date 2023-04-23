@@ -440,25 +440,17 @@ public class GameModel {
 	 * Enters the demo game level ("attract mode").
 	 */
 	public void enterDemoLevel() {
-		switch (variant()) {
-		case MS_PACMAN -> {
-			level = new GameLevel(this, 1, true);
-			level.setPacSteering(new RuleBasedSteering());
-			level.letsGetReadyToRumbleAndShowGuys(true);
-			scoringEnabled = false;
-			GameEvents.setSoundEventsEnabled(false);
-			LOG.info("Ms. Pac-Man demo level entered");
-		}
-		case PACMAN -> {
-			level = new GameLevel(this, 1, true);
-			level.setPacSteering(new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE));
-			level.letsGetReadyToRumbleAndShowGuys(true);
-			scoringEnabled = false;
-			GameEvents.setSoundEventsEnabled(false);
-			LOG.info("Pac-Man demo level entered");
-		}
-		default -> throw new IllegalGameVariantException(variant());
-		}
+		var steering = switch (variant) {
+		case MS_PACMAN -> new RuleBasedSteering();
+		case PACMAN -> new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE);
+		default -> throw new IllegalGameVariantException(variant);
+		};
+		level = new GameLevel(this, 1, true);
+		level.setPacSteering(steering);
+		level.letsGetReadyToRumbleAndShowGuys(true);
+		scoringEnabled = false;
+		GameEvents.setSoundEventsEnabled(false);
+		LOG.info("Ms. Pac-Man demo level entered");
 	}
 
 	/**
