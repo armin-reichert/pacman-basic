@@ -595,6 +595,7 @@ public class GameLevel {
 	 * @param ghost one of the guys
 	 */
 	public void doGhostHuntingAction(Ghost ghost) {
+		boolean cruiseElroy = ghost.id() == Ghost.ID_RED_GHOST && cruiseElroyState > 0;
 		switch (game.variant()) {
 		case MS_PACMAN -> {
 			/*
@@ -604,14 +605,14 @@ public class GameLevel {
 			 */
 			if (huntingPhase == 0 && (ghost.id() == Ghost.ID_RED_GHOST || ghost.id() == Ghost.ID_PINK_GHOST)) {
 				ghost.roam(this); // not sure
-			} else if (chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && cruiseElroyState > 0) {
+			} else if (chasingPhase().isPresent() || cruiseElroy) {
 				ghost.chase(this);
 			} else {
 				ghost.scatter(this);
 			}
 		}
 		case PACMAN -> {
-			if (chasingPhase().isPresent() || ghost.id() == Ghost.ID_RED_GHOST && cruiseElroyState > 0) {
+			if (chasingPhase().isPresent() || cruiseElroy) {
 				ghost.chase(this);
 			} else {
 				ghost.scatter(this);
