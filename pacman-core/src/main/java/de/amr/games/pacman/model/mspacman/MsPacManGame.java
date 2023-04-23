@@ -23,10 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameVariant;
-
 /**
  * The Ms. Pac-Man game.
  * <p>
@@ -41,7 +37,7 @@ import de.amr.games.pacman.model.common.GameVariant;
  * 
  * @author Armin Reichert
  */
-public class MsPacManGame extends GameModel {
+public class MsPacManGame {
 
 	/*@formatter:off*/
 	public static final byte[][] MAP1 = {
@@ -202,18 +198,4 @@ public class MsPacManGame extends GameModel {
 	//@formatter:on
 
 	public static final String AK_CLAPPERBOARD = "clapperboard";
-
-	@Override
-	public GameVariant variant() {
-		return GameVariant.MS_PACMAN;
-	}
-
-	@Override
-	public void enterDemoLevel() {
-		level = new MsPacManDemoLevel(this);
-		level.letsGetReadyToRumbleAndShowGuys(true);
-		scoringEnabled = false;
-		GameEvents.setSoundEventsEnabled(false);
-		LOG.info("Ms. Pac-Man demo level entered");
-	}
 }

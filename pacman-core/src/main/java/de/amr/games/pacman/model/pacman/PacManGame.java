@@ -23,16 +23,12 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
-import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameVariant;
-
 /**
  * Model of the Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManGame extends GameModel {
+public class PacManGame {
 
 	//@formatter:off
 	public static final byte[][] MAP = {
@@ -79,18 +75,4 @@ public class PacManGame extends GameModel {
 	public static final String AK_BLINKY_DAMAGED = "blinky_damaged";
 	public static final String AK_BLINKY_PATCHED = "blinky_patched";
 	public static final String AK_BLINKY_NAKED = "blinky_naked";
-
-	@Override
-	public GameVariant variant() {
-		return GameVariant.PACMAN;
-	}
-
-	@Override
-	public void enterDemoLevel() {
-		level = new PacManDemoLevel(this);
-		level.letsGetReadyToRumbleAndShowGuys(true);
-		scoringEnabled = false;
-		GameEvents.setSoundEventsEnabled(false);
-		LOG.info("Pac-Man demo level entered");
-	}
 }

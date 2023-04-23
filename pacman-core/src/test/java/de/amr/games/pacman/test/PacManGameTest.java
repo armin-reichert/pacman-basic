@@ -38,10 +38,10 @@ import org.junit.Test;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.model.pacman.StaticBonus;
 
 /**
@@ -53,7 +53,7 @@ public class PacManGameTest {
 
 	@Before
 	public void setUp() {
-		game = new PacManGame();
+		game = new GameModel(GameVariant.PACMAN);
 		game.enterLevel(1);
 	}
 

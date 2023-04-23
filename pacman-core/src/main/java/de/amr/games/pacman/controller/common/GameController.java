@@ -66,11 +66,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 public class GameController extends Fsm<GameState, GameModel> {
 
 	private static GameModel newGameModel(GameVariant variant) {
-		return switch (variant) {
-		case MS_PACMAN -> new MsPacManGame();
-		case PACMAN -> new PacManGame();
-		default -> throw new IllegalArgumentException("Illegal game variant: '%s'".formatted(variant));
-		};
+		return new GameModel(variant);
 	}
 
 	private GameModel game;

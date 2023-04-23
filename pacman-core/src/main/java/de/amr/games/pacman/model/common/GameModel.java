@@ -41,13 +41,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.model.mspacman.MsPacManDemoLevel;
+import de.amr.games.pacman.model.pacman.PacManDemoLevel;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
  * 
  * @author Armin Reichert
  */
-public abstract class GameModel {
+public class GameModel {
 
 	protected static final Logger LOG = LogManager.getFormatterLogger();
 
@@ -143,6 +145,7 @@ public abstract class GameModel {
 		return HUNTING_DURATIONS[index];
 	}
 
+	protected final GameVariant variant;
 	protected GameLevel level;
 	protected final List<Byte> levelCounter = new LinkedList<>();
 	protected Score score;
@@ -155,7 +158,8 @@ public abstract class GameModel {
 	protected boolean oneLessLifeDisplayed; // TODO get rid of this
 	public int intermissionTestNumber; // intermission test mode
 
-	protected GameModel() {
+	public GameModel(GameVariant variant) {
+		this.variant = variant;
 		init();
 	}
 
@@ -174,7 +178,9 @@ public abstract class GameModel {
 	/**
 	 * @return the game variant realized by this model
 	 */
-	public abstract GameVariant variant();
+	public GameVariant variant() {
+		return variant;
+	}
 
 	/**
 	 * @param levelNumber level number (starting at 1)
@@ -209,7 +215,25 @@ public abstract class GameModel {
 	/**
 	 * Enters the demo game level ("attract mode").
 	 */
-	public abstract void enterDemoLevel();
+	public void enterDemoLevel() {
+		switch (variant()) {
+		case MS_PACMAN -> {
+			level = new MsPacManDemoLevel(this);
+			level.letsGetReadyToRumbleAndShowGuys(true);
+			scoringEnabled = false;
+			GameEvents.setSoundEventsEnabled(false);
+			LOG.info("Ms. Pac-Man demo level entered");
+		}
+		case PACMAN -> {
+			level = new PacManDemoLevel(this);
+			level.letsGetReadyToRumbleAndShowGuys(true);
+			scoringEnabled = false;
+			GameEvents.setSoundEventsEnabled(false);
+			LOG.info("Pac-Man demo level entered");
+		}
+		default -> throw new IllegalGameVariantException(variant());
+		}
+	}
 
 	/**
 	 * Enters the next game level.
