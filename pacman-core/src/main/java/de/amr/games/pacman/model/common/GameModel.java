@@ -45,7 +45,7 @@ import de.amr.games.pacman.model.mspacman.MsPacManDemoLevel;
 import de.amr.games.pacman.model.pacman.PacManDemoLevel;
 
 /**
- * Common part of the Pac-Man and Ms. Pac-Man game models.
+ * Pac-Man / Ms. Pac-Man game model.
  * 
  * @author Armin Reichert
  */
