@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
 import static de.amr.games.pacman.model.common.Validator.checkGameVariant;
 import static de.amr.games.pacman.model.common.Validator.checkNotNull;
 
@@ -41,8 +42,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.model.mspacman.MsPacManDemoLevel;
-import de.amr.games.pacman.model.pacman.PacManDemoLevel;
+import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.lib.steering.NavigationPoint;
+import de.amr.games.pacman.lib.steering.RouteBasedSteering;
+import de.amr.games.pacman.lib.steering.RuleBasedSteering;
 
 /**
  * Pac-Man / Ms. Pac-Man game model.
@@ -248,6 +251,25 @@ public class GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
+	
+	private static final List<NavigationPoint> PACMAN_DEMOLEVEL_ROUTE = List.of( //
+			np(12, 26), np(9, 26), np(12, 32), np(15, 32), np(24, 29), np(21, 23), np(18, 23), np(18, 20), np(18, 17),
+			np(15, 14), np(12, 14), np(9, 17), np(6, 17), np(6, 11), np(6, 8), np(6, 4), np(1, 8), np(6, 8), np(9, 8),
+			np(12, 8), np(6, 4), np(6, 8), np(6, 11), np(1, 8), np(6, 8), np(9, 8), np(12, 14), np(9, 17), np(6, 17),
+			np(0, 17), np(21, 17), np(21, 23), np(21, 26), np(24, 29), /* avoid moving up: */ np(26, 29), np(15, 32),
+			np(12, 32), np(3, 29), np(6, 23), np(9, 23), np(12, 26), np(15, 26), np(18, 23), np(21, 23), np(24, 29),
+			/* avoid moving up: */ np(26, 29), np(15, 32), np(12, 32), np(3, 29), np(6, 23) //
+	);
+	
+	@SuppressWarnings("unused")
+	private static final List<NavigationPoint> GHOST_0_ROUTE = List.of( //
+			np(21, 4, Direction.DOWN), np(21, 8, Direction.DOWN), np(21, 11, Direction.RIGHT), np(26, 8, Direction.LEFT),
+			np(21, 8, Direction.DOWN), np(26, 8, Direction.UP), np(26, 8, Direction.DOWN), np(21, 11, Direction.DOWN),
+			np(21, 17, Direction.RIGHT), // enters
+
+			np(99, 99, Direction.DOWN) //
+	);
+
 	//@formatter:on
 
 	/** Game loop speed in ticks/sec. */
@@ -406,7 +428,7 @@ public class GameModel {
 	 * @param levelNumber level number (starting at 1)
 	 */
 	public void enterLevel(int levelNumber) {
-		level = new GameLevel(this, levelNumber);
+		level = new GameLevel(this, levelNumber, false);
 		level.letsGetReadyToRumbleAndShowGuys(false);
 		incrementLevelCounter();
 		if (score != null) {
@@ -420,14 +442,16 @@ public class GameModel {
 	public void enterDemoLevel() {
 		switch (variant()) {
 		case MS_PACMAN -> {
-			level = new MsPacManDemoLevel(this);
+			level = new GameLevel(this, 1, true);
+			level.setPacSteering(new RuleBasedSteering());
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			scoringEnabled = false;
 			GameEvents.setSoundEventsEnabled(false);
 			LOG.info("Ms. Pac-Man demo level entered");
 		}
 		case PACMAN -> {
-			level = new PacManDemoLevel(this);
+			level = new GameLevel(this, 1, true);
+			level.setPacSteering(new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE));
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			scoringEnabled = false;
 			GameEvents.setSoundEventsEnabled(false);

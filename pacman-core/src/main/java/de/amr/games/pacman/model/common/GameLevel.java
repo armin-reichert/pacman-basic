@@ -248,6 +248,8 @@ public class GameLevel {
 
 	private final int number;
 
+	private final boolean attractMode;
+
 	private final TickTimer huntingTimer = new TickTimer("HuntingTimer");
 
 	private final Memory memo = new Memory();
@@ -272,11 +274,12 @@ public class GameLevel {
 
 	private byte cruiseElroyState;
 
-	public GameLevel(GameModel game, int number) {
+	public GameLevel(GameModel game, int number, boolean attractMode) {
 		checkGameNotNull(game);
 		checkLevelNumber(number);
 		this.game = game;
 		this.number = number;
+		this.attractMode = attractMode;
 		world = createWorld(game.variant(), number);
 		pac = createPac(game.variant());
 		ghosts = createGhosts(game.variant());
@@ -366,6 +369,10 @@ public class GameLevel {
 
 	public GameModel game() {
 		return game;
+	}
+
+	public boolean isAttractMode() {
+		return attractMode;
 	}
 
 	/** @return level number, starting with 1. */
