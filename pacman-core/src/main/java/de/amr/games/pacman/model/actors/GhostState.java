@@ -20,40 +20,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-
-package de.amr.games.pacman.model.common.world;
-
-import static de.amr.games.pacman.lib.Globals.HTS;
-import static de.amr.games.pacman.lib.Globals.TS;
-import static de.amr.games.pacman.lib.Globals.v2f;
-
-import de.amr.games.pacman.lib.math.Vector2f;
-import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.Validator;
+ */
+package de.amr.games.pacman.model.actors;
 
 /**
+ * A ghost is exactly in one of these states at any point in time.
+ * 
  * @author Armin Reichert
  */
-public record Door(Vector2i leftWing, Vector2i rightWing) {
-
-	public Door {
-		Validator.checkNotNull(leftWing);
-		Validator.checkNotNull(rightWing);
-	}
-
-	/**
-	 * @param tile some tile
-	 * @return tells if the given tile is occupied by this door
-	 */
-	public boolean occupies(Vector2i tile) {
-		return leftWing.equals(tile) || rightWing.equals(tile);
-	}
-
-	/**
-	 * @return position where ghost can enter the door
-	 */
-	public Vector2f entryPosition() {
-		return v2f(TS * rightWing.x() - HTS, TS * (rightWing.y() - 1));
-	}
+public enum GhostState {
+	LOCKED, ENTERING_HOUSE, LEAVING_HOUSE, FRIGHTENED, HUNTING_PAC, EATEN, RETURNING_TO_HOUSE;
 }

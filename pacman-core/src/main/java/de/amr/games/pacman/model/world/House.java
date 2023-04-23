@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.model.common.world;
+package de.amr.games.pacman.model.world;
 
 import java.util.List;
 import java.util.Objects;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.Validator;
+import de.amr.games.pacman.model.Validator;
 
 /**
  * @author Armin Reichert

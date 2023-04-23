@@ -23,10 +23,10 @@ SOFTWARE.
 */
 package de.amr.games.pacman.event;
 
-import static de.amr.games.pacman.model.common.Validator.checkNotNull;
+import static de.amr.games.pacman.model.Validator.checkNotNull;
 
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.actors.Ghost;
 
 /**
  * @author Armin Reichert

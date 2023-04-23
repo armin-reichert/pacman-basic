@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.common.actors;
+package de.amr.games.pacman.model.actors;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
@@ -29,10 +29,10 @@ import static de.amr.games.pacman.lib.steering.Direction.DOWN;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
-import static de.amr.games.pacman.model.common.Validator.checkDirectionNotNull;
-import static de.amr.games.pacman.model.common.Validator.checkLevelNotNull;
-import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
-import static de.amr.games.pacman.model.common.world.World.tileAt;
+import static de.amr.games.pacman.model.Validator.checkDirectionNotNull;
+import static de.amr.games.pacman.model.Validator.checkLevelNotNull;
+import static de.amr.games.pacman.model.Validator.checkTileNotNull;
+import static de.amr.games.pacman.model.world.World.tileAt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +45,9 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.world.Portal;
+import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.world.Portal;
 
 /**
  * Base class for all creatures which can move through the world.

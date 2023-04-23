@@ -25,8 +25,8 @@ package de.amr.games.pacman.controller.pacman;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.lib.anim.Pulse;
-import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.Pac;
+import de.amr.games.pacman.model.actors.Ghost;
+import de.amr.games.pacman.model.actors.Pac;
 
 /**
  * @author Armin Reichert

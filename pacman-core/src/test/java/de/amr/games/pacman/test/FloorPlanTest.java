@@ -13,9 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.world.FloorPlan;
-import de.amr.games.pacman.model.common.world.World;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.world.FloorPlan;
+import de.amr.games.pacman.model.world.World;
 
 /**
  * Test for floor plan generation.

@@ -24,10 +24,10 @@ SOFTWARE.
 
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
+import static de.amr.games.pacman.model.actors.Ghost.ID_CYAN_GHOST;
+import static de.amr.games.pacman.model.actors.Ghost.ID_ORANGE_GHOST;
+import static de.amr.games.pacman.model.actors.Ghost.ID_PINK_GHOST;
+import static de.amr.games.pacman.model.actors.Ghost.ID_RED_GHOST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -37,12 +37,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.amr.games.pacman.lib.math.Vector2f;
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.actors.Bonus;
-import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.pacman.StaticBonus;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.GameVariant;
+import de.amr.games.pacman.model.actors.Bonus;
+import de.amr.games.pacman.model.actors.Ghost;
+import de.amr.games.pacman.model.actors.Pac;
+import de.amr.games.pacman.model.actors.StaticBonus;
 
 /**
  * @author Armin Reichert

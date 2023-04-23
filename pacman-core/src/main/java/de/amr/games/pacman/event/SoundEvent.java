@@ -23,9 +23,9 @@ SOFTWARE.
 */
 package de.amr.games.pacman.event;
 
-import static de.amr.games.pacman.model.common.Validator.checkNotNull;
+import static de.amr.games.pacman.model.Validator.checkNotNull;
 
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.GameModel;
 
 /**
  * @author Armin Reichert

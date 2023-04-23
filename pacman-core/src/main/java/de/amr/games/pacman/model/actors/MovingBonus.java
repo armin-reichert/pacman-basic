@@ -21,26 +21,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.pacman;
+package de.amr.games.pacman.model.actors;
 
 import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
+
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.actors.Bonus;
-import de.amr.games.pacman.model.common.actors.Entity;
+import de.amr.games.pacman.lib.anim.SimpleAnimation;
+import de.amr.games.pacman.lib.steering.NavigationPoint;
+import de.amr.games.pacman.lib.steering.RouteBasedSteering;
+import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.GameModel;
 
 /**
- * Bonus that appears at a static position.
+ * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving
+ * the maze at some portal at the other border.
+ * 
+ * <p>
+ * That's however not exactly the original Ms. Pac-Man behaviour with predefined "fruit paths".
  * 
  * @author Armin Reichert
  */
-public class StaticBonus extends Entity implements Bonus {
+public class MovingBonus extends Creature implements Bonus {
 
 	private static final Logger LOG = LogManager.getFormatterLogger();
 
@@ -49,22 +56,38 @@ public class StaticBonus extends Entity implements Bonus {
 	private long timer;
 	private byte state;
 
-	public StaticBonus(byte symbol, int points) {
+	private final SimpleAnimation<Float> jumpAnimation;
+	private final RouteBasedSteering steering = new RouteBasedSteering();
+
+	public MovingBonus(byte symbol, int points) {
+		super("MovingBonus");
+
+		reset();
+		this.canTeleport = false; // override setting from reset()
+
 		this.symbol = symbol;
 		this.points = points;
 		this.timer = 0;
 		this.state = Bonus.STATE_INACTIVE;
+
+		jumpAnimation = new SimpleAnimation<>(1.5f, -1.5f);
+		jumpAnimation.setFrameDuration(10);
+		jumpAnimation.repeatForever();
 	}
 
 	@Override
-	public Entity entity() {
+	public boolean canReverse(GameLevel level) {
+		return false;
+	}
+
+	@Override
+	public Creature entity() {
 		return this;
 	}
 
 	@Override
 	public String toString() {
-		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(symbol, points, state, position,
-				timer);
+		return "[MovingBonus state=%s symbol=%d value=%d timer=%d tile=%s]".formatted(state, symbol, points, timer, tile());
 	}
 
 	@Override
@@ -84,57 +107,69 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public void setInactive() {
-		timer = 0;
 		state = Bonus.STATE_INACTIVE;
+		jumpAnimation.stop();
 		hide();
+		setPixelSpeed(0);
 	}
 
 	@Override
 	public void setEdible(long ticks) {
-		if (ticks <= 0) {
-			throw new IllegalArgumentException("Bonus edible time must be larger than zero");
-		}
-		timer = ticks;
 		state = Bonus.STATE_EDIBLE;
+		timer = ticks;
+		jumpAnimation.restart();
 		show();
+		setPixelSpeed(0.5f); // how fast in the original game?
+		setTargetTile(null);
+		LOG.info("Bonus gets edible: %s", this);
 	}
 
 	@Override
 	public void eat() {
-		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
 		state = Bonus.STATE_EATEN;
+		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
 		LOG.info("Bonus eaten: %s", this);
+		jumpAnimation.stop();
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
 		publishSoundEvent(GameModel.SE_BONUS_EATEN);
 	}
 
-	private void expire() {
-		setInactive();
-		LOG.info("Bonus expired: %s", this);
-		publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
+	public void setRoute(List<NavigationPoint> route) {
+		steering.setRoute(route);
+		LOG.info("New route of moving bonus: %s", route);
+	}
+
+	public float dy() {
+		return jumpAnimation.isRunning() ? jumpAnimation.frame() : 0;
 	}
 
 	@Override
 	public void update(GameLevel level) {
 		switch (state) {
-		case Bonus.STATE_INACTIVE -> {
-			// stay inactive
+		case STATE_INACTIVE -> { // nothing to do
 		}
-		case Bonus.STATE_EDIBLE -> {
+		case STATE_EDIBLE -> {
 			if (sameTile(level.pac())) {
 				level.game().scorePoints(points);
 				eat();
-			} else if (timer == 0) {
-				expire();
-			} else {
-				--timer;
+				return;
 			}
+			steering.steer(level, this);
+			if (steering.isComplete()) {
+				LOG.info("Bonus reached target: %s", this);
+				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
+				setInactive();
+				return;
+			}
+			navigateTowardsTarget(level);
+			tryMoving(level);
+			jumpAnimation.animate();
 		}
-		case Bonus.STATE_EATEN -> {
-			if (timer == 0) {
-				expire();
-			} else {
-				--timer;
+		case STATE_EATEN -> {
+			if (--timer == 0) {
+				setInactive();
+				LOG.info("Bonus expired: %s", this);
+				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		default -> throw new IllegalStateException();

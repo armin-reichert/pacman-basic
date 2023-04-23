@@ -35,11 +35,11 @@ import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.actors.Entity;
-import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.mspacman.Clapperboard;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.actors.Clapperboard;
+import de.amr.games.pacman.model.actors.Entity;
+import de.amr.games.pacman.model.actors.Ghost;
+import de.amr.games.pacman.model.actors.Pac;
 
 /**
  * Intermission scene 1: "They meet".

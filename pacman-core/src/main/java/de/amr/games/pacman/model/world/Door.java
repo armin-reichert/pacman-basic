@@ -22,61 +22,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.model.common.actors;
+package de.amr.games.pacman.model.world;
 
-import de.amr.games.pacman.model.common.GameLevel;
+import static de.amr.games.pacman.lib.Globals.HTS;
+import static de.amr.games.pacman.lib.Globals.TS;
+import static de.amr.games.pacman.lib.Globals.v2f;
+
+import de.amr.games.pacman.lib.math.Vector2f;
+import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.model.Validator;
 
 /**
  * @author Armin Reichert
  */
-public interface Bonus {
+public record Door(Vector2i leftWing, Vector2i rightWing) {
 
-	public static byte STATE_INACTIVE = 0;
-	public static byte STATE_EDIBLE = 1;
-	public static byte STATE_EATEN = 2;
-
-	/**
-	 * @return Entity representing this bonus in the world.
-	 */
-	Entity entity();
+	public Door {
+		Validator.checkNotNull(leftWing);
+		Validator.checkNotNull(rightWing);
+	}
 
 	/**
-	 * @return the symbol of this bonus.
+	 * @param tile some tile
+	 * @return tells if the given tile is occupied by this door
 	 */
-	byte symbol();
+	public boolean occupies(Vector2i tile) {
+		return leftWing.equals(tile) || rightWing.equals(tile);
+	}
 
 	/**
-	 * @return points earned when eating this bonus
+	 * @return position where ghost can enter the door
 	 */
-	int points();
-
-	/**
-	 * @return state of the bonus
-	 */
-	byte state();
-
-	/**
-	 * Updates the bonus state.
-	 * 
-	 * @param level the game level
-	 */
-	void update(GameLevel level);
-
-	/**
-	 * Changes the bonus state to inactive.
-	 */
-	void setInactive();
-
-	/**
-	 * Consume the bonus.
-	 */
-	void eat();
-
-	/**
-	 * Changes the bonus state to edible.
-	 * 
-	 * @param points earned when eating this bonus
-	 * @param ticks  time how long the bonus is edible
-	 */
-	void setEdible(long ticks);
+	public Vector2f entryPosition() {
+		return v2f(TS * rightWing.x() - HTS, TS * (rightWing.y() - 1));
+	}
 }

@@ -23,13 +23,13 @@ SOFTWARE.
  */
 package de.amr.games.pacman.event;
 
-import static de.amr.games.pacman.model.common.Validator.checkGameNotNull;
-import static de.amr.games.pacman.model.common.Validator.checkNotNull;
+import static de.amr.games.pacman.model.Validator.checkGameNotNull;
+import static de.amr.games.pacman.model.Validator.checkNotNull;
 
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.GameModel;
 
 /**
  * Base class for events fired during game play. This class is a kind of compromise between separate subclasses for each

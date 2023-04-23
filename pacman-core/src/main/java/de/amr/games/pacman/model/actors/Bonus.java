@@ -20,61 +20,63 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
-package de.amr.games.pacman.model.mspacman;
+*/
 
-import java.util.Optional;
+package de.amr.games.pacman.model.actors;
 
-import de.amr.games.pacman.lib.anim.Animated;
-import de.amr.games.pacman.lib.math.Vector2f;
+import de.amr.games.pacman.model.GameLevel;
 
 /**
- * The clapperboard used in the intermission scenes.
- * 
  * @author Armin Reichert
  */
-public class Clapperboard {
+public interface Bonus {
 
-	private Vector2f position = Vector2f.ZERO;
-	private boolean visible;
-	private int sceneNumber;
-	private String sceneTitle;
-	private Animated animation;
+	public static byte STATE_INACTIVE = 0;
+	public static byte STATE_EDIBLE = 1;
+	public static byte STATE_EATEN = 2;
 
-	public Clapperboard(int sceneNumber, String sceneTitle) {
-		this.sceneNumber = sceneNumber;
-		this.sceneTitle = sceneTitle;
-	}
+	/**
+	 * @return Entity representing this bonus in the world.
+	 */
+	Entity entity();
 
-	public Vector2f position() {
-		return position;
-	}
+	/**
+	 * @return the symbol of this bonus.
+	 */
+	byte symbol();
 
-	public void setPosition(float x, float y) {
-		this.position = new Vector2f(x, y);
-	}
+	/**
+	 * @return points earned when eating this bonus
+	 */
+	int points();
 
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
+	/**
+	 * @return state of the bonus
+	 */
+	byte state();
 
-	public boolean isVisible() {
-		return visible;
-	}
+	/**
+	 * Updates the bonus state.
+	 * 
+	 * @param level the game level
+	 */
+	void update(GameLevel level);
 
-	public int sceneNumber() {
-		return sceneNumber;
-	}
+	/**
+	 * Changes the bonus state to inactive.
+	 */
+	void setInactive();
 
-	public String sceneTitle() {
-		return sceneTitle;
-	}
+	/**
+	 * Consume the bonus.
+	 */
+	void eat();
 
-	public void setAnimation(Animated animation) {
-		this.animation = animation;
-	}
-
-	public Optional<Animated> animation() {
-		return Optional.ofNullable(animation);
-	}
+	/**
+	 * Changes the bonus state to edible.
+	 * 
+	 * @param points earned when eating this bonus
+	 * @param ticks  time how long the bonus is edible
+	 */
+	void setEdible(long ticks);
 }

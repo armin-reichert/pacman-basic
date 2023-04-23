@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.model.common;
+package de.amr.games.pacman.model;
 
 import static de.amr.games.pacman.lib.Globals.RND;
 import static de.amr.games.pacman.lib.Globals.isEven;
@@ -30,19 +30,19 @@ import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
-import static de.amr.games.pacman.model.common.Validator.checkGameNotNull;
-import static de.amr.games.pacman.model.common.Validator.checkGhostID;
-import static de.amr.games.pacman.model.common.Validator.checkLevelNumber;
-import static de.amr.games.pacman.model.common.Validator.checkNotNull;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
-import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
-import static de.amr.games.pacman.model.common.world.World.halfTileRightOf;
+import static de.amr.games.pacman.model.Validator.checkGameNotNull;
+import static de.amr.games.pacman.model.Validator.checkGhostID;
+import static de.amr.games.pacman.model.Validator.checkLevelNumber;
+import static de.amr.games.pacman.model.Validator.checkNotNull;
+import static de.amr.games.pacman.model.actors.Ghost.ID_CYAN_GHOST;
+import static de.amr.games.pacman.model.actors.Ghost.ID_ORANGE_GHOST;
+import static de.amr.games.pacman.model.actors.Ghost.ID_PINK_GHOST;
+import static de.amr.games.pacman.model.actors.Ghost.ID_RED_GHOST;
+import static de.amr.games.pacman.model.actors.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.actors.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
+import static de.amr.games.pacman.model.world.World.halfTileRightOf;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,14 +63,14 @@ import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.model.common.actors.Bonus;
-import de.amr.games.pacman.model.common.actors.Creature;
-import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.GhostState;
-import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.world.World;
-import de.amr.games.pacman.model.mspacman.MovingBonus;
-import de.amr.games.pacman.model.pacman.StaticBonus;
+import de.amr.games.pacman.model.actors.Bonus;
+import de.amr.games.pacman.model.actors.Creature;
+import de.amr.games.pacman.model.actors.Ghost;
+import de.amr.games.pacman.model.actors.GhostState;
+import de.amr.games.pacman.model.actors.MovingBonus;
+import de.amr.games.pacman.model.actors.Pac;
+import de.amr.games.pacman.model.actors.StaticBonus;
+import de.amr.games.pacman.model.world.World;
 
 /**
  * @author Armin Reichert

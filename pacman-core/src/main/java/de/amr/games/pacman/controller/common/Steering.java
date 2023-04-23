@@ -23,8 +23,8 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller.common;
 
-import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.actors.Creature;
+import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.actors.Creature;
 
 /**
  * @author Armin Reichert

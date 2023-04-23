@@ -24,7 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib.anim;
 
-import static de.amr.games.pacman.model.common.Validator.checkNotNull;
+import static de.amr.games.pacman.model.Validator.checkNotNull;
 
 import java.util.HashMap;
 import java.util.Map;

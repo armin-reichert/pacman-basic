@@ -35,8 +35,8 @@ import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.actors.Ghost;
 
 /**
  * States of Ms. Pac-Man intro scene.

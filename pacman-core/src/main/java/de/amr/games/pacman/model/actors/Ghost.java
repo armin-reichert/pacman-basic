@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.common.actors;
+package de.amr.games.pacman.model.actors;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.differsAtMost;
@@ -30,17 +30,17 @@ import static de.amr.games.pacman.lib.steering.Direction.DOWN;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
-import static de.amr.games.pacman.model.common.Validator.checkGhostID;
-import static de.amr.games.pacman.model.common.Validator.checkLevelNotNull;
-import static de.amr.games.pacman.model.common.Validator.checkNotNull;
-import static de.amr.games.pacman.model.common.Validator.checkTileNotNull;
-import static de.amr.games.pacman.model.common.actors.GhostState.EATEN;
-import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
-import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
+import static de.amr.games.pacman.model.Validator.checkGhostID;
+import static de.amr.games.pacman.model.Validator.checkLevelNotNull;
+import static de.amr.games.pacman.model.Validator.checkNotNull;
+import static de.amr.games.pacman.model.Validator.checkTileNotNull;
+import static de.amr.games.pacman.model.actors.GhostState.EATEN;
+import static de.amr.games.pacman.model.actors.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.actors.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.actors.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
+import static de.amr.games.pacman.model.actors.GhostState.RETURNING_TO_HOUSE;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -53,9 +53,9 @@ import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.world.House;
+import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.world.House;
 
 /**
  * There are 4 ghosts with different "personalities".

@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.event;
 
 import de.amr.games.pacman.controller.common.GameState;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.GameModel;
 
 /**
  * Event indicating a game state change.

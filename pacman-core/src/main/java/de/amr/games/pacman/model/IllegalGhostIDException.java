@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.common;
+package de.amr.games.pacman.model;
 
 /**
  * @author Armin Reichert

@@ -21,13 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.common.actors;
+package de.amr.games.pacman.model.actors;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.Globals.v2f;
-import static de.amr.games.pacman.model.common.Validator.checkNotNull;
-import static de.amr.games.pacman.model.common.world.World.tileAt;
+import static de.amr.games.pacman.model.Validator.checkNotNull;
+import static de.amr.games.pacman.model.world.World.tileAt;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;

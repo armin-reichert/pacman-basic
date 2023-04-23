@@ -21,13 +21,60 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.common.actors;
+package de.amr.games.pacman.model.actors;
+
+import java.util.Optional;
+
+import de.amr.games.pacman.lib.anim.Animated;
+import de.amr.games.pacman.lib.math.Vector2f;
 
 /**
- * A ghost is exactly in one of these states at any point in time.
+ * The clapperboard used in the intermission scenes.
  * 
  * @author Armin Reichert
  */
-public enum GhostState {
-	LOCKED, ENTERING_HOUSE, LEAVING_HOUSE, FRIGHTENED, HUNTING_PAC, EATEN, RETURNING_TO_HOUSE;
+public class Clapperboard {
+
+	private Vector2f position = Vector2f.ZERO;
+	private boolean visible;
+	private int sceneNumber;
+	private String sceneTitle;
+	private Animated animation;
+
+	public Clapperboard(int sceneNumber, String sceneTitle) {
+		this.sceneNumber = sceneNumber;
+		this.sceneTitle = sceneTitle;
+	}
+
+	public Vector2f position() {
+		return position;
+	}
+
+	public void setPosition(float x, float y) {
+		this.position = new Vector2f(x, y);
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public int sceneNumber() {
+		return sceneNumber;
+	}
+
+	public String sceneTitle() {
+		return sceneTitle;
+	}
+
+	public void setAnimation(Animated animation) {
+		this.animation = animation;
+	}
+
+	public Optional<Animated> animation() {
+		return Optional.ofNullable(animation);
+	}
 }

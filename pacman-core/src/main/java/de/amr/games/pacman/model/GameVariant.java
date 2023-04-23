@@ -20,47 +20,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
+package de.amr.games.pacman.model;
 
-package de.amr.games.pacman.model.common;
-
-import java.time.LocalDate;
+import de.amr.games.pacman.lib.EnumMethods;
 
 /**
+ * Game variants that can be played.
+ * 
  * @author Armin Reichert
  */
-public class Score {
-	private int points;
-	private int levelNumber;
-	private LocalDate date;
-
-	public Score() {
-		points = 0;
-		levelNumber = 1;
-		date = LocalDate.now();
-	}
-
-	public void setPoints(int points) {
-		this.points = points;
-	}
-
-	public int points() {
-		return points;
-	}
-
-	public void setLevelNumber(int levelNumber) {
-		this.levelNumber = levelNumber;
-	}
-
-	public int levelNumber() {
-		return levelNumber;
-	}
-
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
-
-	public LocalDate date() {
-		return date;
-	}
+public enum GameVariant implements EnumMethods<GameVariant> {
+	MS_PACMAN, PACMAN;
 }
