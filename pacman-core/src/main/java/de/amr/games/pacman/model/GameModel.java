@@ -353,22 +353,41 @@ public class GameModel {
 	/*20*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0, 0},
 	/*21*/ { 90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0, 0},
 	};
-
+	
 	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
-	private static final int[][] HUNTING_DURATIONS = {
-		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS,   20 * FPS, 5 * FPS, -1 },
-		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS,       1, -1 },
-		{ 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS,       1, -1 },
+	private static final int[][] HUNTING_DURATIONS_PACMAN = {
+		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS,   20 * FPS, 5 * FPS, -1 }, // level 1
+		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS,       1, -1 }, // levels 2-4
+		{ 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS,       1, -1 }, // levels 5+
 	};
+	
+	// Got this from a conversation on Reddit
+	// https://www.reddit.com/r/Pacman/comments/12q4ny3/is_anyone_able_to_explain_the_ai_behind_the/
+	// https://github.com/armin-reichert/pacman-basic/blob/main/doc/mspacman-details-reddit-user-damselindis.md
+	// TODO: is this information correct?
+	private static final int[][] HUNTING_DURATIONS_MS_PACMAN = {
+			{ 7 * FPS, 20 * FPS, 1, 1037 * FPS, 1, 1037 * FPS, 1, -1 }, // levels 1-4
+			{ 5 * FPS, 20 * FPS, 1, 1037 * FPS, 1, 1037 * FPS, 1, -1 }, // levels 5+
+		};
+	
 	//@formatter:on
 
 	public int[] huntingDurations(int levelNumber) {
-		int index = switch (levelNumber) {
-		case 1 -> 0;
-		case 2, 3, 4 -> 1;
-		default -> 2;
-		};
-		return HUNTING_DURATIONS[index];
+		switch (variant) {
+		case MS_PACMAN -> {
+			int row = levelNumber < 5 ? 0 : 1;
+			return HUNTING_DURATIONS_MS_PACMAN[row];
+		}
+		case PACMAN -> {
+			int row = switch (levelNumber) {
+			case 1 -> 0;
+			case 2, 3, 4 -> 1;
+			default -> 2;
+			};
+			return HUNTING_DURATIONS_PACMAN[row];
+		}
+		default -> throw new IllegalGameVariantException(variant);
+		}
 	}
 
 	private final GameVariant variant;

@@ -552,7 +552,8 @@ public class GameLevel {
 		this.huntingPhase = phase;
 		huntingTimer.reset(huntingTicks(phase));
 		huntingTimer.start();
-		Logger.info("Hunting phase {} ({}) started. {}", phase, currentHuntingPhaseName(), huntingTimer);
+		Logger.info("Hunting phase {} ({}, {} ticks / {} seconds) started. {}", phase, currentHuntingPhaseName(),
+				huntingTimer.duration(), (float) huntingTimer.duration() / GameModel.FPS, huntingTimer);
 	}
 
 	private void stopHunting() {
@@ -600,7 +601,7 @@ public class GameLevel {
 			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
 			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
-			if (huntingPhase == 0 && (ghost.id() == Ghost.ID_RED_GHOST || ghost.id() == Ghost.ID_PINK_GHOST)) {
+			if (scatterPhase().isPresent() && (ghost.id() == Ghost.ID_RED_GHOST || ghost.id() == Ghost.ID_PINK_GHOST)) {
 				ghost.roam(this); // not sure
 			} else if (chasingPhase().isPresent() || cruiseElroy) {
 				ghost.chase(this);
