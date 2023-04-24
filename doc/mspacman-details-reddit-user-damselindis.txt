@@ -1,14 +1,14 @@
-Hey! Glad to hear you liked the info. I have been playing Ms. Pac for years and learned the ins and outs of the game mostly through testing and trial and error but occasionally do dip into the assembly. I don't know if I would ever have figured it out alone but the Pac-Man dossier did most of the heavy lifting, all I had to figure out was what was different between the two games. Speaking of that, here is a comprehensive list of all differences between the two:
+Hey! Glad to hear you liked the info. I have been playing Ms. Pac for years and learned the ins and outs of the game mostly through testing and trial and error
+but occasionally do dip into the assembly. 
 
-Scatter/chase timings
+I don't know if I would ever have figured it out alone but the Pac-Man dossier did most of the heavy lifting, all I had to figure out was what was different 
+between the two games. Speaking of that, here is a comprehensive list of all differences between the two:
 
-Ghost behavior during scatter mode
-
-Fruits
-
-Maps/Boards
-
-The killscreen
+- Scatter/chase timings
+- Ghost behavior during scatter mode
+- Fruits
+- Maps/Boards
+- The killscreen
 
 With the exception of these 5 bullets, everything else is exactly the same, unless I'm forgetting something. Let's dive into each in-depth.
 
