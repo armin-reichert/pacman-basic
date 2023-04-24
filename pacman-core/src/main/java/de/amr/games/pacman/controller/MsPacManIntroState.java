@@ -21,17 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package de.amr.games.pacman.controller.mspacman;
+package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.controller.mspacman.MsPacManIntroData.BLINKY_END_TILE;
-import static de.amr.games.pacman.controller.mspacman.MsPacManIntroData.GUYS_SPEED;
-import static de.amr.games.pacman.controller.mspacman.MsPacManIntroData.MS_PACMAN_STOP_X;
-import static de.amr.games.pacman.controller.mspacman.MsPacManIntroData.TURNING_POSITION;
+import static de.amr.games.pacman.controller.MsPacManIntroData.BLINKY_END_TILE;
+import static de.amr.games.pacman.controller.MsPacManIntroData.GUYS_SPEED;
+import static de.amr.games.pacman.controller.MsPacManIntroData.MS_PACMAN_STOP_X;
+import static de.amr.games.pacman.controller.MsPacManIntroData.TURNING_POSITION;
 import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 
-import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;

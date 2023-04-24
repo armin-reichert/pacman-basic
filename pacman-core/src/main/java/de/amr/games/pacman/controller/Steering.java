@@ -20,34 +20,30 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
-package de.amr.games.pacman.controller.pacman;
+*/
+package de.amr.games.pacman.controller;
 
-import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.lib.fsm.Fsm;
+import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.actors.Creature;
 
 /**
- * Intro scene of the PacMan game.
- * <p>
- * The ghosts are presented one after another, then Pac-Man is chased by the ghosts, turns the card and hunts the ghosts
- * himself.
- * 
  * @author Armin Reichert
  */
-public class PacManIntroController extends Fsm<PacManIntroState, PacManIntroData> {
+public interface Steering {
 
-	private final PacManIntroData introData;
+	public static final Steering NONE = (level, guy) -> {
+	};
 
-	public PacManIntroController(GameController gameController) {
-		states = PacManIntroState.values();
-		for (var state : states) {
-			state.controller = this;
-		}
-		introData = new PacManIntroData(gameController);
+	void steer(GameLevel level, Creature guy);
+
+	default boolean isEnabled() {
+		return false;
 	}
 
-	@Override
-	public PacManIntroData context() {
-		return introData;
+	default void setEnabled(boolean enabled) {
+	}
+
+	default void init() {
+		// implement if needed
 	}
 }

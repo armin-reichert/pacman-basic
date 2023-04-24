@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.lib.math.Vector2i;
 
 /**

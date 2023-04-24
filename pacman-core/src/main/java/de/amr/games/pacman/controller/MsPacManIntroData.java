@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package de.amr.games.pacman.controller.mspacman;
+package de.amr.games.pacman.controller;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
@@ -29,7 +29,6 @@ import static de.amr.games.pacman.lib.Globals.v2i;
 
 import java.util.List;
 
-import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.timer.TickTimer;

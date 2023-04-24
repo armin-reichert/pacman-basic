@@ -20,30 +20,32 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-package de.amr.games.pacman.controller.common;
+ */
+package de.amr.games.pacman.controller;
 
-import de.amr.games.pacman.model.GameLevel;
-import de.amr.games.pacman.model.actors.Creature;
+import de.amr.games.pacman.lib.fsm.Fsm;
 
 /**
+ * Intro scene of the Ms. Pac-Man game.
+ * <p>
+ * The ghosts and Ms. Pac-Man are introduced on a billboard and are marching in one after another.
+ * 
  * @author Armin Reichert
  */
-public interface Steering {
+public class MsPacManIntroController extends Fsm<MsPacManIntroState, MsPacManIntroData> {
 
-	public static final Steering NONE = (level, guy) -> {
-	};
+	private final MsPacManIntroData introData;
 
-	void steer(GameLevel level, Creature guy);
-
-	default boolean isEnabled() {
-		return false;
+	public MsPacManIntroController(GameController gameController) {
+		states = MsPacManIntroState.values();
+		for (var state : states) {
+			state.intro = this;
+		}
+		introData = new MsPacManIntroData(gameController);
 	}
 
-	default void setEnabled(boolean enabled) {
-	}
-
-	default void init() {
-		// implement if needed
+	@Override
+	public MsPacManIntroData context() {
+		return introData;
 	}
 }

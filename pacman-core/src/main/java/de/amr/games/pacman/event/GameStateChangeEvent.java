@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.event;
 
-import de.amr.games.pacman.controller.common.GameState;
+import de.amr.games.pacman.controller.GameState;
 import de.amr.games.pacman.model.GameModel;
 
 /**

@@ -21,32 +21,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.controller.mspacman;
+package de.amr.games.pacman.controller;
 
-import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.lib.fsm.Fsm;
 
 /**
- * Intro scene of the Ms. Pac-Man game.
+ * Intro scene of the PacMan game.
  * <p>
- * The ghosts and Ms. Pac-Man are introduced on a billboard and are marching in one after another.
+ * The ghosts are presented one after another, then Pac-Man is chased by the ghosts, turns the card and hunts the ghosts
+ * himself.
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntroController extends Fsm<MsPacManIntroState, MsPacManIntroData> {
+public class PacManIntroController extends Fsm<PacManIntroState, PacManIntroData> {
 
-	private final MsPacManIntroData introData;
+	private final PacManIntroData introData;
 
-	public MsPacManIntroController(GameController gameController) {
-		states = MsPacManIntroState.values();
+	public PacManIntroController(GameController gameController) {
+		states = PacManIntroState.values();
 		for (var state : states) {
-			state.intro = this;
+			state.controller = this;
 		}
-		introData = new MsPacManIntroData(gameController);
+		introData = new PacManIntroData(gameController);
 	}
 
 	@Override
-	public MsPacManIntroData context() {
+	public PacManIntroData context() {
 		return introData;
 	}
 }
