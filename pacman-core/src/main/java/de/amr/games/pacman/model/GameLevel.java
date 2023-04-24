@@ -31,6 +31,7 @@ import static de.amr.games.pacman.lib.Globals.checkLevelNumber;
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.isEven;
 import static de.amr.games.pacman.lib.Globals.isOdd;
+import static de.amr.games.pacman.lib.Globals.percent;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
@@ -77,10 +78,6 @@ import de.amr.games.pacman.model.world.World;
 public class GameLevel {
 
 	private record GhostUnlockResult(Ghost ghost, String reason) {
-	}
-
-	private static final float percent(byte value) {
-		return value / 100f;
 	}
 
 	// factory methods

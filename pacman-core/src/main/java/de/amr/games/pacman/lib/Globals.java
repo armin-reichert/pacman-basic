@@ -189,6 +189,10 @@ public class Globals {
 		return n % 2 != 0;
 	}
 
+	public static final float percent(int value) {
+		return value / 100f;
+	}
+
 	/**
 	 * @param value1 value1
 	 * @param value2 value2
