@@ -105,7 +105,7 @@ public class GameLevel {
 	}
 
 	/**
-	 * There are 4 different maps used by the 6 different mazes. Up to level 13, the used mazes are:
+	 * In Ms. Pac-Man, there are 4 maps used by the 6 mazes. Up to level 13, the mazes are:
 	 * <ul>
 	 * <li>Maze #1: pink maze, white dots (level 1-2)
 	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
@@ -118,14 +118,11 @@ public class GameLevel {
 	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
 	 * </ul>
 	 * <p>
-	 * 
-	 * @param levelNumber level number (starting at 1)
-	 * @return number (starting at 1) of maze used in this level
 	 */
 	private static int mazeNumber(GameVariant variant, int levelNumber) {
-		switch (variant) {
+		return switch (variant) {
 		case MS_PACMAN -> {
-			return switch (levelNumber) {
+			yield switch (levelNumber) {
 			case 1, 2 -> 1;
 			case 3, 4, 5 -> 2;
 			case 6, 7, 8, 9 -> 3;
@@ -133,11 +130,9 @@ public class GameLevel {
 			default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
 			};
 		}
-		case PACMAN -> {
-			return 1;
-		}
+		case PACMAN -> 1;
 		default -> throw new IllegalGameVariantException(variant);
-		}
+		};
 	}
 
 	private static int mapNumber(GameVariant variant, int levelNumber) {
@@ -162,10 +157,10 @@ public class GameLevel {
 	}
 
 	private static Bonus createBonus(GameVariant variant, int levelNumber) {
-		switch (variant) {
+		return switch (variant) {
 		case MS_PACMAN -> {
 			int n = (levelNumber > 7) ? 1 + RND.nextInt(7) : levelNumber;
-			Bonus bonus = switch (n) {
+			yield switch (n) {
 			//@formatter:off
 			case 1 -> new MovingBonus((byte)0,  100); // Cherries
 			case 2 -> new MovingBonus((byte)1,  200); // Strawberry
@@ -177,11 +172,10 @@ public class GameLevel {
 			default -> throw new IllegalArgumentException();
 			//@formatter:on
 			};
-			return bonus;
 		}
 		case PACMAN -> {
 			//@formatter:off
-			Bonus bonus = switch (levelNumber) {
+			yield switch (levelNumber) {
 			case 1      -> new StaticBonus((byte)0,  100); // Cherries
 			case 2      -> new StaticBonus((byte)1,  300); // Strawberry
 			case 3, 4   -> new StaticBonus((byte)2,  500); // Peach
@@ -192,11 +186,9 @@ public class GameLevel {
 			default     -> new StaticBonus((byte)7, 5000); // Key
 			};
 			//@formatter:on
-			bonus.entity().setPosition(halfTileRightOf(13, 20));
-			return bonus;
 		}
 		default -> throw new IllegalGameVariantException(variant);
-		}
+		};
 	}
 
 	/** Relative Pac-Man speed in this level. */
@@ -383,7 +375,7 @@ public class GameLevel {
 	}
 
 	/**
-	 * @return Pac-Man or Ms. Pac-Man
+	 * @return Pac-Man / Ms. Pac-Man
 	 */
 	public Pac pac() {
 		return pac;
@@ -433,6 +425,12 @@ public class GameLevel {
 	public void onBonusReached() {
 		switch (game.variant()) {
 		case MS_PACMAN -> {
+			/*
+			 * The bonus enters the world at a random portal, walks to the house entry, takes a tour around the house and
+			 * finally leaves the world through a random portal on the opposite side of the world.
+			 * 
+			 * TODO this is not exactly the behavior from the original game, yes I know
+			 */
 			var portals = world.portals();
 			var leftToRight = RND.nextBoolean();
 			var entryPortal = portals.get(RND.nextInt(portals.size()));
@@ -440,30 +438,31 @@ public class GameLevel {
 			var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
 			var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
 					: np(exitPortal.leftTunnelEnd().minus(1, 0));
-			var houseEntry = world.house().door().leftWing().minus(0, 1);
+			var houseEntryTile = World.tileAt(world.house().door().entryPosition());
 			int houseHeight = world.house().size().y();
 			var route = new ArrayList<NavigationPoint>();
-			route.add(np(houseEntry));
-			route.add(np(houseEntry.plus(0, houseHeight + 1)));
-			route.add(np(houseEntry));
+			route.add(np(houseEntryTile));
+			route.add(np(houseEntryTile.plus(0, houseHeight + 1)));
+			route.add(np(houseEntryTile));
 			route.add(exitPoint);
-			LOG.trace("Bonus route: %s, orientation: %s", route, (leftToRight ? "left to right" : "right to left"));
+			route.trimToSize();
 
 			var movingBonus = (MovingBonus) bonus;
 			movingBonus.setRoute(route);
 			movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
 			movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
 			movingBonus.setEdible(TickTimer.INDEFINITE);
-			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, movingBonus.entity().tile());
+			LOG.trace("Bonus activated, route: %s (%s)", route, (leftToRight ? "left to right" : "right to left"));
 		}
 		case PACMAN -> {
 			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 			bonus.setEdible(ticks);
+			bonus.entity().setPosition(halfTileRightOf(13, 20));
 			LOG.info("Bonus activated for %d ticks (%.2f seconds): %s", ticks, (float) ticks / GameModel.FPS, bonus);
-			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 		}
 		default -> throw new IllegalGameVariantException(game.variant());
 		}
+		GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 	}
 
 	public boolean isFirstBonusReached() {
