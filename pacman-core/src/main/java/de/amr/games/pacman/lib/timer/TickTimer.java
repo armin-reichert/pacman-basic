@@ -32,8 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 
 import de.amr.games.pacman.lib.timer.TickTimerEvent.Type;
 
@@ -43,8 +42,6 @@ import de.amr.games.pacman.lib.timer.TickTimerEvent.Type;
  * @author Armin Reichert
  */
 public class TickTimer {
-
-	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	public enum State {
 		READY, RUNNING, STOPPED, EXPIRED;
@@ -116,7 +113,7 @@ public class TickTimer {
 		duration = ticks;
 		tick = 0;
 		state = READY;
-		LOG.trace("%s reset", this);
+		Logger.trace("{} reset", this);
 		fireEvent(new TickTimerEvent(Type.RESET, ticks));
 	}
 
@@ -143,14 +140,14 @@ public class TickTimer {
 	public void start() {
 		switch (state) {
 		case RUNNING -> {
-			LOG.trace("Timer %s not started, already running", this);
+			Logger.trace("Timer {} not started, already running", this);
 		}
 		case EXPIRED -> {
-			LOG.trace("Timer %s not started, has expired", this);
+			Logger.trace("Timer {} not started, has expired", this);
 		}
 		default -> {
 			state = RUNNING;
-			LOG.trace("%s started", this);
+			Logger.trace("{} started", this);
 			fireEvent(new TickTimerEvent(Type.STARTED));
 		}
 		}
@@ -181,17 +178,17 @@ public class TickTimer {
 		switch (state) {
 		case RUNNING -> {
 			state = STOPPED;
-			LOG.trace("%s stopped", this);
+			Logger.trace("{} stopped", this);
 			fireEvent(new TickTimerEvent(Type.STOPPED));
 		}
 		case STOPPED -> {
-			LOG.trace("%s already stopped", this);
+			Logger.trace("{} already stopped", this);
 		}
 		case READY -> {
-			LOG.trace("%s not stopped, was not running", this);
+			Logger.trace("{} not stopped, was not running", this);
 		}
 		case EXPIRED -> {
-			LOG.trace("%s not stopped, has expired", this);
+			Logger.trace("{} not stopped, has expired", this);
 		}
 		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
@@ -216,7 +213,7 @@ public class TickTimer {
 	public void expire() {
 		if (state != EXPIRED) {
 			state = EXPIRED;
-			LOG.trace("%s expired", this);
+			Logger.trace("{} expired", this);
 			fireEvent(new TickTimerEvent(Type.EXPIRED, tick));
 		}
 	}

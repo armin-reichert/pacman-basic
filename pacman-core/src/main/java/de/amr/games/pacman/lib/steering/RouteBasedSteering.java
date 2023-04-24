@@ -26,8 +26,7 @@ package de.amr.games.pacman.lib.steering;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.model.GameLevel;
@@ -39,8 +38,6 @@ import de.amr.games.pacman.model.actors.Creature;
  * @author Armin Reichert
  */
 public class RouteBasedSteering implements Steering {
-
-	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private List<NavigationPoint> route = List.of();
 	private int targetIndex;
@@ -72,10 +69,10 @@ public class RouteBasedSteering implements Steering {
 		} else if (guy.targetTile().isEmpty()) {
 			guy.setTargetTile(currentTarget().tile());
 			guy.navigateTowardsTarget(level);
-			LOG.trace("New target tile for %s=%ss", guy.name(), guy.targetTile().get());
+			Logger.trace("New target tile for {}={}s", guy.name(), guy.targetTile().get());
 		} else if (guy.tile().equals(currentTarget().tile())) {
 			nextTarget(level, guy);
-			LOG.trace("New target tile for %s=%s", guy.name(), guy.targetTile().get());
+			Logger.trace("New target tile for {}={}", guy.name(), guy.targetTile().get());
 		}
 	}
 

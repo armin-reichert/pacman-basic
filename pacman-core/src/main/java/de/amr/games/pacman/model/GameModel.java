@@ -39,8 +39,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -55,8 +54,6 @@ import de.amr.games.pacman.lib.steering.RuleBasedSteering;
  * @author Armin Reichert
  */
 public class GameModel {
-
-	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	//@formatter:off
 	public static final byte[][] PACMAN_MAP = {
@@ -401,7 +398,7 @@ public class GameModel {
 		playing = false;
 		scoringEnabled = true;
 		oneLessLifeDisplayed = false; // @remove
-		LOG.trace("Game model (%s) initialized", variant());
+		Logger.trace("Game model ({}) initialized", variant());
 	}
 
 	/**
@@ -455,7 +452,7 @@ public class GameModel {
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		scoringEnabled = false;
 		GameEvents.setSoundEventsEnabled(false);
-		LOG.info("Ms. Pac-Man demo level entered");
+		Logger.info("Ms. Pac-Man demo level entered");
 	}
 
 	/**
@@ -580,11 +577,11 @@ public class GameModel {
 			scoreFromFile.setPoints(points);
 			scoreFromFile.setLevelNumber(levelNumber);
 			scoreFromFile.setDate(date);
-			LOG.info("Highscore loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), scoreFromFile.points(),
+			Logger.info("Highscore loaded. File: '{}' Points: %d Level: %d", file.getAbsolutePath(), scoreFromFile.points(),
 					scoreFromFile.levelNumber());
 			return scoreFromFile;
 		} catch (Exception x) {
-			LOG.info("Highscore could not be loaded. File '%s' Reason: %s", file, x.getMessage());
+			Logger.info("Highscore could not be loaded. File '{}' Reason: {}", file, x.getMessage());
 			return new Score();
 		}
 	}
@@ -605,10 +602,10 @@ public class GameModel {
 		var highScoreFile = highscoreFile(variant());
 		try (var out = new FileOutputStream(highScoreFile)) {
 			props.storeToXML(out, "%s Hiscore".formatted(variant()));
-			LOG.info("Highscore saved. File: '%s' Points: %d Level: %d", highScoreFile.getAbsolutePath(), highScore.points(),
-					highScore.levelNumber());
+			Logger.info("Highscore saved. File: '{}' Points: %d Level: %d", highScoreFile.getAbsolutePath(),
+					highScore.points(), highScore.levelNumber());
 		} catch (Exception x) {
-			LOG.info("Highscore could not be saved. File '%s' Reason: %s", highScoreFile, x.getMessage());
+			Logger.info("Highscore could not be saved. File '{}' Reason: {}", highScoreFile, x.getMessage());
 		}
 	}
 

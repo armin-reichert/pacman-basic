@@ -18,7 +18,7 @@
  */
 module de.amr.games.pacman {
 
-	requires transitive org.apache.logging.log4j;
+	requires org.tinylog.api;
 
 	exports de.amr.games.pacman.controller;
 	exports de.amr.games.pacman.event;

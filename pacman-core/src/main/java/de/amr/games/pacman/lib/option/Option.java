@@ -26,15 +26,12 @@ package de.amr.games.pacman.lib.option;
 
 import java.util.function.Function;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 
 /**
  * @author Armin Reichert
  */
 public class Option<T> {
-
-	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	public static Option<Boolean> booleanOption(String name, boolean defaultValue) {
 		return new Option<>(name, defaultValue, Boolean::valueOf);
@@ -82,9 +79,9 @@ public class Option<T> {
 	public void parse(String s) {
 		try {
 			value = fnValueOf.apply(s);
-			LOG.info("Found option: %s = %s", name, value);
+			Logger.info("Found option: {} = {}", name, value);
 		} catch (Exception e) {
-			LOG.error("Could not parse option '%s' from text '%s'", name, s);
+			Logger.error("Could not parse option '{}' from text '{}'", name, s);
 		}
 	}
 }

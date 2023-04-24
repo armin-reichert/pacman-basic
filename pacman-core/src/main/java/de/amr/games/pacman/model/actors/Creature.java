@@ -39,8 +39,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -55,8 +54,6 @@ import de.amr.games.pacman.model.world.Portal;
  * @author Armin Reichert
  */
 public abstract class Creature extends Entity {
-
-	protected static final Logger LOG = LogManager.getFormatterLogger();
 
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
@@ -235,7 +232,7 @@ public abstract class Creature extends Entity {
 		checkDirectionNotNull(dir);
 		if (moveDir != dir) {
 			moveDir = dir;
-			LOG.trace("%-11s: New moveDir: %s. %s", name, moveDir, this);
+			Logger.trace("{}: New moveDir: {}. {}", name, moveDir, this);
 			velocity = moveDir.vector().toFloatVec().scaled(velocity.length());
 		}
 	}
@@ -254,7 +251,7 @@ public abstract class Creature extends Entity {
 		checkDirectionNotNull(dir);
 		if (wishDir != dir) {
 			wishDir = dir;
-			LOG.trace("%-11s: New wishDir: %s. %s", name, wishDir, this);
+			Logger.trace("{}: New wishDir: {}. {}", name, wishDir, this);
 		}
 	}
 
@@ -279,7 +276,7 @@ public abstract class Creature extends Entity {
 	public void reverseAsSoonAsPossible() {
 		gotReverseCommand = true;
 		newTileEntered = false;
-		LOG.trace("%s (moveDir=%s, wishDir=%s) got command to reverse direction", name, moveDir, wishDir);
+		Logger.trace("{} (moveDir={}, wishDir={}) got command to reverse direction", name, moveDir, wishDir);
 	}
 
 	/**
@@ -379,7 +376,7 @@ public abstract class Creature extends Entity {
 			}
 		}
 		if (moveResult.teleported || moveResult.moved) {
-			LOG.trace("%-11s: %s %s %s", name, moveResult, moveResult.summary(), this);
+			Logger.trace("{}: {} {} {}", name, moveResult, moveResult.summary(), this);
 		}
 	}
 
@@ -387,7 +384,7 @@ public abstract class Creature extends Entity {
 		if (gotReverseCommand && canReverse(level)) {
 			setWishDir(moveDir.opposite());
 			gotReverseCommand = false;
-			LOG.trace("%-11s: [turned around]", name);
+			Logger.trace("{}: [turned around]", name);
 		}
 	}
 

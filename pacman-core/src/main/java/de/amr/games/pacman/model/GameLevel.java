@@ -51,8 +51,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.event.GameEventType;
@@ -76,8 +75,6 @@ import de.amr.games.pacman.model.world.World;
  * @author Armin Reichert
  */
 public class GameLevel {
-
-	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private record GhostUnlockResult(Ghost ghost, String reason) {
 	}
@@ -285,7 +282,7 @@ public class GameLevel {
 		numFlashes = data[10];
 		intermissionNumber = data[11];
 
-		LOG.trace("Game level %d created. (%s)", number, game.variant());
+		Logger.trace("Game level %d created. ({})", number, game.variant());
 	}
 
 	private void defineGhostAI() {
@@ -345,7 +342,7 @@ public class GameLevel {
 	}
 
 	public void exit() {
-		LOG.trace("Exit level %d (%s)", number, game.variant());
+		Logger.trace("Exit level %d ({})", number, game.variant());
 		pac.rest(Pac.REST_FOREVER);
 		pac.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
@@ -456,13 +453,13 @@ public class GameLevel {
 			movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
 			movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
 			movingBonus.setEdible(TickTimer.INDEFINITE);
-			LOG.trace("Bonus activated, route: %s (%s)", route, (leftToRight ? "left to right" : "right to left"));
+			Logger.trace("Bonus activated, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
 		}
 		case PACMAN -> {
 			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 			bonus.setEdible(ticks);
 			bonus.entity().setPosition(halfTileRightOf(13, 20));
-			LOG.info("Bonus activated for %d ticks (%.2f seconds): %s", ticks, (float) ticks / GameModel.FPS, bonus);
+			Logger.info("Bonus activated for %d ticks (%.2f seconds): {}", ticks, (float) ticks / GameModel.FPS, bonus);
 		}
 		default -> throw new IllegalGameVariantException(game.variant());
 		}
@@ -510,13 +507,13 @@ public class GameLevel {
 					"Cruise Elroy state must be one of -2, -1, 0, 1, 2, but is " + cruiseElroyState);
 		}
 		this.cruiseElroyState = (byte) cruiseElroyState;
-		LOG.trace("Cruise Elroy state set to %d", cruiseElroyState);
+		Logger.trace("Cruise Elroy state set to %d", cruiseElroyState);
 	}
 
 	private void setCruiseElroyStateEnabled(boolean enabled) {
 		if (enabled && cruiseElroyState < 0 || !enabled && cruiseElroyState > 0) {
 			cruiseElroyState = (byte) (-cruiseElroyState);
-			LOG.trace("Cruise Elroy state set to %d", cruiseElroyState);
+			Logger.trace("Cruise Elroy state set to %d", cruiseElroyState);
 		}
 	}
 
@@ -558,12 +555,12 @@ public class GameLevel {
 		this.huntingPhase = phase;
 		huntingTimer.reset(huntingTicks(phase));
 		huntingTimer.start();
-		LOG.info("Hunting phase %d (%s) started. %s", phase, currentHuntingPhaseName(), huntingTimer);
+		Logger.info("Hunting phase %d ({}) started. {}", phase, currentHuntingPhaseName(), huntingTimer);
 	}
 
 	private void stopHunting() {
 		huntingTimer.stop();
-		LOG.info("Hunting timer stopped");
+		Logger.info("Hunting timer stopped");
 	}
 
 	private long huntingTicks(int phase) {
@@ -732,7 +729,7 @@ public class GameLevel {
 		checkIfGhostCanLeaveHouse().ifPresent(unlock -> {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
-			LOG.trace("%s unlocked: %s", unlock.ghost().name(), unlock.reason());
+			Logger.trace("{} unlocked: {}", unlock.ghost().name(), unlock.reason());
 			if (unlock.ghost().id() == ID_ORANGE_GHOST && cruiseElroyState < 0) {
 				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
 				setCruiseElroyStateEnabled(true);
@@ -759,7 +756,7 @@ public class GameLevel {
 			numGhostsKilledInLevel += memo.edibleGhosts.size();
 			if (numGhostsKilledInLevel == 16) {
 				game.scorePoints(GameModel.POINTS_ALL_GHOSTS_KILLED);
-				LOG.trace("All ghosts killed at level %d, %s wins %d points", number, pac.name(),
+				Logger.trace("All ghosts killed at level %d, {} wins %d points", number, pac.name(),
 						GameModel.POINTS_ALL_GHOSTS_KILLED);
 			}
 		}
@@ -772,7 +769,7 @@ public class GameLevel {
 		memo.killedGhosts.add(ghost);
 		int points = GameModel.POINTS_GHOSTS_SEQUENCE[ghost.killedIndex()];
 		game.scorePoints(points);
-		LOG.trace("%s killed at tile %s, %s wins %d points", ghost.name(), ghost.tile(), pac.name(), points);
+		Logger.trace("{} killed at tile {}, {} wins %d points", ghost.name(), ghost.tile(), pac.name(), points);
 	}
 
 	// Pac-Man
@@ -793,7 +790,7 @@ public class GameLevel {
 		pac.die();
 		resetGlobalDotCounterAndSetEnabled(true);
 		setCruiseElroyStateEnabled(false);
-		LOG.info("%s died at tile %s", pac.name(), pac.tile());
+		Logger.info("{} died at tile {}", pac.name(), pac.tile());
 	}
 
 	private void checkPacPower() {
@@ -802,7 +799,7 @@ public class GameLevel {
 		if (memo.pacPowerGained) {
 			stopHunting();
 			pac.powerTimer().restartSeconds(pacPowerSeconds);
-			LOG.info("%s power starting, duration %d ticks", pac.name(), pac.powerTimer().duration());
+			Logger.info("{} power starting, duration %d ticks", pac.name(), pac.powerTimer().duration());
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
 			GameEvents.publishGameEventOfType(GameEventType.PAC_GETS_POWER);
@@ -810,9 +807,9 @@ public class GameLevel {
 		} else if (memo.pacPowerFading) {
 			GameEvents.publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
 		} else if (memo.pacPowerLost) {
-			LOG.info("%s power ends, timer: %s", pac.name(), pac.powerTimer());
+			Logger.info("{} power ends, timer: {}", pac.name(), pac.powerTimer());
 			huntingTimer.start();
-			LOG.info("Hunting timer restarted");
+			Logger.info("Hunting timer restarted");
 			pac.powerTimer().stop();
 			pac.powerTimer().resetIndefinitely();
 			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
@@ -882,17 +879,17 @@ public class GameLevel {
 	private void resetGlobalDotCounterAndSetEnabled(boolean enabled) {
 		globalDotCounter = 0;
 		globalDotCounterEnabled = enabled;
-		LOG.trace("Global dot counter reset to 0 and %s", enabled ? "enabled" : "disabled");
+		Logger.trace("Global dot counter reset to 0 and {}", enabled ? "enabled" : "disabled");
 	}
 
 	private void updateGhostDotCounters() {
 		if (globalDotCounterEnabled) {
 			if (ghost(ID_ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
-				LOG.trace("%s inside house when counter reached 32", ghost(ID_ORANGE_GHOST).name());
+				Logger.trace("{} inside house when counter reached 32", ghost(ID_ORANGE_GHOST).name());
 				resetGlobalDotCounterAndSetEnabled(false);
 			} else {
 				globalDotCounter++;
-				LOG.trace("Global dot counter = %d", globalDotCounter);
+				Logger.trace("Global dot counter = %d", globalDotCounter);
 			}
 		} else {
 			ghosts(LOCKED).filter(ghost -> world.house().contains(ghost.tile())).findFirst()
@@ -902,7 +899,7 @@ public class GameLevel {
 
 	private void increaseGhostDotCounter(Ghost ghost) {
 		ghostDotCounters[ghost.id()]++;
-		LOG.trace("%s dot counter = %d", ghost.name(), ghostDotCounters[ghost.id()]);
+		Logger.trace("{} dot counter = %d", ghost.name(), ghostDotCounters[ghost.id()]);
 	}
 
 	private Optional<GhostUnlockResult> checkIfGhostCanLeaveHouse() {
@@ -926,8 +923,8 @@ public class GameLevel {
 		// check Pac-Man starving time
 		if (pac.starvingTicks() >= pacStarvingTicksLimit) {
 			pac.endStarving();
-			LOG.trace("Pac-Man starving timer reset to 0");
-			return unlockGhost(ghost, "%s reached starving limit (%d ticks)", pac.name(), pacStarvingTicksLimit);
+			Logger.trace("Pac-Man starving timer reset to 0");
+			return unlockGhost(ghost, "{} reached starving limit (%d ticks)", pac.name(), pacStarvingTicksLimit);
 		}
 		return Optional.empty();
 	}

@@ -28,8 +28,7 @@ import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -38,8 +37,6 @@ import de.amr.games.pacman.lib.math.Vector2i;
  * @author Armin Reichert
  */
 public class GameEvents {
-
-	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private static GameController gameController;
 	private static Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
@@ -55,7 +52,7 @@ public class GameEvents {
 
 	public static void setSoundEventsEnabled(boolean enabled) {
 		GameEvents.soundEventsEnabled = enabled;
-		LOG.info("Sound events %s".formatted(enabled ? "enabled" : "disabled"));
+		Logger.info("Sound events {}", enabled ? "enabled" : "disabled");
 	}
 
 	public static void addListener(GameEventListener subscriber) {
@@ -70,7 +67,7 @@ public class GameEvents {
 
 	public static void publishGameEvent(GameEvent event) {
 		checkNotNull(event);
-		LOG.trace("Publish game event: %s", event);
+		Logger.trace("Publish game event: {}", event);
 		GameEvents.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 

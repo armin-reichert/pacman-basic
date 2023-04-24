@@ -27,8 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.lib.timer.TickTimer.State;
@@ -49,8 +48,6 @@ import de.amr.games.pacman.lib.timer.TickTimer.State;
  * @author Armin Reichert
  */
 public abstract class Fsm<S extends FsmState<C>, C> {
-
-	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private final List<BiConsumer<S, S>> subscribers = new ArrayList<>();
 	protected S[] states;
@@ -148,14 +145,14 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		C context = context();
 		if (currentState != null) {
 			currentState.onExit(context);
-			LOG.trace("Exit  state %s timer=%s", currentState, currentState.timer());
+			Logger.trace("Exit  state {} timer={}", currentState, currentState.timer());
 		}
 		prevState = currentState;
 		currentState = newState;
 		currentState.timer().resetIndefinitely();
-		LOG.trace("Enter state %s timer=%s", currentState, currentState.timer());
+		Logger.trace("Enter state {} timer={}", currentState, currentState.timer());
 		currentState.onEnter(context);
-		LOG.trace("After Enter state %s timer=%s", currentState, currentState.timer());
+		Logger.trace("After Enter state {} timer={}", currentState, currentState.timer());
 		subscribers.forEach(listener -> listener.accept(prevState, currentState));
 	}
 
@@ -166,7 +163,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		if (prevState == null) {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
-		LOG.trace("Resume state %s, timer= %s", prevState, prevState.timer());
+		Logger.trace("Resume state {}, timer= {}", prevState, prevState.timer());
 		changeState(prevState);
 	}
 
@@ -179,7 +176,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		try {
 			currentState.onUpdate(context());
 		} catch (Exception x) {
-			LOG.trace("Error updating state %s, timer=%s", currentState, currentState.timer());
+			Logger.trace("Error updating state {}, timer={}", currentState, currentState.timer());
 			x.printStackTrace();
 		}
 		if (currentState.timer().state() == State.READY) {

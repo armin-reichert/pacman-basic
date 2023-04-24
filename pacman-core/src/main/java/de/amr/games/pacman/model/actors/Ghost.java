@@ -45,6 +45,8 @@ import static de.amr.games.pacman.model.actors.GhostState.RETURNING_TO_HOUSE;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.tinylog.Logger;
+
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GhostEvent;
@@ -133,7 +135,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		checkLevelNotNull(level);
 		var currentTile = tile();
 		if (tile.equals(currentTile.plus(UP.vector())) && !level.isSteeringAllowed(this, UP)) {
-			LOG.trace("%s cannot access tile %s because he cannot move UP at %s", name(), tile, currentTile);
+			Logger.trace("{} cannot access tile {} because he cannot move UP at {}", name(), tile, currentTile);
 			return false;
 		}
 		if (level.world().house().door().occupies(tile)) {
@@ -201,7 +203,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 //			var navPoint = route.get(attractRouteIndex);
 //			if (atTurnPositionTo(navPoint.dir())) {
 //				setWishDir(navPoint.dir());
-//				LOG.trace("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
+//				Logger.trace("New wish dir {} at nav point {} for {}", navPoint.dir(), navPoint.tile(), this);
 //				++attractRouteIndex;
 //			}
 //			tryMoving(level);
@@ -312,11 +314,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 			newTileEntered = false; // force moving left until next tile is entered
 			if (frightened) {
 				enterStateFrightened();
-				LOG.trace("Ghost %s leaves house frightened", name());
+				Logger.trace("Ghost {} leaves house frightened", name());
 			} else {
 				killedIndex = -1;
 				enterStateHuntingPac();
-				LOG.trace("Ghost %s leaves house hunting", name());
+				Logger.trace("Ghost {} leaves house hunting", name());
 			}
 			// TODO is this event needed/handled at all?
 			GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
@@ -509,7 +511,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			flashing.setFrameDuration(frameTicks);
 			flashing.setRepetitions(numFlashes);
 			flashing.restart();
-			LOG.info("%s: Start flashing for %d ticks: %d flashes, %d ticks per flash", name(), totalTicks, numFlashes,
+			Logger.info("{}: Start flashing for %d ticks: %d flashes, %d ticks per flash", name(), totalTicks, numFlashes,
 					frameTicks);
 		});
 	}

@@ -28,8 +28,7 @@ import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.anim.SimpleAnimation;
@@ -48,8 +47,6 @@ import de.amr.games.pacman.model.GameModel;
  * @author Armin Reichert
  */
 public class MovingBonus extends Creature implements Bonus {
-
-	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private final byte symbol;
 	private final int points;
@@ -121,14 +118,14 @@ public class MovingBonus extends Creature implements Bonus {
 		show();
 		setPixelSpeed(0.5f); // how fast in the original game?
 		setTargetTile(null);
-		LOG.info("Bonus gets edible: %s", this);
+		Logger.info("Bonus gets edible: {}", this);
 	}
 
 	@Override
 	public void eat() {
 		state = Bonus.STATE_EATEN;
 		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
-		LOG.info("Bonus eaten: %s", this);
+		Logger.info("Bonus eaten: {}", this);
 		jumpAnimation.stop();
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
 		publishSoundEvent(GameModel.SE_BONUS_EATEN);
@@ -136,7 +133,7 @@ public class MovingBonus extends Creature implements Bonus {
 
 	public void setRoute(List<NavigationPoint> route) {
 		steering.setRoute(route);
-		LOG.info("New route of moving bonus: %s", route);
+		Logger.info("New route of moving bonus: {}", route);
 	}
 
 	public float dy() {
@@ -156,7 +153,7 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 			steering.steer(level, this);
 			if (steering.isComplete()) {
-				LOG.info("Bonus reached target: %s", this);
+				Logger.info("Bonus reached target: {}", this);
 				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
@@ -168,7 +165,7 @@ public class MovingBonus extends Creature implements Bonus {
 		case STATE_EATEN -> {
 			if (--timer == 0) {
 				setInactive();
-				LOG.info("Bonus expired: %s", this);
+				Logger.info("Bonus expired: {}", this);
 				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}

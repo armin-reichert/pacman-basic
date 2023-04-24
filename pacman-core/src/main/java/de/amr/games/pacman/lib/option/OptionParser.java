@@ -28,15 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 
 /**
  * @author Armin Reichert
  */
 public class OptionParser {
-
-	private static final Logger LOG = LogManager.getFormatterLogger();
 
 	private final Map<String, Option<?>> optionMap = new HashMap<>();
 	private int cursor;
@@ -60,7 +57,7 @@ public class OptionParser {
 		if (cursor < arglist.size()) {
 			var arg1 = arglist.get(cursor);
 			if (!optionMap.keySet().contains(arg1)) {
-				LOG.error("Skip garbage '%s'", arg1);
+				Logger.error("Skip garbage '{}'", arg1);
 				++cursor;
 				return;
 			}
@@ -69,7 +66,7 @@ public class OptionParser {
 				if (cursor < arglist.size()) {
 					var arg2 = arglist.get(cursor);
 					if (optionMap.keySet().contains(arg2)) {
-						LOG.error("Missing value for parameter '%s'.", option.getName());
+						Logger.error("Missing value for parameter '{}'.", option.getName());
 					} else {
 						++cursor;
 						option.parse(arg2);
