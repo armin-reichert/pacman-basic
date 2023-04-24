@@ -511,7 +511,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			flashing.setFrameDuration(frameTicks);
 			flashing.setRepetitions(numFlashes);
 			flashing.restart();
-			Logger.info("{}: Start flashing for %d ticks: %d flashes, %d ticks per flash", name(), totalTicks, numFlashes,
+			Logger.info("{}: Start flashing for {} ticks: {} flashes, {} ticks per flash", name(), totalTicks, numFlashes,
 					frameTicks);
 		});
 	}

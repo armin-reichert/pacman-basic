@@ -577,7 +577,7 @@ public class GameModel {
 			scoreFromFile.setPoints(points);
 			scoreFromFile.setLevelNumber(levelNumber);
 			scoreFromFile.setDate(date);
-			Logger.info("Highscore loaded. File: '{}' Points: %d Level: %d", file.getAbsolutePath(), scoreFromFile.points(),
+			Logger.info("Highscore loaded. File: '{}' Points: {} Level: {}", file.getAbsolutePath(), scoreFromFile.points(),
 					scoreFromFile.levelNumber());
 			return scoreFromFile;
 		} catch (Exception x) {
@@ -602,7 +602,7 @@ public class GameModel {
 		var highScoreFile = highscoreFile(variant());
 		try (var out = new FileOutputStream(highScoreFile)) {
 			props.storeToXML(out, "%s Hiscore".formatted(variant()));
-			Logger.info("Highscore saved. File: '{}' Points: %d Level: %d", highScoreFile.getAbsolutePath(),
+			Logger.info("Highscore saved. File: '{}' Points: {} Level: {}", highScoreFile.getAbsolutePath(),
 					highScore.points(), highScore.levelNumber());
 		} catch (Exception x) {
 			Logger.info("Highscore could not be saved. File '{}' Reason: {}", highScoreFile, x.getMessage());
