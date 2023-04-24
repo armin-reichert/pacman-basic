@@ -125,11 +125,9 @@ public class World implements AnimatedEntity {
 	private final TileMap tileMap;
 	private final List<Portal> portals;
 	private final List<Vector2i> energizerTiles;
-
-	private final BitSet eatenSet = new BitSet(TILES_X * TILES_Y);
+	private final BitSet eatenSet;
 	private final int totalFoodCount;
 	private int uneatenFoodCount;
-
 	private AnimationMap animationMap;
 
 	/**
@@ -138,6 +136,7 @@ public class World implements AnimatedEntity {
 	public World(byte[][] tileMapData) {
 		tileMap = new TileMap(tileMapData);
 		portals = buildPortals(tileMap);
+		eatenSet = new BitSet(tileMap.numCols() * tileMap.numRows());
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
