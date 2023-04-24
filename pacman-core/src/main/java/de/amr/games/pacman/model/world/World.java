@@ -71,13 +71,15 @@ public class World implements AnimatedEntity {
 	/**
 	 * The ghosthouse as it looks in the Arcade version of Pac-Man and Ms. Pac-Man.
 	 */
-	private static final House ARCADE_HOUSE = new House(//
-			v2i(10, 15), // top-left corner
-			v2i(8, 5), // size in tiles
-			new Door(v2i(13, 15), v2i(14, 15)), //
-			List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17)), // seats
-			halfTileRightOf(13, 17).plus(0, HTS) // center
+	//@formatter:off
+	private static final House ARCADE_HOUSE = new House(
+		v2i(10, 15), // top-left corner
+		v2i(8, 5),   // size in tiles
+		new Door(v2i(13, 15), v2i(14, 15)),
+		List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17)),
+		halfTileRightOf(13, 17).plus(0, HTS) // center position
 	);
+	//@formatter:on
 
 	/**
 	 * @param position a position
@@ -121,7 +123,6 @@ public class World implements AnimatedEntity {
 	}
 
 	private final TileMap tileMap;
-	private final House house = ARCADE_HOUSE;
 	private final List<Portal> portals;
 	private final List<Vector2i> energizerTiles;
 
@@ -143,7 +144,7 @@ public class World implements AnimatedEntity {
 	}
 
 	public House house() {
-		return house;
+		return ARCADE_HOUSE;
 	}
 
 	/**
@@ -283,11 +284,11 @@ public class World implements AnimatedEntity {
 		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
 			return false; // exclude portal entries and tiles outside of the map
 		}
-		if (house.contains(tile)) {
+		if (ARCADE_HOUSE.contains(tile)) {
 			return false;
 		}
 		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
-		long numDoorNeighbors = tile.neighbors().filter(house.door()::occupies).count();
+		long numDoorNeighbors = tile.neighbors().filter(ARCADE_HOUSE.door()::occupies).count();
 		return numWallNeighbors + numDoorNeighbors < 2;
 	}
 }
