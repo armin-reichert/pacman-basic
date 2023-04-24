@@ -26,48 +26,29 @@ package de.amr.games.pacman.model.actors;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.anim.Animated;
-import de.amr.games.pacman.lib.math.Vector2f;
 
 /**
  * The clapperboard used in the intermission scenes.
  * 
  * @author Armin Reichert
  */
-public class Clapperboard {
+public class Clapperboard extends Entity {
 
-	private Vector2f position = Vector2f.ZERO;
-	private boolean visible;
-	private int sceneNumber;
-	private String sceneTitle;
+	private String number;
+	private String text;
 	private Animated animation;
 
-	public Clapperboard(int sceneNumber, String sceneTitle) {
-		this.sceneNumber = sceneNumber;
-		this.sceneTitle = sceneTitle;
+	public Clapperboard(String number, String text) {
+		this.number = number;
+		this.text = text;
 	}
 
-	public Vector2f position() {
-		return position;
+	public String number() {
+		return number;
 	}
 
-	public void setPosition(float x, float y) {
-		this.position = new Vector2f(x, y);
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public int sceneNumber() {
-		return sceneNumber;
-	}
-
-	public String sceneTitle() {
-		return sceneTitle;
+	public String text() {
+		return text;
 	}
 
 	public void setAnimation(Animated animation) {

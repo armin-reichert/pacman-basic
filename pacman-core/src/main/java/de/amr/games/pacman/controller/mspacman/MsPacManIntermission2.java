@@ -83,7 +83,7 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, Data> {
 			@Override
 			public void onEnter(Data ctx) {
 				timer.restartIndefinitely();
-				ctx.clapperboard = new Clapperboard(2, "THE CHASE");
+				ctx.clapperboard = new Clapperboard("2", "THE CHASE");
 				ctx.clapperboard.setPosition(TS * (3), TS * (10));
 				ctx.clapperboard.setVisible(true);
 				ctx.pacMan = new Pac("Pac-Man");

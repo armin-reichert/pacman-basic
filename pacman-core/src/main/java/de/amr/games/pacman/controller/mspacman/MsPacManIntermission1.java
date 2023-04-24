@@ -95,7 +95,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, Data> {
 			public void onEnter(Data ctx) {
 				timer.resetSeconds(2);
 				timer.start();
-				ctx.clapperboard = new Clapperboard(1, "THEY MEET");
+				ctx.clapperboard = new Clapperboard("1", "THEY MEET");
 				ctx.clapperboard.setPosition(TS * (3), TS * (10));
 				ctx.clapperboard.setVisible(true);
 
