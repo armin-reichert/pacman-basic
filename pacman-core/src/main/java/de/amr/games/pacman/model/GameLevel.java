@@ -325,19 +325,23 @@ public class GameLevel {
 
 	public void update() {
 		memo.forgetEverything(); // ich scholze jetzt
-		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
-		pac.update(this);
-		checkIfGhostCanGetUnlocked();
-		ghosts().forEach(ghost -> ghost.update(this));
+
 		boolean newHuntingPhaseStarted = updateHuntingTimer();
 		if (newHuntingPhaseStarted) {
 			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseAsSoonAsPossible);
 		}
-		bonus.update(this);
+		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
+
 		checkIfPacFoundFood();
 		checkPacPower();
 		checkIfPacManGetsKilled();
 		findEdibleGhosts();
+		pac.update(this);
+
+		checkIfGhostCanGetUnlocked();
+		ghosts().forEach(ghost -> ghost.update(this));
+
+		bonus.update(this);
 	}
 
 	public void exit() {
