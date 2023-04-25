@@ -810,39 +810,46 @@ public class GameLevel {
 
 	private void checkIfPacFoundFood() {
 		var tile = pac.tile();
-		if (world.containsFood(tile)) {
-			world.removeFood(tile);
-			memo.foodFoundTile = Optional.of(tile);
-			memo.energizerFound = world.isEnergizerTile(tile);
-			memo.lastFoodFound = world.uneatenFoodCount() == 0;
-			memo.pacPowerGained = memo.energizerFound && pacPowerSeconds > 0;
-			pac.endStarving();
-			if (memo.energizerFound) {
-				numGhostsKilledByEnergizer = 0;
-				pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
-				game.scorePoints(GameModel.POINTS_ENERGIZER);
-			} else {
-				pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
-				game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
-			}
-			checkIfBlinkyBecomesCruiseElroy();
-			updateGhostDotCounters();
-		} else {
+		if (!world.containsFood(tile)) {
 			pac.starve();
+			return;
 		}
 
-		// TODO move into other method
-		if (isFirstBonusReached()) {
-			onBonusReached(0);
-			memo.bonusReached = true;
-		} else if (isSecondBonusReached()) {
-			onBonusReached(1);
-			memo.bonusReached = true;
+		// do this first to update food counter
+		world.removeFood(tile);
+
+		memo.foodFoundTile = Optional.of(tile);
+		memo.energizerFound = world.isEnergizerTile(tile);
+		memo.lastFoodFound = world.uneatenFoodCount() == 0;
+		memo.pacPowerGained = memo.energizerFound && pacPowerSeconds > 0;
+
+		if (memo.energizerFound) {
+			numGhostsKilledByEnergizer = 0;
+			pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
+			game.scorePoints(GameModel.POINTS_ENERGIZER);
+		} else {
+			pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
+			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 		}
+
+		pac.endStarving();
+		checkIfBlinkyBecomesCruiseElroy();
+		checkIfBonusReached();
+		updateGhostDotCounters();
 
 		if (memo.foodFoundTile.isPresent()) {
 			GameEvents.publishGameEvent(GameEventType.PAC_FINDS_FOOD, tile);
 			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
+		}
+	}
+
+	private void checkIfBonusReached() {
+		if (isFirstBonusReached()) {
+			memo.bonusReached = true;
+			onBonusReached(0);
+		} else if (isSecondBonusReached()) {
+			memo.bonusReached = true;
+			onBonusReached(1);
 		}
 	}
 
