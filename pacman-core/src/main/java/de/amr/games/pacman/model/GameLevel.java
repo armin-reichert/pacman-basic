@@ -77,9 +77,6 @@ import de.amr.games.pacman.model.world.World;
  */
 public class GameLevel {
 
-	private record GhostUnlockResult(Ghost ghost, String reason) {
-	}
-
 	/** Relative Pac-Man speed in this level. */
 	public final float pacSpeed;
 
@@ -819,6 +816,9 @@ public class GameLevel {
 	}
 
 	/* --- Ghosthouse control rules, see Pac-Man dossier --- */
+
+	private record GhostUnlockResult(Ghost ghost, String reason) {
+	}
 
 	private long pacStarvingTicksLimit;
 	private byte[] globalGhostDotLimits;
