@@ -192,7 +192,12 @@ public class GameLevel {
 		};
 	}
 
-	public void onBonusReached(int bonusIndex) {
+	/**
+	 * Handles bonus achievment (public access only for level state test).
+	 * 
+	 * @param bonusIndex achieved bonus index (0 or 1).
+	 */
+	public void handleBonusReached(int bonusIndex) {
 		switch (game.variant()) {
 		case MS_PACMAN -> {
 			/*
@@ -377,7 +382,7 @@ public class GameLevel {
 			bonus.setInactive();
 		}
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
-		stopHunting();
+		stopHuntingTimer();
 	}
 
 	public GameModel game() {
@@ -529,7 +534,7 @@ public class GameLevel {
 				huntingTimer.duration(), (float) huntingTimer.duration() / GameModel.FPS, huntingTimer);
 	}
 
-	private void stopHunting() {
+	private void stopHuntingTimer() {
 		huntingTimer.stop();
 		Logger.info("Hunting timer stopped");
 	}
@@ -686,30 +691,53 @@ public class GameLevel {
 		}
 	}
 
-	// What happens in a single step?
+	/*
+	 * 
+	 * This is the main logic of the game.
+	 *
+	 */
 
-	public void update() {
-		memo.forgetEverything(); // ich scholze jetzt
+	private void collectInformation() {
+		memo.forgetEverything(); // Ich scholze jetzt
 
 		var pacTile = pac.tile();
 
-		// gather information
+		// Food information
 		if (world.containsFood(pacTile)) {
 			memo.foodFoundTile = Optional.of(pacTile);
 			memo.energizerFound = world.isEnergizerTile(pacTile);
-			memo.pacPowerGained = memo.energizerFound && pacPowerSeconds > 0;
+		}
+
+		// Pac power
+		if (memo.energizerFound && pacPowerSeconds > 0) {
+			memo.pacPowerStarts = true;
+			memo.pacPowerActive = true;
+		} else {
+			memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
+			memo.pacPowerLost = pac.powerTimer().hasExpired();
+			memo.pacPowerActive = pac.powerTimer().isRunning();
+		}
+
+		// Who must die?
+		if (memo.pacPowerActive) {
+			memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
+		}
+		memo.pacKilled = !game.isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+	}
+
+	public void update() {
+		collectInformation();
+
+		// Food
+		if (memo.foodFoundTile.isPresent()) {
+			var foodTile = memo.foodFoundTile.get();
+			world.removeFood(foodTile);
+			pac.endStarving();
 			if (isFirstBonusReached()) {
 				memo.bonusReachedIndex = 0;
 			} else if (isSecondBonusReached()) {
 				memo.bonusReachedIndex = 1;
 			}
-		}
-		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
-
-		// handle food finding
-		if (memo.foodFoundTile.isPresent()) {
-			world.removeFood(pacTile);
-			pac.endStarving();
 			if (memo.energizerFound) {
 				numGhostsKilledByEnergizer = 0;
 				pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
@@ -719,71 +747,24 @@ public class GameLevel {
 				game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 			}
 			updateGhostDotCounters();
-			GameEvents.publishGameEvent(GameEventType.PAC_FINDS_FOOD, pacTile);
+			GameEvents.publishGameEvent(GameEventType.PAC_FINDS_FOOD, foodTile);
 			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
 		} else {
 			pac.starve();
 		}
 
 		if (isCompleted()) {
+			logMemo();
 			return;
 		}
 
+		// Bonus?
 		if (memo.bonusReachedIndex != -1) {
-			onBonusReached(memo.bonusReachedIndex);
+			handleBonusReached(memo.bonusReachedIndex);
 		}
 
-		checkPacPower();
-		checkIfPacManGetsKilled();
-		checkIfGhostCanGetUnlocked();
-		checkIfBlinkyBecomesCruiseElroy();
-
-		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
-		pac.update(this);
-		ghosts().forEach(ghost -> ghost.update(this));
-		if (bonus != null) {
-			bonus.update(this);
-		}
-
-		boolean huntingPhaseChange = updateHuntingTimer();
-		if (huntingPhaseChange) {
-			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseAsSoonAsPossible);
-		}
-	}
-
-	private void checkIfBlinkyBecomesCruiseElroy() {
-		var foodRemaining = world.uneatenFoodCount();
-		if (foodRemaining == elroy1DotsLeft) {
-			setCruiseElroyState(1);
-		} else if (foodRemaining == elroy2DotsLeft) {
-			setCruiseElroyState(2);
-		}
-	}
-
-	private void checkIfGhostCanGetUnlocked() {
-		checkIfGhostCanLeaveHouse().ifPresent(unlock -> {
-			memo.unlockedGhost = Optional.of(unlock.ghost());
-			memo.unlockReason = unlock.reason();
-			Logger.trace("{} unlocked: {}", unlock.ghost().name(), unlock.reason());
-			if (unlock.ghost().id() == ID_ORANGE_GHOST && cruiseElroyState < 0) {
-				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
-				setCruiseElroyStateEnabled(true);
-			}
-		});
-	}
-
-	private void checkIfPacManGetsKilled() {
-		if (game.isImmune()) {
-			return;
-		}
-		memo.pacKilled = ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
-	}
-
-	private void checkPacPower() {
-		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
-		memo.pacPowerLost = pac.powerTimer().hasExpired();
-		if (memo.pacPowerGained) {
-			stopHunting();
+		// Pac power state changes
+		if (memo.pacPowerStarts) {
 			pac.powerTimer().restartSeconds(pacPowerSeconds);
 			Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
@@ -802,21 +783,56 @@ public class GameLevel {
 			GameEvents.publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
 			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS);
 		}
+
+		checkIfGhostCanGetUnlocked();
+
+		// Cruise Elroy
+		if (world.uneatenFoodCount() == elroy1DotsLeft) {
+			setCruiseElroyState(1);
+		} else if (world.uneatenFoodCount() == elroy2DotsLeft) {
+			setCruiseElroyState(2);
+		}
+
+		// Update world and guys
+		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
+		pac.update(this);
+		ghosts().forEach(ghost -> ghost.update(this));
+		if (bonus != null) {
+			bonus.update(this);
+		}
+
+		// Update hunting timer
+		if (memo.pacPowerStarts || memo.pacKilled) {
+			stopHuntingTimer();
+		} else {
+			boolean huntingPhaseChange = updateHuntingTimer();
+			if (huntingPhaseChange) {
+				ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseAsSoonAsPossible);
+			}
+		}
+		logMemo();
+	}
+
+	private void logMemo() {
+		var memoText = memo.toString();
+		if (!memoText.isBlank()) {
+			Logger.trace(memo);
+		}
 	}
 
 	/**
 	 * Called by cheat action only.
 	 */
 	public void killAllHuntingAndFrightenedGhosts() {
-		memo.edibleGhosts = ghosts(HUNTING_PAC, FRIGHTENED).toList();
+		memo.pacPrey = ghosts(HUNTING_PAC, FRIGHTENED).toList();
 		numGhostsKilledByEnergizer = 0;
 		killEdibleGhosts();
 	}
 
 	public void killEdibleGhosts() {
-		if (!memo.edibleGhosts.isEmpty()) {
-			memo.edibleGhosts.forEach(this::killGhost);
-			numGhostsKilledInLevel += memo.edibleGhosts.size();
+		if (!memo.pacPrey.isEmpty()) {
+			memo.pacPrey.forEach(this::killGhost);
+			numGhostsKilledInLevel += memo.pacPrey.size();
 			if (numGhostsKilledInLevel == 16) {
 				game.scorePoints(GameModel.POINTS_ALL_GHOSTS_KILLED);
 				Logger.trace("All ghosts killed at level {}, {} wins {} points", number, pac.name(),
@@ -842,7 +858,6 @@ public class GameLevel {
 	}
 
 	public void onPacKilled() {
-		stopHunting();
 		pac.die();
 		resetGlobalDotCounterAndSetEnabled(true);
 		setCruiseElroyStateEnabled(false);
@@ -901,6 +916,18 @@ public class GameLevel {
 	private void increaseGhostDotCounter(Ghost ghost) {
 		ghostDotCounters[ghost.id()]++;
 		Logger.trace("{} dot counter = {}", ghost.name(), ghostDotCounters[ghost.id()]);
+	}
+
+	private void checkIfGhostCanGetUnlocked() {
+		checkIfGhostCanLeaveHouse().ifPresent(unlock -> {
+			memo.unlockedGhost = Optional.of(unlock.ghost());
+			memo.unlockReason = unlock.reason();
+			Logger.trace("{} unlocked: {}", unlock.ghost().name(), unlock.reason());
+			if (unlock.ghost().id() == ID_ORANGE_GHOST && cruiseElroyState < 0) {
+				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
+				setCruiseElroyStateEnabled(true);
+			}
+		});
 	}
 
 	private Optional<GhostUnlockResult> checkIfGhostCanLeaveHouse() {

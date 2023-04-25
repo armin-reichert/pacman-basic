@@ -39,10 +39,11 @@ public class Memory {
 	public boolean energizerFound;
 	public int bonusReachedIndex; // 0=first, 1=second, -1=no bonus
 	public boolean pacKilled;
-	public boolean pacPowerGained;
+	public boolean pacPowerActive;
+	public boolean pacPowerStarts;
 	public boolean pacPowerLost;
 	public boolean pacPowerFading;
-	public List<Ghost> edibleGhosts;
+	public List<Ghost> pacPrey;
 	public final List<Ghost> killedGhosts = new ArrayList<>(4);
 	public Optional<Ghost> unlockedGhost;
 	public String unlockReason;
@@ -56,16 +57,61 @@ public class Memory {
 		energizerFound = false;
 		bonusReachedIndex = -1;
 		pacKilled = false;
-		pacPowerGained = false;
+		pacPowerActive = false;
+		pacPowerStarts = false;
 		pacPowerLost = false;
 		pacPowerFading = false;
-		edibleGhosts = Collections.emptyList();
+		pacPrey = Collections.emptyList();
 		killedGhosts.clear();
 		unlockedGhost = Optional.empty();
 		unlockReason = null;
 	}
 
+	@Override
+	public String toString() {
+
+		var foodText = "";
+		if (foodFoundTile.isPresent()) {
+			foodText = "%s at %s".formatted(energizerFound ? "Energizer" : "Pellet", foodFoundTile.get());
+		}
+
+		var bonusText = "";
+		if (bonusReachedIndex != -1) {
+			bonusText = "Bonus %d reached".formatted(bonusReachedIndex);
+		}
+
+		var powerText = "";
+		if (pacPowerStarts) {
+			powerText += " starts";
+		}
+		if (pacPowerActive) {
+			powerText += " active";
+		}
+		if (pacPowerFading) {
+			powerText += " fading";
+		}
+		if (pacPowerLost) {
+			powerText += " lost";
+		}
+		if (!powerText.isEmpty()) {
+			powerText = "Pac power: " + powerText;
+		}
+
+		var pacKilledText = pacKilled ? "Pac killed" : "";
+
+		var preyText = "";
+		if (!pacPrey.isEmpty()) {
+			preyText = "Prey: %s".formatted(pacPrey);
+		}
+
+		var killedGhostsText = killedGhosts.isEmpty() ? "" : killedGhosts.toString();
+		var unlockedText = unlockedGhost.isPresent() ? "%s unlocked".formatted(unlockedGhost.get().name()) : "";
+
+		return "%s%s%s%s%s%s".formatted(foodText, bonusText, powerText, pacKilledText, preyText, killedGhostsText,
+				unlockedText);
+	}
+
 	public boolean edibleGhostsExist() {
-		return !edibleGhosts.isEmpty();
+		return !pacPrey.isEmpty();
 	}
 }
