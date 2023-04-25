@@ -380,7 +380,7 @@ public enum GameState implements FsmState<GameModel> {
 					if (timer.atSecond(0.5)) {
 						level.guys().forEach(Creature::show);
 					} else if (timer.atSecond(1.5)) {
-						level.onBonusReached();
+						level.onBonusReached(0);
 					} else if (timer.atSecond(2.5)) {
 						level.bonus().eat();
 						level.guys().forEach(Creature::hide);
