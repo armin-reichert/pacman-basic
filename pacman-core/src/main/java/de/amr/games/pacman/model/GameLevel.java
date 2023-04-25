@@ -404,7 +404,9 @@ public class GameLevel {
 		pac.rest(Pac.REST_FOREVER);
 		pac.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
-		bonus.setInactive();
+		if (bonus != null) {
+			bonus.setInactive();
+		}
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
 		stopHunting();
 	}
