@@ -73,7 +73,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld1() {
-		var world = new World(GameModel.MS_PACMAN_MAP1);
+		var world = new World(GameModel.MS_PACMAN_MAPS[0]);
 		assertEquals(World.TILES_Y, world.numRows());
 		assertEquals(World.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -84,7 +84,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld2() {
-		var world = new World(GameModel.MS_PACMAN_MAP2);
+		var world = new World(GameModel.MS_PACMAN_MAPS[1]);
 		assertEquals(World.TILES_Y, world.numRows());
 		assertEquals(World.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -95,7 +95,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld3() {
-		var world = new World(GameModel.MS_PACMAN_MAP3);
+		var world = new World(GameModel.MS_PACMAN_MAPS[2]);
 		assertEquals(World.TILES_Y, world.numRows());
 		assertEquals(World.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -106,7 +106,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld4() {
-		var world = new World(GameModel.MS_PACMAN_MAP4);
+		var world = new World(GameModel.MS_PACMAN_MAPS[3]);
 		assertEquals(World.TILES_Y, world.numRows());
 		assertEquals(World.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());

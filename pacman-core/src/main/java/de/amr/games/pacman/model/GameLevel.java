@@ -85,13 +85,7 @@ public class GameLevel {
 	private static World createWorld(GameVariant variant, int levelNumber) {
 		int mapNumber = mapNumber(variant, levelNumber);
 		var map = switch (variant) {
-		case MS_PACMAN -> switch (mapNumber) {
-		case 1 -> GameModel.MS_PACMAN_MAP1;
-		case 2 -> GameModel.MS_PACMAN_MAP2;
-		case 3 -> GameModel.MS_PACMAN_MAP3;
-		case 4 -> GameModel.MS_PACMAN_MAP4;
-		default -> throw new IllegalArgumentException("Illegal map number: %d.".formatted(mapNumber));
-		};
+		case MS_PACMAN -> GameModel.MS_PACMAN_MAPS[mapNumber - 1];
 		case PACMAN -> GameModel.PACMAN_MAP;
 		default -> throw new IllegalGameVariantException(variant);
 		};

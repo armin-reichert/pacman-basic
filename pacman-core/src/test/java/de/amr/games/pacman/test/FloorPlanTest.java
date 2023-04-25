@@ -46,10 +46,10 @@ public class FloorPlanTest {
 	public void test() {
 		List.of(8, 4, 2, 1).forEach(res -> {
 			createFloorPlan(new World(GameModel.PACMAN_MAP), file(PACMAN_PATTERN, 1, res), res);
-			createFloorPlan(new World(GameModel.MS_PACMAN_MAP1), file(MS_PACMAN_PATTERN, 1, res), res);
-			createFloorPlan(new World(GameModel.MS_PACMAN_MAP2), file(MS_PACMAN_PATTERN, 2, res), res);
-			createFloorPlan(new World(GameModel.MS_PACMAN_MAP3), file(MS_PACMAN_PATTERN, 3, res), res);
-			createFloorPlan(new World(GameModel.MS_PACMAN_MAP4), file(MS_PACMAN_PATTERN, 4, res), res);
+			createFloorPlan(new World(GameModel.MS_PACMAN_MAPS[0]), file(MS_PACMAN_PATTERN, 1, res), res);
+			createFloorPlan(new World(GameModel.MS_PACMAN_MAPS[1]), file(MS_PACMAN_PATTERN, 2, res), res);
+			createFloorPlan(new World(GameModel.MS_PACMAN_MAPS[2]), file(MS_PACMAN_PATTERN, 3, res), res);
+			createFloorPlan(new World(GameModel.MS_PACMAN_MAPS[3]), file(MS_PACMAN_PATTERN, 4, res), res);
 		});
 		List.of(8, 4, 2, 1).forEach(res -> {
 			assertTrue(file(PACMAN_PATTERN, 1, res).exists());
