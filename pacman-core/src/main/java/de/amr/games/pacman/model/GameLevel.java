@@ -368,37 +368,6 @@ public class GameLevel {
 		return guy.moveDir() == Direction.UP ? ahead.minus(numTiles, 0) : ahead;
 	}
 
-	public List<Vector2i> upwardsBlockedTiles() {
-		return switch (game.variant()) {
-		case MS_PACMAN -> Collections.emptyList();
-		case PACMAN -> GameModel.PACMAN_RED_ZONE;
-		default -> throw new IllegalGameVariantException(game.variant());
-		};
-	}
-
-	public void update() {
-		memo.forgetEverything(); // ich scholze jetzt
-
-		boolean newHuntingPhaseStarted = updateHuntingTimer();
-		if (newHuntingPhaseStarted) {
-			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseAsSoonAsPossible);
-		}
-		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
-
-		checkIfPacFoundFood();
-		checkPacPower();
-		checkIfPacManGetsKilled();
-		findEdibleGhosts();
-		pac.update(this);
-
-		checkIfGhostCanGetUnlocked();
-		ghosts().forEach(ghost -> ghost.update(this));
-
-		if (bonus != null) {
-			bonus.update(this);
-		}
-	}
-
 	public void exit() {
 		Logger.trace("Exit level {} ({})", number, game.variant());
 		pac.rest(Pac.REST_FOREVER);
@@ -532,6 +501,14 @@ public class GameLevel {
 		// In the Pac-Man game, hunting ghosts cannot move upwards at specific tiles
 		boolean upwardsBlocked = upwardsBlockedTiles().contains(ghost.tile());
 		return dir != Direction.UP || !ghost.is(HUNTING_PAC) || !upwardsBlocked;
+	}
+
+	public List<Vector2i> upwardsBlockedTiles() {
+		return switch (game.variant()) {
+		case MS_PACMAN -> Collections.emptyList();
+		case PACMAN -> GameModel.PACMAN_RED_ZONE;
+		default -> throw new IllegalGameVariantException(game.variant());
+		};
 	}
 
 	/**
@@ -709,6 +686,72 @@ public class GameLevel {
 		}
 	}
 
+	// What happens in a single step?
+
+	public void update() {
+		memo.forgetEverything(); // ich scholze jetzt
+
+		var pacTile = pac.tile();
+
+		// gather information
+		if (world.containsFood(pacTile)) {
+			memo.foodFoundTile = Optional.of(pacTile);
+			memo.energizerFound = world.isEnergizerTile(pacTile);
+			memo.lastFoodFound = world.uneatenFoodCount() == 1;
+			memo.pacPowerGained = memo.energizerFound && pacPowerSeconds > 0;
+			if (isFirstBonusReached()) {
+				memo.bonusReachedIndex = 0;
+			} else if (isSecondBonusReached()) {
+				memo.bonusReachedIndex = 1;
+			}
+		}
+		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
+
+		// handle food finding
+		if (memo.foodFoundTile.isPresent()) {
+			world.removeFood(pacTile);
+			pac.endStarving();
+			if (memo.energizerFound) {
+				numGhostsKilledByEnergizer = 0;
+				pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
+				game.scorePoints(GameModel.POINTS_ENERGIZER);
+			} else {
+				pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
+				game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
+			}
+			updateGhostDotCounters();
+			GameEvents.publishGameEvent(GameEventType.PAC_FINDS_FOOD, pacTile);
+			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
+		} else {
+			pac.starve();
+		}
+
+		if (memo.lastFoodFound) {
+			return; // level is complete
+		}
+
+		if (memo.bonusReachedIndex != -1) {
+			onBonusReached(memo.bonusReachedIndex);
+		}
+
+		checkPacPower();
+		checkIfPacManGetsKilled();
+		checkIfGhostCanGetUnlocked();
+		checkIfBlinkyBecomesCruiseElroy();
+
+		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
+		pac.update(this);
+		ghosts().forEach(ghost -> ghost.update(this));
+		if (bonus != null) {
+			bonus.update(this);
+		}
+
+		boolean huntingPhaseChange = updateHuntingTimer();
+		if (huntingPhaseChange) {
+			ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseAsSoonAsPossible);
+		}
+	}
+
 	private void checkIfBlinkyBecomesCruiseElroy() {
 		var foodRemaining = world.uneatenFoodCount();
 		if (foodRemaining == elroy1DotsLeft) {
@@ -730,8 +773,36 @@ public class GameLevel {
 		});
 	}
 
-	private void findEdibleGhosts() {
-		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
+	private void checkIfPacManGetsKilled() {
+		if (game.isImmune()) {
+			return;
+		}
+		memo.pacKilled = ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+	}
+
+	private void checkPacPower() {
+		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
+		memo.pacPowerLost = pac.powerTimer().hasExpired();
+		if (memo.pacPowerGained) {
+			stopHunting();
+			pac.powerTimer().restartSeconds(pacPowerSeconds);
+			Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
+			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
+			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
+			GameEvents.publishGameEventOfType(GameEventType.PAC_GETS_POWER);
+			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_STARTS);
+		} else if (memo.pacPowerFading) {
+			GameEvents.publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
+		} else if (memo.pacPowerLost) {
+			Logger.info("{} power ends, timer: {}", pac.name(), pac.powerTimer());
+			huntingTimer.start();
+			Logger.info("Hunting timer restarted");
+			pac.powerTimer().stop();
+			pac.powerTimer().resetIndefinitely();
+			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
+			GameEvents.publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
+			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS);
+		}
 	}
 
 	/**
@@ -771,13 +842,6 @@ public class GameLevel {
 		return memo.pacKilled;
 	}
 
-	private void checkIfPacManGetsKilled() {
-		if (game.isImmune()) {
-			return;
-		}
-		memo.pacKilled = ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
-	}
-
 	public void onPacKilled() {
 		stopHunting();
 		pac.die();
@@ -786,80 +850,10 @@ public class GameLevel {
 		Logger.info("{} died at tile {}", pac.name(), pac.tile());
 	}
 
-	private void checkPacPower() {
-		memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
-		memo.pacPowerLost = pac.powerTimer().hasExpired();
-		if (memo.pacPowerGained) {
-			stopHunting();
-			pac.powerTimer().restartSeconds(pacPowerSeconds);
-			Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
-			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
-			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
-			GameEvents.publishGameEventOfType(GameEventType.PAC_GETS_POWER);
-			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_STARTS);
-		} else if (memo.pacPowerFading) {
-			GameEvents.publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
-		} else if (memo.pacPowerLost) {
-			Logger.info("{} power ends, timer: {}", pac.name(), pac.powerTimer());
-			huntingTimer.start();
-			Logger.info("Hunting timer restarted");
-			pac.powerTimer().stop();
-			pac.powerTimer().resetIndefinitely();
-			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-			GameEvents.publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
-			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS);
-		}
-	}
-
 	// Food
 
 	public boolean completed() {
 		return memo.lastFoodFound;
-	}
-
-	private void checkIfPacFoundFood() {
-		var tile = pac.tile();
-		if (!world.containsFood(tile)) {
-			pac.starve();
-			return;
-		}
-
-		// do this first to update food counter
-		world.removeFood(tile);
-
-		memo.foodFoundTile = Optional.of(tile);
-		memo.energizerFound = world.isEnergizerTile(tile);
-		memo.lastFoodFound = world.uneatenFoodCount() == 0;
-		memo.pacPowerGained = memo.energizerFound && pacPowerSeconds > 0;
-
-		if (memo.energizerFound) {
-			numGhostsKilledByEnergizer = 0;
-			pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
-			game.scorePoints(GameModel.POINTS_ENERGIZER);
-		} else {
-			pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
-			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
-		}
-
-		pac.endStarving();
-		checkIfBlinkyBecomesCruiseElroy();
-		checkIfBonusReached();
-		updateGhostDotCounters();
-
-		if (memo.foodFoundTile.isPresent()) {
-			GameEvents.publishGameEvent(GameEventType.PAC_FINDS_FOOD, tile);
-			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
-		}
-	}
-
-	private void checkIfBonusReached() {
-		if (isFirstBonusReached()) {
-			memo.bonusReached = true;
-			onBonusReached(0);
-		} else if (isSecondBonusReached()) {
-			memo.bonusReached = true;
-			onBonusReached(1);
-		}
 	}
 
 	/* --- Ghosthouse control rules, see Pac-Man dossier --- */

@@ -38,7 +38,7 @@ public class Memory {
 	public boolean lastFoodFound;
 	public Optional<Vector2i> foodFoundTile;
 	public boolean energizerFound;
-	public boolean bonusReached;
+	public int bonusReachedIndex; // 0=first, 1=second, -1=no bonus
 	public boolean pacKilled;
 	public boolean pacPowerGained;
 	public boolean pacPowerLost;
@@ -56,7 +56,7 @@ public class Memory {
 		lastFoodFound = false;
 		foodFoundTile = Optional.empty();
 		energizerFound = false;
-		bonusReached = false;
+		bonusReachedIndex = -1;
 		pacKilled = false;
 		pacPowerGained = false;
 		pacPowerLost = false;
