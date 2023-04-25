@@ -80,103 +80,6 @@ public class GameLevel {
 	private record GhostUnlockResult(Ghost ghost, String reason) {
 	}
 
-	// --- Bonus ---
-
-	private final BonusInfo[] bonusInfo = new BonusInfo[2];
-
-	public BonusInfo bonusInfo(int index) {
-		if (index != 0 && index != 1) {
-			throw new IllegalArgumentException("Illegal bonus index: %d".formatted(index));
-		}
-		return bonusInfo[index];
-	}
-
-	private Bonus bonus;
-
-	public Optional<Bonus> getBonus() {
-		return Optional.ofNullable(bonus);
-	}
-
-	private BonusInfo createNextBonusInfo() {
-		return switch (game.variant()) {
-		case MS_PACMAN -> GameModel.getBonusInfoMsPacMan(number < 8 ? number : randomInt(1, 8));
-		case PACMAN -> GameModel.getBonusInfoPacMan(number);
-		default -> throw new IllegalGameVariantException(game.variant());
-		};
-	}
-
-	private boolean isFirstBonusReached() {
-		return switch (game.variant()) {
-		case MS_PACMAN -> world.eatenFoodCount() == 64; // from Ms. Pac-Man FAQ, but is this correct?
-		case PACMAN -> world.eatenFoodCount() == 70;
-		default -> throw new IllegalGameVariantException(game.variant());
-		};
-	}
-
-	private boolean isSecondBonusReached() {
-		return switch (game.variant()) {
-		case MS_PACMAN -> world.uneatenFoodCount() == 66; // from Ms. Pac-Man FAQ, but is this correct?
-		case PACMAN -> world.eatenFoodCount() == 170;
-		default -> throw new IllegalGameVariantException(game.variant());
-		};
-	}
-
-	/**
-	 * Handles bonus achievment (public access only for level state test).
-	 * 
-	 * @param bonusIndex achieved bonus index (0 or 1).
-	 */
-	public void handleBonusReached(int bonusIndex) {
-		switch (game.variant()) {
-		case MS_PACMAN -> {
-			/*
-			 * The bonus enters the world at a random portal, walks to the house entry, takes a tour around the house and
-			 * finally leaves the world through a random portal on the opposite side of the world.
-			 * 
-			 * TODO this is not exactly the behavior from the original game, yes I know
-			 */
-			var portals = world.portals();
-			var leftToRight = RND.nextBoolean();
-			var entryPortal = portals.get(RND.nextInt(portals.size()));
-			var exitPortal = portals.get(RND.nextInt(portals.size()));
-			var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
-			var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
-					: np(exitPortal.leftTunnelEnd().minus(1, 0));
-			var houseEntryTile = World.tileAt(world.house().door().entryPosition());
-			int houseHeight = world.house().size().y();
-			var route = new ArrayList<NavigationPoint>();
-			route.add(np(houseEntryTile));
-			route.add(np(houseEntryTile.plus(0, houseHeight + 1)));
-			route.add(np(houseEntryTile));
-			route.add(exitPoint);
-			route.trimToSize();
-
-			var movingBonus = new MovingBonus(bonusInfo(bonusIndex));
-			movingBonus.setRoute(route);
-			movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
-			movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
-			movingBonus.setEdible(TickTimer.INDEFINITE);
-
-			this.bonus = movingBonus;
-			Logger.trace("Bonus activated, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
-			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
-		}
-		case PACMAN -> {
-			bonus = new StaticBonus(bonusInfo(bonusIndex));
-			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
-			bonus.setEdible(ticks);
-			bonus.entity().setPosition(halfTileRightOf(13, 20));
-			Logger.info("Bonus activated for {} ticks ({} seconds): {}", ticks, (float) ticks / GameModel.FPS, bonus);
-			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
-		}
-		default -> throw new IllegalGameVariantException(game.variant());
-		}
-	}
-
-	public TickTimer huntingTimer() {
-		return huntingTimer;
-	}
-
 	/** Relative Pac-Man speed in this level. */
 	public final float pacSpeed;
 
@@ -228,6 +131,10 @@ public class GameLevel {
 	private final Pac pac;
 
 	private final Ghost[] ghosts;
+
+	private final BonusInfo[] bonusInfo = new BonusInfo[2];
+
+	private Bonus bonus;
 
 	private Steering pacSteering;
 
@@ -375,6 +282,10 @@ public class GameLevel {
 
 	public GameModel game() {
 		return game;
+	}
+
+	public TickTimer huntingTimer() {
+		return huntingTimer;
 	}
 
 	public boolean isAttractMode() {
@@ -816,6 +727,95 @@ public class GameLevel {
 
 	public boolean isCompleted() {
 		return world.uneatenFoodCount() == 0;
+	}
+
+	// --- Bonus ---
+
+	public Optional<Bonus> getBonus() {
+		return Optional.ofNullable(bonus);
+	}
+
+	public BonusInfo bonusInfo(int index) {
+		if (index != 0 && index != 1) {
+			throw new IllegalArgumentException("Illegal bonus index: %d".formatted(index));
+		}
+		return bonusInfo[index];
+	}
+
+	private BonusInfo createNextBonusInfo() {
+		return switch (game.variant()) {
+		case MS_PACMAN -> GameModel.getBonusInfoMsPacMan(number < 8 ? number : randomInt(1, 8));
+		case PACMAN -> GameModel.getBonusInfoPacMan(number);
+		default -> throw new IllegalGameVariantException(game.variant());
+		};
+	}
+
+	private boolean isFirstBonusReached() {
+		return switch (game.variant()) {
+		case MS_PACMAN -> world.eatenFoodCount() == 64; // from Ms. Pac-Man FAQ, but is this correct?
+		case PACMAN -> world.eatenFoodCount() == 70;
+		default -> throw new IllegalGameVariantException(game.variant());
+		};
+	}
+
+	private boolean isSecondBonusReached() {
+		return switch (game.variant()) {
+		case MS_PACMAN -> world.uneatenFoodCount() == 66; // from Ms. Pac-Man FAQ, but is this correct?
+		case PACMAN -> world.eatenFoodCount() == 170;
+		default -> throw new IllegalGameVariantException(game.variant());
+		};
+	}
+
+	/**
+	 * Handles bonus achievment (public access only for level state test).
+	 * 
+	 * @param bonusIndex achieved bonus index (0 or 1).
+	 */
+	public void handleBonusReached(int bonusIndex) {
+		switch (game.variant()) {
+		case MS_PACMAN -> {
+			/*
+			 * The bonus enters the world at a random portal, walks to the house entry, takes a tour around the house and
+			 * finally leaves the world through a random portal on the opposite side of the world.
+			 * 
+			 * TODO this is not exactly the behavior from the original game, yes I know
+			 */
+			var portals = world.portals();
+			var leftToRight = RND.nextBoolean();
+			var entryPortal = portals.get(RND.nextInt(portals.size()));
+			var exitPortal = portals.get(RND.nextInt(portals.size()));
+			var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
+			var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
+					: np(exitPortal.leftTunnelEnd().minus(1, 0));
+			var houseEntryTile = World.tileAt(world.house().door().entryPosition());
+			int houseHeight = world.house().size().y();
+			var route = new ArrayList<NavigationPoint>();
+			route.add(np(houseEntryTile));
+			route.add(np(houseEntryTile.plus(0, houseHeight + 1)));
+			route.add(np(houseEntryTile));
+			route.add(exitPoint);
+			route.trimToSize();
+
+			var movingBonus = new MovingBonus(bonusInfo(bonusIndex));
+			movingBonus.setRoute(route);
+			movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
+			movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
+			movingBonus.setEdible(TickTimer.INDEFINITE);
+
+			this.bonus = movingBonus;
+			Logger.trace("Bonus activated, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
+			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
+		}
+		case PACMAN -> {
+			bonus = new StaticBonus(bonusInfo(bonusIndex));
+			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
+			bonus.setEdible(ticks);
+			bonus.entity().setPosition(halfTileRightOf(13, 20));
+			Logger.info("Bonus activated for {} ticks ({} seconds): {}", ticks, (float) ticks / GameModel.FPS, bonus);
+			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
+		}
+		default -> throw new IllegalGameVariantException(game.variant());
+		}
 	}
 
 	/* --- Ghosthouse control rules, see Pac-Man dossier --- */
