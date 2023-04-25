@@ -394,7 +394,9 @@ public class GameLevel {
 		checkIfGhostCanGetUnlocked();
 		ghosts().forEach(ghost -> ghost.update(this));
 
-		bonus.update(this);
+		if (bonus != null) {
+			bonus.update(this);
+		}
 	}
 
 	public void exit() {
