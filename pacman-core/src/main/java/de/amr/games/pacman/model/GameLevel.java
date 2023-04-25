@@ -153,39 +153,6 @@ public class GameLevel {
 
 	// --- Bonus ---
 
-	public record BonusInfo(byte symbol, int points) {
-	}
-
-	private static BonusInfo getBonusInfoMsPacMan(int levelNumber) {
-		return switch (levelNumber) {
-		//@formatter:off
-		case 1 -> new BonusInfo((byte)0,  100); // Cherries
-		case 2 -> new BonusInfo((byte)1,  200); // Strawberry
-		case 3 -> new BonusInfo((byte)2,  500); // Peach
-		case 4 -> new BonusInfo((byte)3,  700); // Pretzel (A Brezn, Herr Gott Sakra!)
-		case 5 -> new BonusInfo((byte)4, 1000); // Apple
-		case 6 -> new BonusInfo((byte)5, 2000); // Pear
-		case 7 -> new BonusInfo((byte)6, 5000); // Bananas
-		default -> throw new IllegalArgumentException();
-		//@formatter:on
-		};
-	}
-
-	private static BonusInfo getBonusInfoPacMan(int levelNumber) {
-		return switch (levelNumber) {
-		//@formatter:off
-		case 1      -> new BonusInfo((byte)0,  100); // Cherries
-		case 2      -> new BonusInfo((byte)1,  300); // Strawberry
-		case 3, 4   -> new BonusInfo((byte)2,  500); // Peach
-		case 5, 6   -> new BonusInfo((byte)3,  700); // Apple
-		case 7, 8   -> new BonusInfo((byte)4, 1000); // Grapes
-		case 9, 10  -> new BonusInfo((byte)5, 2000); // Galaxian
-		case 11, 12 -> new BonusInfo((byte)6, 3000); // Bell
-		default     -> new BonusInfo((byte)7, 5000); // Key
-		//@formatter:on
-		};
-	}
-
 	private final BonusInfo[] bonusInfo = new BonusInfo[2];
 
 	private Bonus bonus;
@@ -196,8 +163,8 @@ public class GameLevel {
 
 	private BonusInfo createNextBonusInfo() {
 		return switch (game.variant()) {
-		case MS_PACMAN -> getBonusInfoMsPacMan(number < 8 ? number : randomInt(1, 8));
-		case PACMAN -> getBonusInfoPacMan(number);
+		case MS_PACMAN -> GameModel.getBonusInfoMsPacMan(number < 8 ? number : randomInt(1, 8));
+		case PACMAN -> GameModel.getBonusInfoPacMan(number);
 		default -> throw new IllegalGameVariantException(game.variant());
 		};
 	}
@@ -357,8 +324,8 @@ public class GameLevel {
 		bonusInfo[0] = createNextBonusInfo();
 		bonusInfo[1] = createNextBonusInfo();
 		bonus = switch (game.variant()) {
-		case MS_PACMAN -> new MovingBonus(bonusInfo[0].symbol, bonusInfo[0].points);
-		case PACMAN -> new StaticBonus(bonusInfo[0].symbol, bonusInfo[0].points);
+		case MS_PACMAN -> new MovingBonus(bonusInfo[0].symbol(), bonusInfo[0].points());
+		case PACMAN -> new StaticBonus(bonusInfo[0].symbol(), bonusInfo[0].points());
 		default -> throw new IllegalGameVariantException(game.variant());
 		};
 		huntingDurations = game.huntingDurations(number);
