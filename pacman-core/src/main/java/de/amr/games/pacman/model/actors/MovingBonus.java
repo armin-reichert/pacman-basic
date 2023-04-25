@@ -34,6 +34,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.anim.SimpleAnimation;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.steering.RouteBasedSteering;
+import de.amr.games.pacman.model.BonusInfo;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 
@@ -48,22 +49,19 @@ import de.amr.games.pacman.model.GameModel;
  */
 public class MovingBonus extends Creature implements Bonus {
 
-	private final byte symbol;
-	private final int points;
+	private final BonusInfo info;
 	private long timer;
 	private byte state;
 
 	private final SimpleAnimation<Float> jumpAnimation;
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
-	public MovingBonus(byte symbol, int points) {
-		super("MovingBonus");
+	public MovingBonus(BonusInfo info) {
+		super("MovingBonus-%d-%d".formatted(info.symbol(), info.points()));
+		super.reset(); // TODO check this
 
-		reset();
+		this.info = info;
 		this.canTeleport = false; // override setting from reset()
-
-		this.symbol = symbol;
-		this.points = points;
 		this.timer = 0;
 		this.state = Bonus.STATE_INACTIVE;
 
@@ -84,7 +82,8 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public String toString() {
-		return "[MovingBonus state=%s symbol=%d value=%d timer=%d tile=%s]".formatted(state, symbol, points, timer, tile());
+		return "[MovingBonus state=%s symbol=%d value=%d timer=%d tile=%s]".formatted(state, symbol(), points(), timer,
+				tile());
 	}
 
 	@Override
@@ -94,12 +93,12 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public byte symbol() {
-		return symbol;
+		return info.symbol();
 	}
 
 	@Override
 	public int points() {
-		return points;
+		return info.points();
 	}
 
 	@Override
@@ -147,7 +146,7 @@ public class MovingBonus extends Creature implements Bonus {
 		}
 		case STATE_EDIBLE -> {
 			if (sameTile(level.pac())) {
-				level.game().scorePoints(points);
+				level.game().scorePoints(points());
 				eat();
 				return;
 			}

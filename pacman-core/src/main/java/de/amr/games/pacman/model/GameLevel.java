@@ -324,8 +324,8 @@ public class GameLevel {
 		bonusInfo[0] = createNextBonusInfo();
 		bonusInfo[1] = createNextBonusInfo();
 		bonus = switch (game.variant()) {
-		case MS_PACMAN -> new MovingBonus(bonusInfo[0].symbol(), bonusInfo[0].points());
-		case PACMAN -> new StaticBonus(bonusInfo[0].symbol(), bonusInfo[0].points());
+		case MS_PACMAN -> new MovingBonus(bonusInfo[0]);
+		case PACMAN -> new StaticBonus(bonusInfo[0]);
 		default -> throw new IllegalGameVariantException(game.variant());
 		};
 		huntingDurations = game.huntingDurations(number);
