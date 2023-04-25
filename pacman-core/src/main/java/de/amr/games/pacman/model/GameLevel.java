@@ -138,19 +138,6 @@ public class GameLevel {
 		};
 	}
 
-	private static Pac createPac(GameVariant variant) {
-		return new Pac(variant == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
-	}
-
-	private static Ghost[] createGhosts(GameVariant variant) {
-		return new Ghost[] { //
-				new Ghost(ID_RED_GHOST, "Blinky"), //
-				new Ghost(ID_PINK_GHOST, "Pinky"), //
-				new Ghost(ID_CYAN_GHOST, "Inky"), //
-				new Ghost(ID_ORANGE_GHOST, variant == GameVariant.MS_PACMAN ? "Sue" : "Clyde") //
-		};
-	}
-
 	// --- Bonus ---
 
 	private final BonusInfo[] bonusInfo = new BonusInfo[2];
@@ -300,8 +287,6 @@ public class GameLevel {
 
 	private final Ghost[] ghosts;
 
-	private final int[] huntingDurations;
-
 	private Steering pacSteering;
 
 	private int huntingPhase;
@@ -335,11 +320,16 @@ public class GameLevel {
 		intermissionNumber = data[11];
 
 		world = createWorld(game.variant(), number);
-		pac = createPac(game.variant());
-		ghosts = createGhosts(game.variant());
+		pac = new Pac(game.variant() == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
+		ghosts = new Ghost[] { //
+				new Ghost(ID_RED_GHOST, "Blinky"), //
+				new Ghost(ID_PINK_GHOST, "Pinky"), //
+				new Ghost(ID_CYAN_GHOST, "Inky"), //
+				new Ghost(ID_ORANGE_GHOST, game.variant() == GameVariant.MS_PACMAN ? "Sue" : "Clyde") //
+		};
 		bonusInfo[0] = createNextBonusInfo();
 		bonusInfo[1] = createNextBonusInfo();
-		huntingDurations = game.huntingDurations(number);
+
 		defineGhostHouseRules();
 		defineGhostAI();
 
@@ -528,7 +518,9 @@ public class GameLevel {
 			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
 		}
 		this.huntingPhase = phase;
-		huntingTimer.reset(huntingTicks(phase));
+		var durations = game.huntingDurations(number);
+		var ticks = durations[phase] == -1 ? TickTimer.INDEFINITE : durations[phase];
+		huntingTimer.reset(ticks);
 		huntingTimer.start();
 		Logger.info("Hunting phase {} ({}, {} ticks / {} seconds) started. {}", phase, currentHuntingPhaseName(),
 				huntingTimer.duration(), (float) huntingTimer.duration() / GameModel.FPS, huntingTimer);
@@ -537,10 +529,6 @@ public class GameLevel {
 	private void stopHuntingTimer() {
 		huntingTimer.stop();
 		Logger.info("Hunting timer stopped");
-	}
-
-	private long huntingTicks(int phase) {
-		return huntingDurations[phase] == -1 ? TickTimer.INDEFINITE : huntingDurations[phase];
 	}
 
 	/**
