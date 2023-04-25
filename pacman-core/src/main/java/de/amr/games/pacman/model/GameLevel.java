@@ -328,46 +328,42 @@ public class GameLevel {
 				new Ghost(ID_ORANGE_GHOST, game.variant() == GameVariant.MS_PACMAN ? "Sue" : "Clyde") //
 		};
 
+		// Blinky: attacks Pac-Man directly
 		ghosts[ID_RED_GHOST].setInitialDirection(Direction.LEFT);
 		ghosts[ID_RED_GHOST].setInitialPosition(world.house().door().entryPosition());
 		ghosts[ID_RED_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
 		ghosts[ID_RED_GHOST].setScatterTile(v2i(25, 0));
+		ghost(ID_RED_GHOST).setChasingTarget(pac::tile);
 
+		// Pinky: ambushes Pac-Man
 		ghosts[ID_PINK_GHOST].setInitialDirection(Direction.DOWN);
 		ghosts[ID_PINK_GHOST].setInitialPosition(world.house().seatPositions().get(1));
 		ghosts[ID_PINK_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
 		ghosts[ID_PINK_GHOST].setScatterTile(v2i(2, 0));
+		ghost(ID_PINK_GHOST).setChasingTarget(() -> tilesAhead(pac, 4));
 
+		// Inky: attacks from opposite side as Blinky
 		ghosts[ID_CYAN_GHOST].setInitialDirection(Direction.UP);
 		ghosts[ID_CYAN_GHOST].setInitialPosition(world.house().seatPositions().get(0));
 		ghosts[ID_CYAN_GHOST].setRevivalPosition(world.house().seatPositions().get(0));
 		ghosts[ID_CYAN_GHOST].setScatterTile(v2i(27, 34));
+		ghost(ID_CYAN_GHOST).setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(ghosts[ID_RED_GHOST].tile()));
 
+		// Clyde/Sue: attacks directly but retreats if Pac is near
 		ghosts[ID_ORANGE_GHOST].setInitialDirection(Direction.UP);
 		ghosts[ID_ORANGE_GHOST].setInitialPosition(world.house().seatPositions().get(2));
 		ghosts[ID_ORANGE_GHOST].setRevivalPosition(world.house().seatPositions().get(2));
 		ghosts[ID_ORANGE_GHOST].setScatterTile(v2i(0, 34));
+		ghosts[ID_ORANGE_GHOST].setChasingTarget(() -> ghosts[ID_ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8 //
+				? ghosts[ID_ORANGE_GHOST].scatterTile()
+				: pac.tile());
 
 		bonusInfo[0] = createNextBonusInfo();
 		bonusInfo[1] = createNextBonusInfo();
 
 		defineGhostHouseRules();
-		defineGhostAI();
 
 		Logger.trace("Game level {} created. ({})", number, game.variant());
-	}
-
-	private void defineGhostAI() {
-		// Red ghost attacks Pac-Man directly
-		ghost(ID_RED_GHOST).setChasingTarget(pac::tile);
-		// Pink ghost ambushes Pac-Man
-		ghost(ID_PINK_GHOST).setChasingTarget(() -> tilesAhead(pac, 4));
-		// Cyan ghost attacks from opposite side than red ghost
-		ghost(ID_CYAN_GHOST).setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(ghost(ID_RED_GHOST).tile()));
-		// Orange ghost attacks directly but retreats if too near
-		ghost(ID_ORANGE_GHOST).setChasingTarget( //
-				() -> ghost(ID_ORANGE_GHOST).tile().euclideanDistance(pac.tile()) < 8 ? //
-						ghost(ID_ORANGE_GHOST).scatterTile() : pac.tile());
 	}
 
 	/**
