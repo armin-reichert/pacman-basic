@@ -80,18 +80,6 @@ public class GameLevel {
 	private record GhostUnlockResult(Ghost ghost, String reason) {
 	}
 
-	// factory methods
-
-	private static World createWorld(GameVariant variant, int levelNumber) {
-		int mapNumber = mapNumber(variant, levelNumber);
-		var map = switch (variant) {
-		case MS_PACMAN -> GameModel.MS_PACMAN_MAPS[mapNumber - 1];
-		case PACMAN -> GameModel.PACMAN_MAP;
-		default -> throw new IllegalGameVariantException(variant);
-		};
-		return new World(map);
-	}
-
 	/**
 	 * In Ms. Pac-Man, there are 4 maps used by the 6 mazes. Up to level 13, the mazes are:
 	 * <ul>
@@ -107,28 +95,18 @@ public class GameLevel {
 	 * </ul>
 	 * <p>
 	 */
-	private static int mazeNumber(GameVariant variant, int levelNumber) {
-		return switch (variant) {
-		case MS_PACMAN -> {
-			yield switch (levelNumber) {
-			case 1, 2 -> 1;
-			case 3, 4, 5 -> 2;
-			case 6, 7, 8, 9 -> 3;
-			case 10, 11, 12, 13 -> 4;
-			default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
-			};
-		}
-		case PACMAN -> 1;
-		default -> throw new IllegalGameVariantException(variant);
+	private static int msPacManMazeNumber(int levelNumber) {
+		return switch (levelNumber) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		};
 	}
 
-	private static int mapNumber(GameVariant variant, int levelNumber) {
-		return switch (variant) {
-		case MS_PACMAN -> levelNumber < 14 ? mazeNumber(variant, levelNumber) : mazeNumber(variant, levelNumber) - 2;
-		case PACMAN -> 1;
-		default -> throw new IllegalGameVariantException(variant);
-		};
+	private static int msPacManMapNumber(int levelNumber) {
+		return levelNumber < 14 ? msPacManMazeNumber(levelNumber) : msPacManMazeNumber(levelNumber) - 2;
 	}
 
 	// --- Bonus ---
@@ -312,7 +290,12 @@ public class GameLevel {
 		numFlashes = data[10];
 		intermissionNumber = data[11];
 
-		world = createWorld(game.variant(), number);
+		var map = switch (game.variant()) {
+		case MS_PACMAN -> GameModel.MS_PACMAN_MAPS[msPacManMapNumber(number) - 1];
+		case PACMAN -> GameModel.PACMAN_MAP;
+		default -> throw new IllegalGameVariantException(game.variant());
+		};
+		world = new World(map);
 
 		pac = new Pac(game.variant() == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
 
@@ -408,7 +391,7 @@ public class GameLevel {
 	 * @return number of maze (not map) used in this level, 1-based.
 	 */
 	public int mazeNumber() {
-		return mazeNumber(game.variant(), number);
+		return game.variant() == GameVariant.MS_PACMAN ? msPacManMazeNumber(number) : 1;
 	}
 
 	/**
