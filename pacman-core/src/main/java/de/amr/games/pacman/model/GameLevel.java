@@ -80,35 +80,6 @@ public class GameLevel {
 	private record GhostUnlockResult(Ghost ghost, String reason) {
 	}
 
-	/**
-	 * In Ms. Pac-Man, there are 4 maps used by the 6 mazes. Up to level 13, the mazes are:
-	 * <ul>
-	 * <li>Maze #1: pink maze, white dots (level 1-2)
-	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
-	 * <li>Maze #3: orange maze, red dots (level 6-9)
-	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
-	 * </ul>
-	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
-	 * <ul>
-	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
-	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
-	 * </ul>
-	 * <p>
-	 */
-	private static int msPacManMazeNumber(int levelNumber) {
-		return switch (levelNumber) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
-		};
-	}
-
-	private static int msPacManMapNumber(int levelNumber) {
-		return levelNumber < 14 ? msPacManMazeNumber(levelNumber) : msPacManMazeNumber(levelNumber) - 2;
-	}
-
 	// --- Bonus ---
 
 	private final BonusInfo[] bonusInfo = new BonusInfo[2];
@@ -291,7 +262,7 @@ public class GameLevel {
 		intermissionNumber = data[11];
 
 		var map = switch (game.variant()) {
-		case MS_PACMAN -> GameModel.MS_PACMAN_MAPS[msPacManMapNumber(number) - 1];
+		case MS_PACMAN -> GameModel.MS_PACMAN_MAPS[msPacManMapNumber() - 1];
 		case PACMAN -> GameModel.PACMAN_MAP;
 		default -> throw new IllegalGameVariantException(game.variant());
 		};
@@ -345,6 +316,38 @@ public class GameLevel {
 	}
 
 	/**
+	 * In Ms. Pac-Man, there are 4 maps used by the 6 mazes. Up to level 13, the mazes are:
+	 * <ul>
+	 * <li>Maze #1: pink maze, white dots (level 1-2)
+	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
+	 * <li>Maze #3: orange maze, red dots (level 6-9)
+	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
+	 * </ul>
+	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
+	 * <ul>
+	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
+	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
+	 * </ul>
+	 * <p>
+	 */
+	private int msPacManMazeNumber() {
+		return switch (number) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (number - 14) % 8 < 4 ? 5 : 6;
+		};
+	}
+
+	/**
+	 * @return number of map used in this level. From level 14 on, maps alternates between 3 and 4 every 4th level.
+	 */
+	private int msPacManMapNumber() {
+		return number < 14 ? msPacManMazeNumber() : (number - 14) % 8 < 4 ? 3 : 4;
+	}
+
+	/**
 	 * Simulates the overflow bug from the original Arcade version.
 	 * 
 	 * @param guy      a creature
@@ -391,7 +394,7 @@ public class GameLevel {
 	 * @return number of maze (not map) used in this level, 1-based.
 	 */
 	public int mazeNumber() {
-		return game.variant() == GameVariant.MS_PACMAN ? msPacManMazeNumber(number) : 1;
+		return game.variant() == GameVariant.MS_PACMAN ? msPacManMazeNumber() : 1;
 	}
 
 	/**
