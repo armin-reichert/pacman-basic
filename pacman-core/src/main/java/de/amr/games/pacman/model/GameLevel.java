@@ -313,6 +313,7 @@ public class GameLevel {
 		intermissionNumber = data[11];
 
 		world = createWorld(game.variant(), number);
+
 		pac = new Pac(game.variant() == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
 
 		ghosts = new Ghost[] { //
@@ -327,21 +328,21 @@ public class GameLevel {
 		ghosts[ID_RED_GHOST].setInitialPosition(world.house().door().entryPosition());
 		ghosts[ID_RED_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
 		ghosts[ID_RED_GHOST].setScatterTile(v2i(25, 0));
-		ghost(ID_RED_GHOST).setChasingTarget(pac::tile);
+		ghosts[ID_RED_GHOST].setChasingTarget(pac::tile);
 
 		// Pinky: ambushes Pac-Man
 		ghosts[ID_PINK_GHOST].setInitialDirection(Direction.DOWN);
 		ghosts[ID_PINK_GHOST].setInitialPosition(world.house().seatPositions().get(1));
 		ghosts[ID_PINK_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
 		ghosts[ID_PINK_GHOST].setScatterTile(v2i(2, 0));
-		ghost(ID_PINK_GHOST).setChasingTarget(() -> tilesAhead(pac, 4));
+		ghosts[ID_PINK_GHOST].setChasingTarget(() -> tilesAhead(pac, 4));
 
 		// Inky: attacks from opposite side as Blinky
 		ghosts[ID_CYAN_GHOST].setInitialDirection(Direction.UP);
 		ghosts[ID_CYAN_GHOST].setInitialPosition(world.house().seatPositions().get(0));
 		ghosts[ID_CYAN_GHOST].setRevivalPosition(world.house().seatPositions().get(0));
 		ghosts[ID_CYAN_GHOST].setScatterTile(v2i(27, 34));
-		ghost(ID_CYAN_GHOST).setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(ghosts[ID_RED_GHOST].tile()));
+		ghosts[ID_CYAN_GHOST].setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(ghosts[ID_RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
 		ghosts[ID_ORANGE_GHOST].setInitialDirection(Direction.UP);
