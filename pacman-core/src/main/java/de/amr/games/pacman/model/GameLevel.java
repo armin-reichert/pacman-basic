@@ -217,22 +217,26 @@ public class GameLevel {
 			route.add(exitPoint);
 			route.trimToSize();
 
-			var movingBonus = (MovingBonus) bonus;
+			var movingBonus = new MovingBonus(bonusInfo(bonusIndex));
 			movingBonus.setRoute(route);
 			movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
 			movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
 			movingBonus.setEdible(TickTimer.INDEFINITE);
+
+			this.bonus = movingBonus;
 			Logger.trace("Bonus activated, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
+			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 		}
 		case PACMAN -> {
+			bonus = new StaticBonus(bonusInfo(bonusIndex));
 			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 			bonus.setEdible(ticks);
 			bonus.entity().setPosition(halfTileRightOf(13, 20));
 			Logger.info("Bonus activated for {} ticks ({} seconds): {}", ticks, (float) ticks / GameModel.FPS, bonus);
+			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 		}
 		default -> throw new IllegalGameVariantException(game.variant());
 		}
-		GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 	}
 
 	public TickTimer huntingTimer() {
@@ -330,11 +334,6 @@ public class GameLevel {
 		ghosts = createGhosts(game.variant());
 		bonusInfo[0] = createNextBonusInfo();
 		bonusInfo[1] = createNextBonusInfo();
-		bonus = switch (game.variant()) {
-		case MS_PACMAN -> new MovingBonus(bonusInfo[0]);
-		case PACMAN -> new StaticBonus(bonusInfo[0]);
-		default -> throw new IllegalGameVariantException(game.variant());
-		};
 		huntingDurations = game.huntingDurations(number);
 		defineGhostHouseRules();
 		defineGhostAI();
@@ -649,7 +648,6 @@ public class GameLevel {
 			ghost.setVisible(guysVisible);
 			ghost.enterStateLocked();
 		});
-		bonus.setInactive();
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
 	}
 
