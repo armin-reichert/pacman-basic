@@ -30,13 +30,14 @@ import static de.amr.games.pacman.model.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.actors.Ghost.ID_RED_GHOST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import de.amr.games.pacman.lib.math.Vector2f;
+import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.GameVariant;
 import de.amr.games.pacman.model.actors.Ghost;
@@ -83,30 +84,30 @@ public class PacManGameTest {
 		var redGhost = level.ghost(ID_RED_GHOST);
 		assertTrue(redGhost instanceof Ghost);
 		assertEquals(-1, redGhost.killedIndex());
-		assertNotNull(level.ghostInitialPosition(ID_RED_GHOST));
-		assertNotNull(level.ghostRevivalPosition(ID_RED_GHOST));
-		assertNotNull(level.ghostScatterTargetTile(ID_RED_GHOST));
+		assertNotEquals(Vector2f.ZERO, redGhost.initialPosition());
+		assertNotEquals(Vector2f.ZERO, redGhost.revivalPosition());
+		assertNotEquals(Vector2i.ZERO, redGhost.scatterTile());
 
 		var pinkGhost = level.ghost(ID_PINK_GHOST);
 		assertTrue(pinkGhost instanceof Ghost);
 		assertEquals(-1, pinkGhost.killedIndex());
-		assertNotNull(level.ghostInitialPosition(ID_PINK_GHOST));
-		assertNotNull(level.ghostRevivalPosition(ID_PINK_GHOST));
-		assertNotNull(level.ghostScatterTargetTile(ID_PINK_GHOST));
+		assertNotEquals(Vector2f.ZERO, pinkGhost.initialPosition());
+		assertNotEquals(Vector2f.ZERO, pinkGhost.revivalPosition());
+		assertNotEquals(Vector2i.ZERO, pinkGhost.scatterTile());
 
 		var cyanGhost = level.ghost(ID_CYAN_GHOST);
 		assertTrue(cyanGhost instanceof Ghost);
 		assertEquals(-1, cyanGhost.killedIndex());
-		assertNotNull(level.ghostInitialPosition(ID_CYAN_GHOST));
-		assertNotNull(level.ghostRevivalPosition(ID_CYAN_GHOST));
-		assertNotNull(level.ghostScatterTargetTile(ID_CYAN_GHOST));
+		assertNotEquals(Vector2f.ZERO, cyanGhost.initialPosition());
+		assertNotEquals(Vector2f.ZERO, cyanGhost.revivalPosition());
+		assertNotEquals(Vector2i.ZERO, cyanGhost.scatterTile());
 
 		var orangeGhost = level.ghost(ID_ORANGE_GHOST);
 		assertTrue(orangeGhost instanceof Ghost);
 		assertEquals(-1, orangeGhost.killedIndex());
-		assertNotNull(level.ghostInitialPosition(ID_ORANGE_GHOST));
-		assertNotNull(level.ghostRevivalPosition(ID_ORANGE_GHOST));
-		assertNotNull(level.ghostScatterTargetTile(ID_ORANGE_GHOST));
+		assertNotEquals(Vector2f.ZERO, orangeGhost.initialPosition());
+		assertNotEquals(Vector2f.ZERO, orangeGhost.revivalPosition());
+		assertNotEquals(Vector2i.ZERO, orangeGhost.scatterTile());
 	}
 
 	@Test

@@ -59,7 +59,6 @@ import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.Animated;
-import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
@@ -321,12 +320,34 @@ public class GameLevel {
 
 		world = createWorld(game.variant(), number);
 		pac = new Pac(game.variant() == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
+
 		ghosts = new Ghost[] { //
 				new Ghost(ID_RED_GHOST, "Blinky"), //
 				new Ghost(ID_PINK_GHOST, "Pinky"), //
 				new Ghost(ID_CYAN_GHOST, "Inky"), //
 				new Ghost(ID_ORANGE_GHOST, game.variant() == GameVariant.MS_PACMAN ? "Sue" : "Clyde") //
 		};
+
+		ghosts[ID_RED_GHOST].setInitialDirection(Direction.LEFT);
+		ghosts[ID_RED_GHOST].setInitialPosition(world.house().door().entryPosition());
+		ghosts[ID_RED_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
+		ghosts[ID_RED_GHOST].setScatterTile(v2i(25, 0));
+
+		ghosts[ID_PINK_GHOST].setInitialDirection(Direction.DOWN);
+		ghosts[ID_PINK_GHOST].setInitialPosition(world.house().seatPositions().get(1));
+		ghosts[ID_PINK_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
+		ghosts[ID_PINK_GHOST].setScatterTile(v2i(2, 0));
+
+		ghosts[ID_CYAN_GHOST].setInitialDirection(Direction.UP);
+		ghosts[ID_CYAN_GHOST].setInitialPosition(world.house().seatPositions().get(0));
+		ghosts[ID_CYAN_GHOST].setRevivalPosition(world.house().seatPositions().get(0));
+		ghosts[ID_CYAN_GHOST].setScatterTile(v2i(27, 34));
+
+		ghosts[ID_ORANGE_GHOST].setInitialDirection(Direction.UP);
+		ghosts[ID_ORANGE_GHOST].setInitialPosition(world.house().seatPositions().get(2));
+		ghosts[ID_ORANGE_GHOST].setRevivalPosition(world.house().seatPositions().get(2));
+		ghosts[ID_ORANGE_GHOST].setScatterTile(v2i(0, 34));
+
 		bonusInfo[0] = createNextBonusInfo();
 		bonusInfo[1] = createNextBonusInfo();
 
@@ -346,7 +367,7 @@ public class GameLevel {
 		// Orange ghost attacks directly but retreats if too near
 		ghost(ID_ORANGE_GHOST).setChasingTarget( //
 				() -> ghost(ID_ORANGE_GHOST).tile().euclideanDistance(pac.tile()) < 8 ? //
-						ghostScatterTargetTile(ID_ORANGE_GHOST) : pac.tile());
+						ghost(ID_ORANGE_GHOST).scatterTile() : pac.tile());
 	}
 
 	/**
@@ -617,50 +638,12 @@ public class GameLevel {
 		pac.setVisible(guysVisible);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
-			ghost.setPosition(ghostInitialPosition(ghost.id()));
-			ghost.setMoveAndWishDir(ghostInitialDirection(ghost.id()));
+			ghost.setPosition(ghost.initialPosition());
+			ghost.setMoveAndWishDir(ghost.initialDirection());
 			ghost.setVisible(guysVisible);
 			ghost.enterStateLocked();
 		});
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
-	}
-
-	public Vector2f ghostInitialPosition(byte ghostID) {
-		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> world.house().door().entryPosition();
-		case Ghost.ID_PINK_GHOST -> world.house().seatPositions().get(1);
-		case Ghost.ID_CYAN_GHOST -> world.house().seatPositions().get(0);
-		case Ghost.ID_ORANGE_GHOST -> world.house().seatPositions().get(2);
-		default -> throw new IllegalGhostIDException(ghostID);
-		};
-	}
-
-	public Vector2f ghostRevivalPosition(byte ghostID) {
-		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> world.house().seatPositions().get(1);
-		case Ghost.ID_PINK_GHOST, Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> ghostInitialPosition(ghostID);
-		default -> throw new IllegalGhostIDException(ghostID);
-		};
-	}
-
-	public Vector2i ghostScatterTargetTile(byte ghostID) {
-		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> v2i(25, 0);
-		case Ghost.ID_PINK_GHOST -> v2i(2, 0);
-		case Ghost.ID_CYAN_GHOST -> v2i(27, 34);
-		case Ghost.ID_ORANGE_GHOST -> v2i(0, 34);
-		default -> throw new IllegalGhostIDException(ghostID);
-		};
-	}
-
-	public Direction ghostInitialDirection(byte ghostID) {
-		return switch (ghostID) {
-		case Ghost.ID_RED_GHOST -> Direction.LEFT;
-		case Ghost.ID_PINK_GHOST -> Direction.DOWN;
-		case Ghost.ID_CYAN_GHOST -> Direction.UP;
-		case Ghost.ID_ORANGE_GHOST -> Direction.UP;
-		default -> throw new IllegalGhostIDException(ghostID);
-		};
 	}
 
 	/**

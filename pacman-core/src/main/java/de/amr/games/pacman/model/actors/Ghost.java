@@ -74,6 +74,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private final byte id;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
+	private Vector2f initialPosition = Vector2f.ZERO;
+	private Vector2f revivalPosition = Vector2f.ZERO;
+	private Vector2i scatterTile = Vector2i.ZERO;
+	private Direction initialDirection = Direction.UP;
+
 	private AnimationMap animations;
 	private int killedIndex;
 
@@ -112,6 +117,38 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void setChasingTarget(Supplier<Vector2i> fnChasingTarget) {
 		checkNotNull(fnChasingTarget);
 		this.fnChasingTarget = fnChasingTarget;
+	}
+
+	public Vector2f initialPosition() {
+		return initialPosition;
+	}
+
+	public void setInitialPosition(Vector2f pos) {
+		this.initialPosition = pos;
+	}
+
+	public Vector2f revivalPosition() {
+		return revivalPosition;
+	}
+
+	public void setRevivalPosition(Vector2f pos) {
+		this.revivalPosition = pos;
+	}
+
+	public Vector2i scatterTile() {
+		return scatterTile;
+	}
+
+	public void setScatterTile(Vector2i pos) {
+		this.scatterTile = pos;
+	}
+
+	public Direction initialDirection() {
+		return initialDirection;
+	}
+
+	public void setInitialDirection(Direction dir) {
+		this.initialDirection = dir;
 	}
 
 	/**
@@ -157,7 +194,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 */
 	public void scatter(GameLevel level) {
 		checkLevelNotNull(level);
-		setTargetTile(level.ghostScatterTargetTile(id));
+		setTargetTile(scatterTile);
 		navigateTowardsTarget(level);
 		tryMoving(level);
 	}
@@ -262,7 +299,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateStateLocked(GameLevel level) {
-		var baseLevel = level.ghostInitialPosition(id).y();
+		var baseLevel = initialPosition.y();
 		if (level.world().house().contains(tile())) {
 			if (position.y() <= baseLevel - HTS) {
 				setMoveAndWishDir(DOWN);
@@ -473,7 +510,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateStateEnteringHouse(GameLevel level) {
-		boolean atRevivalPosition = moveInsideHouse(level.world().house(), level.ghostRevivalPosition(id));
+		boolean atRevivalPosition = moveInsideHouse(level.world().house(), revivalPosition);
 		if (atRevivalPosition) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();
