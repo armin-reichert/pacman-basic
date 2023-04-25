@@ -35,7 +35,6 @@ import de.amr.games.pacman.model.actors.Ghost;
  * @author Armin Reichert
  */
 public class Memory {
-	public boolean lastFoodFound;
 	public Optional<Vector2i> foodFoundTile;
 	public boolean energizerFound;
 	public int bonusReachedIndex; // 0=first, 1=second, -1=no bonus
@@ -53,7 +52,6 @@ public class Memory {
 	}
 
 	public void forgetEverything() {
-		lastFoodFound = false;
 		foodFoundTile = Optional.empty();
 		energizerFound = false;
 		bonusReachedIndex = -1;

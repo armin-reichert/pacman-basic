@@ -169,7 +169,7 @@ public enum GameState implements FsmState<GameModel> {
 				steering.steer(level, level.pac());
 
 				level.update();
-				if (level.completed()) {
+				if (level.isCompleted()) {
 					gc.changeState(LEVEL_COMPLETE);
 				} else if (level.pacKilled()) {
 					gc.changeState(PACMAN_DYING);

@@ -697,7 +697,6 @@ public class GameLevel {
 		if (world.containsFood(pacTile)) {
 			memo.foodFoundTile = Optional.of(pacTile);
 			memo.energizerFound = world.isEnergizerTile(pacTile);
-			memo.lastFoodFound = world.uneatenFoodCount() == 1;
 			memo.pacPowerGained = memo.energizerFound && pacPowerSeconds > 0;
 			if (isFirstBonusReached()) {
 				memo.bonusReachedIndex = 0;
@@ -726,8 +725,8 @@ public class GameLevel {
 			pac.starve();
 		}
 
-		if (memo.lastFoodFound) {
-			return; // level is complete
+		if (isCompleted()) {
+			return;
 		}
 
 		if (memo.bonusReachedIndex != -1) {
@@ -852,8 +851,8 @@ public class GameLevel {
 
 	// Food
 
-	public boolean completed() {
-		return memo.lastFoodFound;
+	public boolean isCompleted() {
+		return world.uneatenFoodCount() == 0;
 	}
 
 	/* --- Ghosthouse control rules, see Pac-Man dossier --- */
