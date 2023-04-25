@@ -1,3 +1,5 @@
+(Original URL: https://www.reddit.com/r/Pacman/comments/12q4ny3/is_anyone_able_to_explain_the_ai_behind_the/)
+
 You're exactly correct. Each map has one entrance path and one exit path for each tunnel opening present. 
 This means there are four entrance paths on maps 1, 2, and 4, but only two on map 3 (there are only 2 tunnel openings).
 
