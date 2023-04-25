@@ -363,7 +363,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			lastTestedLevel = switch (game.variant()) {
-			case MS_PACMAN -> 8;
+			case MS_PACMAN -> 18;
 			case PACMAN -> 20;
 			};
 			timer.restartIndefinitely();
