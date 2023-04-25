@@ -37,6 +37,7 @@ import de.amr.games.pacman.model.actors.Bonus;
 import de.amr.games.pacman.model.actors.Creature;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.GhostState;
+import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.world.World;
 
 /**
@@ -148,16 +149,25 @@ public class RuleBasedSteering implements Steering {
 			Logger.trace("Detected frightened ghost {} {} tiles away", prey.name(),
 					prey.tile().manhattanDistance(pac.tile()));
 			pac.setTargetTile(prey.tile());
-		} else if (level.bonus() != null && level.bonus().state() == Bonus.STATE_EDIBLE
-				&& World.tileAt(level.bonus().entity().position())
-						.manhattanDistance(pac.tile()) <= CollectedData.MAX_BONUS_HARVEST_DIST) {
+		} else if (isEdibleBonusNearPac(level, pac)) {
 			Logger.trace("Detected active bonus");
-			pac.setTargetTile(World.tileAt(level.bonus().entity().position()));
+			pac.setTargetTile(World.tileAt(level.getBonus().get().entity().position()));
 		} else {
 			Vector2i foodTile = findTileFarestFromGhosts(level, findNearestFoodTiles(level));
 			pac.setTargetTile(foodTile);
 		}
 		pac.navigateTowardsTarget(level);
+	}
+
+	private boolean isEdibleBonusNearPac(GameLevel level, Pac pac) {
+		var optBonus = level.getBonus();
+		if (optBonus.isPresent()) {
+			var bonus = optBonus.get();
+			var tile = World.tileAt(bonus.entity().position());
+			return bonus.state() == Bonus.STATE_EDIBLE
+					&& tile.manhattanDistance(pac.tile()) <= CollectedData.MAX_BONUS_HARVEST_DIST;
+		}
+		return false;
 	}
 
 	private Ghost findHuntingGhostAhead(GameLevel level) {

@@ -34,6 +34,7 @@ import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.actors.Bonus;
 import de.amr.games.pacman.model.actors.Creature;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.GhostState;
@@ -314,9 +315,7 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onExit(GameModel context) {
-			context.level().ifPresent(level -> {
-				level.bonus().setInactive();
-			});
+			context.level().flatMap(GameLevel::getBonus).ifPresent(Bonus::setInactive);
 		}
 	},
 
@@ -382,7 +381,7 @@ public enum GameState implements FsmState<GameModel> {
 					} else if (timer.atSecond(1.5)) {
 						level.onBonusReached(0);
 					} else if (timer.atSecond(2.5)) {
-						level.bonus().eat();
+						level.getBonus().get().eat();
 						level.guys().forEach(Creature::hide);
 					} else if (timer.atSecond(4.5)) {
 						level.world().animation(GameModel.AK_MAZE_FLASHING).ifPresent(flashing -> {
@@ -397,7 +396,7 @@ public enum GameState implements FsmState<GameModel> {
 					}
 					level.world().animations().ifPresent(AnimationMap::animate);
 					level.ghosts().forEach(ghost -> ghost.update(level));
-					level.bonus().update(level);
+					level.getBonus().ifPresent(bonus -> bonus.update(level));
 				} else {
 					gc.restart(GameState.BOOT);
 				}

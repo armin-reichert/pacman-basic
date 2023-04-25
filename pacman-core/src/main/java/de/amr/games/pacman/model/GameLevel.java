@@ -155,10 +155,17 @@ public class GameLevel {
 
 	private final BonusInfo[] bonusInfo = new BonusInfo[2];
 
+	public BonusInfo bonusInfo(int index) {
+		if (index != 0 && index != 1) {
+			throw new IllegalArgumentException("Illegal bonus index: %d".formatted(index));
+		}
+		return bonusInfo[index];
+	}
+
 	private Bonus bonus;
 
-	public Bonus bonus() {
-		return bonus;
+	public Optional<Bonus> getBonus() {
+		return Optional.ofNullable(bonus);
 	}
 
 	private BonusInfo createNextBonusInfo() {

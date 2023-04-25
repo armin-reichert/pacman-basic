@@ -562,7 +562,10 @@ public class GameModel {
 		if (level.number() == 1) {
 			levelCounter.clear();
 		}
-		levelCounter.add(level.bonus().symbol());
+		if (variant == GameVariant.MS_PACMAN && level.number() > 7) {
+			return;
+		}
+		levelCounter.add(level.bonusInfo(0).symbol());
 		if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
 			levelCounter.remove(0);
 		}
