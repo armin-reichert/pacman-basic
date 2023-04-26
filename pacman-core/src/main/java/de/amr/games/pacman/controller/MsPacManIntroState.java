@@ -23,10 +23,6 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.controller.MsPacManIntroData.BLINKY_END_TILE;
-import static de.amr.games.pacman.controller.MsPacManIntroData.GUYS_SPEED;
-import static de.amr.games.pacman.controller.MsPacManIntroData.MS_PACMAN_STOP_X;
-import static de.amr.games.pacman.controller.MsPacManIntroData.TURNING_POSITION;
 import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
@@ -47,16 +43,16 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 	START {
 		@Override
 		public void onEnter(MsPacManIntroData ctx) {
-			ctx.lightsTimer.restartIndefinitely();
-			ctx.msPacMan.setPosition(TS * (34), TURNING_POSITION.y());
+			ctx.marqueeTimer.restartIndefinitely();
+			ctx.msPacMan.setPosition(TS * (34), ctx.turnPosition.y());
 			ctx.msPacMan.setMoveDir(LEFT);
-			ctx.msPacMan.setPixelSpeed(GUYS_SPEED);
+			ctx.msPacMan.setPixelSpeed(ctx.speed);
 			ctx.msPacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 			ctx.msPacMan.show();
 			ctx.ghosts.forEach(ghost -> {
-				ghost.setPosition(TS * (34), TURNING_POSITION.y());
+				ghost.setPosition(TS * (34), ctx.turnPosition.y());
 				ghost.setMoveAndWishDir(LEFT);
-				ghost.setPixelSpeed(GUYS_SPEED);
+				ghost.setPixelSpeed(ctx.speed);
 				ghost.enterStateHuntingPac();
 				ghost.show();
 			});
@@ -68,21 +64,21 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			if (timer.atSecond(1)) {
 				intro.changeState(MsPacManIntroState.GHOSTS);
 			}
-			ctx.lightsTimer.advance();
+			ctx.marqueeTimer.advance();
 		}
 	},
 
 	GHOSTS {
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
-			ctx.lightsTimer.advance();
+			ctx.marqueeTimer.advance();
 			Ghost ghost = ctx.ghosts.get(ctx.ghostIndex);
 			ghost.move();
 			ghost.animate();
-			if (ghost.position().x() <= TURNING_POSITION.x()) {
+			if (ghost.position().x() <= ctx.turnPosition.x()) {
 				ghost.setMoveAndWishDir(UP);
 			}
-			if (ghost.position().y() <= BLINKY_END_TILE.y() + ghost.id() * 17) {
+			if (ghost.position().y() <= ctx.blinkyEndPosition.y() + ghost.id() * 17) {
 				ghost.setPixelSpeed(0);
 				ghost.animation().ifPresent(Animated::reset);
 				if (++ctx.ghostIndex == 4) {
@@ -95,10 +91,10 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 	MSPACMAN {
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
-			ctx.lightsTimer.advance();
+			ctx.marqueeTimer.advance();
 			ctx.msPacMan.move();
 			ctx.msPacMan.animate();
-			if (ctx.msPacMan.position().x() <= MS_PACMAN_STOP_X) {
+			if (ctx.msPacMan.position().x() <= ctx.msPacManEndPositionX) {
 				ctx.msPacMan.setPixelSpeed(0);
 				ctx.msPacMan.animation().ifPresent(Animated::reset);
 				intro.changeState(MsPacManIntroState.READY_TO_PLAY);
@@ -118,7 +114,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 				ctx.gameController.changeState(GameState.CREDIT);
 				return;
 			}
-			ctx.lightsTimer.advance();
+			ctx.marqueeTimer.advance();
 			ctx.blinking.animate();
 		}
 	};

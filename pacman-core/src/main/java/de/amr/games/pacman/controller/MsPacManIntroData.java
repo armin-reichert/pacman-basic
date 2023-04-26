@@ -23,6 +23,7 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller;
 
+import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.Globals.v2i;
 
@@ -38,22 +39,24 @@ import de.amr.games.pacman.model.actors.Pac;
  * @author Armin Reichert
  */
 public class MsPacManIntroData {
-	public final GameController gameController;
-	public static final float GUYS_SPEED = 1.1f;
-	public static final Vector2i BLINKY_END_TILE = v2i(TS * 8, TS * 11);
-	public static final Vector2i TURNING_POSITION = v2i(TS * 6, TS * 20);
-	public static final int MS_PACMAN_STOP_X = TS * 15 + 2;
-	public static final Vector2i TITLE_TILE = v2i(TS * 10, TS * 8);
-	public final Pulse blinking = new Pulse(30, true);
-	public final TickTimer lightsTimer = new TickTimer("lights-timer");
-	public final Pac msPacMan = new Pac("Ms. Pac-Man");
-	public final List<Ghost> ghosts = List.of( //
-			new Ghost(Ghost.ID_RED_GHOST, "Blinky"), //
-			new Ghost(Ghost.ID_PINK_GHOST, "Pinky"), //
-			new Ghost(Ghost.ID_CYAN_GHOST, "Inky"), //
-			new Ghost(Ghost.ID_ORANGE_GHOST, "Sue") //
+	//@formatter:off
+	public GameController gameController;
+	public float          speed                = 1.1f;
+	public Vector2i       blinkyEndPosition    = v2i(TS * 8 - HTS, TS * 11);
+	public Vector2i       turnPosition         = v2i(TS * 6 - HTS, TS * 20);
+	public int            msPacManEndPositionX = TS * 15;
+	public Vector2i       titlePosition        = v2i(TS * 10, TS * 8);
+	public Pulse          blinking             = new Pulse(30, true);
+	public TickTimer      marqueeTimer         = new TickTimer("marquee-timer");
+	public Pac            msPacMan             = new Pac("Ms. Pac-Man");
+	public List<Ghost>    ghosts               = List.of(
+		new Ghost(Ghost.ID_RED_GHOST,    "Blinky"),
+		new Ghost(Ghost.ID_PINK_GHOST,   "Pinky"),
+		new Ghost(Ghost.ID_CYAN_GHOST,   "Inky"),
+		new Ghost(Ghost.ID_ORANGE_GHOST, "Sue")
 	);
 	int ghostIndex = 0;
+	//@formatter:on
 
 	public MsPacManIntroData(GameController gameController) {
 		this.gameController = gameController;
