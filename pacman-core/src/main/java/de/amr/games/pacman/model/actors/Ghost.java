@@ -50,11 +50,11 @@ import org.tinylog.Logger;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GhostEvent;
-import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.model.AnimatedEntity;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.House;
@@ -102,6 +102,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void reset() {
 		super.reset();
 		setKilledIndex(-1);
+	}
+
+	@Override
+	public Entity entity() {
+		return this;
 	}
 
 	/**

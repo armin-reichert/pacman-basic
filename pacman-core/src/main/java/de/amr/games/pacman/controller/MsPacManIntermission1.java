@@ -153,14 +153,10 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, Data> {
 					intermission.changeState(IntermissionState.COMING_TOGETHER);
 					return;
 				}
-				ctx.inky.move();
-				ctx.inky.animate();
-				ctx.pacMan.move();
-				ctx.pacMan.animate();
-				ctx.pinky.move();
-				ctx.pinky.animate();
-				ctx.msPac.move();
-				ctx.msPac.animate();
+				ctx.pacMan.moveAndAnimate();
+				ctx.msPac.moveAndAnimate();
+				ctx.inky.moveAndAnimate();
+				ctx.pinky.moveAndAnimate();
 			}
 		},
 
@@ -207,14 +203,10 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, Data> {
 					ctx.pinky.setVelocity(ctx.pinky.velocity().minus(0, 2.0f));
 					ctx.pinky.setAcceleration(0, 0.4f);
 				} else {
-					ctx.pacMan.move();
-					ctx.pacMan.animate();
-					ctx.msPac.move();
-					ctx.msPac.animate();
-					ctx.inky.move();
-					ctx.inky.animate();
-					ctx.pinky.move();
-					ctx.pinky.animate();
+					ctx.pacMan.moveAndAnimate();
+					ctx.msPac.moveAndAnimate();
+					ctx.inky.moveAndAnimate();
+					ctx.pinky.moveAndAnimate();
 					if (ctx.inky.position().y() > ctx.middleY) {
 						ctx.inky.setPosition(ctx.inky.position().x(), ctx.middleY);
 						ctx.inky.setAcceleration(Vector2f.ZERO);

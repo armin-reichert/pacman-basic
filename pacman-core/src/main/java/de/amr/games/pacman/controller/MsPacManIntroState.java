@@ -72,8 +72,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		public void onUpdate(MsPacManIntroData ctx) {
 			ctx.marqueeTimer.advance();
 			var ghost = ctx.ghosts.get(ctx.ghostIndex);
-			ghost.move();
-			ghost.animate();
+			ghost.moveAndAnimate();
 			if (ghost.position().x() <= ctx.stopX) {
 				ghost.setPosition(ctx.stopX, ghost.position().y());
 				ghost.setMoveAndWishDir(UP);
@@ -94,8 +93,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
 			ctx.marqueeTimer.advance();
-			ctx.msPacMan.move();
-			ctx.msPacMan.animate();
+			ctx.msPacMan.moveAndAnimate();
 			if (ctx.msPacMan.position().x() <= ctx.stopMsPacX) {
 				ctx.msPacMan.setPixelSpeed(0);
 				ctx.msPacMan.animation().ifPresent(Animated::reset);

@@ -22,9 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.lib.anim;
+package de.amr.games.pacman.model;
 
 import java.util.Optional;
+
+import de.amr.games.pacman.lib.anim.Animated;
+import de.amr.games.pacman.lib.anim.AnimationMap;
+import de.amr.games.pacman.model.actors.Entity;
 
 /**
  * Mix-in with useful methods for an animated entity.
@@ -33,7 +37,14 @@ import java.util.Optional;
  */
 public interface AnimatedEntity {
 
-	public Optional<AnimationMap> animations();
+	Entity entity();
+
+	default void moveAndAnimate() {
+		entity().move();
+		animate();
+	}
+
+	Optional<AnimationMap> animations();
 
 	/**
 	 * @param key key identifying animation in set

@@ -118,11 +118,9 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 					ghost.selectAndRunAnimation(GameModel.AK_GHOST_BLUE);
 					ghost.setMoveAndWishDir(Direction.RIGHT);
 					ghost.setPixelSpeed(0.6f);
-					ghost.move();
-					ghost.animate();
+					ghost.moveAndAnimate();
 				}
-				ctx.pacMan.move();
-				ctx.pacMan.animate();
+				ctx.pacMan.moveAndAnimate();
 			}
 			// keep moving
 			else {
@@ -131,11 +129,9 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 					ctx.blinking.start();
 				}
 				ctx.blinking.animate();
-				ctx.pacMan.move();
-				ctx.pacMan.animate();
+				ctx.pacMan.moveAndAnimate();
 				for (Ghost ghost : ctx.ghosts) {
-					ghost.move();
-					ghost.animate();
+					ghost.moveAndAnimate();
 				}
 			}
 		}
@@ -187,11 +183,9 @@ public enum PacManIntroState implements FsmState<PacManIntroData> {
 					}
 				}
 			}
-			ctx.pacMan.move();
-			ctx.pacMan.animate();
+			ctx.pacMan.moveAndAnimate();
 			for (Ghost ghost : ctx.ghosts) {
-				ghost.move();
-				ghost.animate();
+				ghost.moveAndAnimate();
 			}
 			ctx.blinking.animate();
 		}

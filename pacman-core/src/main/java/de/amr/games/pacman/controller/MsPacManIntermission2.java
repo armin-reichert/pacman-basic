@@ -155,10 +155,8 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, Data> {
 					ctx.gameController.terminateCurrentState();
 					return;
 				}
-				ctx.pacMan.move();
-				ctx.pacMan.animate();
-				ctx.msPacMan.move();
-				ctx.msPacMan.animate();
+				ctx.pacMan.moveAndAnimate();
+				ctx.msPacMan.moveAndAnimate();
 			}
 		};
 

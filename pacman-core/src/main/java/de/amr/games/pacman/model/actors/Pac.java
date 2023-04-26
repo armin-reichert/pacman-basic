@@ -27,9 +27,9 @@ import static de.amr.games.pacman.lib.Globals.checkLevelNotNull;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.model.AnimatedEntity;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 
@@ -52,6 +52,11 @@ public class Pac extends Creature implements AnimatedEntity {
 		super(name);
 		powerTimer = new TickTimer("PacPower");
 		reset();
+	}
+
+	@Override
+	public Entity entity() {
+		return this;
 	}
 
 	@Override

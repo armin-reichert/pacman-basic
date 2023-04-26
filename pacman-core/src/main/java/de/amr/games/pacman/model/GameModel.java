@@ -667,7 +667,7 @@ public class GameModel {
 		return switch (variant) {
 		case PACMAN -> new File(dir, "highscore-pacman.xml");
 		case MS_PACMAN -> new File(dir, "highscore-ms_pacman.xml");
-		default -> throw new IllegalArgumentException("Unknown game variant: '%s'".formatted(variant));
+		default -> throw new IllegalGameVariantException(variant);
 		};
 	}
 

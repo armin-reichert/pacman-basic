@@ -39,10 +39,11 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.TileMap;
-import de.amr.games.pacman.lib.anim.AnimatedEntity;
 import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.model.AnimatedEntity;
+import de.amr.games.pacman.model.actors.Entity;
 
 /**
  * The tiled world used in the Arcade versions of Pac-Man and Ms. Pac-Man.
@@ -52,7 +53,7 @@ import de.amr.games.pacman.lib.math.Vector2i;
  * 
  * @author Armin Reichert
  */
-public class World implements AnimatedEntity {
+public class World extends Entity implements AnimatedEntity {
 
 	//@formatter:off
 	private static final byte SPACE           = 0;
@@ -140,6 +141,11 @@ public class World implements AnimatedEntity {
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
+	}
+
+	@Override
+	public Entity entity() {
+		return this;
 	}
 
 	public House house() {
