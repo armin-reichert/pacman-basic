@@ -44,7 +44,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		@Override
 		public void onEnter(MsPacManIntroData ctx) {
 			ctx.marqueeTimer.restartIndefinitely();
-			ctx.msPacMan.setPosition(TS * 34, TS * 20);
+			ctx.msPacMan.setPosition(TS * 31, TS * 20);
 			ctx.msPacMan.setMoveDir(LEFT);
 			ctx.msPacMan.setPixelSpeed(ctx.speed);
 			ctx.msPacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
