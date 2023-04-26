@@ -44,7 +44,7 @@ public class MsPacManIntroData {
 	//@formatter:off
 	public GameController gameController;
 	public float          speed                = 1.1f;
-	public int            stopY                = TS * 11;
+	public int            stopY                = TS * 11 + 1;
 	public int            stopX                = TS * 6 - 3; 
 	public int            stopMsPacX           = TS * 15 + 3;
 	public Vector2i       titlePosition        = v2i(TS * 10, TS * 8);
