@@ -25,8 +25,10 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
+import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.v2i;
 
+import java.util.BitSet;
 import java.util.List;
 
 import de.amr.games.pacman.lib.anim.Pulse;
@@ -49,6 +51,8 @@ public class MsPacManIntroData {
 	public Vector2i       titlePosition        = v2i(TS * 10, TS * 8);
 	public Pulse          blinking             = new Pulse(30, true);
 	public TickTimer      marqueeTimer         = new TickTimer("marquee-timer");
+	public int            numBulbs             = 96;
+	public int            bulbDistance         = 16;
 	public Pac            msPacMan             = new Pac("Ms. Pac-Man");
 	public List<Ghost>    ghosts               = List.of(
 		new Ghost(GameModel.RED_GHOST,    "Blinky"),
@@ -61,5 +65,32 @@ public class MsPacManIntroData {
 
 	public MsPacManIntroData(GameController gameController) {
 		this.gameController = gameController;
+	}
+
+	private int onIndex(long t, int i) {
+		return (int) (i * bulbDistance + t) % numBulbs;
+	}
+
+	/**
+	 * In the Arcade game, 6 of the 96 bulbs are switched-on every frame, shifting every tick the bulbs in the leftmost
+	 * column are switched-off every second frame. Maybe a bug?
+	 * 
+	 * @return bitset indicating which marquee bulbs are on
+	 */
+	public BitSet marqueeState() {
+		long t = marqueeTimer.tick();
+		var on = new BitSet(numBulbs);
+		on.set(onIndex(t, 0));
+		on.set(onIndex(t, 1));
+		on.set(onIndex(t, 2));
+		on.set(onIndex(t, 3));
+		on.set(onIndex(t, 4));
+		on.set(onIndex(t, 5));
+		for (int i = 81; i < numBulbs; ++i) {
+			if (i >= 81 && isOdd(i)) {
+				on.clear(i);
+			}
+		}
+		return on;
 	}
 }
