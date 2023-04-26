@@ -44,13 +44,13 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		@Override
 		public void onEnter(MsPacManIntroData ctx) {
 			ctx.marqueeTimer.restartIndefinitely();
-			ctx.msPacMan.setPosition(TS * (34), ctx.turnPosition.y());
+			ctx.msPacMan.setPosition(TS * 34, TS * 20);
 			ctx.msPacMan.setMoveDir(LEFT);
 			ctx.msPacMan.setPixelSpeed(ctx.speed);
 			ctx.msPacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 			ctx.msPacMan.show();
 			ctx.ghosts.forEach(ghost -> {
-				ghost.setPosition(TS * (34), ctx.turnPosition.y());
+				ghost.setPosition(TS * 34, TS * 20);
 				ghost.setMoveAndWishDir(LEFT);
 				ghost.setPixelSpeed(ctx.speed);
 				ghost.enterStateHuntingPac();
@@ -75,10 +75,10 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			Ghost ghost = ctx.ghosts.get(ctx.ghostIndex);
 			ghost.move();
 			ghost.animate();
-			if (ghost.position().x() <= ctx.turnPosition.x()) {
+			if (ghost.position().x() <= ctx.stopX) {
 				ghost.setMoveAndWishDir(UP);
 			}
-			if (ghost.position().y() <= ctx.blinkyEndPosition.y() + ghost.id() * 17) {
+			if (ghost.position().y() <= ctx.stopY + ghost.id() * 17) {
 				ghost.setPixelSpeed(0);
 				ghost.animation().ifPresent(Animated::reset);
 				if (++ctx.ghostIndex == 4) {
@@ -94,7 +94,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			ctx.marqueeTimer.advance();
 			ctx.msPacMan.move();
 			ctx.msPacMan.animate();
-			if (ctx.msPacMan.position().x() <= ctx.msPacManEndPositionX) {
+			if (ctx.msPacMan.position().x() <= ctx.stopMsPacX) {
 				ctx.msPacMan.setPixelSpeed(0);
 				ctx.msPacMan.animation().ifPresent(Animated::reset);
 				intro.changeState(MsPacManIntroState.READY_TO_PLAY);

@@ -23,7 +23,6 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.v2i;
@@ -45,9 +44,9 @@ public class MsPacManIntroData {
 	//@formatter:off
 	public GameController gameController;
 	public float          speed                = 1.1f;
-	public Vector2i       blinkyEndPosition    = v2i(TS * 8 - HTS, TS * 11);
-	public Vector2i       turnPosition         = v2i(TS * 6 - HTS, TS * 20);
-	public int            msPacManEndPositionX = TS * 15;
+	public int            stopY                = TS * 11;
+	public int            stopX                = TS * 6 - 3; 
+	public int            stopMsPacX           = TS * 15 + 3;
 	public Vector2i       titlePosition        = v2i(TS * 10, TS * 8);
 	public Pulse          blinking             = new Pulse(30, true);
 	public TickTimer      marqueeTimer         = new TickTimer("marquee-timer");
@@ -59,7 +58,7 @@ public class MsPacManIntroData {
 		new Ghost(GameModel.PINK_GHOST,   "Pinky"),
 		new Ghost(GameModel.CYAN_GHOST,   "Inky"),
 		new Ghost(GameModel.ORANGE_GHOST, "Sue")
-	);
+		);
 	public int ghostIndex = 0;
 	//@formatter:on
 
