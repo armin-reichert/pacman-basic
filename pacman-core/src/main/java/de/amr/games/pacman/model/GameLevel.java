@@ -113,7 +113,7 @@ public class GameLevel {
 
 	private final int number;
 
-	private final boolean attractMode;
+	private final boolean demoLevel;
 
 	private final TickTimer huntingTimer = new TickTimer("HuntingTimer");
 
@@ -139,7 +139,7 @@ public class GameLevel {
 
 	private byte cruiseElroyState;
 
-	public GameLevel(GameModel game, World world, int number, boolean attractMode) {
+	public GameLevel(GameModel game, World world, int number, boolean demoLevel) {
 		checkGameNotNull(game);
 		checkNotNull(world);
 		checkLevelNumber(number);
@@ -147,7 +147,7 @@ public class GameLevel {
 		this.game = game;
 		this.world = world;
 		this.number = number;
-		this.attractMode = attractMode;
+		this.demoLevel = demoLevel;
 
 		var data = game.levelData(number);
 		pacSpeed = percent(data[0]);
@@ -246,8 +246,8 @@ public class GameLevel {
 		return huntingTimer;
 	}
 
-	public boolean isAttractMode() {
-		return attractMode;
+	public boolean isDemoLevel() {
+		return demoLevel;
 	}
 
 	/** @return level number, starting with 1. */
