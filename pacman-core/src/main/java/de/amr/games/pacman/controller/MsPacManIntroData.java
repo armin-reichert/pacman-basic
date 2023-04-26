@@ -66,10 +66,6 @@ public class MsPacManIntroData {
 		this.gameController = gameController;
 	}
 
-	private int onIndex(long t, int i) {
-		return (int) (i * bulbOnDistance + t) % numBulbs;
-	}
-
 	/**
 	 * In the Arcade game, 6 of the 96 bulbs are switched-on every frame, shifting every tick. The bulbs in the leftmost
 	 * column however are switched-off every second frame. Maybe a bug?
@@ -77,19 +73,16 @@ public class MsPacManIntroData {
 	 * @return bitset indicating which marquee bulbs are on
 	 */
 	public BitSet marqueeState() {
+		var state = new BitSet(numBulbs);
 		long t = marqueeTimer.tick();
-		var on = new BitSet(numBulbs);
-		on.set(onIndex(t, 0));
-		on.set(onIndex(t, 1));
-		on.set(onIndex(t, 2));
-		on.set(onIndex(t, 3));
-		on.set(onIndex(t, 4));
-		on.set(onIndex(t, 5));
+		for (int b = 0; b < 6; ++b) {
+			state.set((int) (b * bulbOnDistance + t) % numBulbs);
+		}
 		for (int i = 81; i < numBulbs; ++i) {
-			if (i >= 81 && isOdd(i)) {
-				on.clear(i);
+			if (isOdd(i)) {
+				state.clear(i);
 			}
 		}
-		return on;
+		return state;
 	}
 }
