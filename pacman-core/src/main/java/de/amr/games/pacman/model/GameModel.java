@@ -480,11 +480,19 @@ public class GameModel {
 	 */
 	public void enterLevel(int levelNumber) {
 		level = new GameLevel(this, levelNumber, false);
-		level.letsGetReadyToRumbleAndShowGuys(false);
-		incrementLevelCounter();
+		if (level.number() == 1) {
+			levelCounter.clear();
+		}
+		if (variant == GameVariant.PACMAN || level.number() <= 7) {
+			levelCounter.add(level.bonusInfo(0).symbol());
+			if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
+				levelCounter.remove(0);
+			}
+		}
 		if (score != null) {
 			score.setLevelNumber(levelNumber);
 		}
+		level.letsGetReadyToRumbleAndShowGuys(false);
 	}
 
 	/**
@@ -556,19 +564,6 @@ public class GameModel {
 
 	public void clearLevelCounter() {
 		levelCounter.clear();
-	}
-
-	public void incrementLevelCounter() {
-		if (level.number() == 1) {
-			levelCounter.clear();
-		}
-		if (variant == GameVariant.MS_PACMAN && level.number() > 7) {
-			return;
-		}
-		levelCounter.add(level.bonusInfo(0).symbol());
-		if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
-			levelCounter.remove(0);
-		}
 	}
 
 	public Optional<Score> score() {
