@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller;
 
 import de.amr.games.pacman.lib.anim.Pulse;
+import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.Pac;
 
@@ -38,10 +39,10 @@ public class PacManIntroData {
 	public final Pulse blinking = new Pulse(10, true);
 	public final Pac pacMan = new Pac("Pac-Man");
 	public final Ghost[] ghosts = new Ghost[] { //
-			new Ghost(Ghost.ID_RED_GHOST, "Blinky"), //
-			new Ghost(Ghost.ID_PINK_GHOST, "Pinky"), //
-			new Ghost(Ghost.ID_CYAN_GHOST, "Inky"), //
-			new Ghost(Ghost.ID_ORANGE_GHOST, "Clyde"), //
+			new Ghost(GameModel.RED_GHOST, "Blinky"), //
+			new Ghost(GameModel.PINK_GHOST, "Pinky"), //
+			new Ghost(GameModel.CYAN_GHOST, "Inky"), //
+			new Ghost(GameModel.ORANGE_GHOST, "Clyde"), //
 	};
 	public final boolean[] pictureVisible = { false, false, false, false };
 	public final boolean[] nicknameVisible = { false, false, false, false };

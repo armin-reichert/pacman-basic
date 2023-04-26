@@ -32,6 +32,7 @@ import java.util.List;
 import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.Pac;
 
@@ -50,10 +51,10 @@ public class MsPacManIntroData {
 	public TickTimer      marqueeTimer         = new TickTimer("marquee-timer");
 	public Pac            msPacMan             = new Pac("Ms. Pac-Man");
 	public List<Ghost>    ghosts               = List.of(
-		new Ghost(Ghost.ID_RED_GHOST,    "Blinky"),
-		new Ghost(Ghost.ID_PINK_GHOST,   "Pinky"),
-		new Ghost(Ghost.ID_CYAN_GHOST,   "Inky"),
-		new Ghost(Ghost.ID_ORANGE_GHOST, "Sue")
+		new Ghost(GameModel.RED_GHOST,    "Blinky"),
+		new Ghost(GameModel.PINK_GHOST,   "Pinky"),
+		new Ghost(GameModel.CYAN_GHOST,   "Inky"),
+		new Ghost(GameModel.ORANGE_GHOST, "Sue")
 	);
 	int ghostIndex = 0;
 	//@formatter:on

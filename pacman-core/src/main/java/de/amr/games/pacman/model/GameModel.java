@@ -275,6 +275,11 @@ public class GameModel {
 
 	//@formatter:on
 
+	public static final byte RED_GHOST = 0;
+	public static final byte PINK_GHOST = 1;
+	public static final byte CYAN_GHOST = 2;
+	public static final byte ORANGE_GHOST = 3;
+
 	/** Game loop speed in ticks/sec. */
 	public static final short FPS = 60;
 	/** Move distance (pixels/tick) at 100% relative speed. */

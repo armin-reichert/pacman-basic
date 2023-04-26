@@ -24,10 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.model.actors.Ghost.ID_CYAN_GHOST;
-import static de.amr.games.pacman.model.actors.Ghost.ID_ORANGE_GHOST;
-import static de.amr.games.pacman.model.actors.Ghost.ID_PINK_GHOST;
-import static de.amr.games.pacman.model.actors.Ghost.ID_RED_GHOST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -81,28 +77,28 @@ public class PacManGameTest {
 	@Test
 	public void testGhostsCreatedAndInitialized() {
 		var level = game.level().get();
-		var redGhost = level.ghost(ID_RED_GHOST);
+		var redGhost = level.ghost(GameModel.RED_GHOST);
 		assertTrue(redGhost instanceof Ghost);
 		assertEquals(-1, redGhost.killedIndex());
 		assertNotEquals(Vector2f.ZERO, redGhost.initialPosition());
 		assertNotEquals(Vector2f.ZERO, redGhost.revivalPosition());
 		assertNotEquals(Vector2i.ZERO, redGhost.scatterTile());
 
-		var pinkGhost = level.ghost(ID_PINK_GHOST);
+		var pinkGhost = level.ghost(GameModel.PINK_GHOST);
 		assertTrue(pinkGhost instanceof Ghost);
 		assertEquals(-1, pinkGhost.killedIndex());
 		assertNotEquals(Vector2f.ZERO, pinkGhost.initialPosition());
 		assertNotEquals(Vector2f.ZERO, pinkGhost.revivalPosition());
 		assertNotEquals(Vector2i.ZERO, pinkGhost.scatterTile());
 
-		var cyanGhost = level.ghost(ID_CYAN_GHOST);
+		var cyanGhost = level.ghost(GameModel.CYAN_GHOST);
 		assertTrue(cyanGhost instanceof Ghost);
 		assertEquals(-1, cyanGhost.killedIndex());
 		assertNotEquals(Vector2f.ZERO, cyanGhost.initialPosition());
 		assertNotEquals(Vector2f.ZERO, cyanGhost.revivalPosition());
 		assertNotEquals(Vector2i.ZERO, cyanGhost.scatterTile());
 
-		var orangeGhost = level.ghost(ID_ORANGE_GHOST);
+		var orangeGhost = level.ghost(GameModel.ORANGE_GHOST);
 		assertTrue(orangeGhost instanceof Ghost);
 		assertEquals(-1, orangeGhost.killedIndex());
 		assertNotEquals(Vector2f.ZERO, orangeGhost.initialPosition());
@@ -239,7 +235,7 @@ public class PacManGameTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalKilledIndex() {
 		var level = game.level().get();
-		level.ghost(Ghost.ID_RED_GHOST).setKilledIndex(42);
+		level.ghost(GameModel.RED_GHOST).setKilledIndex(42);
 	}
 
 	@Test

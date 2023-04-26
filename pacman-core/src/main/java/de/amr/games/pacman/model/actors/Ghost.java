@@ -66,11 +66,6 @@ import de.amr.games.pacman.model.world.House;
  */
 public class Ghost extends Creature implements AnimatedEntity {
 
-	public static final byte ID_RED_GHOST = 0;
-	public static final byte ID_PINK_GHOST = 1;
-	public static final byte ID_CYAN_GHOST = 2;
-	public static final byte ID_ORANGE_GHOST = 3;
-
 	private final byte id;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
@@ -96,8 +91,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	/**
-	 * The ghost ID. One of {@link #ID_RED_GHOST}, {@link #ID_PINK_GHOST}, {@link #ID_CYAN_GHOST},
-	 * {@link #ID_ORANGE_GHOST}.
+	 * The ghost ID. One of {@link GameModel#RED_GHOST}, {@link GameModel#PINK_GHOST}, {@link GameModel#CYAN_GHOST},
+	 * {@link GameModel#ORANGE_GHOST}.
 	 */
 	public byte id() {
 		return id;

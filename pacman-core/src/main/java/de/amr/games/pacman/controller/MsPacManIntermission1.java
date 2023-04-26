@@ -104,7 +104,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, Data> {
 				ctx.pacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.pacMan.show();
 
-				ctx.inky = new Ghost(Ghost.ID_CYAN_GHOST, "Inky");
+				ctx.inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
 				ctx.inky.setMoveAndWishDir(Direction.RIGHT);
 				ctx.inky.setPosition(ctx.pacMan.position().minus(TS * (6), 0));
 				ctx.inky.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
@@ -116,7 +116,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, Data> {
 				ctx.msPac.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 				ctx.msPac.show();
 
-				ctx.pinky = new Ghost(Ghost.ID_PINK_GHOST, "Pinky");
+				ctx.pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
 				ctx.pinky.setMoveAndWishDir(Direction.LEFT);
 				ctx.pinky.setPosition(ctx.msPac.position().plus(TS * (6), 0));
 				ctx.pinky.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);

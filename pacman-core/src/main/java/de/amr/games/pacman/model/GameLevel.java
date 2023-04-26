@@ -36,10 +36,6 @@ import static de.amr.games.pacman.lib.Globals.randomInt;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
-import static de.amr.games.pacman.model.actors.Ghost.ID_CYAN_GHOST;
-import static de.amr.games.pacman.model.actors.Ghost.ID_ORANGE_GHOST;
-import static de.amr.games.pacman.model.actors.Ghost.ID_PINK_GHOST;
-import static de.amr.games.pacman.model.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.actors.GhostState.LEAVING_HOUSE;
@@ -175,40 +171,40 @@ public class GameLevel {
 		pac = new Pac(game.variant() == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
 
 		ghosts = new Ghost[] { //
-				new Ghost(ID_RED_GHOST, "Blinky"), //
-				new Ghost(ID_PINK_GHOST, "Pinky"), //
-				new Ghost(ID_CYAN_GHOST, "Inky"), //
-				new Ghost(ID_ORANGE_GHOST, game.variant() == GameVariant.MS_PACMAN ? "Sue" : "Clyde") //
+				new Ghost(GameModel.RED_GHOST, "Blinky"), //
+				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
+				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
+				new Ghost(GameModel.ORANGE_GHOST, game.variant() == GameVariant.MS_PACMAN ? "Sue" : "Clyde") //
 		};
 
 		// Blinky: attacks Pac-Man directly
-		ghosts[ID_RED_GHOST].setInitialDirection(Direction.LEFT);
-		ghosts[ID_RED_GHOST].setInitialPosition(world.house().door().entryPosition());
-		ghosts[ID_RED_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
-		ghosts[ID_RED_GHOST].setScatterTile(v2i(25, 0));
-		ghosts[ID_RED_GHOST].setChasingTarget(pac::tile);
+		ghosts[GameModel.RED_GHOST].setInitialDirection(Direction.LEFT);
+		ghosts[GameModel.RED_GHOST].setInitialPosition(world.house().door().entryPosition());
+		ghosts[GameModel.RED_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
+		ghosts[GameModel.RED_GHOST].setScatterTile(v2i(25, 0));
+		ghosts[GameModel.RED_GHOST].setChasingTarget(pac::tile);
 
 		// Pinky: ambushes Pac-Man
-		ghosts[ID_PINK_GHOST].setInitialDirection(Direction.DOWN);
-		ghosts[ID_PINK_GHOST].setInitialPosition(world.house().seatPositions().get(1));
-		ghosts[ID_PINK_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
-		ghosts[ID_PINK_GHOST].setScatterTile(v2i(2, 0));
-		ghosts[ID_PINK_GHOST].setChasingTarget(() -> tilesAhead(pac, 4));
+		ghosts[GameModel.PINK_GHOST].setInitialDirection(Direction.DOWN);
+		ghosts[GameModel.PINK_GHOST].setInitialPosition(world.house().seatPositions().get(1));
+		ghosts[GameModel.PINK_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
+		ghosts[GameModel.PINK_GHOST].setScatterTile(v2i(2, 0));
+		ghosts[GameModel.PINK_GHOST].setChasingTarget(() -> tilesAhead(pac, 4));
 
 		// Inky: attacks from opposite side as Blinky
-		ghosts[ID_CYAN_GHOST].setInitialDirection(Direction.UP);
-		ghosts[ID_CYAN_GHOST].setInitialPosition(world.house().seatPositions().get(0));
-		ghosts[ID_CYAN_GHOST].setRevivalPosition(world.house().seatPositions().get(0));
-		ghosts[ID_CYAN_GHOST].setScatterTile(v2i(27, 34));
-		ghosts[ID_CYAN_GHOST].setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(ghosts[ID_RED_GHOST].tile()));
+		ghosts[GameModel.CYAN_GHOST].setInitialDirection(Direction.UP);
+		ghosts[GameModel.CYAN_GHOST].setInitialPosition(world.house().seatPositions().get(0));
+		ghosts[GameModel.CYAN_GHOST].setRevivalPosition(world.house().seatPositions().get(0));
+		ghosts[GameModel.CYAN_GHOST].setScatterTile(v2i(27, 34));
+		ghosts[GameModel.CYAN_GHOST].setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(ghosts[GameModel.RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
-		ghosts[ID_ORANGE_GHOST].setInitialDirection(Direction.UP);
-		ghosts[ID_ORANGE_GHOST].setInitialPosition(world.house().seatPositions().get(2));
-		ghosts[ID_ORANGE_GHOST].setRevivalPosition(world.house().seatPositions().get(2));
-		ghosts[ID_ORANGE_GHOST].setScatterTile(v2i(0, 34));
-		ghosts[ID_ORANGE_GHOST].setChasingTarget(() -> ghosts[ID_ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8 //
-				? ghosts[ID_ORANGE_GHOST].scatterTile()
+		ghosts[GameModel.ORANGE_GHOST].setInitialDirection(Direction.UP);
+		ghosts[GameModel.ORANGE_GHOST].setInitialPosition(world.house().seatPositions().get(2));
+		ghosts[GameModel.ORANGE_GHOST].setRevivalPosition(world.house().seatPositions().get(2));
+		ghosts[GameModel.ORANGE_GHOST].setScatterTile(v2i(0, 34));
+		ghosts[GameModel.ORANGE_GHOST].setChasingTarget(() -> ghosts[GameModel.ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8 //
+				? ghosts[GameModel.ORANGE_GHOST].scatterTile()
 				: pac.tile());
 
 		bonusInfo[0] = createNextBonusInfo();
@@ -321,8 +317,8 @@ public class GameLevel {
 	}
 
 	/**
-	 * @param id ghost ID, one of {@link Ghost#ID_RED_GHOST}, {@link Ghost#ID_PINK_GHOST}, {@value Ghost#ID_CYAN_GHOST},
-	 *           {@link Ghost#ID_ORANGE_GHOST}
+	 * @param id ghost ID, one of {@link GameModel#RED_GHOST}, {@link GameModel#PINK_GHOST}, {@value GameModel#CYAN_GHOST},
+	 *           {@link GameModel#ORANGE_GHOST}
 	 * @return the ghost with the given ID
 	 */
 	public Ghost ghost(byte id) {
@@ -346,7 +342,7 @@ public class GameLevel {
 	 * @return Pac-Man and the ghosts in order RED, PINK, CYAN, ORANGE
 	 */
 	public Stream<Creature> guys() {
-		return Stream.of(pac, ghosts[ID_RED_GHOST], ghosts[ID_PINK_GHOST], ghosts[ID_CYAN_GHOST], ghosts[ID_ORANGE_GHOST]);
+		return Stream.of(pac, ghosts[GameModel.RED_GHOST], ghosts[GameModel.PINK_GHOST], ghosts[GameModel.CYAN_GHOST], ghosts[GameModel.ORANGE_GHOST]);
 	}
 
 	/**
@@ -465,7 +461,7 @@ public class GameLevel {
 	 * @param ghost one of the guys
 	 */
 	public void doGhostHuntingAction(Ghost ghost) {
-		boolean cruiseElroy = ghost.id() == Ghost.ID_RED_GHOST && cruiseElroyState > 0;
+		boolean cruiseElroy = ghost.id() == GameModel.RED_GHOST && cruiseElroyState > 0;
 		switch (game.variant()) {
 		case MS_PACMAN -> {
 			/*
@@ -473,7 +469,7 @@ public class GameLevel {
 			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
 			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
-			if (scatterPhase().isPresent() && (ghost.id() == Ghost.ID_RED_GHOST || ghost.id() == Ghost.ID_PINK_GHOST)) {
+			if (scatterPhase().isPresent() && (ghost.id() == GameModel.RED_GHOST || ghost.id() == GameModel.PINK_GHOST)) {
 				ghost.roam(this); // not sure
 			} else if (chasingPhase().isPresent() || cruiseElroy) {
 				ghost.chase(this);
@@ -538,9 +534,9 @@ public class GameLevel {
 	public float huntingSpeed(Ghost ghost) {
 		if (world.isTunnel(ghost.tile())) {
 			return ghostSpeedTunnel;
-		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState == 1) {
+		} else if (ghost.id() == GameModel.RED_GHOST && cruiseElroyState == 1) {
 			return elroy1Speed;
-		} else if (ghost.id() == ID_RED_GHOST && cruiseElroyState == 2) {
+		} else if (ghost.id() == GameModel.RED_GHOST && cruiseElroyState == 2) {
 			return elroy2Speed;
 		} else {
 			return ghostSpeed;
@@ -848,8 +844,8 @@ public class GameLevel {
 
 	private void updateGhostDotCounters() {
 		if (globalDotCounterEnabled) {
-			if (ghost(ID_ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
-				Logger.trace("{} inside house when counter reached 32", ghost(ID_ORANGE_GHOST).name());
+			if (ghost(GameModel.ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
+				Logger.trace("{} inside house when counter reached 32", ghost(GameModel.ORANGE_GHOST).name());
 				resetGlobalDotCounterAndSetEnabled(false);
 			} else {
 				globalDotCounter++;
@@ -871,7 +867,7 @@ public class GameLevel {
 			memo.unlockedGhost = Optional.of(unlock.ghost());
 			memo.unlockReason = unlock.reason();
 			Logger.trace("{} unlocked: {}", unlock.ghost().name(), unlock.reason());
-			if (unlock.ghost().id() == ID_ORANGE_GHOST && cruiseElroyState < 0) {
+			if (unlock.ghost().id() == GameModel.ORANGE_GHOST && cruiseElroyState < 0) {
 				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
 				setCruiseElroyStateEnabled(true);
 			}
