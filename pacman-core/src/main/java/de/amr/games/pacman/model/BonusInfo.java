@@ -25,4 +25,7 @@ SOFTWARE.
 package de.amr.games.pacman.model;
 
 public record BonusInfo(byte symbol, int points) {
+	public BonusInfo(int symbol, int points) {
+		this((byte) symbol, points);
+	}
 }

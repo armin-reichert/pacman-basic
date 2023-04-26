@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model;
 
 import static de.amr.games.pacman.lib.Globals.checkGameVariant;
+import static de.amr.games.pacman.lib.Globals.checkLevelNumber;
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
@@ -379,49 +380,42 @@ public class GameModel {
 	//@formatter:on
 
 	public int[] huntingDurations(int levelNumber) {
-		switch (variant) {
-		case MS_PACMAN -> {
-			int row = levelNumber < 5 ? 0 : 1;
-			return HUNTING_DURATIONS_MS_PACMAN[row];
-		}
-		case PACMAN -> {
-			int row = switch (levelNumber) {
-			case 1 -> 0;
-			case 2, 3, 4 -> 1;
-			default -> 2;
-			};
-			return HUNTING_DURATIONS_PACMAN[row];
-		}
+		checkLevelNumber(levelNumber);
+		return switch (variant) {
+		case MS_PACMAN -> HUNTING_DURATIONS_MS_PACMAN[levelNumber <= 4 ? 0 : 1];
+		case PACMAN -> HUNTING_DURATIONS_PACMAN[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		default -> throw new IllegalGameVariantException(variant);
-		}
+		};
 	}
 
 	public static BonusInfo getBonusInfoMsPacMan(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		return switch (levelNumber) {
 		//@formatter:off
-		case 1 -> new BonusInfo((byte)0,  100); // Cherries
-		case 2 -> new BonusInfo((byte)1,  200); // Strawberry
-		case 3 -> new BonusInfo((byte)2,  500); // Peach
-		case 4 -> new BonusInfo((byte)3,  700); // Pretzel (A Brezn, Herr Gott Sakra!)
-		case 5 -> new BonusInfo((byte)4, 1000); // Apple
-		case 6 -> new BonusInfo((byte)5, 2000); // Pear
-		case 7 -> new BonusInfo((byte)6, 5000); // Bananas
+		case 1 -> new BonusInfo(0,  100); // Cherries
+		case 2 -> new BonusInfo(1,  200); // Strawberry
+		case 3 -> new BonusInfo(2,  500); // Peach
+		case 4 -> new BonusInfo(3,  700); // Pretzel (A Brezn, Herr Gott Sakra!)
+		case 5 -> new BonusInfo(4, 1000); // Apple
+		case 6 -> new BonusInfo(5, 2000); // Pear
+		case 7 -> new BonusInfo(6, 5000); // Bananas
 		default -> throw new IllegalArgumentException();
 		//@formatter:on
 		};
 	}
 
 	public static BonusInfo getBonusInfoPacMan(int levelNumber) {
+		checkLevelNumber(levelNumber);
 		return switch (levelNumber) {
 		//@formatter:off
-		case 1      -> new BonusInfo((byte)0,  100); // Cherries
-		case 2      -> new BonusInfo((byte)1,  300); // Strawberry
-		case 3, 4   -> new BonusInfo((byte)2,  500); // Peach
-		case 5, 6   -> new BonusInfo((byte)3,  700); // Apple
-		case 7, 8   -> new BonusInfo((byte)4, 1000); // Grapes
-		case 9, 10  -> new BonusInfo((byte)5, 2000); // Galaxian
-		case 11, 12 -> new BonusInfo((byte)6, 3000); // Bell
-		default     -> new BonusInfo((byte)7, 5000); // Key
+		case 1      -> new BonusInfo(0,  100); // Cherries
+		case 2      -> new BonusInfo(1,  300); // Strawberry
+		case 3, 4   -> new BonusInfo(2,  500); // Peach
+		case 5, 6   -> new BonusInfo(3,  700); // Apple
+		case 7, 8   -> new BonusInfo(4, 1000); // Grapes
+		case 9, 10  -> new BonusInfo(5, 2000); // Galaxian
+		case 11, 12 -> new BonusInfo(6, 3000); // Bell
+		default     -> new BonusInfo(7, 5000); // Key
 		//@formatter:on
 		};
 	}
