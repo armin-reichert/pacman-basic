@@ -51,7 +51,7 @@ public class MsPacManIntroData {
 	public Pulse          blinking             = new Pulse(30, true);
 	public TickTimer      marqueeTimer         = new TickTimer("marquee-timer");
 	public int            numBulbs             = 96;
-	public int            bulbDistance         = 16;
+	public int            bulbOnDistance       = 16;
 	public Pac            msPacMan             = new Pac("Ms. Pac-Man");
 	public List<Ghost>    ghosts               = List.of(
 		new Ghost(GameModel.RED_GHOST,    "Blinky"),
@@ -67,12 +67,12 @@ public class MsPacManIntroData {
 	}
 
 	private int onIndex(long t, int i) {
-		return (int) (i * bulbDistance + t) % numBulbs;
+		return (int) (i * bulbOnDistance + t) % numBulbs;
 	}
 
 	/**
-	 * In the Arcade game, 6 of the 96 bulbs are switched-on every frame, shifting every tick the bulbs in the leftmost
-	 * column are switched-off every second frame. Maybe a bug?
+	 * In the Arcade game, 6 of the 96 bulbs are switched-on every frame, shifting every tick. The bulbs in the leftmost
+	 * column however are switched-off every second frame. Maybe a bug?
 	 * 
 	 * @return bitset indicating which marquee bulbs are on
 	 */
