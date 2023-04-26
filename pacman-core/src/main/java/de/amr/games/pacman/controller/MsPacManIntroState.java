@@ -111,11 +111,8 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			if (timer.atSecond(2.0) && !ctx.gameController.game().hasCredit()) {
 				ctx.gameController.changeState(GameState.READY);
 				// go into demo mode
-				return;
-			}
-			if (timer.atSecond(5)) {
+			} else if (timer.atSecond(5)) {
 				ctx.gameController.changeState(GameState.CREDIT);
-				return;
 			}
 		}
 	};
