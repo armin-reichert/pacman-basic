@@ -48,6 +48,7 @@ import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.steering.RouteBasedSteering;
 import de.amr.games.pacman.lib.steering.RuleBasedSteering;
+import de.amr.games.pacman.model.world.World;
 
 /**
  * Pac-Man / Ms. Pac-Man game model.
@@ -255,6 +256,39 @@ public class GameModel {
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		}
 	};
+	
+	/**
+	 * In Ms. Pac-Man, there are 4 maps used by the 6 mazes. Up to level 13, the mazes are:
+	 * <ul>
+	 * <li>Maze #1: pink maze, white dots (level 1-2)
+	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
+	 * <li>Maze #3: orange maze, red dots (level 6-9)
+	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
+	 * </ul>
+	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
+	 * <ul>
+	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
+	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
+	 * </ul>
+	 * <p>
+	 */
+	public static int msPacManMazeNumber(int levelNumber) {
+		return switch (levelNumber) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
+		};
+	}
+
+	/**
+	 * @return number of map used in this level. From level 14 on, maps alternates between 3 and 4 every 4th level.
+	 */
+	public static int msPacManMapNumber(int levelNumber) {
+		return levelNumber < 14 ? msPacManMazeNumber(levelNumber) : (levelNumber - 14) % 8 < 4 ? 3 : 4;
+	}
+
 	
 	private static final List<NavigationPoint> PACMAN_DEMOLEVEL_ROUTE = List.of( //
 			np(12, 26), np(9, 26), np(12, 32), np(15, 32), np(24, 29), np(21, 23), np(18, 23), np(18, 20), np(18, 17),
@@ -479,7 +513,13 @@ public class GameModel {
 	 * @param levelNumber level number (starting at 1)
 	 */
 	public void enterLevel(int levelNumber) {
-		level = new GameLevel(this, levelNumber, false);
+		var map = switch (variant) {
+		case MS_PACMAN -> GameModel.MS_PACMAN_MAPS[msPacManMapNumber(levelNumber) - 1];
+		case PACMAN -> GameModel.PACMAN_MAP;
+		default -> throw new IllegalGameVariantException(variant);
+		};
+
+		level = new GameLevel(this, new World(map), levelNumber, false);
 		if (level.number() == 1) {
 			levelCounter.clear();
 		}
@@ -499,13 +539,18 @@ public class GameModel {
 	 * Enters the demo game level ("attract mode").
 	 */
 	public void enterDemoLevel() {
-		var steering = switch (variant) {
-		case MS_PACMAN -> new RuleBasedSteering();
-		case PACMAN -> new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE);
+		switch (variant) {
+		case MS_PACMAN -> {
+			level = new GameLevel(this, new World(MS_PACMAN_MAPS[0]), 1, true);
+			level.setPacSteering(new RuleBasedSteering());
+		}
+		case PACMAN -> {
+			level = new GameLevel(this, new World(PACMAN_MAP), 1, true);
+			level.setPacSteering(new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE));
+
+		}
 		default -> throw new IllegalGameVariantException(variant);
-		};
-		level = new GameLevel(this, 1, true);
-		level.setPacSteering(steering);
+		}
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		scoringEnabled = false;
 		GameEvents.setSoundEventsEnabled(false);

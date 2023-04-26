@@ -139,11 +139,13 @@ public class GameLevel {
 
 	private byte cruiseElroyState;
 
-	public GameLevel(GameModel game, int number, boolean attractMode) {
+	public GameLevel(GameModel game, World world, int number, boolean attractMode) {
 		checkGameNotNull(game);
+		checkNotNull(world);
 		checkLevelNumber(number);
 
 		this.game = game;
+		this.world = world;
 		this.number = number;
 		this.attractMode = attractMode;
 
@@ -160,13 +162,6 @@ public class GameLevel {
 		pacPowerSeconds = data[9];
 		numFlashes = data[10];
 		intermissionNumber = data[11];
-
-		var map = switch (game.variant()) {
-		case MS_PACMAN -> GameModel.MS_PACMAN_MAPS[msPacManMapNumber() - 1];
-		case PACMAN -> GameModel.PACMAN_MAP;
-		default -> throw new IllegalGameVariantException(game.variant());
-		};
-		world = new World(map);
 
 		pac = new Pac(game.variant() == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
 
@@ -196,16 +191,18 @@ public class GameLevel {
 		ghosts[GameModel.CYAN_GHOST].setInitialPosition(world.house().seatPositions().get(0));
 		ghosts[GameModel.CYAN_GHOST].setRevivalPosition(world.house().seatPositions().get(0));
 		ghosts[GameModel.CYAN_GHOST].setScatterTile(v2i(27, 34));
-		ghosts[GameModel.CYAN_GHOST].setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(ghosts[GameModel.RED_GHOST].tile()));
+		ghosts[GameModel.CYAN_GHOST]
+				.setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(ghosts[GameModel.RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
 		ghosts[GameModel.ORANGE_GHOST].setInitialDirection(Direction.UP);
 		ghosts[GameModel.ORANGE_GHOST].setInitialPosition(world.house().seatPositions().get(2));
 		ghosts[GameModel.ORANGE_GHOST].setRevivalPosition(world.house().seatPositions().get(2));
 		ghosts[GameModel.ORANGE_GHOST].setScatterTile(v2i(0, 34));
-		ghosts[GameModel.ORANGE_GHOST].setChasingTarget(() -> ghosts[GameModel.ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8 //
-				? ghosts[GameModel.ORANGE_GHOST].scatterTile()
-				: pac.tile());
+		ghosts[GameModel.ORANGE_GHOST]
+				.setChasingTarget(() -> ghosts[GameModel.ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8 //
+						? ghosts[GameModel.ORANGE_GHOST].scatterTile()
+						: pac.tile());
 
 		bonusInfo[0] = createNextBonusInfo();
 		bonusInfo[1] = createNextBonusInfo();
@@ -213,38 +210,6 @@ public class GameLevel {
 		defineGhostHouseRules();
 
 		Logger.trace("Game level {} created. ({})", number, game.variant());
-	}
-
-	/**
-	 * In Ms. Pac-Man, there are 4 maps used by the 6 mazes. Up to level 13, the mazes are:
-	 * <ul>
-	 * <li>Maze #1: pink maze, white dots (level 1-2)
-	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
-	 * <li>Maze #3: orange maze, red dots (level 6-9)
-	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
-	 * </ul>
-	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
-	 * <ul>
-	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
-	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
-	 * </ul>
-	 * <p>
-	 */
-	private int msPacManMazeNumber() {
-		return switch (number) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (number - 14) % 8 < 4 ? 5 : 6;
-		};
-	}
-
-	/**
-	 * @return number of map used in this level. From level 14 on, maps alternates between 3 and 4 every 4th level.
-	 */
-	private int msPacManMapNumber() {
-		return number < 14 ? msPacManMazeNumber() : (number - 14) % 8 < 4 ? 3 : 4;
 	}
 
 	/**
@@ -298,7 +263,7 @@ public class GameLevel {
 	 * @return number of maze (not map) used in this level, 1-based.
 	 */
 	public int mazeNumber() {
-		return game.variant() == GameVariant.MS_PACMAN ? msPacManMazeNumber() : 1;
+		return game.variant() == GameVariant.MS_PACMAN ? GameModel.msPacManMazeNumber(number) : 1;
 	}
 
 	/**
@@ -317,8 +282,8 @@ public class GameLevel {
 	}
 
 	/**
-	 * @param id ghost ID, one of {@link GameModel#RED_GHOST}, {@link GameModel#PINK_GHOST}, {@value GameModel#CYAN_GHOST},
-	 *           {@link GameModel#ORANGE_GHOST}
+	 * @param id ghost ID, one of {@link GameModel#RED_GHOST}, {@link GameModel#PINK_GHOST},
+	 *           {@value GameModel#CYAN_GHOST}, {@link GameModel#ORANGE_GHOST}
 	 * @return the ghost with the given ID
 	 */
 	public Ghost ghost(byte id) {
@@ -342,7 +307,8 @@ public class GameLevel {
 	 * @return Pac-Man and the ghosts in order RED, PINK, CYAN, ORANGE
 	 */
 	public Stream<Creature> guys() {
-		return Stream.of(pac, ghosts[GameModel.RED_GHOST], ghosts[GameModel.PINK_GHOST], ghosts[GameModel.CYAN_GHOST], ghosts[GameModel.ORANGE_GHOST]);
+		return Stream.of(pac, ghosts[GameModel.RED_GHOST], ghosts[GameModel.PINK_GHOST], ghosts[GameModel.CYAN_GHOST],
+				ghosts[GameModel.ORANGE_GHOST]);
 	}
 
 	/**
