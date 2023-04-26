@@ -31,7 +31,6 @@ import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.actors.Ghost;
 
 /**
  * States of Ms. Pac-Man intro scene.
@@ -61,10 +60,10 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
+			ctx.marqueeTimer.advance();
 			if (timer.atSecond(1)) {
 				intro.changeState(MsPacManIntroState.GHOSTS);
 			}
-			ctx.marqueeTimer.advance();
 		}
 	},
 
@@ -72,13 +71,16 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
 			ctx.marqueeTimer.advance();
-			Ghost ghost = ctx.ghosts.get(ctx.ghostIndex);
+			var ghost = ctx.ghosts.get(ctx.ghostIndex);
 			ghost.move();
 			ghost.animate();
 			if (ghost.position().x() <= ctx.stopX) {
+				ghost.setPosition(ctx.stopX, ghost.position().y());
 				ghost.setMoveAndWishDir(UP);
 			}
-			if (ghost.position().y() <= ctx.stopY + ghost.id() * 16) {
+			var stopY = ctx.stopY + ghost.id() * 16;
+			if (ghost.position().y() <= stopY) {
+				ghost.setPosition(ghost.position().x(), stopY);
 				ghost.setPixelSpeed(0);
 				ghost.animation().ifPresent(Animated::reset);
 				if (++ctx.ghostIndex == 4) {
@@ -105,6 +107,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 	READY_TO_PLAY {
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
+			ctx.marqueeTimer.advance();
 			if (timer.atSecond(2.0) && !ctx.gameController.game().hasCredit()) {
 				ctx.gameController.changeState(GameState.READY);
 				// go into demo mode
@@ -114,8 +117,6 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 				ctx.gameController.changeState(GameState.CREDIT);
 				return;
 			}
-			ctx.marqueeTimer.advance();
-			ctx.blinking.animate();
 		}
 	};
 

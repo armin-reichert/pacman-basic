@@ -30,7 +30,6 @@ import static de.amr.games.pacman.lib.Globals.v2i;
 import java.util.BitSet;
 import java.util.List;
 
-import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.GameModel;
@@ -48,7 +47,6 @@ public class MsPacManIntroData {
 	public int            stopX                = TS * 6 - 3; 
 	public int            stopMsPacX           = TS * 15 + 3;
 	public Vector2i       titlePosition        = v2i(TS * 10, TS * 8);
-	public Pulse          blinking             = new Pulse(30, true);
 	public TickTimer      marqueeTimer         = new TickTimer("marquee-timer");
 	public int            numBulbs             = 96;
 	public int            bulbOnDistance       = 16;
