@@ -382,13 +382,17 @@ public enum GameState implements FsmState<GameModel> {
 						level.handleBonusReached(0);
 					} else if (timer.atSecond(2.5)) {
 						level.getBonus().get().eat();
-						level.guys().forEach(Creature::hide);
+					} else if (timer.atSecond(3.5)) {
+						level.handleBonusReached(1);
 					} else if (timer.atSecond(4.5)) {
+						level.getBonus().get().eat();
+						level.guys().forEach(Creature::hide);
+					} else if (timer.atSecond(6.5)) {
 						level.world().animation(GameModel.AK_MAZE_FLASHING).ifPresent(flashing -> {
 							flashing.setRepetitions(level.numFlashes);
 							flashing.restart();
 						});
-					} else if (timer.atSecond(6.0)) {
+					} else if (timer.atSecond(7.0)) {
 						level.exit();
 						game.nextLevel();
 						timer.restartIndefinitely();
