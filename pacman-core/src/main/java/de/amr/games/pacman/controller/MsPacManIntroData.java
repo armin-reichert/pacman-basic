@@ -23,7 +23,6 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.Globals.v2i;
 
@@ -41,10 +40,10 @@ import de.amr.games.pacman.model.actors.Pac;
 public class MsPacManIntroData {
 	public final GameController gameController;
 	public static final float GUYS_SPEED = 1.1f;
-	public static final Vector2i BLINKY_END_TILE = v2i(TS * (8), TS * (11));
-	public static final Vector2i TURNING_POSITION = v2i(TS * (6), TS * (20)).plus(0, HTS);
-	public static final int MS_PACMAN_STOP_X = TS * (15);
-	public static final Vector2i TITLE_TILE = v2i(TS * (10), TS * (8));
+	public static final Vector2i BLINKY_END_TILE = v2i(TS * 8, TS * 11);
+	public static final Vector2i TURNING_POSITION = v2i(TS * 6, TS * 20);
+	public static final int MS_PACMAN_STOP_X = TS * 15 + 2;
+	public static final Vector2i TITLE_TILE = v2i(TS * 10, TS * 8);
 	public final Pulse blinking = new Pulse(30, true);
 	public final TickTimer lightsTimer = new TickTimer("lights-timer");
 	public final Pac msPacMan = new Pac("Ms. Pac-Man");
