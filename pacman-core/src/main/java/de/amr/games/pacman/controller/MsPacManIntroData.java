@@ -56,14 +56,10 @@ public class MsPacManIntroData {
 		new Ghost(GameModel.CYAN_GHOST,   "Inky"),
 		new Ghost(GameModel.ORANGE_GHOST, "Sue")
 	);
-	int ghostIndex = 0;
+	public int ghostIndex = 0;
 	//@formatter:on
 
 	public MsPacManIntroData(GameController gameController) {
 		this.gameController = gameController;
-	}
-
-	public int ghostIndex() {
-		return ghostIndex;
 	}
 }
