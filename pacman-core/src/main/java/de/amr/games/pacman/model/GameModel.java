@@ -288,7 +288,7 @@ public class GameModel {
 	public static int msPacManMapNumber(int levelNumber) {
 		return levelNumber < 14 ? msPacManMazeNumber(levelNumber) : (levelNumber - 14) % 8 < 4 ? 3 : 4;
 	}
-
+	
 	
 	private static final List<NavigationPoint> PACMAN_DEMOLEVEL_ROUTE = List.of( //
 			np(12, 26), np(9, 26), np(12, 32), np(15, 32), np(24, 29), np(21, 23), np(18, 23), np(18, 20), np(18, 17),
@@ -492,6 +492,13 @@ public class GameModel {
 	}
 
 	/**
+	 * @return number of maze (not map) used in this level, 1-based.
+	 */
+	public int mazeNumber(int levelNumber) {
+		return variant == GameVariant.MS_PACMAN ? msPacManMazeNumber(levelNumber) : 1;
+	}
+
+	/**
 	 * @param levelNumber level number (starting at 1)
 	 * @return parameter values (speed, pellet counts etc.) used in specified level. From level 21 on, level parameters
 	 *         remain the same
@@ -514,8 +521,8 @@ public class GameModel {
 	 */
 	public void enterLevel(int levelNumber) {
 		var map = switch (variant) {
-		case MS_PACMAN -> GameModel.MS_PACMAN_MAPS[msPacManMapNumber(levelNumber) - 1];
-		case PACMAN -> GameModel.PACMAN_MAP;
+		case MS_PACMAN -> MS_PACMAN_MAPS[msPacManMapNumber(levelNumber) - 1];
+		case PACMAN -> PACMAN_MAP;
 		default -> throw new IllegalGameVariantException(variant);
 		};
 

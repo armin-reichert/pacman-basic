@@ -259,16 +259,6 @@ public class GameLevel {
 		return world;
 	}
 
-	/**
-	 * @return number of maze (not map) used in this level, 1-based.
-	 */
-	public int mazeNumber() {
-		return game.variant() == GameVariant.MS_PACMAN ? GameModel.msPacManMazeNumber(number) : 1;
-	}
-
-	/**
-	 * @return Pac-Man / Ms. Pac-Man
-	 */
 	public Pac pac() {
 		return pac;
 	}
