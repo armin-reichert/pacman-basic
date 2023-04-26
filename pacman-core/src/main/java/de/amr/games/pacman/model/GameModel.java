@@ -272,7 +272,7 @@ public class GameModel {
 	 * </ul>
 	 * <p>
 	 */
-	public static int msPacManMazeNumber(int levelNumber) {
+	public static int mazeNumberMsPacMan(int levelNumber) {
 		return switch (levelNumber) {
 		case 1, 2 -> 1;
 		case 3, 4, 5 -> 2;
@@ -281,14 +281,16 @@ public class GameModel {
 		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		};
 	}
-
-	/**
-	 * @return number of map used in this level. From level 14 on, maps alternates between 3 and 4 every 4th level.
-	 */
-	public static int msPacManMapNumber(int levelNumber) {
-		return levelNumber < 14 ? msPacManMazeNumber(levelNumber) : (levelNumber - 14) % 8 < 4 ? 3 : 4;
-	}
 	
+	private static int mapNumberMsPacMan(int levelNumber) {
+		return switch (levelNumber) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
+		};
+	}
 	
 	private static final List<NavigationPoint> PACMAN_DEMOLEVEL_ROUTE = List.of( //
 			np(12, 26), np(9, 26), np(12, 32), np(15, 32), np(24, 29), np(21, 23), np(18, 23), np(18, 20), np(18, 17),
@@ -495,7 +497,7 @@ public class GameModel {
 	 * @return number of maze (not map) used in this level, 1-based.
 	 */
 	public int mazeNumber(int levelNumber) {
-		return variant == GameVariant.MS_PACMAN ? msPacManMazeNumber(levelNumber) : 1;
+		return variant == GameVariant.MS_PACMAN ? mazeNumberMsPacMan(levelNumber) : 1;
 	}
 
 	/**
@@ -515,21 +517,25 @@ public class GameModel {
 	}
 
 	/**
-	 * Creates and enters the given level.
+	 * Creates and "enters" the level with the given number.
 	 * 
 	 * @param levelNumber level number (starting at 1)
 	 */
 	public void enterLevel(int levelNumber) {
+		checkLevelNumber(levelNumber);
+
 		var map = switch (variant) {
-		case MS_PACMAN -> MS_PACMAN_MAPS[msPacManMapNumber(levelNumber) - 1];
+		case MS_PACMAN -> MS_PACMAN_MAPS[mapNumberMsPacMan(levelNumber) - 1];
 		case PACMAN -> PACMAN_MAP;
 		default -> throw new IllegalGameVariantException(variant);
 		};
-
 		level = new GameLevel(this, new World(map), levelNumber, false);
+
 		if (level.number() == 1) {
 			levelCounter.clear();
 		}
+		// In Ms. Pac-Man, the level counter stays unchanged from level 8 on and bonus symbols are created randomly whenever
+		// a bonus is reached (also in the same level). At least that's what I was told.
 		if (variant == GameVariant.PACMAN || level.number() <= 7) {
 			levelCounter.add(level.bonusInfo(0).symbol());
 			if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
@@ -539,6 +545,7 @@ public class GameModel {
 		if (score != null) {
 			score.setLevelNumber(levelNumber);
 		}
+
 		level.letsGetReadyToRumbleAndShowGuys(false);
 	}
 
