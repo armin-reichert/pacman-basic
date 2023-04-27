@@ -86,6 +86,7 @@ public class Pac extends Creature implements AnimatedEntity {
 		dead = false;
 		restingTicks = 0;
 		starvingTicks = 0;
+		corneringSpeedUp = 1.5f; // TODO experimental
 		selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 		powerTimer.reset(0);
 	}

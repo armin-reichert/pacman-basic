@@ -94,6 +94,8 @@ public abstract class Creature extends Entity {
 	protected boolean gotReverseCommand;
 	protected boolean canTeleport;
 
+	protected float corneringSpeedUp = 0;
+
 	protected Creature(String name) {
 		this.name = (name != null) ? name : "%s@%d".formatted(getClass().getSimpleName(), hashCode());
 	}
@@ -440,8 +442,15 @@ public abstract class Creature extends Entity {
 			}
 		}
 
+		if (aroundCorner && corneringSpeedUp > 0) {
+			setVelocity(newVelocity.plus(dirVector.scaled(corneringSpeedUp)));
+			Logger.info("{} velocity around corner: {}", name(), velocity.length());
+			move();
+		} else {
+			setVelocity(newVelocity);
+			move();
+		}
 		setVelocity(newVelocity);
-		move();
 
 		newTileEntered = !tileBeforeMove.equals(tile());
 		moveResult.moved = true;
