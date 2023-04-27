@@ -767,8 +767,9 @@ public class GameLevel {
 	 * Handles bonus achievment (public access only for level state test).
 	 * <p>
 	 * In Ms. Pac-Man, the bonus enters the world at a random portal, walks to the house entry, takes a tour around the
-	 * house and finally leaves the world through a random portal on the opposite side of the world. TODO this is not
-	 * exactly the behavior from the original game, yes I know.
+	 * house and finally leaves the world through a random portal on the opposite side of the world.
+	 * <p>
+	 * TODO this is not exactly the behavior from the original game, yes I know.
 	 * 
 	 * @param bonusIndex achieved bonus index (0 or 1).
 	 */
