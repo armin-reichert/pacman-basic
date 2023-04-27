@@ -433,14 +433,14 @@ public class GameModel {
 	public static final BonusInfo MS_PACMAN_PEAR       = new BonusInfo(5,  2000);
 	public static final BonusInfo MS_PACMAN_BANANA     = new BonusInfo(6, 5000);
 
-	public static final BonusInfo PACMAN_CHERRIES   = new BonusInfo(0,  100);
-	public static final BonusInfo PACMAN_STRAWBERRY = new BonusInfo(1,  300);
-	public static final BonusInfo PACMAN_PEACH      = new BonusInfo(2,  500);
-	public static final BonusInfo PACMAN_APPLE      = new BonusInfo(3,  700);
-	public static final BonusInfo PACMAN_GRAPES     = new BonusInfo(4, 1000);
-	public static final BonusInfo PACMAN_GALAXIAN   = new BonusInfo(5, 2000);
-	public static final BonusInfo PACMAN_BELL       = new BonusInfo(6, 3000);
-	public static final BonusInfo PACMAN_KEY        = new BonusInfo(7, 5000);
+	public static final BonusInfo PACMAN_CHERRIES      = new BonusInfo(0,  100);
+	public static final BonusInfo PACMAN_STRAWBERRY    = new BonusInfo(1,  300);
+	public static final BonusInfo PACMAN_PEACH         = new BonusInfo(2,  500);
+	public static final BonusInfo PACMAN_APPLE         = new BonusInfo(3,  700);
+	public static final BonusInfo PACMAN_GRAPES        = new BonusInfo(4, 1000);
+	public static final BonusInfo PACMAN_GALAXIAN      = new BonusInfo(5, 2000);
+	public static final BonusInfo PACMAN_BELL          = new BonusInfo(6, 3000);
+	public static final BonusInfo PACMAN_KEY           = new BonusInfo(7, 5000);
 	//@formatter:on
 
 	public static BonusInfo getBonusInfo(GameVariant variant, int levelNumber) {
