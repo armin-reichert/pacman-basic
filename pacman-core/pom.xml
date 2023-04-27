@@ -9,23 +9,22 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<source.version>18</source.version>
-		<maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
-		<junit.version>4.13.2</junit.version>
+		<version.java>18</version.java>
+		<version.junit>4.13.2</version.junit>
+		<version.mvn.compiler>3.10.1</version.mvn.compiler>
+		<version.tinylog>2.6.1</version.tinylog>
 	</properties>
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven.compiler.plugin.version}</version>
+				<version>${version.mvn.compiler}</version>
 				<configuration>
-					<release>${source.version}</release>
+					<release>${version.java}</release>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 
@@ -34,7 +33,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
+				<version>${version.junit}</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
@@ -49,12 +48,12 @@
 		<dependency>
 			<groupId>org.tinylog</groupId>
 			<artifactId>tinylog-api</artifactId>
-			<version>2.6.1</version>
+			<version>${version.tinylog}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.tinylog</groupId>
 			<artifactId>tinylog-impl</artifactId>
-			<version>2.6.1</version>
+			<version>${version.tinylog}</version>
 		</dependency>
 	</dependencies>
 </project>
