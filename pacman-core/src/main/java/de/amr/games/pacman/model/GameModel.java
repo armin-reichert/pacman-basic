@@ -450,18 +450,29 @@ public class GameModel {
 		};
 	}
 
+	//@formatter:off
+	public static final BonusInfo PACMAN_CHERRIES   = new BonusInfo(0,  100);
+	public static final BonusInfo PACMAN_STRAWBERRY = new BonusInfo(1,  300);
+	public static final BonusInfo PACMAN_PEACH      = new BonusInfo(2,  500);
+	public static final BonusInfo PACMAN_APPLE      = new BonusInfo(3,  700);
+	public static final BonusInfo PACMAN_GRAPES     = new BonusInfo(4, 1000);
+	public static final BonusInfo PACMAN_GALAXIAN   = new BonusInfo(5, 2000);
+	public static final BonusInfo PACMAN_BELL       = new BonusInfo(6, 3000);
+	public static final BonusInfo PACMAN_KEY        = new BonusInfo(7, 5000);
+	//@formatter:on
+
 	public static BonusInfo getBonusInfoPacMan(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		return switch (levelNumber) {
 		//@formatter:off
-		case 1      -> new BonusInfo(0,  100); // Cherries
-		case 2      -> new BonusInfo(1,  300); // Strawberry
-		case 3, 4   -> new BonusInfo(2,  500); // Peach
-		case 5, 6   -> new BonusInfo(3,  700); // Apple
-		case 7, 8   -> new BonusInfo(4, 1000); // Grapes
-		case 9, 10  -> new BonusInfo(5, 2000); // Galaxian
-		case 11, 12 -> new BonusInfo(6, 3000); // Bell
-		default     -> new BonusInfo(7, 5000); // Key
+		case 1      -> PACMAN_CHERRIES;
+		case 2      -> PACMAN_STRAWBERRY;
+		case 3, 4   -> PACMAN_PEACH;
+		case 5, 6   -> PACMAN_APPLE;
+		case 7, 8   -> PACMAN_GRAPES;
+		case 9, 10  -> PACMAN_GALAXIAN;
+		case 11, 12 -> PACMAN_BELL;
+		default     -> PACMAN_KEY;
 		//@formatter:on
 		};
 	}
