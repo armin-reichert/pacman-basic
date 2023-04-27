@@ -44,8 +44,8 @@ public class MsPacManIntroData {
 	public GameController gameController;
 	public float          speed                = 1.1f;
 	public int            stopY                = TS * 11 + 1;
-	public int            stopX                = TS * 6 - 3; 
-	public int            stopMsPacX           = TS * 15 + 3;
+	public int            stopX                = TS * 6 - 4; 
+	public int            stopMsPacX           = TS * 15 + 2;
 	public int            ticksUntilLifting    = 0;
 	public Vector2i       titlePosition        = v2i(TS * 10, TS * 8);
 	public TickTimer      marqueeTimer         = new TickTimer("marquee-timer");
