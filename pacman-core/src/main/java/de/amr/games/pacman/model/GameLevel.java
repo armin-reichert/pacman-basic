@@ -747,11 +747,6 @@ public class GameLevel {
 		};
 	}
 
-	/*
-	
-	
-	*/
-
 	private boolean isFirstBonusReached() {
 		return switch (game.variant()) {
 		case MS_PACMAN -> world.eatenFoodCount() == 64; // from Ms. Pac-Man FAQ, but is this correct?
