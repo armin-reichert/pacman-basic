@@ -733,7 +733,7 @@ public class GameLevel {
 			}
 			int random = Globals.randomInt(0, 320);
 			//@formatter:off
-			if (random < 50)   yield GameModel.MS_PACMAN_CHERRIES;
+			if (random < 50)  yield GameModel.MS_PACMAN_CHERRIES;
 			if (random < 100)	yield GameModel.MS_PACMAN_STRAWBERRY;
 			if (random < 150)	yield GameModel.MS_PACMAN_ORANGE;
 			if (random < 200)	yield GameModel.MS_PACMAN_PRETZEL;
