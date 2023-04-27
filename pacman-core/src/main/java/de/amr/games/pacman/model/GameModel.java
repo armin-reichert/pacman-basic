@@ -424,17 +424,27 @@ public class GameModel {
 		};
 	}
 
+	//@formatter:off
+	public static final BonusInfo MS_PACMAN_CHERRIES   = new BonusInfo(0,  100);
+	public static final BonusInfo MS_PACMAN_STRAWBERRY = new BonusInfo(1,  200);
+	public static final BonusInfo MS_PACMAN_ORANGE     = new BonusInfo(2,  500);
+	public static final BonusInfo MS_PACMAN_PRETZEL    = new BonusInfo(3,  700);
+	public static final BonusInfo MS_PACMAN_APPLE      = new BonusInfo(4,  1000);
+	public static final BonusInfo MS_PACMAN_PEAR       = new BonusInfo(5,  2000);
+	public static final BonusInfo MS_PACMAN_BANANA     = new BonusInfo(6, 5000);
+	//@formatter:on
+
 	public static BonusInfo getBonusInfoMsPacMan(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		return switch (levelNumber) {
 		//@formatter:off
-		case 1 -> new BonusInfo(0,  100); // Cherries
-		case 2 -> new BonusInfo(1,  200); // Strawberry
-		case 3 -> new BonusInfo(2,  500); // Peach
-		case 4 -> new BonusInfo(3,  700); // Pretzel (A Brezn, Herr Gott Sakra!)
-		case 5 -> new BonusInfo(4, 1000); // Apple
-		case 6 -> new BonusInfo(5, 2000); // Pear
-		case 7 -> new BonusInfo(6, 5000); // Bananas
+		case 1 -> MS_PACMAN_CHERRIES;
+		case 2 -> MS_PACMAN_STRAWBERRY;
+		case 3 -> MS_PACMAN_ORANGE;
+		case 4 -> MS_PACMAN_PRETZEL;
+		case 5 -> MS_PACMAN_APPLE;
+		case 6 -> MS_PACMAN_PEAR;
+		case 7 -> MS_PACMAN_BANANA;
 		default -> throw new IllegalArgumentException();
 		//@formatter:on
 		};

@@ -32,7 +32,6 @@ import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.isEven;
 import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.percent;
-import static de.amr.games.pacman.lib.Globals.randomInt;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
@@ -54,6 +53,7 @@ import org.tinylog.Logger;
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.lib.Globals;
 import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -691,13 +691,66 @@ public class GameLevel {
 		return bonusInfo[index];
 	}
 
+	/**
+	 * Got this info from Reddit user <em>damselindis</em>.
+	 * (https://www.reddit.com/r/Pacman/comments/12q4ny3/is_anyone_able_to_explain_the_ai_behind_the/)
+	 * <p>
+	 * The exact fruit mechanics are as follows: After 64 dots are consumed, the game spawns the first fruit of the level.
+	 * After 176 dots are consumed, the game attempts to spawn the second fruit of the level. If the first fruit is still
+	 * present in the level when (or eaten very shortly before) the 176th dot is consumed, the second fruit will not
+	 * spawn. Dying while a fruit is on screen causes it to immediately disappear and never return.
+	 * <p>
+	 * The type of fruit is determined by the level count - levels 1-7 will always have two cherries, two strawberries,
+	 * etc. until two bananas on level 7. On level 8 and beyond, the fruit type is randomly selected using the weights in
+	 * the following table:
+	 * 
+	 * <table>
+	 * <tr>
+	 * <th>Cherry
+	 * <th>Strawberry
+	 * <th>Orange
+	 * <th>Pretzel
+	 * <th>Apple
+	 * <th>Pear
+	 * <th>Banana
+	 * </tr>
+	 * <tr>
+	 * <td>5/32
+	 * <td>5/32
+	 * <td>5/32
+	 * <td>5/32
+	 * <td>4/32
+	 * <td>4/32
+	 * <td>4/32
+	 * </tr>
+	 * </table>
+	 */
 	private BonusInfo createNextBonusInfo() {
 		return switch (game.variant()) {
-		case MS_PACMAN -> GameModel.getBonusInfoMsPacMan(number < 8 ? number : randomInt(1, 8));
+		case MS_PACMAN -> {
+			if (number < 8) {
+				yield GameModel.getBonusInfoMsPacMan(number);
+			}
+			int random = Globals.randomInt(0, 32);
+			//@formatter:off
+			if (random < 5)   yield GameModel.MS_PACMAN_CHERRIES;
+			if (random < 10)	yield GameModel.MS_PACMAN_STRAWBERRY;
+			if (random < 15)	yield GameModel.MS_PACMAN_ORANGE;
+			if (random < 20)	yield GameModel.MS_PACMAN_PRETZEL;
+			if (random < 24)	yield GameModel.MS_PACMAN_APPLE;
+			if (random < 28)	yield GameModel.MS_PACMAN_PEAR;
+			else              yield GameModel.MS_PACMAN_BANANA;
+			//@formatter:on
+		}
 		case PACMAN -> GameModel.getBonusInfoPacMan(number);
 		default -> throw new IllegalGameVariantException(game.variant());
 		};
 	}
+
+	/*
+	
+	
+	*/
 
 	private boolean isFirstBonusReached() {
 		return switch (game.variant()) {
