@@ -50,7 +50,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			ctx.msPacMan.setPixelSpeed(ctx.speed);
 			ctx.msPacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
 			ctx.ghosts.forEach(ghost -> {
-				ghost.setPosition(TS * 34, TS * 20);
+				ghost.setPosition(TS * (ghost.id() == GameModel.ORANGE_GHOST ? 33 : 34), TS * 20);
 				ghost.setMoveAndWishDir(LEFT);
 				ghost.setPixelSpeed(ctx.speed);
 				ghost.enterStateHuntingPac();
