@@ -40,7 +40,7 @@ Chase	    | indefinite |indefinite
 ### Ghost behavior during scatter mode (:heavy_check_mark:)
 During scatter mode, Blinky and Pinky only will move completely randomly. Inky and Sue/Clyde will still path towards their respective corners. Note that due to the scatter/chase changes this only matters during the first few seconds of a level.
 
-### Fruits (:heavy_check_mark:)
+### Fruits (:white_check_mark:)
 
 (Original URL: https://www.reddit.com/r/Pacman/comments/12q4ny3/is_anyone_able_to_explain_the_ai_behind_the/)
 
