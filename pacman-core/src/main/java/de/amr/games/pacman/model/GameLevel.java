@@ -731,14 +731,14 @@ public class GameLevel {
 			if (number < 8) {
 				yield GameModel.getBonusInfoMsPacMan(number);
 			}
-			int random = Globals.randomInt(0, 32);
+			int random = Globals.randomInt(0, 320);
 			//@formatter:off
-			if (random < 5)   yield GameModel.MS_PACMAN_CHERRIES;
-			if (random < 10)	yield GameModel.MS_PACMAN_STRAWBERRY;
-			if (random < 15)	yield GameModel.MS_PACMAN_ORANGE;
-			if (random < 20)	yield GameModel.MS_PACMAN_PRETZEL;
-			if (random < 24)	yield GameModel.MS_PACMAN_APPLE;
-			if (random < 28)	yield GameModel.MS_PACMAN_PEAR;
+			if (random < 50)   yield GameModel.MS_PACMAN_CHERRIES;
+			if (random < 100)	yield GameModel.MS_PACMAN_STRAWBERRY;
+			if (random < 150)	yield GameModel.MS_PACMAN_ORANGE;
+			if (random < 200)	yield GameModel.MS_PACMAN_PRETZEL;
+			if (random < 240)	yield GameModel.MS_PACMAN_APPLE;
+			if (random < 280)	yield GameModel.MS_PACMAN_PEAR;
 			else              yield GameModel.MS_PACMAN_BANANA;
 			//@formatter:on
 		}
