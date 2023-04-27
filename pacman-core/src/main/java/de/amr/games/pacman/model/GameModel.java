@@ -432,25 +432,7 @@ public class GameModel {
 	public static final BonusInfo MS_PACMAN_APPLE      = new BonusInfo(4,  1000);
 	public static final BonusInfo MS_PACMAN_PEAR       = new BonusInfo(5,  2000);
 	public static final BonusInfo MS_PACMAN_BANANA     = new BonusInfo(6, 5000);
-	//@formatter:on
 
-	public static BonusInfo getBonusInfoMsPacMan(int levelNumber) {
-		checkLevelNumber(levelNumber);
-		return switch (levelNumber) {
-		//@formatter:off
-		case 1 -> MS_PACMAN_CHERRIES;
-		case 2 -> MS_PACMAN_STRAWBERRY;
-		case 3 -> MS_PACMAN_ORANGE;
-		case 4 -> MS_PACMAN_PRETZEL;
-		case 5 -> MS_PACMAN_APPLE;
-		case 6 -> MS_PACMAN_PEAR;
-		case 7 -> MS_PACMAN_BANANA;
-		default -> throw new IllegalArgumentException();
-		//@formatter:on
-		};
-	}
-
-	//@formatter:off
 	public static final BonusInfo PACMAN_CHERRIES   = new BonusInfo(0,  100);
 	public static final BonusInfo PACMAN_STRAWBERRY = new BonusInfo(1,  300);
 	public static final BonusInfo PACMAN_PEACH      = new BonusInfo(2,  500);
@@ -461,20 +443,41 @@ public class GameModel {
 	public static final BonusInfo PACMAN_KEY        = new BonusInfo(7, 5000);
 	//@formatter:on
 
-	public static BonusInfo getBonusInfoPacMan(int levelNumber) {
+	public static BonusInfo getBonusInfo(GameVariant variant, int levelNumber) {
+		checkGameVariant(variant);
 		checkLevelNumber(levelNumber);
-		return switch (levelNumber) {
-		//@formatter:off
-		case 1      -> PACMAN_CHERRIES;
-		case 2      -> PACMAN_STRAWBERRY;
-		case 3, 4   -> PACMAN_PEACH;
-		case 5, 6   -> PACMAN_APPLE;
-		case 7, 8   -> PACMAN_GRAPES;
-		case 9, 10  -> PACMAN_GALAXIAN;
-		case 11, 12 -> PACMAN_BELL;
-		default     -> PACMAN_KEY;
-		//@formatter:on
-		};
+
+		if (variant == GameVariant.MS_PACMAN) {
+			return switch (levelNumber) {
+			//@formatter:off
+				case 1 -> MS_PACMAN_CHERRIES;
+				case 2 -> MS_PACMAN_STRAWBERRY;
+				case 3 -> MS_PACMAN_ORANGE;
+				case 4 -> MS_PACMAN_PRETZEL;
+				case 5 -> MS_PACMAN_APPLE;
+				case 6 -> MS_PACMAN_PEAR;
+				case 7 -> MS_PACMAN_BANANA;
+				default -> throw new IllegalArgumentException();
+			//@formatter:on
+			};
+		}
+
+		else if (variant == GameVariant.PACMAN) {
+			return switch (levelNumber) {
+			//@formatter:off
+				case 1      -> PACMAN_CHERRIES;
+				case 2      -> PACMAN_STRAWBERRY;
+				case 3, 4   -> PACMAN_PEACH;
+				case 5, 6   -> PACMAN_APPLE;
+				case 7, 8   -> PACMAN_GRAPES;
+				case 9, 10  -> PACMAN_GALAXIAN;
+				case 11, 12 -> PACMAN_BELL;
+				default     -> PACMAN_KEY;
+			//@formatter:on
+			};
+		}
+
+		throw new IllegalGameVariantException(variant);
 	}
 
 	private final GameVariant variant;

@@ -726,30 +726,30 @@ public class GameLevel {
 	 * </table>
 	 */
 	private BonusInfo createNextBonusInfo() {
-		return switch (game.variant()) {
-		case MS_PACMAN -> {
+		if (game.variant() == GameVariant.MS_PACMAN) {
 			if (number < 8) {
-				yield GameModel.getBonusInfoMsPacMan(number);
+				return GameModel.getBonusInfo(GameVariant.MS_PACMAN, number);
 			}
 			int random = Globals.randomInt(0, 320);
 			//@formatter:off
-			if (random < 50)  yield GameModel.MS_PACMAN_CHERRIES;
-			if (random < 100)	yield GameModel.MS_PACMAN_STRAWBERRY;
-			if (random < 150)	yield GameModel.MS_PACMAN_ORANGE;
-			if (random < 200)	yield GameModel.MS_PACMAN_PRETZEL;
-			if (random < 240)	yield GameModel.MS_PACMAN_APPLE;
-			if (random < 280)	yield GameModel.MS_PACMAN_PEAR;
-			else              yield GameModel.MS_PACMAN_BANANA;
+			if (random < 50)  return GameModel.MS_PACMAN_CHERRIES;
+			if (random < 100)	return GameModel.MS_PACMAN_STRAWBERRY;
+			if (random < 150)	return GameModel.MS_PACMAN_ORANGE;
+			if (random < 200)	return GameModel.MS_PACMAN_PRETZEL;
+			if (random < 240)	return GameModel.MS_PACMAN_APPLE;
+			if (random < 280)	return GameModel.MS_PACMAN_PEAR;
+			else              return GameModel.MS_PACMAN_BANANA;
 			//@formatter:on
+		} else if (game.variant() == GameVariant.PACMAN) {
+			return GameModel.getBonusInfo(GameVariant.PACMAN, number);
+		} else {
+			throw new IllegalGameVariantException(game.variant());
 		}
-		case PACMAN -> GameModel.getBonusInfoPacMan(number);
-		default -> throw new IllegalGameVariantException(game.variant());
-		};
 	}
 
 	private boolean isFirstBonusReached() {
 		return switch (game.variant()) {
-		case MS_PACMAN -> world.eatenFoodCount() == 64; // from Ms. Pac-Man FAQ, but is this correct?
+		case MS_PACMAN -> world.eatenFoodCount() == 64; // is this correct?
 		case PACMAN -> world.eatenFoodCount() == 70;
 		default -> throw new IllegalGameVariantException(game.variant());
 		};
@@ -757,7 +757,7 @@ public class GameLevel {
 
 	private boolean isSecondBonusReached() {
 		return switch (game.variant()) {
-		case MS_PACMAN -> world.uneatenFoodCount() == 66; // from Ms. Pac-Man FAQ, but is this correct?
+		case MS_PACMAN -> world.eatenFoodCount() == 176; // is this correct?
 		case PACMAN -> world.eatenFoodCount() == 170;
 		default -> throw new IllegalGameVariantException(game.variant());
 		};
