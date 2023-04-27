@@ -46,6 +46,7 @@ public class MsPacManIntroData {
 	public int            stopY                = TS * 11 + 1;
 	public int            stopX                = TS * 6 - 3; 
 	public int            stopMsPacX           = TS * 15 + 3;
+	public int            ticksUntilLifting    = 0;
 	public Vector2i       titlePosition        = v2i(TS * 10, TS * 8);
 	public TickTimer      marqueeTimer         = new TickTimer("marquee-timer");
 	public int            numBulbs             = 96;

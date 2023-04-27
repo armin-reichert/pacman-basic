@@ -27,6 +27,8 @@ import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 
+import org.tinylog.Logger;
+
 import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -47,13 +49,11 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			ctx.msPacMan.setMoveDir(LEFT);
 			ctx.msPacMan.setPixelSpeed(ctx.speed);
 			ctx.msPacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
-			ctx.msPacMan.show();
 			ctx.ghosts.forEach(ghost -> {
 				ghost.setPosition(TS * 34, TS * 20);
 				ghost.setMoveAndWishDir(LEFT);
 				ghost.setPixelSpeed(ctx.speed);
 				ghost.enterStateHuntingPac();
-				ghost.show();
 			});
 			ctx.ghostIndex = 0;
 		}
@@ -72,18 +72,35 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		public void onUpdate(MsPacManIntroData ctx) {
 			ctx.marqueeTimer.advance();
 			var ghost = ctx.ghosts.get(ctx.ghostIndex);
-			ghost.moveAndAnimate();
-			if (ghost.position().x() <= ctx.stopX) {
-				ghost.setPosition(ctx.stopX, ghost.position().y());
-				ghost.setMoveAndWishDir(UP);
+			ghost.show();
+
+			if (ghost.moveDir() == LEFT) {
+				if (ghost.position().x() <= ctx.stopX) {
+					ghost.setPosition(ctx.stopX, ghost.position().y());
+					ghost.setMoveAndWishDir(UP);
+					ctx.ticksUntilLifting = 3;
+				} else {
+					ghost.moveAndAnimate();
+				}
+				return;
 			}
-			var stopY = ctx.stopY + ghost.id() * 16;
-			if (ghost.position().y() <= stopY) {
-				ghost.setPosition(ghost.position().x(), stopY);
-				ghost.setPixelSpeed(0);
-				ghost.animation().ifPresent(Animated::reset);
-				if (++ctx.ghostIndex == 4) {
-					intro.changeState(MsPacManIntroState.MSPACMAN);
+
+			if (ghost.moveDir() == UP) {
+				if (ctx.ticksUntilLifting > 0) {
+					ctx.ticksUntilLifting -= 1;
+					Logger.info("Ticks until lifting {}: {}", ghost.name(), ctx.ticksUntilLifting);
+					return;
+				}
+				if (ghost.position().y() <= ctx.stopY + ghost.id() * 16) {
+					ghost.setPixelSpeed(0);
+					ghost.animation().ifPresent(Animated::reset);
+					if (ctx.ghostIndex == 3) {
+						intro.changeState(MsPacManIntroState.MSPACMAN);
+					} else {
+						++ctx.ghostIndex;
+					}
+				} else {
+					ghost.moveAndAnimate();
 				}
 			}
 		}
@@ -93,6 +110,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 		@Override
 		public void onUpdate(MsPacManIntroData ctx) {
 			ctx.marqueeTimer.advance();
+			ctx.msPacMan.show();
 			ctx.msPacMan.moveAndAnimate();
 			if (ctx.msPacMan.position().x() <= ctx.stopMsPacX) {
 				ctx.msPacMan.setPixelSpeed(0);
