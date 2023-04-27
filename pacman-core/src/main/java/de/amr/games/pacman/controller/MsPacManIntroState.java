@@ -78,7 +78,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 				if (ghost.position().x() <= ctx.stopX) {
 					ghost.setPosition(ctx.stopX, ghost.position().y());
 					ghost.setMoveAndWishDir(UP);
-					ctx.ticksUntilLifting = 3;
+					ctx.ticksUntilLifting = 2;
 				} else {
 					ghost.moveAndAnimate();
 				}
