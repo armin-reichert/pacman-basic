@@ -765,18 +765,21 @@ public class GameLevel {
 
 	/**
 	 * Handles bonus achievment (public access only for level state test).
+	 * <p>
+	 * In Ms. Pac-Man, the bonus enters the world at a random portal, walks to the house entry, takes a tour around the
+	 * house and finally leaves the world through a random portal on the opposite side of the world. TODO this is not
+	 * exactly the behavior from the original game, yes I know.
 	 * 
 	 * @param bonusIndex achieved bonus index (0 or 1).
 	 */
 	public void handleBonusReached(int bonusIndex) {
 		switch (game.variant()) {
 		case MS_PACMAN -> {
-			/*
-			 * The bonus enters the world at a random portal, walks to the house entry, takes a tour around the house and
-			 * finally leaves the world through a random portal on the opposite side of the world.
-			 * 
-			 * TODO this is not exactly the behavior from the original game, yes I know
-			 */
+			if (bonusIndex == 1 && bonus != null && bonus.state() == Bonus.STATE_EDIBLE) {
+				Logger.info("First bonus still active, skip second one");
+				return; // first bonus still active
+			}
+
 			var portals = world.portals();
 			var leftToRight = RND.nextBoolean();
 			var entryPortal = portals.get(RND.nextInt(portals.size()));
