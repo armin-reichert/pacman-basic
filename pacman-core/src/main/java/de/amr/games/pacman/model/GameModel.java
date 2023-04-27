@@ -429,8 +429,8 @@ public class GameModel {
 	public static final BonusInfo MS_PACMAN_STRAWBERRY = new BonusInfo(1,  200);
 	public static final BonusInfo MS_PACMAN_ORANGE     = new BonusInfo(2,  500);
 	public static final BonusInfo MS_PACMAN_PRETZEL    = new BonusInfo(3,  700);
-	public static final BonusInfo MS_PACMAN_APPLE      = new BonusInfo(4,  1000);
-	public static final BonusInfo MS_PACMAN_PEAR       = new BonusInfo(5,  2000);
+	public static final BonusInfo MS_PACMAN_APPLE      = new BonusInfo(4, 1000);
+	public static final BonusInfo MS_PACMAN_PEAR       = new BonusInfo(5, 2000);
 	public static final BonusInfo MS_PACMAN_BANANA     = new BonusInfo(6, 5000);
 
 	public static final BonusInfo PACMAN_CHERRIES      = new BonusInfo(0,  100);
