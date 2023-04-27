@@ -88,7 +88,7 @@ public enum MsPacManIntroState implements FsmState<MsPacManIntroData> {
 			if (ghost.moveDir() == UP) {
 				if (ctx.ticksUntilLifting > 0) {
 					ctx.ticksUntilLifting -= 1;
-					Logger.info("Ticks until lifting {}: {}", ghost.name(), ctx.ticksUntilLifting);
+					Logger.trace("Ticks until lifting {}: {}", ghost.name(), ctx.ticksUntilLifting);
 					return;
 				}
 				if (ghost.position().y() <= ctx.stopY + ghost.id() * 16) {
