@@ -347,11 +347,10 @@ public class GameModel {
 	public static final byte AK_MAZE_FLASHING = 6;
 	public static final byte AK_PAC_DYING = 7;
 	public static final byte AK_PAC_MUNCHING = 8;
-
-	public static final byte AK_PAC_BIG = 20;
-	public static final byte AK_BLINKY_DAMAGED = 21;
-	public static final byte AK_BLINKY_PATCHED = 22;
-	public static final byte AK_BLINKY_NAKED = 23;
+	public static final byte AK_PAC_BIG = 9;
+	public static final byte AK_BLINKY_DAMAGED = 10;
+	public static final byte AK_BLINKY_PATCHED = 11;
+	public static final byte AK_BLINKY_NAKED = 12;
 
 	// Sound events
 	public static final String SE_BONUS_EATEN = "bonus_eaten";

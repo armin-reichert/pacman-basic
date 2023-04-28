@@ -26,8 +26,8 @@ package de.amr.games.pacman.lib.anim;
 
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -37,33 +37,50 @@ import java.util.stream.Stream;
 public class AnimationMap {
 
 	public static final byte NO_SELECTION = -1;
+	public static final int MAX_SIZE = 15;
 
-	private final Map<Byte, Animated> animationsByKey = new HashMap<>(5);
-	protected byte selectedKey;
+	private static void checkValidEntryKey(byte key) {
+		if (key < 0 || key > MAX_SIZE - 1) {
+			throw new IllegalArgumentException("Invalid animation map key: %d".formatted(key));
+		}
+	}
+
+	private static void checkValidSelectionKey(byte key) {
+		if (key < -1 || key > MAX_SIZE - 1) {
+			throw new IllegalArgumentException("Invalid animation map key: %d".formatted(key));
+		}
+	}
+
+	private final Animated[] animations;
+	protected byte selectedKey = NO_SELECTION;
+
+	public AnimationMap() {
+		animations = new Animated[MAX_SIZE];
+	}
 
 	public final Optional<Animated> animation(byte key) {
-		return Optional.ofNullable(animationsByKey.get(key));
+		checkValidSelectionKey(key);
+		return key == NO_SELECTION ? Optional.empty() : Optional.ofNullable(animations[key]);
 	}
 
 	public void put(byte key, Animated animation) {
-		checkNotNull(key);
+		checkValidEntryKey(key);
 		checkNotNull(animation);
-		animationsByKey.put(key, animation);
+		animations[key] = animation;
 	}
 
 	public void select(byte key) {
-		checkNotNull(key);
+		checkValidSelectionKey(key);
 		selectedKey = key;
 	}
 
 	public void selectAndRestart(byte key) {
-		checkNotNull(key);
 		select(key);
 		animation(selectedKey).ifPresent(Animated::restart);
 	}
 
 	public boolean isSelected(byte key) {
-		checkNotNull(key);
+		checkValidSelectionKey(key);
 		return selectedKey == key;
 	}
 
@@ -76,7 +93,7 @@ public class AnimationMap {
 	}
 
 	public final Stream<Animated> all() {
-		return animationsByKey.values().stream();
+		return Arrays.stream(animations).filter(Objects::nonNull);
 	}
 
 	public void animate() {
