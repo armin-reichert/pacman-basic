@@ -52,7 +52,7 @@ import de.amr.games.pacman.model.actors.Pac;
  */
 public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Context> {
 
-	public class Context {
+	public static class Context {
 		//@formatter:off
 		public GameController gameController;
 		public float          speed                = 1.1f;
