@@ -25,7 +25,6 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.games.pacman.lib.Globals.TS;
 
-import de.amr.games.pacman.controller.MsPacManIntermission1.State;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.Fsm;
@@ -48,7 +47,7 @@ import de.amr.games.pacman.model.actors.Pac;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission1 extends Fsm<State, MsPacManIntermission1.Context> {
+public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPacManIntermission1.Context> {
 
 	private final Context context;
 
