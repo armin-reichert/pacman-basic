@@ -25,7 +25,6 @@ package de.amr.games.pacman.lib.fsm;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import org.tinylog.Logger;
 
@@ -49,7 +48,7 @@ import de.amr.games.pacman.lib.timer.TickTimer.State;
  */
 public abstract class Fsm<S extends FsmState<C>, C> {
 
-	private final List<BiConsumer<S, S>> subscribers = new ArrayList<>();
+	private final List<FsmStateChangeListener<S>> subscribers = new ArrayList<>();
 	protected S[] states;
 	protected S currentState;
 	protected S prevState;
@@ -88,7 +87,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	 * 
 	 * @param listener a state change listener
 	 */
-	public synchronized void addStateChangeListener(BiConsumer<S, S> listener) {
+	public synchronized void addStateChangeListener(FsmStateChangeListener<S> listener) {
 		subscribers.add(listener);
 	}
 
@@ -97,7 +96,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	 * 
 	 * @param listener a state change listener
 	 */
-	public synchronized void removeStateChangeListener(BiConsumer<S, S> listener) {
+	public synchronized void removeStateChangeListener(FsmStateChangeListener<S> listener) {
 		subscribers.remove(listener);
 	}
 
@@ -153,7 +152,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		Logger.trace("Enter state {} timer={}", currentState, currentState.timer());
 		currentState.onEnter(context);
 		Logger.trace("After Enter state {} timer={}", currentState, currentState.timer());
-		subscribers.forEach(listener -> listener.accept(prevState, currentState));
+		subscribers.forEach(listener -> listener.onStateChange(prevState, currentState));
 	}
 
 	/**
