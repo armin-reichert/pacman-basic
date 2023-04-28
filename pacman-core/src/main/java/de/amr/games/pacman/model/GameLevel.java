@@ -706,7 +706,7 @@ public class GameLevel {
 	 * <tr>
 	 * <th>Cherry
 	 * <th>Strawberry
-	 * <th>Orange
+	 * <th>Peach
 	 * <th>Pretzel
 	 * <th>Apple
 	 * <th>Pear
@@ -725,23 +725,38 @@ public class GameLevel {
 	 */
 	private BonusInfo createNextBonusInfo() {
 		if (game.variant() == GameVariant.MS_PACMAN) {
-			if (number < 8) {
-				return GameModel.getBonusInfo(GameVariant.MS_PACMAN, number);
-			}
-			int random = Globals.randomInt(0, 320);
+			return switch (number) {
 			//@formatter:off
-			if (random < 50)  return GameModel.MS_PACMAN_CHERRIES;
-			if (random < 100)	return GameModel.MS_PACMAN_STRAWBERRY;
-			if (random < 150)	return GameModel.MS_PACMAN_ORANGE;
-			if (random < 200)	return GameModel.MS_PACMAN_PRETZEL;
-			if (random < 240)	return GameModel.MS_PACMAN_APPLE;
-			if (random < 280)	return GameModel.MS_PACMAN_PEAR;
-			else              return GameModel.MS_PACMAN_BANANA;
-			//@formatter:on
-		} else if (game.variant() == GameVariant.PACMAN) {
-			return GameModel.getBonusInfo(GameVariant.PACMAN, number);
+				case 1 -> GameModel.MS_PACMAN_CHERRIES;
+				case 2 -> GameModel.MS_PACMAN_STRAWBERRY;
+				case 3 -> GameModel.MS_PACMAN_PEACH;
+				case 4 -> GameModel.MS_PACMAN_PRETZEL;
+				case 5 -> GameModel.MS_PACMAN_APPLE;
+				case 6 -> GameModel.MS_PACMAN_PEAR;
+				case 7 -> GameModel.MS_PACMAN_BANANA;
+				default     -> {
+					int random = Globals.randomInt(0, 320);
+					if (random < 50)  yield GameModel.MS_PACMAN_CHERRIES;
+					if (random < 100)	yield GameModel.MS_PACMAN_STRAWBERRY;
+					if (random < 150)	yield GameModel.MS_PACMAN_PEACH;
+					if (random < 200)	yield GameModel.MS_PACMAN_PRETZEL;
+					if (random < 240)	yield GameModel.MS_PACMAN_APPLE;
+					if (random < 280)	yield GameModel.MS_PACMAN_PEAR;
+					else              yield GameModel.MS_PACMAN_BANANA;
+				}
+			};
 		} else {
-			throw new IllegalGameVariantException(game.variant());
+			return switch (number) {
+				case 1      -> GameModel.PACMAN_CHERRIES;
+				case 2      -> GameModel.PACMAN_STRAWBERRY;
+				case 3, 4   -> GameModel.PACMAN_PEACH;
+				case 5, 6   -> GameModel.PACMAN_APPLE;
+				case 7, 8   -> GameModel.PACMAN_GRAPES;
+				case 9, 10  -> GameModel.PACMAN_GALAXIAN;
+				case 11, 12 -> GameModel.PACMAN_BELL;
+				default     -> GameModel.PACMAN_KEY;
+			};
+			//@formatter:on
 		}
 	}
 
