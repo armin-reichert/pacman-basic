@@ -49,10 +49,14 @@ import de.amr.games.pacman.lib.timer.TickTimer.State;
 public abstract class Fsm<S extends FsmState<C>, C> {
 
 	private final List<FsmStateChangeListener<S>> subscribers = new ArrayList<>();
-	protected S[] states;
+	protected final S[] states;
 	protected S currentState;
 	protected S prevState;
 	protected String name = getClass().getSimpleName();
+
+	protected Fsm(S[] states) {
+		this.states = states;
+	}
 
 	public void setName(String name) {
 		this.name = name;

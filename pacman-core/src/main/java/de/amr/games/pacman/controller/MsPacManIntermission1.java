@@ -54,7 +54,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, Data> {
 	private final Data intermissionData;
 
 	public MsPacManIntermission1(GameController gameController) {
-		states = IntermissionState.values();
+		super(IntermissionState.values());
 		for (var state : states) {
 			state.intermission = this;
 		}

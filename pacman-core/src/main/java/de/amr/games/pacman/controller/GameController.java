@@ -26,6 +26,7 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
+import static de.amr.games.pacman.lib.Globals.checkGameVariant;
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static java.util.function.Predicate.not;
 
@@ -64,8 +65,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private boolean autoControlled;
 
 	public GameController(GameVariant variant) {
-		checkNotNull(variant);
-		states = GameState.values();
+		super(GameState.values());
+		checkGameVariant(variant);
 		for (var state : states) {
 			state.gc = this;
 		}
