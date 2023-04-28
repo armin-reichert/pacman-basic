@@ -50,7 +50,7 @@ public interface AnimatedEntity {
 	 * @param key key identifying animation in set
 	 * @return (optional) animation specified by given key
 	 */
-	default Optional<Animated> animation(String key) {
+	default Optional<Animated> animation(byte key) {
 		return animations().flatMap(am -> am.animation(key));
 	}
 
@@ -67,7 +67,7 @@ public interface AnimatedEntity {
 	 * @param key key identifying animation in set
 	 * @return (optional) selected animation
 	 */
-	default Optional<Animated> selectAndRunAnimation(String key) {
+	default Optional<Animated> selectAndRunAnimation(byte key) {
 		animations().ifPresent(anims -> {
 			anims.select(key);
 			anims.selectedAnimation().ifPresent(Animated::ensureRunning);
@@ -81,7 +81,7 @@ public interface AnimatedEntity {
 	 * @param key key identifying animation in set
 	 * @return (optional) selected animation
 	 */
-	default Optional<Animated> selectAndResetAnimation(String key) {
+	default Optional<Animated> selectAndResetAnimation(byte key) {
 		animations().ifPresent(anims -> {
 			anims.select(key);
 			anims.selectedAnimation().ifPresent(Animated::reset);
@@ -104,7 +104,7 @@ public interface AnimatedEntity {
 		animation().ifPresent(Animated::stop);
 	}
 
-	default boolean isAnimationSelected(String key) {
+	default boolean isAnimationSelected(byte key) {
 		var animations = animations();
 		if (animations.isPresent()) {
 			return animations.get().isSelected(key);

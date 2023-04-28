@@ -337,21 +337,21 @@ public class GameModel {
 	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
 	public static final short TICKS_PAC_POWER_FADES = 2 * FPS - 1; // unsure
 
-	// Animation keys
-	public static final String AK_GHOST_BLUE = "ghost_blue";
-	public static final String AK_GHOST_COLOR = "ghost_color";
-	public static final String AK_GHOST_EYES = "ghost_eyes";
-	public static final String AK_GHOST_FLASHING = "ghost_flashing";
-	public static final String AK_GHOST_VALUE = "ghost_value";
-	public static final String AK_MAZE_ENERGIZER_BLINKING = "maze_energizer_blinking";
-	public static final String AK_MAZE_FLASHING = "maze_flashing";
-	public static final String AK_PAC_DYING = "pac_dying";
-	public static final String AK_PAC_MUNCHING = "pac_munching";
+	// Animation keys (positive byte value, -1 = no selection)
+	public static final byte AK_GHOST_BLUE = 0;
+	public static final byte AK_GHOST_COLOR = 1;
+	public static final byte AK_GHOST_EYES = 2;
+	public static final byte AK_GHOST_FLASHING = 3;
+	public static final byte AK_GHOST_VALUE = 4;
+	public static final byte AK_MAZE_ENERGIZER_BLINKING = 5;
+	public static final byte AK_MAZE_FLASHING = 6;
+	public static final byte AK_PAC_DYING = 7;
+	public static final byte AK_PAC_MUNCHING = 8;
 
-	public static final String AK_PAC_BIG = "big_pacman";
-	public static final String AK_BLINKY_DAMAGED = "blinky_damaged";
-	public static final String AK_BLINKY_PATCHED = "blinky_patched";
-	public static final String AK_BLINKY_NAKED = "blinky_naked";
+	public static final byte AK_PAC_BIG = 20;
+	public static final byte AK_BLINKY_DAMAGED = 21;
+	public static final byte AK_BLINKY_PATCHED = 22;
+	public static final byte AK_BLINKY_NAKED = 23;
 
 	// Sound events
 	public static final String SE_BONUS_EATEN = "bonus_eaten";

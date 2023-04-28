@@ -36,39 +36,38 @@ import java.util.stream.Stream;
  */
 public class AnimationMap {
 
-	private final Map<String, Animated> animationsByKey = new HashMap<>(5);
-	protected String selectedKey;
+	public static final byte NO_SELECTION = -1;
 
-	public final Optional<Animated> animation(String key) {
+	private final Map<Byte, Animated> animationsByKey = new HashMap<>(5);
+	protected byte selectedKey;
+
+	public final Optional<Animated> animation(byte key) {
 		return Optional.ofNullable(animationsByKey.get(key));
 	}
 
-	public void put(String key, Animated animation) {
+	public void put(byte key, Animated animation) {
 		checkNotNull(key);
 		checkNotNull(animation);
 		animationsByKey.put(key, animation);
 	}
 
-	public void select(String key) {
+	public void select(byte key) {
 		checkNotNull(key);
 		selectedKey = key;
 	}
 
-	public void selectAndRestart(String key) {
+	public void selectAndRestart(byte key) {
 		checkNotNull(key);
 		select(key);
 		animation(selectedKey).ifPresent(Animated::restart);
 	}
 
-	public boolean isSelected(String key) {
+	public boolean isSelected(byte key) {
 		checkNotNull(key);
-		if (selectedKey == null) {
-			return false;
-		}
-		return selectedKey.equals(key);
+		return selectedKey == key;
 	}
 
-	public String selectedKey() {
+	public byte selectedKey() {
 		return selectedKey;
 	}
 
