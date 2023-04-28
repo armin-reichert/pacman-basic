@@ -53,12 +53,6 @@ public class FloorPlanGeneration {
 		return new File(DIR, String.format(pattern, mapNumber, resolution));
 	}
 
-	private static void deleteFile(String pattern, int mapNumber, int res) {
-		var file = file(pattern, mapNumber, res);
-		file.delete();
-		Logger.info("Deleted file {}", file);
-	}
-
 	private static void createFloorPlan(World world, File file, int resolution) {
 		long time = System.nanoTime();
 		var floorPlan = new FloorPlan(world, resolution);
