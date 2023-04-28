@@ -58,10 +58,6 @@ import de.amr.games.pacman.model.GameVariant;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	private static GameModel newGameModel(GameVariant variant) {
-		return new GameModel(variant);
-	}
-
 	private GameModel game;
 	private Steering autopilot = new RuleBasedSteering();
 	private Steering manualPacSteering = Steering.NONE;
@@ -76,7 +72,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		// map FSM state change events to "game state change" events
 		addStateChangeListener(
 				(oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
-		game = newGameModel(variant);
+		game = new GameModel(variant);
 		GameEvents.setGameController(this);
 	}
 
@@ -125,7 +121,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (state() == GameState.INTRO) {
 			boolean immune = game.isImmune();
 			int credit = game.credit();
-			game = newGameModel(variant);
+			game = new GameModel(variant);
 			game.setImmune(immune);
 			game.setCredit(credit);
 			restart(GameState.BOOT);
