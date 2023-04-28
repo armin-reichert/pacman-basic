@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.junit.AfterClass;
-import org.junit.Test;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.model.GameModel;
@@ -21,29 +19,20 @@ import de.amr.games.pacman.model.world.World;
  * 
  * @author Armin Reichert
  */
-public class FloorPlanTest {
+public class FloorPlanGeneration {
 
 	public static void main(String[] args) {
-		new FloorPlanTest().test();
+		test();
 	}
 
-	private static final File DIR = new File(System.getProperty("user.dir"));
+	private static final File DIR = new File(System.getProperty("user.dir"), "tmp");
 	private static final String PACMAN_PATTERN = "fp-pacman-map%d-res-%d.txt";
 	private static final String MS_PACMAN_PATTERN = "fp-mspacman-map%d-res-%d.txt";
 
-	@AfterClass
-	public static void cleanUp() {
-		List.of(8, 4, 2, 1).forEach(res -> {
-			deleteFile(PACMAN_PATTERN, 1, res);
-			deleteFile(MS_PACMAN_PATTERN, 1, res);
-			deleteFile(MS_PACMAN_PATTERN, 2, res);
-			deleteFile(MS_PACMAN_PATTERN, 3, res);
-			deleteFile(MS_PACMAN_PATTERN, 4, res);
-		});
-	}
-
-	@Test
-	public void test() {
+	public static void test() {
+		if (!DIR.exists()) {
+			DIR.mkdir();
+		}
 		List.of(8, 4, 2, 1).forEach(res -> {
 			createFloorPlan(new World(GameModel.PACMAN_MAP), file(PACMAN_PATTERN, 1, res), res);
 			createFloorPlan(new World(GameModel.MS_PACMAN_MAPS[0]), file(MS_PACMAN_PATTERN, 1, res), res);

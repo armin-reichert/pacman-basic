@@ -1,5 +1,6 @@
 /bin/
 /target/
+/tmp/
 /.settings/
 
 # Compiled class file
