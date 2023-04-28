@@ -525,12 +525,6 @@ public class GameLevel {
 			memo.pacPowerLost = pac.powerTimer().hasExpired();
 			memo.pacPowerActive = pac.powerTimer().isRunning();
 		}
-
-		// Who must die?
-		if (memo.pacPowerActive) {
-			memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
-		}
-		memo.pacKilled = !game.isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	public void update() {
@@ -601,6 +595,12 @@ public class GameLevel {
 			setCruiseElroyState(2);
 		}
 
+		// Who must die?
+		if (memo.pacPowerActive) {
+			memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
+		}
+
+		memo.pacKilled = !game.isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 		// Update world and guys
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
 		pac.update(this);
