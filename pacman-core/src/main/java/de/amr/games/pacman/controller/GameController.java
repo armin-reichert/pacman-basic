@@ -44,11 +44,7 @@ import de.amr.games.pacman.model.GameVariant;
  * selected game, see {@link GameModel}. Scene selection is not controlled by this class but left to the specific user
  * interface implementations.
  * <p>
- * Missing functionality:
- * <ul>
- * <li><a href= "https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not consider cornering as
- * important when the player is controlled by keyboard keys, for a joystick that probably would be more important.</li>
- * <li>Exact level data for Ms. Pac-Man still unclear. Any hints appreciated!
+ * <li>Exact level data for Ms. Pac-Man still not available. Any hints appreciated!
  * <li>Multiple players.</li>
  * </ul>
  * 
