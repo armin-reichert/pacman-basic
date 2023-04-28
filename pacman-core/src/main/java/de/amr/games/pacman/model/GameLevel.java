@@ -596,11 +596,9 @@ public class GameLevel {
 		}
 
 		// Who must die?
-		if (memo.pacPowerActive) {
-			memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
-		}
-
+		memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).toList();
 		memo.pacKilled = !game.isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+
 		// Update world and guys
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
 		pac.update(this);
