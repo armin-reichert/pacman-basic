@@ -27,8 +27,6 @@ import static de.amr.games.pacman.lib.Globals.TS;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.PacManIntroController.Context;
-import de.amr.games.pacman.controller.PacManIntroController.State;
 import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.fsm.Fsm;
@@ -48,7 +46,7 @@ import de.amr.games.pacman.model.actors.Pac;
  * 
  * @author Armin Reichert
  */
-public class PacManIntroController extends Fsm<State, Context> {
+public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 
 	public static class Context {
 		public static final float CHASING_SPEED = 1.1f;
@@ -245,7 +243,7 @@ public class PacManIntroController extends Fsm<State, Context> {
 			}
 		};
 
-		PacManIntroController controller;
+		PacManIntro controller;
 		final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
@@ -256,7 +254,7 @@ public class PacManIntroController extends Fsm<State, Context> {
 
 	private final Context introData;
 
-	public PacManIntroController(GameController gameController) {
+	public PacManIntro(GameController gameController) {
 		super(State.values());
 		for (var state : states) {
 			state.controller = this;
