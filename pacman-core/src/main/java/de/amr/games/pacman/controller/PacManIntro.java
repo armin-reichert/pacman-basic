@@ -48,22 +48,26 @@ import de.amr.games.pacman.model.actors.Pac;
  */
 public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 
+	public static class GhostInfo {
+		public Ghost ghost;
+		public String character;
+		public boolean pictureVisible;
+		public boolean nicknameVisible;
+		public boolean characterVisible;
+
+		public GhostInfo(byte id, String nickname, String character) {
+			ghost = new Ghost(id, nickname);
+			this.character = character;
+		}
+	}
+
 	public static class Context {
 		public GameController gameController;
 		public float chaseSpeed = 1.1f;
 		public int leftTileX = 4;
 		public Pulse blinking = new Pulse(10, true);
 		public Pac pacMan = new Pac("Pac-Man");
-		public Ghost[] ghosts = new Ghost[] { //
-				new Ghost(GameModel.RED_GHOST, "Blinky"), //
-				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
-				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
-				new Ghost(GameModel.ORANGE_GHOST, "Clyde"), //
-		};
-		public String[] ghostCharacters = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
-		public boolean[] pictureVisible = { false, false, false, false };
-		public boolean[] nicknameVisible = { false, false, false, false };
-		public boolean[] characterVisible = { false, false, false, false };
+		public GhostInfo[] ghostInfo = new GhostInfo[4];
 		public boolean creditVisible = false;
 		public boolean titleVisible = false;
 		public int ghostIndex;
@@ -71,6 +75,14 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 
 		public Context(GameController gameController) {
 			this.gameController = gameController;
+			ghostInfo[0] = new GhostInfo(GameModel.RED_GHOST, "BLINKY", "SHADOW");
+			ghostInfo[1] = new GhostInfo(GameModel.PINK_GHOST, "PINKY", "SPEEDY");
+			ghostInfo[2] = new GhostInfo(GameModel.CYAN_GHOST, "INKY", "BASHFUL");
+			ghostInfo[3] = new GhostInfo(GameModel.ORANGE_GHOST, "CLYDE", "POKEY");
+		}
+
+		public Stream<Ghost> ghosts() {
+			return Stream.of(ghostInfo).map(info -> info.ghost);
 		}
 	}
 
@@ -93,11 +105,11 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(0)) {
-					ctx.pictureVisible[ctx.ghostIndex] = true;
+					ctx.ghostInfo[ctx.ghostIndex].pictureVisible = true;
 				} else if (timer.atSecond(1.0)) {
-					ctx.characterVisible[ctx.ghostIndex] = true;
+					ctx.ghostInfo[ctx.ghostIndex].characterVisible = true;
 				} else if (timer.atSecond(1.5)) {
-					ctx.nicknameVisible[ctx.ghostIndex] = true;
+					ctx.ghostInfo[ctx.ghostIndex].nicknameVisible = true;
 				} else if (timer.atSecond(2.0)) {
 					if (++ctx.ghostIndex < 4) {
 						timer.resetIndefinitely();
@@ -131,14 +143,14 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 				ctx.pacMan.setPixelSpeed(ctx.chaseSpeed);
 				ctx.pacMan.show();
 				ctx.pacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
-				for (Ghost ghost : ctx.ghosts) {
+				ctx.ghosts().forEach(ghost -> {
 					ghost.enterStateHuntingPac();
 					ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id() + 1), 0));
 					ghost.setMoveAndWishDir(Direction.LEFT);
 					ghost.setPixelSpeed(ctx.chaseSpeed);
 					ghost.show();
 					ghost.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
-				}
+				});
 			}
 
 			@Override
@@ -149,13 +161,13 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 				}
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
 				else if (ctx.pacMan.position().x() <= TS * (ctx.leftTileX) + 4) {
-					for (Ghost ghost : ctx.ghosts) {
+					ctx.ghosts().forEach(ghost -> {
 						ghost.enterStateFrightened();
 						ghost.selectAndRunAnimation(GameModel.AK_GHOST_BLUE);
 						ghost.setMoveAndWishDir(Direction.RIGHT);
 						ghost.setPixelSpeed(0.6f);
 						ghost.moveAndAnimate();
-					}
+					});
 					ctx.pacMan.moveAndAnimate();
 				}
 				// keep moving
@@ -166,14 +178,13 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 					}
 					ctx.blinking.animate();
 					ctx.pacMan.moveAndAnimate();
-					for (Ghost ghost : ctx.ghosts) {
-						ghost.moveAndAnimate();
-					}
+					ctx.ghosts().forEach(Ghost::moveAndAnimate);
 				}
 			}
 		},
 
 		CHASING_GHOSTS {
+
 			@Override
 			public void onEnter(Context ctx) {
 				timer.restartIndefinitely();
@@ -184,12 +195,12 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 
 			@Override
 			public void onUpdate(Context ctx) {
-				if (Stream.of(ctx.ghosts).allMatch(ghost -> ghost.is(GhostState.EATEN))) {
+				if (ctx.ghosts().allMatch(ghost -> ghost.is(GhostState.EATEN))) {
 					ctx.pacMan.hide();
 					controller.changeState(READY_TO_PLAY);
 					return;
 				}
-				var nextVictim = Stream.of(ctx.ghosts)//
+				var nextVictim = ctx.ghosts()//
 						.filter(ctx.pacMan::sameTile)//
 						.filter(ghost -> ghost.is(GhostState.FRIGHTENED))//
 						.findFirst();
@@ -199,7 +210,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 					victim.enterStateEaten();
 					ctx.pacMan.hide();
 					ctx.pacMan.setPixelSpeed(0);
-					Stream.of(ctx.ghosts).forEach(ghost -> {
+					ctx.ghosts().forEach(ghost -> {
 						ghost.setPixelSpeed(0);
 						ghost.animation(GameModel.AK_GHOST_BLUE).ifPresent(Animated::stop);
 					});
@@ -209,7 +220,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 				if (timer.tick() - ctx.ghostKilledTime == timer.secToTicks(0.9)) {
 					ctx.pacMan.show();
 					ctx.pacMan.setPixelSpeed(ctx.chaseSpeed);
-					for (Ghost ghost : ctx.ghosts) {
+					ctx.ghosts().forEach(ghost -> {
 						if (!ghost.is(GhostState.EATEN)) {
 							ghost.show();
 							ghost.setPixelSpeed(0.6f);
@@ -217,12 +228,10 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 						} else {
 							ghost.hide();
 						}
-					}
+					});
 				}
 				ctx.pacMan.moveAndAnimate();
-				for (Ghost ghost : ctx.ghosts) {
-					ghost.moveAndAnimate();
-				}
+				ctx.ghosts().forEach(Ghost::moveAndAnimate);
 				ctx.blinking.animate();
 			}
 		},
@@ -231,7 +240,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(0.75)) {
-					ctx.ghosts[3].hide();
+					ctx.ghostInfo[3].ghost.hide();
 					if (!ctx.gameController.game().hasCredit()) {
 						ctx.gameController.changeState(GameState.READY);
 						return;
@@ -266,4 +275,5 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 	public Context context() {
 		return introData;
 	}
+
 }
