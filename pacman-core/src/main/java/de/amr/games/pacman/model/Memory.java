@@ -45,8 +45,6 @@ public class Memory {
 	public boolean pacPowerFading;
 	public List<Ghost> pacPrey;
 	public final List<Ghost> killedGhosts = new ArrayList<>(4);
-	public Optional<Ghost> unlockedGhost;
-	public String unlockReason;
 
 	public Memory() {
 		forgetEverything();
@@ -63,8 +61,6 @@ public class Memory {
 		pacPowerFading = false;
 		pacPrey = Collections.emptyList();
 		killedGhosts.clear();
-		unlockedGhost = Optional.empty();
-		unlockReason = null;
 	}
 
 	@Override
@@ -105,10 +101,8 @@ public class Memory {
 		}
 
 		var killedGhostsText = killedGhosts.isEmpty() ? "" : killedGhosts.toString();
-		var unlockedText = unlockedGhost.isPresent() ? "%s unlocked".formatted(unlockedGhost.get().name()) : "";
 
-		return "%s%s%s%s%s%s".formatted(foodText, bonusText, powerText, pacKilledText, preyText, killedGhostsText,
-				unlockedText);
+		return "%s%s%s%s%s%s".formatted(foodText, bonusText, powerText, pacKilledText, preyText, killedGhostsText);
 	}
 
 	public boolean edibleGhostsExist() {
