@@ -63,23 +63,23 @@ public class RuleBasedSteering implements Steering {
 
 		@Override
 		public String toString() {
-			StringBuilder s = new StringBuilder("-- Begin autopilot info%n");
+			StringBuilder s = new StringBuilder("-- Begin autopilot info\n");
 			if (hunterAhead != null) {
-				s.append("Hunter ahead:  %s, distance: %.2g%n".formatted(hunterAhead.name(), hunterAheadDistance));
+				s.append("Hunter ahead:  %s, distance: %.2g\n".formatted(hunterAhead.name(), hunterAheadDistance));
 			} else {
-				s.append("No hunter ahead%n");
+				s.append("No hunter ahead\n");
 			}
 			if (hunterBehind != null) {
-				s.append("Hunter behind: %s, distance: %.2g%n".formatted(hunterBehind.name(), hunterBehindDistance));
+				s.append("Hunter behind: %s, distance: %.2g\n".formatted(hunterBehind.name(), hunterBehindDistance));
 			} else {
-				s.append("No hunter behind%n");
+				s.append("No hunter behind\n");
 			}
 			for (int i = 0; i < frightenedGhosts.size(); ++i) {
 				Ghost ghost = frightenedGhosts.get(i);
-				s.append("Prey: %s, distance: %.2g%n".formatted(ghost.name(), frightenedGhostsDistance.get(i)));
+				s.append("Prey: %s, distance: %.2g\n".formatted(ghost.name(), frightenedGhostsDistance.get(i)));
 			}
 			if (frightenedGhosts.isEmpty()) {
-				s.append("No prey%n");
+				s.append("No prey\n");
 			}
 			s.append("-- End autopilot info");
 			return s.toString();
@@ -98,7 +98,7 @@ public class RuleBasedSteering implements Steering {
 		}
 		var data = collectData(level);
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
-			Logger.trace("%n{}", data);
+			Logger.trace("\n{}", data);
 		}
 		takeAction(level, data);
 	}
