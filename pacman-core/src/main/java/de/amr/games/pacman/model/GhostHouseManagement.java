@@ -24,9 +24,14 @@ SOFTWARE.
 
 package de.amr.games.pacman.model;
 
+import static de.amr.games.pacman.model.GameModel.CYAN_GHOST;
+import static de.amr.games.pacman.model.GameModel.ORANGE_GHOST;
+import static de.amr.games.pacman.model.GameModel.PINK_GHOST;
+import static de.amr.games.pacman.model.GameModel.RED_GHOST;
 import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.tinylog.Logger;
 
@@ -34,6 +39,8 @@ import de.amr.games.pacman.model.actors.Ghost;
 
 /**
  * @author Armin Reichert
+ * 
+ * @see PacManDossier
  */
 public class GhostHouseManagement {
 
@@ -64,8 +71,8 @@ public class GhostHouseManagement {
 
 	public void update() {
 		if (globalDotCounterEnabled) {
-			if (level.ghost(GameModel.ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
-				Logger.trace("{} inside house when counter reached 32", level.ghost(GameModel.ORANGE_GHOST).name());
+			if (level.ghost(ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
+				Logger.trace("{} inside house when counter reached 32", level.ghost(ORANGE_GHOST).name());
 				resetGlobalDotCounterAndSetEnabled(false);
 			} else {
 				globalDotCounter++;
@@ -93,10 +100,15 @@ public class GhostHouseManagement {
 	}
 
 	public Optional<GhostUnlockResult> checkIfNextGhostCanLeaveHouse() {
-		var ghost = level.ghosts(LOCKED).findFirst().orElse(null);
+		// Ensure unlock order of ghosts is RED, PINK, CYAN, ORANGE.
+		// The current level implementation guarantees it but...
+		var ghost = Stream.of(RED_GHOST, PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(level::ghost).filter(g -> g.is(LOCKED))
+				.findFirst().orElse(null);
+
 		if (ghost == null) {
 			return Optional.empty();
 		}
+
 		if (!ghost.insideHouse(level)) {
 			return unlockResult(ghost, "Already outside house");
 		}
