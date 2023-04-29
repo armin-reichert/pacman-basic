@@ -54,7 +54,7 @@ public record House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2
 	}
 
 	public Vector2f seatPosition(int i) {
-		return seatPosition(i);
+		return seatPositions.get(i);
 	}
 
 	/**

@@ -55,13 +55,40 @@ public class BonusManagement {
 
 	public BonusManagement(GameLevel level) {
 		this.level = level;
+	}
+
+	public void onLevelStart() {
 		bonusInfo[0] = createNextBonusInfo();
 		bonusInfo[1] = createNextBonusInfo();
 	}
 
+	public void onLevelEnd() {
+		deactivateBonus();
+	}
+
+	private BonusInfo createNextBonusInfo() {
+		if (level.game().variant() == GameVariant.MS_PACMAN) {
+			return nextMsPacManBonusInfo();
+		} else {
+			// In the Pac-Man game, each level has two boni with the same symbol and value
+			return switch (level.number()) {
+			//@formatter:off
+			case 1 ->      GameModel.PACMAN_CHERRIES;
+			case 2 ->      GameModel.PACMAN_STRAWBERRY;
+			case 3, 4 ->   GameModel.PACMAN_PEACH;
+			case 5, 6 ->   GameModel.PACMAN_APPLE;
+			case 7, 8 ->   GameModel.PACMAN_GRAPES;
+			case 9, 10 ->  GameModel.PACMAN_GALAXIAN;
+			case 11, 12 -> GameModel.PACMAN_BELL;
+			default ->     GameModel.PACMAN_KEY;
+			};
+			//@formatter:on
+		}
+	}
+
 	/**
-	 * Got this info from Reddit user <em>damselindis</em>.
-	 * (https://www.reddit.com/r/Pacman/comments/12q4ny3/is_anyone_able_to_explain_the_ai_behind_the/)
+	 * (From Reddit user <em>damselindis</em>, see
+	 * https://www.reddit.com/r/Pacman/comments/12q4ny3/is_anyone_able_to_explain_the_ai_behind_the/)
 	 * <p>
 	 * The exact fruit mechanics are as follows: After 64 dots are consumed, the game spawns the first fruit of the level.
 	 * After 176 dots are consumed, the game attempts to spawn the second fruit of the level. If the first fruit is still
@@ -93,41 +120,44 @@ public class BonusManagement {
 	 * </tr>
 	 * </table>
 	 */
-	private BonusInfo createNextBonusInfo() {
-		if (level.game().variant() == GameVariant.MS_PACMAN) {
-			return switch (level.number()) {
-			//@formatter:off
-				case 1 -> GameModel.MS_PACMAN_CHERRIES;
-				case 2 -> GameModel.MS_PACMAN_STRAWBERRY;
-				case 3 -> GameModel.MS_PACMAN_PEACH;
-				case 4 -> GameModel.MS_PACMAN_PRETZEL;
-				case 5 -> GameModel.MS_PACMAN_APPLE;
-				case 6 -> GameModel.MS_PACMAN_PEAR;
-				case 7 -> GameModel.MS_PACMAN_BANANA;
-				default     -> {
-					int random = Globals.randomInt(0, 320);
-					if (random < 50)  yield GameModel.MS_PACMAN_CHERRIES;
-					if (random < 100)	yield GameModel.MS_PACMAN_STRAWBERRY;
-					if (random < 150)	yield GameModel.MS_PACMAN_PEACH;
-					if (random < 200)	yield GameModel.MS_PACMAN_PRETZEL;
-					if (random < 240)	yield GameModel.MS_PACMAN_APPLE;
-					if (random < 280)	yield GameModel.MS_PACMAN_PEAR;
-					else              yield GameModel.MS_PACMAN_BANANA;
-				}
-			};
-		} else {
-			return switch (level.number()) {
-				case 1      -> GameModel.PACMAN_CHERRIES;
-				case 2      -> GameModel.PACMAN_STRAWBERRY;
-				case 3, 4   -> GameModel.PACMAN_PEACH;
-				case 5, 6   -> GameModel.PACMAN_APPLE;
-				case 7, 8   -> GameModel.PACMAN_GRAPES;
-				case 9, 10  -> GameModel.PACMAN_GALAXIAN;
-				case 11, 12 -> GameModel.PACMAN_BELL;
-				default     -> GameModel.PACMAN_KEY;
-			};
+	private BonusInfo nextMsPacManBonusInfo() {
+		return switch (level.number()) {
+		//@formatter:off
+			case 1 -> GameModel.MS_PACMAN_CHERRIES;
+			case 2 -> GameModel.MS_PACMAN_STRAWBERRY;
+			case 3 -> GameModel.MS_PACMAN_PEACH;
+			case 4 -> GameModel.MS_PACMAN_PRETZEL;
+			case 5 -> GameModel.MS_PACMAN_APPLE;
+			case 6 -> GameModel.MS_PACMAN_PEAR;
+			case 7 -> GameModel.MS_PACMAN_BANANA;
+			default     -> {
+				int random = Globals.randomInt(0, 320);
+				if (random < 50)  yield GameModel.MS_PACMAN_CHERRIES;
+				if (random < 100)	yield GameModel.MS_PACMAN_STRAWBERRY;
+				if (random < 150)	yield GameModel.MS_PACMAN_PEACH;
+				if (random < 200)	yield GameModel.MS_PACMAN_PRETZEL;
+				if (random < 240)	yield GameModel.MS_PACMAN_APPLE;
+				if (random < 280)	yield GameModel.MS_PACMAN_PEAR;
+				else              yield GameModel.MS_PACMAN_BANANA;
+			}
 			//@formatter:on
-		}
+		};
+	}
+
+	public boolean isFirstBonusReached() {
+		return switch (level.game().variant()) {
+		case MS_PACMAN -> level.world().eatenFoodCount() == 64;
+		case PACMAN -> level.world().eatenFoodCount() == 70;
+		default -> throw new IllegalGameVariantException(level.game().variant());
+		};
+	}
+
+	public boolean isSecondBonusReached() {
+		return switch (level.game().variant()) {
+		case MS_PACMAN -> level.world().eatenFoodCount() == 176;
+		case PACMAN -> level.world().eatenFoodCount() == 170;
+		default -> throw new IllegalGameVariantException(level.game().variant());
+		};
 	}
 
 	public Optional<Bonus> getBonus() {
@@ -151,22 +181,6 @@ public class BonusManagement {
 		if (bonus != null) {
 			bonus.update(level);
 		}
-	}
-
-	public boolean isFirstBonusReached() {
-		return switch (level.game().variant()) {
-		case MS_PACMAN -> level.world().eatenFoodCount() == 64; // is this correct?
-		case PACMAN -> level.world().eatenFoodCount() == 70;
-		default -> throw new IllegalGameVariantException(level.game().variant());
-		};
-	}
-
-	public boolean isSecondBonusReached() {
-		return switch (level.game().variant()) {
-		case MS_PACMAN -> level.world().eatenFoodCount() == 176; // is this correct?
-		case PACMAN -> level.world().eatenFoodCount() == 170;
-		default -> throw new IllegalGameVariantException(level.game().variant());
-		};
 	}
 
 	/**
@@ -193,7 +207,7 @@ public class BonusManagement {
 	}
 
 	private void spawnStaticBonus(int bonusIndex) {
-		bonus = new StaticBonus(bonusInfo(bonusIndex));
+		bonus = new StaticBonus(bonusInfo[bonusIndex]);
 		int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 		bonus.setEdible(ticks);
 		bonus.entity().setPosition(halfTileRightOf(13, 20));
@@ -223,7 +237,7 @@ public class BonusManagement {
 		route.add(exitPoint);
 		route.trimToSize();
 
-		var movingBonus = new MovingBonus(bonusInfo(bonusIndex));
+		var movingBonus = new MovingBonus(bonusInfo[bonusIndex]);
 		movingBonus.setRoute(route);
 		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
 		movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);

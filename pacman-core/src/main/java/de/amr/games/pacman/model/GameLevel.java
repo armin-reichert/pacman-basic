@@ -195,6 +195,8 @@ public class GameLevel {
 						: pac.tile());
 
 		bonusManagement = new BonusManagement(this);
+		bonusManagement.onLevelStart();
+
 		ghostHouseManagement = new GhostHouseManagement(this);
 
 		Logger.trace("Game level {} created. ({})", number, game.variant());
@@ -205,13 +207,17 @@ public class GameLevel {
 		pac.rest(Pac.REST_FOREVER);
 		pac.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
-		bonusManagement.deactivateBonus();
+		bonusManagement.onLevelEnd();
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
 		stopHuntingTimer();
 	}
 
 	public GameModel game() {
 		return game;
+	}
+
+	public byte symbol() {
+		return bonusManagement.bonusInfo(0).symbol();
 	}
 
 	public BonusManagement bonusManagement() {
