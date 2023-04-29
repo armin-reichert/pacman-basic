@@ -46,12 +46,12 @@ import de.amr.games.pacman.model.world.World;
 
 /**
  * @author Armin Reichert
- *
  */
 public class BonusManagement {
 
 	private final GameLevel level;
 	private final BonusInfo[] bonusInfo = new BonusInfo[2];
+	private Bonus bonus;
 
 	public BonusManagement(GameLevel level) {
 		this.level = level;
@@ -130,8 +130,6 @@ public class BonusManagement {
 		}
 	}
 
-	private Bonus bonus;
-
 	public Optional<Bonus> getBonus() {
 		return Optional.ofNullable(bonus);
 	}
@@ -173,11 +171,6 @@ public class BonusManagement {
 
 	/**
 	 * Handles bonus achievment (public access only for level state test).
-	 * <p>
-	 * In Ms. Pac-Man, the bonus enters the world at a random portal, walks to the house entry, takes a tour around the
-	 * house and finally leaves the world through a random portal on the opposite side of the world.
-	 * <p>
-	 * TODO this is not exactly the behavior from the original game, yes I know.
 	 * 
 	 * @param bonusIndex achieved bonus index (0 or 1).
 	 */
@@ -188,42 +181,55 @@ public class BonusManagement {
 				Logger.info("First bonus still active, skip second one");
 				return; // first bonus still active
 			}
-
-			var portals = level.world().portals();
-			var leftToRight = RND.nextBoolean();
-			var entryPortal = portals.get(RND.nextInt(portals.size()));
-			var exitPortal = portals.get(RND.nextInt(portals.size()));
-			var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
-			var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
-					: np(exitPortal.leftTunnelEnd().minus(1, 0));
-			var houseEntryTile = World.tileAt(level.world().house().door().entryPosition());
-			int houseHeight = level.world().house().size().y();
-			var route = new ArrayList<NavigationPoint>();
-			route.add(np(houseEntryTile));
-			route.add(np(houseEntryTile.plus(0, houseHeight + 1)));
-			route.add(np(houseEntryTile));
-			route.add(exitPoint);
-			route.trimToSize();
-
-			var movingBonus = new MovingBonus(bonusInfo(bonusIndex));
-			movingBonus.setRoute(route);
-			movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
-			movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
-			movingBonus.setEdible(TickTimer.INDEFINITE);
-
-			this.bonus = movingBonus;
-			Logger.trace("Bonus activated, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
+			spawnMovingBonus(bonusIndex);
 			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 		}
 		case PACMAN -> {
-			bonus = new StaticBonus(bonusInfo(bonusIndex));
-			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
-			bonus.setEdible(ticks);
-			bonus.entity().setPosition(halfTileRightOf(13, 20));
-			Logger.info("Bonus activated for {} ticks ({} seconds): {}", ticks, (float) ticks / GameModel.FPS, bonus);
+			spawnStaticBonus(bonusIndex);
 			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 		}
 		default -> throw new IllegalGameVariantException(level.game().variant());
 		}
+	}
+
+	private void spawnStaticBonus(int bonusIndex) {
+		bonus = new StaticBonus(bonusInfo(bonusIndex));
+		int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
+		bonus.setEdible(ticks);
+		bonus.entity().setPosition(halfTileRightOf(13, 20));
+		Logger.info("Bonus activated for {} ticks ({} seconds): {}", ticks, (float) ticks / GameModel.FPS, bonus);
+	}
+
+	/**
+	 * In Ms. Pac-Man, the moving bonus enters the world at a random portal, walks to the house entry, takes a tour around
+	 * the house and finally leaves the world through a random portal on the opposite side of the world.
+	 * <p>
+	 * TODO this is not exactly the behavior from the original game, yes I know.
+	 **/
+	private void spawnMovingBonus(int bonusIndex) {
+		var portals = level.world().portals();
+		var leftToRight = RND.nextBoolean();
+		var entryPortal = portals.get(RND.nextInt(portals.size()));
+		var exitPortal = portals.get(RND.nextInt(portals.size()));
+		var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
+		var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
+				: np(exitPortal.leftTunnelEnd().minus(1, 0));
+		var houseEntryTile = World.tileAt(level.world().house().door().entryPosition());
+		int houseHeight = level.world().house().size().y();
+		var route = new ArrayList<NavigationPoint>();
+		route.add(np(houseEntryTile));
+		route.add(np(houseEntryTile.plus(0, houseHeight + 1)));
+		route.add(np(houseEntryTile));
+		route.add(exitPoint);
+		route.trimToSize();
+
+		var movingBonus = new MovingBonus(bonusInfo(bonusIndex));
+		movingBonus.setRoute(route);
+		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
+		movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
+		movingBonus.setEdible(TickTimer.INDEFINITE);
+
+		this.bonus = movingBonus;
+		Logger.trace("Bonus activated, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
 	}
 }
