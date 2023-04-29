@@ -102,12 +102,18 @@ public class GameLevel {
 
 	private final GameModel game;
 
+	private final BonusManagement bonusManagement;
+
+	private final GhostHouseManagement ghostHouseManagement;
+
+	/** 1-based level number. */
 	private final int number;
 
 	private final boolean demoLevel;
 
 	private final TickTimer huntingTimer = new TickTimer("HuntingTimer");
 
+	/** Memorizes what happens during a frame. */
 	private final Memory memo = new Memory();
 
 	private final World world;
@@ -126,10 +132,7 @@ public class GameLevel {
 
 	private byte cruiseElroyState;
 
-	private final BonusManagement bonusManagement;
-	private final GhostHouseManagement ghostHouseManagement;
-
-	public GameLevel(GameModel game, World world, int number, boolean demoLevel) {
+	public GameLevel(GameModel game, World world, int number, byte[] data, boolean demoLevel) {
 		checkGameNotNull(game);
 		checkNotNull(world);
 		checkLevelNumber(number);
@@ -139,7 +142,6 @@ public class GameLevel {
 		this.number = number;
 		this.demoLevel = demoLevel;
 
-		var data = game.levelData(number);
 		pacSpeed = percent(data[0]);
 		ghostSpeed = percent(data[1]);
 		ghostSpeedTunnel = percent(data[2]);

@@ -373,7 +373,7 @@ public class GameModel {
 	public static final String SE_STOP_ALL_SOUNDS = "stop_all_sounds";
 
 	//@formatter:off
-	private static final byte[][] LEVEL_PARAMETERS = {
+	private static final byte[][] LEVEL_DATA = {
 	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5, 0},
 	/* 2*/ { 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5, 1},
 	/* 3*/ { 90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5, 0},
@@ -396,6 +396,18 @@ public class GameModel {
 	/*20*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0, 0},
 	/*21*/ { 90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0, 0},
 	};
+	
+	/**
+	 * @param levelNumber level number (starting at 1)
+	 * @return parameter values (speed, pellet counts etc.) used in specified level. From level 21 on, level parameters
+	 *         remain the same
+	 */
+	private static byte[] levelData(int levelNumber) {
+		return levelNumber <= LEVEL_DATA.length //
+				? LEVEL_DATA[levelNumber - 1]
+				: LEVEL_DATA[LEVEL_DATA.length - 1];
+	}
+
 	
 	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
 	private static final int[][] HUNTING_DURATIONS_PACMAN = {
@@ -487,17 +499,6 @@ public class GameModel {
 		return variant == GameVariant.MS_PACMAN ? mazeNumberMsPacMan(levelNumber) : 1;
 	}
 
-	/**
-	 * @param levelNumber level number (starting at 1)
-	 * @return parameter values (speed, pellet counts etc.) used in specified level. From level 21 on, level parameters
-	 *         remain the same
-	 */
-	public byte[] levelData(int levelNumber) {
-		return levelNumber <= LEVEL_PARAMETERS.length //
-				? LEVEL_PARAMETERS[levelNumber - 1]
-				: LEVEL_PARAMETERS[LEVEL_PARAMETERS.length - 1];
-	}
-
 	/** @return (optional) current game level. */
 	public Optional<GameLevel> level() {
 		return Optional.ofNullable(level);
@@ -516,7 +517,7 @@ public class GameModel {
 		case PACMAN -> PACMAN_MAP;
 		default -> throw new IllegalGameVariantException(variant);
 		};
-		level = new GameLevel(this, new World(map), levelNumber, false);
+		level = new GameLevel(this, new World(map), levelNumber, levelData(levelNumber), false);
 
 		if (level.number() == 1) {
 			levelCounter.clear();
@@ -542,11 +543,11 @@ public class GameModel {
 	public void enterDemoLevel() {
 		switch (variant) {
 		case MS_PACMAN -> {
-			level = new GameLevel(this, new World(MS_PACMAN_MAPS[0]), 1, true);
+			level = new GameLevel(this, new World(MS_PACMAN_MAPS[0]), 1, levelData(1), true);
 			level.setPacSteering(new RuleBasedSteering());
 		}
 		case PACMAN -> {
-			level = new GameLevel(this, new World(PACMAN_MAP), 1, true);
+			level = new GameLevel(this, new World(PACMAN_MAP), 1, levelData(1), true);
 			level.setPacSteering(new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE));
 
 		}
