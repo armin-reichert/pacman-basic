@@ -32,6 +32,10 @@ import static de.amr.games.pacman.lib.Globals.isEven;
 import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.percent;
 import static de.amr.games.pacman.lib.Globals.v2i;
+import static de.amr.games.pacman.model.GameModel.CYAN_GHOST;
+import static de.amr.games.pacman.model.GameModel.ORANGE_GHOST;
+import static de.amr.games.pacman.model.GameModel.PINK_GHOST;
+import static de.amr.games.pacman.model.GameModel.RED_GHOST;
 import static de.amr.games.pacman.model.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.actors.GhostState.LEAVING_HOUSE;
@@ -158,43 +162,41 @@ public class GameLevel {
 		pac = new Pac(game.variant() == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
 
 		ghosts = new Ghost[] { //
-				new Ghost(GameModel.RED_GHOST, "Blinky"), //
-				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
-				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
-				new Ghost(GameModel.ORANGE_GHOST, game.variant() == GameVariant.MS_PACMAN ? "Sue" : "Clyde") //
+				new Ghost(RED_GHOST, "Blinky"), //
+				new Ghost(PINK_GHOST, "Pinky"), //
+				new Ghost(CYAN_GHOST, "Inky"), //
+				new Ghost(ORANGE_GHOST, game.variant() == GameVariant.MS_PACMAN ? "Sue" : "Clyde") //
 		};
 
 		// Blinky: attacks Pac-Man directly
-		ghosts[GameModel.RED_GHOST].setInitialDirection(Direction.LEFT);
-		ghosts[GameModel.RED_GHOST].setInitialPosition(world.house().door().entryPosition());
-		ghosts[GameModel.RED_GHOST].setRevivalPosition(world.house().seatPosition(1));
-		ghosts[GameModel.RED_GHOST].setScatterTile(v2i(25, 0));
-		ghosts[GameModel.RED_GHOST].setChasingTarget(pac::tile);
+		ghosts[RED_GHOST].setInitialDirection(Direction.LEFT);
+		ghosts[RED_GHOST].setInitialPosition(world.house().door().entryPosition());
+		ghosts[RED_GHOST].setRevivalPosition(world.house().seatPosition(1));
+		ghosts[RED_GHOST].setScatterTile(v2i(25, 0));
+		ghosts[RED_GHOST].setChasingTarget(pac::tile);
 
 		// Pinky: ambushes Pac-Man
-		ghosts[GameModel.PINK_GHOST].setInitialDirection(Direction.DOWN);
-		ghosts[GameModel.PINK_GHOST].setInitialPosition(world.house().seatPosition(1));
-		ghosts[GameModel.PINK_GHOST].setRevivalPosition(world.house().seatPosition(1));
-		ghosts[GameModel.PINK_GHOST].setScatterTile(v2i(2, 0));
-		ghosts[GameModel.PINK_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(4));
+		ghosts[PINK_GHOST].setInitialDirection(Direction.DOWN);
+		ghosts[PINK_GHOST].setInitialPosition(world.house().seatPosition(1));
+		ghosts[PINK_GHOST].setRevivalPosition(world.house().seatPosition(1));
+		ghosts[PINK_GHOST].setScatterTile(v2i(2, 0));
+		ghosts[PINK_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(4));
 
 		// Inky: attacks from opposite side as Blinky
-		ghosts[GameModel.CYAN_GHOST].setInitialDirection(Direction.UP);
-		ghosts[GameModel.CYAN_GHOST].setInitialPosition(world.house().seatPosition(0));
-		ghosts[GameModel.CYAN_GHOST].setRevivalPosition(world.house().seatPosition(0));
-		ghosts[GameModel.CYAN_GHOST].setScatterTile(v2i(27, 34));
-		ghosts[GameModel.CYAN_GHOST]
-				.setChasingTarget(() -> pac.tilesAheadBuggy(2).scaled(2).minus(ghosts[GameModel.RED_GHOST].tile()));
+		ghosts[CYAN_GHOST].setInitialDirection(Direction.UP);
+		ghosts[CYAN_GHOST].setInitialPosition(world.house().seatPosition(0));
+		ghosts[CYAN_GHOST].setRevivalPosition(world.house().seatPosition(0));
+		ghosts[CYAN_GHOST].setScatterTile(v2i(27, 34));
+		ghosts[CYAN_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(2).scaled(2).minus(ghosts[RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
-		ghosts[GameModel.ORANGE_GHOST].setInitialDirection(Direction.UP);
-		ghosts[GameModel.ORANGE_GHOST].setInitialPosition(world.house().seatPosition(2));
-		ghosts[GameModel.ORANGE_GHOST].setRevivalPosition(world.house().seatPosition(2));
-		ghosts[GameModel.ORANGE_GHOST].setScatterTile(v2i(0, 34));
-		ghosts[GameModel.ORANGE_GHOST]
-				.setChasingTarget(() -> ghosts[GameModel.ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8 //
-						? ghosts[GameModel.ORANGE_GHOST].scatterTile()
-						: pac.tile());
+		ghosts[ORANGE_GHOST].setInitialDirection(Direction.UP);
+		ghosts[ORANGE_GHOST].setInitialPosition(world.house().seatPosition(2));
+		ghosts[ORANGE_GHOST].setRevivalPosition(world.house().seatPosition(2));
+		ghosts[ORANGE_GHOST].setScatterTile(v2i(0, 34));
+		ghosts[ORANGE_GHOST].setChasingTarget(() -> ghosts[ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8 //
+				? ghosts[ORANGE_GHOST].scatterTile()
+				: pac.tile());
 
 		bonusManagement = new BonusManagement(this);
 		bonusManagement.onLevelStart();
@@ -281,8 +283,7 @@ public class GameLevel {
 	 * @return Pac-Man and the ghosts in order RED, PINK, CYAN, ORANGE
 	 */
 	public Stream<Creature> guys() {
-		return Stream.of(pac, ghosts[GameModel.RED_GHOST], ghosts[GameModel.PINK_GHOST], ghosts[GameModel.CYAN_GHOST],
-				ghosts[GameModel.ORANGE_GHOST]);
+		return Stream.of(pac, ghosts[RED_GHOST], ghosts[PINK_GHOST], ghosts[CYAN_GHOST], ghosts[ORANGE_GHOST]);
 	}
 
 	/**
@@ -401,7 +402,7 @@ public class GameLevel {
 	 * @param ghost one of the guys
 	 */
 	public void doGhostHuntingAction(Ghost ghost) {
-		boolean cruiseElroy = ghost.id() == GameModel.RED_GHOST && cruiseElroyState > 0;
+		boolean cruiseElroy = ghost.id() == RED_GHOST && cruiseElroyState > 0;
 		switch (game.variant()) {
 		case MS_PACMAN -> {
 			/*
@@ -409,7 +410,7 @@ public class GameLevel {
 			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
 			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
-			if (scatterPhase().isPresent() && (ghost.id() == GameModel.RED_GHOST || ghost.id() == GameModel.PINK_GHOST)) {
+			if (scatterPhase().isPresent() && (ghost.id() == RED_GHOST || ghost.id() == PINK_GHOST)) {
 				ghost.roam(this); // not sure
 			} else if (chasingPhase().isPresent() || cruiseElroy) {
 				ghost.chase(this);
@@ -474,9 +475,9 @@ public class GameLevel {
 	public float huntingSpeed(Ghost ghost) {
 		if (world.isTunnel(ghost.tile())) {
 			return ghostSpeedTunnel;
-		} else if (ghost.id() == GameModel.RED_GHOST && cruiseElroyState == 1) {
+		} else if (ghost.id() == RED_GHOST && cruiseElroyState == 1) {
 			return elroy1Speed;
-		} else if (ghost.id() == GameModel.RED_GHOST && cruiseElroyState == 2) {
+		} else if (ghost.id() == RED_GHOST && cruiseElroyState == 2) {
 			return elroy2Speed;
 		} else {
 			return ghostSpeed;
@@ -660,7 +661,7 @@ public class GameLevel {
 		ghostHouseManagement.checkIfNextGhostCanLeaveHouse().ifPresent(unlockInfo -> {
 			var ghost = unlockInfo.ghost();
 			ghost.leaveHouse(this);
-			if (ghost.id() == GameModel.ORANGE_GHOST && cruiseElroyState < 0) {
+			if (ghost.id() == ORANGE_GHOST && cruiseElroyState < 0) {
 				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
 				setCruiseElroyStateEnabled(true);
 			}
