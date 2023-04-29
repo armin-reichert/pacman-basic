@@ -244,7 +244,7 @@ public class BonusManagement {
 		movingBonus.setRoute(route);
 		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
 		movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
-		Logger.trace("Bonus created, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
+		Logger.info("Moving bonus created, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
 
 		return movingBonus;
 	}
