@@ -53,6 +53,10 @@ public record House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2
 		}
 	}
 
+	public Vector2f seatPosition(int i) {
+		return seatPosition(i);
+	}
+
 	/**
 	 * @param tile some tile
 	 * @return tells if the given tile is part of this house

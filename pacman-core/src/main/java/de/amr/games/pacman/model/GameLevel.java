@@ -165,29 +165,29 @@ public class GameLevel {
 		// Blinky: attacks Pac-Man directly
 		ghosts[GameModel.RED_GHOST].setInitialDirection(Direction.LEFT);
 		ghosts[GameModel.RED_GHOST].setInitialPosition(world.house().door().entryPosition());
-		ghosts[GameModel.RED_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
+		ghosts[GameModel.RED_GHOST].setRevivalPosition(world.house().seatPosition(1));
 		ghosts[GameModel.RED_GHOST].setScatterTile(v2i(25, 0));
 		ghosts[GameModel.RED_GHOST].setChasingTarget(pac::tile);
 
 		// Pinky: ambushes Pac-Man
 		ghosts[GameModel.PINK_GHOST].setInitialDirection(Direction.DOWN);
-		ghosts[GameModel.PINK_GHOST].setInitialPosition(world.house().seatPositions().get(1));
-		ghosts[GameModel.PINK_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
+		ghosts[GameModel.PINK_GHOST].setInitialPosition(world.house().seatPosition(1));
+		ghosts[GameModel.PINK_GHOST].setRevivalPosition(world.house().seatPosition(1));
 		ghosts[GameModel.PINK_GHOST].setScatterTile(v2i(2, 0));
 		ghosts[GameModel.PINK_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(4));
 
 		// Inky: attacks from opposite side as Blinky
 		ghosts[GameModel.CYAN_GHOST].setInitialDirection(Direction.UP);
-		ghosts[GameModel.CYAN_GHOST].setInitialPosition(world.house().seatPositions().get(0));
-		ghosts[GameModel.CYAN_GHOST].setRevivalPosition(world.house().seatPositions().get(0));
+		ghosts[GameModel.CYAN_GHOST].setInitialPosition(world.house().seatPosition(0));
+		ghosts[GameModel.CYAN_GHOST].setRevivalPosition(world.house().seatPosition(0));
 		ghosts[GameModel.CYAN_GHOST].setScatterTile(v2i(27, 34));
 		ghosts[GameModel.CYAN_GHOST]
 				.setChasingTarget(() -> pac.tilesAheadBuggy(2).scaled(2).minus(ghosts[GameModel.RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
 		ghosts[GameModel.ORANGE_GHOST].setInitialDirection(Direction.UP);
-		ghosts[GameModel.ORANGE_GHOST].setInitialPosition(world.house().seatPositions().get(2));
-		ghosts[GameModel.ORANGE_GHOST].setRevivalPosition(world.house().seatPositions().get(2));
+		ghosts[GameModel.ORANGE_GHOST].setInitialPosition(world.house().seatPosition(2));
+		ghosts[GameModel.ORANGE_GHOST].setRevivalPosition(world.house().seatPosition(2));
 		ghosts[GameModel.ORANGE_GHOST].setScatterTile(v2i(0, 34));
 		ghosts[GameModel.ORANGE_GHOST]
 				.setChasingTarget(() -> ghosts[GameModel.ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8 //
