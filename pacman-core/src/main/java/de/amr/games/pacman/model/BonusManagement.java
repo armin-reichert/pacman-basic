@@ -130,7 +130,7 @@ public class BonusManagement {
 			case 5 -> GameModel.MS_PACMAN_APPLE;
 			case 6 -> GameModel.MS_PACMAN_PEAR;
 			case 7 -> GameModel.MS_PACMAN_BANANA;
-			default     -> {
+			default -> {
 				int random = Globals.randomInt(0, 320);
 				if (random < 50)  yield GameModel.MS_PACMAN_CHERRIES;
 				if (random < 100) yield GameModel.MS_PACMAN_STRAWBERRY;
@@ -165,9 +165,6 @@ public class BonusManagement {
 	}
 
 	public BonusInfo bonusInfo(int index) {
-		if (index != 0 && index != 1) {
-			throw new IllegalArgumentException("Illegal bonus index: %d".formatted(index));
-		}
 		return bonusInfo[index];
 	}
 
@@ -217,8 +214,8 @@ public class BonusManagement {
 	}
 
 	/**
-	 * In Ms. Pac-Man, the moving bonus enters the world at a random portal, walks to the house entry, takes a tour around
-	 * the house and finally leaves the world through a random portal on the opposite side of the world.
+	 * The moving bonus enters the world at a random portal, walks to the house entry, takes a tour around the house and
+	 * finally leaves the world through a random portal on the opposite side of the world.
 	 * <p>
 	 * TODO this is not exactly the behavior from the original game, yes I know.
 	 **/
