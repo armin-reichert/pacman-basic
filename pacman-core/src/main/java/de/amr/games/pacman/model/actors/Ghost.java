@@ -188,7 +188,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	public void leaveHouse(GameLevel level) {
-		if (level.world().house().contains(tile())) {
+		if (insideHouse(level)) {
 			enterStateLeavingHouse(level);
 		} else {
 			setMoveAndWishDir(LEFT);
@@ -275,6 +275,10 @@ public class Ghost extends Creature implements AnimatedEntity {
 		return oneOf(state, alternatives);
 	}
 
+	public boolean insideHouse(GameLevel level) {
+		return level.world().house().contains(tile());
+	}
+
 	/**
 	 * Executes a single simulation step for this ghost in the specified game level.
 	 * 
@@ -309,7 +313,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private void updateStateLocked(GameLevel level) {
 		var baseLevel = initialPosition.y();
-		if (level.world().house().contains(tile())) {
+		if (insideHouse(level)) {
 			if (position.y() <= baseLevel - HTS) {
 				setMoveAndWishDir(DOWN);
 			} else if (position.y() >= baseLevel + HTS) {
