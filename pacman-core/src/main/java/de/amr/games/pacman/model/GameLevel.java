@@ -24,7 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.lib.Globals.RND;
 import static de.amr.games.pacman.lib.Globals.checkGameNotNull;
 import static de.amr.games.pacman.lib.Globals.checkGhostID;
 import static de.amr.games.pacman.lib.Globals.checkLevelNumber;
@@ -34,14 +33,12 @@ import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.percent;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.Direction.LEFT;
-import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
 import static de.amr.games.pacman.model.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.world.World.halfTileRightOf;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -53,19 +50,14 @@ import org.tinylog.Logger;
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.Globals;
 import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.model.actors.Bonus;
 import de.amr.games.pacman.model.actors.Creature;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.GhostState;
-import de.amr.games.pacman.model.actors.MovingBonus;
 import de.amr.games.pacman.model.actors.Pac;
-import de.amr.games.pacman.model.actors.StaticBonus;
 import de.amr.games.pacman.model.world.World;
 
 /**
@@ -125,9 +117,7 @@ public class GameLevel {
 
 	private final Ghost[] ghosts;
 
-	private final BonusInfo[] bonusInfo = new BonusInfo[2];
-
-	private Bonus bonus;
+	private final BonusManagement bonusManagement;
 
 	private Steering pacSteering;
 
@@ -184,7 +174,7 @@ public class GameLevel {
 		ghosts[GameModel.PINK_GHOST].setInitialPosition(world.house().seatPositions().get(1));
 		ghosts[GameModel.PINK_GHOST].setRevivalPosition(world.house().seatPositions().get(1));
 		ghosts[GameModel.PINK_GHOST].setScatterTile(v2i(2, 0));
-		ghosts[GameModel.PINK_GHOST].setChasingTarget(() -> tilesAhead(pac, 4));
+		ghosts[GameModel.PINK_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(4));
 
 		// Inky: attacks from opposite side as Blinky
 		ghosts[GameModel.CYAN_GHOST].setInitialDirection(Direction.UP);
@@ -192,7 +182,7 @@ public class GameLevel {
 		ghosts[GameModel.CYAN_GHOST].setRevivalPosition(world.house().seatPositions().get(0));
 		ghosts[GameModel.CYAN_GHOST].setScatterTile(v2i(27, 34));
 		ghosts[GameModel.CYAN_GHOST]
-				.setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(ghosts[GameModel.RED_GHOST].tile()));
+				.setChasingTarget(() -> pac.tilesAheadBuggy(2).scaled(2).minus(ghosts[GameModel.RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
 		ghosts[GameModel.ORANGE_GHOST].setInitialDirection(Direction.UP);
@@ -204,26 +194,11 @@ public class GameLevel {
 						? ghosts[GameModel.ORANGE_GHOST].scatterTile()
 						: pac.tile());
 
-		bonusInfo[0] = createNextBonusInfo();
-		bonusInfo[1] = createNextBonusInfo();
+		bonusManagement = new BonusManagement(this);
 
 		defineGhostHouseRules();
 
 		Logger.trace("Game level {} created. ({})", number, game.variant());
-	}
-
-	/**
-	 * Simulates the overflow bug from the original Arcade version.
-	 * 
-	 * @param guy      a creature
-	 * @param numTiles number of tiles
-	 * @return the tile located the given number of tiles in front of the creature (towards move direction). In case
-	 *         creature looks up, additional n tiles are added towards left. This simulates an overflow error in the
-	 *         original Arcade game.
-	 */
-	private static Vector2i tilesAhead(Creature guy, int numTiles) {
-		Vector2i ahead = guy.tile().plus(guy.moveDir().vector().scaled(numTiles));
-		return guy.moveDir() == Direction.UP ? ahead.minus(numTiles, 0) : ahead;
 	}
 
 	public void exit() {
@@ -231,15 +206,17 @@ public class GameLevel {
 		pac.rest(Pac.REST_FOREVER);
 		pac.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
-		if (bonus != null) {
-			bonus.setInactive();
-		}
+		bonusManagement.deactivateBonus();
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
 		stopHuntingTimer();
 	}
 
 	public GameModel game() {
 		return game;
+	}
+
+	public BonusManagement bonusManagement() {
+		return bonusManagement;
 	}
 
 	public TickTimer huntingTimer() {
@@ -535,9 +512,9 @@ public class GameLevel {
 			var foodTile = memo.foodFoundTile.get();
 			world.removeFood(foodTile);
 			pac.endStarving();
-			if (isFirstBonusReached()) {
+			if (bonusManagement.isFirstBonusReached()) {
 				memo.bonusReachedIndex = 0;
-			} else if (isSecondBonusReached()) {
+			} else if (bonusManagement.isSecondBonusReached()) {
 				memo.bonusReachedIndex = 1;
 			}
 			if (memo.energizerFound) {
@@ -562,7 +539,7 @@ public class GameLevel {
 
 		// Bonus?
 		if (memo.bonusReachedIndex != -1) {
-			handleBonusReached(memo.bonusReachedIndex);
+			bonusManagement.handleBonusReached(memo.bonusReachedIndex);
 		}
 
 		// Pac power state changes
@@ -603,9 +580,7 @@ public class GameLevel {
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
 		pac.update(this);
 		ghosts().forEach(ghost -> ghost.update(this));
-		if (bonus != null) {
-			bonus.update(this);
-		}
+		bonusManagement.updateBonus();
 
 		// Update hunting timer
 		if (memo.pacPowerStarts || memo.pacKilled) {
@@ -674,162 +649,6 @@ public class GameLevel {
 
 	public boolean isCompleted() {
 		return world.uneatenFoodCount() == 0;
-	}
-
-	// --- Bonus ---
-
-	public Optional<Bonus> getBonus() {
-		return Optional.ofNullable(bonus);
-	}
-
-	public BonusInfo bonusInfo(int index) {
-		if (index != 0 && index != 1) {
-			throw new IllegalArgumentException("Illegal bonus index: %d".formatted(index));
-		}
-		return bonusInfo[index];
-	}
-
-	/**
-	 * Got this info from Reddit user <em>damselindis</em>.
-	 * (https://www.reddit.com/r/Pacman/comments/12q4ny3/is_anyone_able_to_explain_the_ai_behind_the/)
-	 * <p>
-	 * The exact fruit mechanics are as follows: After 64 dots are consumed, the game spawns the first fruit of the level.
-	 * After 176 dots are consumed, the game attempts to spawn the second fruit of the level. If the first fruit is still
-	 * present in the level when (or eaten very shortly before) the 176th dot is consumed, the second fruit will not
-	 * spawn. Dying while a fruit is on screen causes it to immediately disappear and never return.
-	 * <p>
-	 * The type of fruit is determined by the level count - levels 1-7 will always have two cherries, two strawberries,
-	 * etc. until two bananas on level 7. On level 8 and beyond, the fruit type is randomly selected using the weights in
-	 * the following table:
-	 * 
-	 * <table>
-	 * <tr>
-	 * <th>Cherry
-	 * <th>Strawberry
-	 * <th>Peach
-	 * <th>Pretzel
-	 * <th>Apple
-	 * <th>Pear
-	 * <th>Banana
-	 * </tr>
-	 * <tr>
-	 * <td>5/32
-	 * <td>5/32
-	 * <td>5/32
-	 * <td>5/32
-	 * <td>4/32
-	 * <td>4/32
-	 * <td>4/32
-	 * </tr>
-	 * </table>
-	 */
-	private BonusInfo createNextBonusInfo() {
-		if (game.variant() == GameVariant.MS_PACMAN) {
-			return switch (number) {
-			//@formatter:off
-				case 1 -> GameModel.MS_PACMAN_CHERRIES;
-				case 2 -> GameModel.MS_PACMAN_STRAWBERRY;
-				case 3 -> GameModel.MS_PACMAN_PEACH;
-				case 4 -> GameModel.MS_PACMAN_PRETZEL;
-				case 5 -> GameModel.MS_PACMAN_APPLE;
-				case 6 -> GameModel.MS_PACMAN_PEAR;
-				case 7 -> GameModel.MS_PACMAN_BANANA;
-				default     -> {
-					int random = Globals.randomInt(0, 320);
-					if (random < 50)  yield GameModel.MS_PACMAN_CHERRIES;
-					if (random < 100)	yield GameModel.MS_PACMAN_STRAWBERRY;
-					if (random < 150)	yield GameModel.MS_PACMAN_PEACH;
-					if (random < 200)	yield GameModel.MS_PACMAN_PRETZEL;
-					if (random < 240)	yield GameModel.MS_PACMAN_APPLE;
-					if (random < 280)	yield GameModel.MS_PACMAN_PEAR;
-					else              yield GameModel.MS_PACMAN_BANANA;
-				}
-			};
-		} else {
-			return switch (number) {
-				case 1      -> GameModel.PACMAN_CHERRIES;
-				case 2      -> GameModel.PACMAN_STRAWBERRY;
-				case 3, 4   -> GameModel.PACMAN_PEACH;
-				case 5, 6   -> GameModel.PACMAN_APPLE;
-				case 7, 8   -> GameModel.PACMAN_GRAPES;
-				case 9, 10  -> GameModel.PACMAN_GALAXIAN;
-				case 11, 12 -> GameModel.PACMAN_BELL;
-				default     -> GameModel.PACMAN_KEY;
-			};
-			//@formatter:on
-		}
-	}
-
-	private boolean isFirstBonusReached() {
-		return switch (game.variant()) {
-		case MS_PACMAN -> world.eatenFoodCount() == 64; // is this correct?
-		case PACMAN -> world.eatenFoodCount() == 70;
-		default -> throw new IllegalGameVariantException(game.variant());
-		};
-	}
-
-	private boolean isSecondBonusReached() {
-		return switch (game.variant()) {
-		case MS_PACMAN -> world.eatenFoodCount() == 176; // is this correct?
-		case PACMAN -> world.eatenFoodCount() == 170;
-		default -> throw new IllegalGameVariantException(game.variant());
-		};
-	}
-
-	/**
-	 * Handles bonus achievment (public access only for level state test).
-	 * <p>
-	 * In Ms. Pac-Man, the bonus enters the world at a random portal, walks to the house entry, takes a tour around the
-	 * house and finally leaves the world through a random portal on the opposite side of the world.
-	 * <p>
-	 * TODO this is not exactly the behavior from the original game, yes I know.
-	 * 
-	 * @param bonusIndex achieved bonus index (0 or 1).
-	 */
-	public void handleBonusReached(int bonusIndex) {
-		switch (game.variant()) {
-		case MS_PACMAN -> {
-			if (bonusIndex == 1 && bonus != null && bonus.state() == Bonus.STATE_EDIBLE) {
-				Logger.info("First bonus still active, skip second one");
-				return; // first bonus still active
-			}
-
-			var portals = world.portals();
-			var leftToRight = RND.nextBoolean();
-			var entryPortal = portals.get(RND.nextInt(portals.size()));
-			var exitPortal = portals.get(RND.nextInt(portals.size()));
-			var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
-			var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
-					: np(exitPortal.leftTunnelEnd().minus(1, 0));
-			var houseEntryTile = World.tileAt(world.house().door().entryPosition());
-			int houseHeight = world.house().size().y();
-			var route = new ArrayList<NavigationPoint>();
-			route.add(np(houseEntryTile));
-			route.add(np(houseEntryTile.plus(0, houseHeight + 1)));
-			route.add(np(houseEntryTile));
-			route.add(exitPoint);
-			route.trimToSize();
-
-			var movingBonus = new MovingBonus(bonusInfo(bonusIndex));
-			movingBonus.setRoute(route);
-			movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
-			movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
-			movingBonus.setEdible(TickTimer.INDEFINITE);
-
-			this.bonus = movingBonus;
-			Logger.trace("Bonus activated, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
-			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
-		}
-		case PACMAN -> {
-			bonus = new StaticBonus(bonusInfo(bonusIndex));
-			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
-			bonus.setEdible(ticks);
-			bonus.entity().setPosition(halfTileRightOf(13, 20));
-			Logger.info("Bonus activated for {} ticks ({} seconds): {}", ticks, (float) ticks / GameModel.FPS, bonus);
-			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
-		}
-		default -> throw new IllegalGameVariantException(game.variant());
-		}
 	}
 
 	/* --- Ghosthouse control rules, see Pac-Man dossier --- */

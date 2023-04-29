@@ -212,6 +212,19 @@ public abstract class Creature extends Entity {
 	}
 
 	/**
+	 * Simulates the overflow bug from the original Arcade version.
+	 * 
+	 * @param numTiles number of tiles
+	 * @return the tile located the given number of tiles in front of the creature (towards move direction). In case
+	 *         creature looks up, additional n tiles are added towards left. This simulates an overflow error in the
+	 *         original Arcade game.
+	 */
+	public Vector2i tilesAheadBuggy(int numTiles) {
+		Vector2i ahead = tile().plus(moveDir().vector().scaled(numTiles));
+		return moveDir() == Direction.UP ? ahead.minus(numTiles, 0) : ahead;
+	}
+
+	/**
 	 * @param tile  some tile inside or outside of the world
 	 * @param level the game level (tile access can depend on the game level where the creature exists)
 	 * @return if this creature can access the given tile
