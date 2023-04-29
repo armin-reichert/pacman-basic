@@ -191,27 +191,29 @@ public class BonusManagement {
 	public void handleBonusReached(int bonusIndex) {
 		switch (level.game().variant()) {
 		case MS_PACMAN -> {
-			if (bonusIndex == 1 && bonus != null && bonus.state() == Bonus.STATE_EDIBLE) {
+			if (bonusIndex == 1 && bonus != null && bonus.state() != Bonus.STATE_INACTIVE) {
 				Logger.info("First bonus still active, skip second one");
-				return; // first bonus still active
+				return;
 			}
-			spawnMovingBonus(bonusIndex);
+			bonus = createMovingBonus(bonusIndex);
+			bonus.setEdible(TickTimer.INDEFINITE);
+			Logger.info("Moving bonus activated");
 			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 		}
 		case PACMAN -> {
-			spawnStaticBonus(bonusIndex);
+			bonus = createStaticBonus(bonusIndex);
+			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
+			bonus.setEdible(ticks);
 			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
 		}
 		default -> throw new IllegalGameVariantException(level.game().variant());
 		}
 	}
 
-	private void spawnStaticBonus(int bonusIndex) {
-		bonus = new StaticBonus(bonusInfo[bonusIndex]);
-		int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
-		bonus.setEdible(ticks);
-		bonus.entity().setPosition(halfTileRightOf(13, 20));
-		Logger.info("Bonus activated for {} ticks ({} seconds): {}", ticks, (float) ticks / GameModel.FPS, bonus);
+	private Bonus createStaticBonus(int bonusIndex) {
+		var staticBonus = new StaticBonus(bonusInfo[bonusIndex]);
+		staticBonus.entity().setPosition(halfTileRightOf(13, 20));
+		return staticBonus;
 	}
 
 	/**
@@ -220,7 +222,7 @@ public class BonusManagement {
 	 * <p>
 	 * TODO this is not exactly the behavior from the original game, yes I know.
 	 **/
-	private void spawnMovingBonus(int bonusIndex) {
+	private Bonus createMovingBonus(int bonusIndex) {
 		var portals = level.world().portals();
 		var leftToRight = RND.nextBoolean();
 		var entryPortal = portals.get(RND.nextInt(portals.size()));
@@ -230,6 +232,7 @@ public class BonusManagement {
 				: np(exitPortal.leftTunnelEnd().minus(1, 0));
 		var houseEntryTile = World.tileAt(level.world().house().door().entryPosition());
 		int houseHeight = level.world().house().size().y();
+
 		var route = new ArrayList<NavigationPoint>();
 		route.add(np(houseEntryTile));
 		route.add(np(houseEntryTile.plus(0, houseHeight + 1)));
@@ -241,9 +244,8 @@ public class BonusManagement {
 		movingBonus.setRoute(route);
 		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
 		movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
-		movingBonus.setEdible(TickTimer.INDEFINITE);
+		Logger.trace("Bonus created, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
 
-		this.bonus = movingBonus;
-		Logger.trace("Bonus activated, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
+		return movingBonus;
 	}
 }

@@ -117,14 +117,12 @@ public class MovingBonus extends Creature implements Bonus {
 		show();
 		setPixelSpeed(0.5f); // how fast in the original game?
 		setTargetTile(null);
-		Logger.info("Bonus gets edible: {}", this);
 	}
 
 	@Override
 	public void eat() {
 		state = Bonus.STATE_EATEN;
 		timer = GameModel.BONUS_POINTS_SHOWN_TICKS;
-		Logger.info("Bonus eaten: {}", this);
 		jumpAnimation.stop();
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
 		publishSoundEvent(GameModel.SE_BONUS_EATEN);
@@ -132,7 +130,6 @@ public class MovingBonus extends Creature implements Bonus {
 
 	public void setRoute(List<NavigationPoint> route) {
 		steering.setRoute(route);
-		Logger.info("New route of moving bonus: {}", route);
 	}
 
 	public float dy() {
@@ -152,7 +149,7 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 			steering.steer(level, this);
 			if (steering.isComplete()) {
-				Logger.info("Bonus reached target: {}", this);
+				Logger.trace("Bonus reached target: {}", this);
 				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
@@ -164,7 +161,7 @@ public class MovingBonus extends Creature implements Bonus {
 		case STATE_EATEN -> {
 			if (--timer == 0) {
 				setInactive();
-				Logger.info("Bonus expired: {}", this);
+				Logger.trace("Bonus expired: {}", this);
 				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
