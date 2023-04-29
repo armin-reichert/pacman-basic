@@ -123,7 +123,7 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public void eat() {
 		state = Bonus.STATE_EATEN;
-		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
+		timer = GameModel.BONUS_POINTS_SHOWN_TICKS;
 		Logger.info("Bonus eaten: {}", this);
 		jumpAnimation.stop();
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());

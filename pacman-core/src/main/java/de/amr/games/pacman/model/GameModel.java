@@ -317,13 +317,14 @@ public class GameModel {
 	public static final byte CYAN_GHOST = 2;
 	public static final byte ORANGE_GHOST = 3;
 
-	/** Game loop speed in ticks/sec. */
+	/** Game loop frequency. */
 	public static final short FPS = 60;
-	/** Move distance (pixels/tick) at 100% relative speed. */
-	public static final float SPEED_100_PERCENT_PX = 1.25f;
-	public static final float SPEED_GHOST_INSIDE_HOUSE_PX = 0.5f; // unsure
-	public static final float SPEED_GHOST_RETURNING_TO_HOUSE_PX = 2.0f; // unsure
-	public static final float SPEED_GHOST_ENTERING_HOUSE_PX = 1.25f; // unsure
+	/** Pixels/tick at 100% relative speed. */
+	public static final float SPEED_PX_100_PERCENT = 1.25f;
+	public static final float SPEED_PX_INSIDE_HOUSE = 0.5f; // correct?
+	public static final float SPEED_PX_RETURNING_TO_HOUSE = 2.0f; // correct?
+	public static final float SPEED_PX_ENTERING_HOUSE = 1.25f; // correct?
+
 	public static final short MAX_CREDIT = 99;
 	public static final short LEVEL_COUNTER_MAX_SYMBOLS = 7;
 	public static final short INITIAL_LIVES = 3;
@@ -331,11 +332,11 @@ public class GameModel {
 	public static final short RESTING_TICKS_ENERGIZER = 3;
 	public static final short POINTS_NORMAL_PELLET = 10;
 	public static final short POINTS_ENERGIZER = 50;
-	public static final short POINTS_ALL_GHOSTS_KILLED = 12_000;
+	public static final short POINTS_ALL_GHOSTS_KILLED_IN_LEVEL = 12_000;
 	public static final short[] POINTS_GHOSTS_SEQUENCE = { 200, 400, 800, 1600 };
 	public static final short SCORE_EXTRA_LIFE = 10_000;
-	public static final short TICKS_BONUS_POINTS_SHOWN = 2 * FPS; // unsure
-	public static final short TICKS_PAC_POWER_FADES = 2 * FPS - 1; // unsure
+	public static final short BONUS_POINTS_SHOWN_TICKS = 2 * FPS; // unsure
+	public static final short PAC_POWER_FADES_TICKS = 2 * FPS - 1; // unsure
 
 	// Animation keys (positive byte value, -1 = no selection)
 	public static final byte AK_GHOST_BLUE = 0;
@@ -683,21 +684,21 @@ public class GameModel {
 	}
 
 	public void saveNewHighscore() {
-		var oldHiscore = loadHighscore(highscoreFile(variant()));
+		var file = highscoreFile(variant());
+		var oldHiscore = loadHighscore(file);
 		if (highScore.points() <= oldHiscore.points()) {
 			return;
 		}
-		var props = new Properties();
-		props.setProperty("points", String.valueOf(highScore.points()));
-		props.setProperty("level", String.valueOf(highScore.levelNumber()));
-		props.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
-		var highScoreFile = highscoreFile(variant());
-		try (var out = new FileOutputStream(highScoreFile)) {
-			props.storeToXML(out, "%s Hiscore".formatted(variant()));
-			Logger.info("Highscore saved. File: '{}' Points: {} Level: {}", highScoreFile.getAbsolutePath(),
-					highScore.points(), highScore.levelNumber());
+		var p = new Properties();
+		p.setProperty("points", String.valueOf(highScore.points()));
+		p.setProperty("level", String.valueOf(highScore.levelNumber()));
+		p.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
+		try (var out = new FileOutputStream(file)) {
+			p.storeToXML(out, "%s Hiscore".formatted(variant()));
+			Logger.info("Highscore saved. File: '{}' Points: {} Level: {}", file.getAbsolutePath(), highScore.points(),
+					highScore.levelNumber());
 		} catch (Exception x) {
-			Logger.info("Highscore could not be saved. File '{}' Reason: {}", highScoreFile, x.getMessage());
+			Logger.error("Highscore could not be saved. File '{}' Reason: {}", file, x.getMessage());
 		}
 	}
 

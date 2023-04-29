@@ -133,7 +133,7 @@ public class Pac extends Creature implements AnimatedEntity {
 
 	public boolean isPowerFading(GameLevel level) {
 		checkLevelNotNull(level);
-		return powerTimer.isRunning() && powerTimer.remaining() <= GameModel.TICKS_PAC_POWER_FADES;
+		return powerTimer.isRunning() && powerTimer.remaining() <= GameModel.PAC_POWER_FADES_TICKS;
 	}
 
 	public TickTimer powerTimer() {

@@ -306,7 +306,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			} else if (position.y() >= baseLevel + HTS) {
 				setMoveAndWishDir(UP);
 			}
-			setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
+			setPixelSpeed(GameModel.SPEED_PX_INSIDE_HOUSE);
 			move();
 		}
 		boolean frightened = level.pac().powerTimer().isRunning() && killedIndex == -1;
@@ -333,7 +333,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateLeavingHouse(GameLevel level) {
 		checkLevelNotNull(level);
 		state = LEAVING_HOUSE;
-		setPixelSpeed(GameModel.SPEED_GHOST_INSIDE_HOUSE_PX);
+		setPixelSpeed(GameModel.SPEED_PX_INSIDE_HOUSE);
 		// TODO is this event needed/handled at all?
 		GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
 	}
@@ -486,7 +486,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			setPosition(houseEntry);
 			enterStateEnteringHouse(level);
 		} else {
-			setPixelSpeed(GameModel.SPEED_GHOST_RETURNING_TO_HOUSE_PX);
+			setPixelSpeed(GameModel.SPEED_PX_RETURNING_TO_HOUSE);
 			navigateTowardsTarget(level);
 			tryMoving(level);
 		}
@@ -504,7 +504,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		checkLevelNotNull(level);
 		state = ENTERING_HOUSE;
 		setTargetTile(null);
-		setPixelSpeed(GameModel.SPEED_GHOST_ENTERING_HOUSE_PX);
+		setPixelSpeed(GameModel.SPEED_PX_ENTERING_HOUSE);
 		// TODO is this event needed/handled at all?
 		GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this));
 	}
@@ -533,10 +533,10 @@ public class Ghost extends Creature implements AnimatedEntity {
 			return;
 		}
 		var timer = level.pac().powerTimer();
-		if (timer.remaining() == GameModel.TICKS_PAC_POWER_FADES
-				|| timer.duration() < GameModel.TICKS_PAC_POWER_FADES && timer.tick() == 1) {
+		if (timer.remaining() == GameModel.PAC_POWER_FADES_TICKS
+				|| timer.duration() < GameModel.PAC_POWER_FADES_TICKS && timer.tick() == 1) {
 			startFlashing(level.numFlashes, timer.remaining());
-		} else if (timer.remaining() > GameModel.TICKS_PAC_POWER_FADES) {
+		} else if (timer.remaining() > GameModel.PAC_POWER_FADES_TICKS) {
 			selectAndRunAnimation(GameModel.AK_GHOST_BLUE);
 		}
 	}

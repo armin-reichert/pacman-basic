@@ -521,7 +521,7 @@ public class GameLevel {
 			memo.pacPowerStarts = true;
 			memo.pacPowerActive = true;
 		} else {
-			memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.TICKS_PAC_POWER_FADES;
+			memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.PAC_POWER_FADES_TICKS;
 			memo.pacPowerLost = pac.powerTimer().hasExpired();
 			memo.pacPowerActive = pac.powerTimer().isRunning();
 		}
@@ -640,9 +640,9 @@ public class GameLevel {
 			memo.pacPrey.forEach(this::killGhost);
 			numGhostsKilledInLevel += memo.pacPrey.size();
 			if (numGhostsKilledInLevel == 16) {
-				game.scorePoints(GameModel.POINTS_ALL_GHOSTS_KILLED);
+				game.scorePoints(GameModel.POINTS_ALL_GHOSTS_KILLED_IN_LEVEL);
 				Logger.trace("All ghosts killed at level {}, {} wins {} points", number, pac.name(),
-						GameModel.POINTS_ALL_GHOSTS_KILLED);
+						GameModel.POINTS_ALL_GHOSTS_KILLED_IN_LEVEL);
 			}
 		}
 	}

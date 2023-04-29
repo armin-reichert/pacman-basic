@@ -95,7 +95,7 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public void eat() {
-		timer = GameModel.TICKS_BONUS_POINTS_SHOWN;
+		timer = GameModel.BONUS_POINTS_SHOWN_TICKS;
 		state = Bonus.STATE_EATEN;
 		Logger.info("Bonus eaten: {}", this);
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
