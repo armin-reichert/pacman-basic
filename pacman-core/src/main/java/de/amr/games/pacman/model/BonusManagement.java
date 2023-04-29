@@ -133,14 +133,14 @@ public class BonusManagement {
 			default     -> {
 				int random = Globals.randomInt(0, 320);
 				if (random < 50)  yield GameModel.MS_PACMAN_CHERRIES;
-				if (random < 100)	yield GameModel.MS_PACMAN_STRAWBERRY;
-				if (random < 150)	yield GameModel.MS_PACMAN_PEACH;
-				if (random < 200)	yield GameModel.MS_PACMAN_PRETZEL;
-				if (random < 240)	yield GameModel.MS_PACMAN_APPLE;
-				if (random < 280)	yield GameModel.MS_PACMAN_PEAR;
+				if (random < 100) yield GameModel.MS_PACMAN_STRAWBERRY;
+				if (random < 150) yield GameModel.MS_PACMAN_PEACH;
+				if (random < 200) yield GameModel.MS_PACMAN_PRETZEL;
+				if (random < 240) yield GameModel.MS_PACMAN_APPLE;
+				if (random < 280) yield GameModel.MS_PACMAN_PEAR;
 				else              yield GameModel.MS_PACMAN_BANANA;
 			}
-			//@formatter:on
+		//@formatter:on
 		};
 	}
 
