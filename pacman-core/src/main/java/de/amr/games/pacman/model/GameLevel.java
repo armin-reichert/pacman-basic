@@ -32,7 +32,6 @@ import static de.amr.games.pacman.lib.Globals.isEven;
 import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.percent;
 import static de.amr.games.pacman.lib.Globals.v2i;
-import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.model.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.actors.GhostState.LEAVING_HOUSE;
@@ -651,21 +650,13 @@ public class GameLevel {
 
 	private void checkIfGhostCanGetUnlocked() {
 		ghostHouseManagement.checkIfNextGhostCanLeaveHouse().ifPresent(unlockInfo -> {
-			unlockGhost(unlockInfo.ghost());
-			if (unlockInfo.ghost().id() == GameModel.ORANGE_GHOST && cruiseElroyState < 0) {
+			var ghost = unlockInfo.ghost();
+			ghost.leaveHouse(this);
+			if (ghost.id() == GameModel.ORANGE_GHOST && cruiseElroyState < 0) {
 				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
 				setCruiseElroyStateEnabled(true);
 			}
-			Logger.trace("{} unlocked: {}", unlockInfo.ghost().name(), unlockInfo.reason());
+			Logger.info("{} unlocked: {}", unlockInfo.ghost().name(), unlockInfo.reason());
 		});
-	}
-
-	private void unlockGhost(Ghost ghost) {
-		if (!world().house().contains(ghost.tile())) {
-			ghost.setMoveAndWishDir(LEFT);
-			ghost.enterStateHuntingPac();
-		} else {
-			ghost.enterStateLeavingHouse(this);
-		}
 	}
 }

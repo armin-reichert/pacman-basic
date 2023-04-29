@@ -187,6 +187,15 @@ public class Ghost extends Creature implements AnimatedEntity {
 		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 
+	public void leaveHouse(GameLevel level) {
+		if (level.world().house().contains(tile())) {
+			enterStateLeavingHouse(level);
+		} else {
+			setMoveAndWishDir(LEFT);
+			enterStateHuntingPac();
+		}
+	}
+
 	/**
 	 * While "scattering", a ghost aims to "his" corner in the maze and circles around the wall block in that corner
 	 * 

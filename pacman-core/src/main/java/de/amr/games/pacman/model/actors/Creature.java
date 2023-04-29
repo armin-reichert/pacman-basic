@@ -457,7 +457,7 @@ public abstract class Creature extends Entity {
 
 		if (aroundCorner && corneringSpeedUp > 0) {
 			setVelocity(newVelocity.plus(dirVector.scaled(corneringSpeedUp)));
-			Logger.info("{} velocity around corner: {}", name(), velocity.length());
+			Logger.trace("{} velocity around corner: {}", name(), velocity.length());
 			move();
 		} else {
 			setVelocity(newVelocity);
