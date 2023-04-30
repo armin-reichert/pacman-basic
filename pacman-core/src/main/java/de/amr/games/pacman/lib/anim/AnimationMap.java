@@ -37,25 +37,24 @@ import java.util.stream.Stream;
 public class AnimationMap {
 
 	public static final byte NO_SELECTION = -1;
-	public static final int MAX_SIZE = 15;
-
-	private static void checkValidEntryKey(byte key) {
-		if (key < 0 || key > MAX_SIZE - 1) {
-			throw new IllegalArgumentException("Invalid animation map key: %d".formatted(key));
-		}
-	}
-
-	private static void checkValidSelectionKey(byte key) {
-		if (key < -1 || key > MAX_SIZE - 1) {
-			throw new IllegalArgumentException("Invalid animation map key: %d".formatted(key));
-		}
-	}
 
 	private final Animated[] animations;
 	protected byte selectedKey = NO_SELECTION;
 
-	public AnimationMap() {
-		animations = new Animated[MAX_SIZE];
+	public AnimationMap(int capacity) {
+		animations = new Animated[capacity];
+	}
+
+	private void checkValidEntryKey(byte key) {
+		if (key < 0 || key > animations.length - 1) {
+			throw new IllegalArgumentException("Invalid animation map key: %d".formatted(key));
+		}
+	}
+
+	private void checkValidSelectionKey(byte key) {
+		if (key < -1 || key > animations.length - 1) {
+			throw new IllegalArgumentException("Invalid animation map key: %d".formatted(key));
+		}
 	}
 
 	public final Optional<Animated> animation(byte key) {

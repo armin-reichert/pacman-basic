@@ -353,6 +353,8 @@ public class GameModel {
 	public static final byte AK_BLINKY_PATCHED = 11;
 	public static final byte AK_BLINKY_NAKED = 12;
 
+	public static final byte ANIMATION_MAP_CAPACITY = 13; // size of animation maps
+
 	// Sound events
 	public static final String SE_BONUS_EATEN = "bonus_eaten";
 	public static final String SE_CREDIT_ADDED = "credit_added";
