@@ -327,7 +327,6 @@ public class GameModel {
 
 	public static final short MAX_CREDIT = 99;
 	public static final short LEVEL_COUNTER_MAX_SYMBOLS = 7;
-	public static final short INITIAL_LIVES = 3;
 	public static final short RESTING_TICKS_NORMAL_PELLET = 1;
 	public static final short RESTING_TICKS_ENERGIZER = 3;
 	public static final short POINTS_NORMAL_PELLET = 10;
@@ -459,6 +458,8 @@ public class GameModel {
 	public static final BonusInfo PACMAN_KEY             = new BonusInfo(7, 5000);
 	//@formatter:on
 
+	public static int initialLives = 3;
+
 	private final GameVariant variant;
 	private GameLevel level;
 	private final List<Byte> levelCounter = new LinkedList<>();
@@ -482,7 +483,7 @@ public class GameModel {
 	 */
 	public void init() {
 		level = null;
-		lives = INITIAL_LIVES;
+		lives = initialLives;
 		playing = false;
 		scoringEnabled = true;
 		oneLessLifeDisplayed = false; // @remove
