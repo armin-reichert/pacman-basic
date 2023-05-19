@@ -396,15 +396,9 @@ public class GameModel {
 	/*21*/ { 90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0, 0},
 	};
 	
-	/**
-	 * @param levelNumber level number (starting at 1)
-	 * @return parameter values (speed, pellet counts etc.) used in specified level. From level 21 on, level parameters
-	 *         remain the same
-	 */
-	private static byte[] levelData(int levelNumber) {
-		return levelNumber <= LEVEL_DATA.length //
-				? LEVEL_DATA[levelNumber - 1]
-				: LEVEL_DATA[LEVEL_DATA.length - 1];
+	
+	private static int levelDataIndex(int levelNumber) {
+		return (levelNumber - 1) < LEVEL_DATA.length ? (levelNumber - 1) : (LEVEL_DATA.length - 1); 
 	}
 
 	
@@ -524,7 +518,7 @@ public class GameModel {
 		case PACMAN -> PACMAN_MAP;
 		default -> throw new IllegalGameVariantException(variant);
 		};
-		level = new GameLevel(this, new World(map), levelNumber, levelData(levelNumber), false);
+		level = new GameLevel(this, new World(map), levelNumber, LEVEL_DATA[levelDataIndex(levelNumber)], false);
 
 		if (level.number() == 1) {
 			levelCounter.clear();
@@ -552,13 +546,13 @@ public class GameModel {
 		scoringEnabled = false;
 		switch (variant) {
 		case MS_PACMAN -> {
-			level = new GameLevel(this, new World(MS_PACMAN_MAPS[0]), 1, levelData(1), true);
+			level = new GameLevel(this, new World(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RuleBasedSteering());
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			Logger.info("Ms. Pac-Man demo level entered");
 		}
 		case PACMAN -> {
-			level = new GameLevel(this, new World(PACMAN_MAP), 1, levelData(1), true);
+			level = new GameLevel(this, new World(PACMAN_MAP), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE));
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			Logger.info("Pac-Man demo level entered");
