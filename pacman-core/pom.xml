@@ -9,7 +9,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vs.java>18</vs.java>
+		<vs.java>16</vs.java>
 		<vs.junit>4.13.2</vs.junit>
 		<vs.maven-compiler-plugin>3.10.1</vs.maven-compiler-plugin>
 		<vs.tinylog>2.6.1</vs.tinylog>

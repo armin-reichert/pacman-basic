@@ -150,7 +150,7 @@ public class Globals {
 			a = b;
 			b = tmp;
 		}
-		return a + RND.nextFloat(b - a);
+		return a + (b - a) * RND.nextFloat();
 	}
 
 	/**
@@ -165,7 +165,7 @@ public class Globals {
 			a = b;
 			b = tmp;
 		}
-		return a + RND.nextDouble(b - a);
+		return a + (b - a) * RND.nextDouble();
 	}
 
 	public static boolean inPercentOfCases(int percent) {
