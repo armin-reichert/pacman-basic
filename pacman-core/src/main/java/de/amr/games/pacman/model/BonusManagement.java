@@ -75,7 +75,7 @@ public class BonusManagement {
 			//@formatter:off
 			case 1 ->      GameModel.PACMAN_CHERRIES;
 			case 2 ->      GameModel.PACMAN_STRAWBERRY;
-			case 3, 4 ->   GameModel.PACMAN_ORANGE;
+			case 3, 4 ->   GameModel.PACMAN_PEACH;
 			case 5, 6 ->   GameModel.PACMAN_APPLE;
 			case 7, 8 ->   GameModel.PACMAN_GRAPES;
 			case 9, 10 ->  GameModel.PACMAN_GALAXIAN;
@@ -125,7 +125,7 @@ public class BonusManagement {
 		//@formatter:off
 			case 1 -> GameModel.MS_PACMAN_CHERRIES;
 			case 2 -> GameModel.MS_PACMAN_STRAWBERRY;
-			case 3 -> GameModel.MS_PACMAN_PEACH_ORANGE;
+			case 3 -> GameModel.MS_PACMAN_ORANGE;
 			case 4 -> GameModel.MS_PACMAN_PRETZEL;
 			case 5 -> GameModel.MS_PACMAN_APPLE;
 			case 6 -> GameModel.MS_PACMAN_PEAR;
@@ -134,7 +134,7 @@ public class BonusManagement {
 				int random = Globals.randomInt(0, 320);
 				if (random < 50)  yield GameModel.MS_PACMAN_CHERRIES;
 				if (random < 100) yield GameModel.MS_PACMAN_STRAWBERRY;
-				if (random < 150) yield GameModel.MS_PACMAN_PEACH_ORANGE;
+				if (random < 150) yield GameModel.MS_PACMAN_ORANGE;
 				if (random < 200) yield GameModel.MS_PACMAN_PRETZEL;
 				if (random < 240) yield GameModel.MS_PACMAN_APPLE;
 				if (random < 280) yield GameModel.MS_PACMAN_PEAR;
