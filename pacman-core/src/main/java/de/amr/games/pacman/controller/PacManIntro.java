@@ -81,6 +81,10 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			ghostInfo[3] = new GhostInfo(GameModel.ORANGE_GHOST, "CLYDE", "POKEY");
 		}
 
+		public Ghost ghost(int id) {
+			return ghostInfo[id].ghost;
+		}
+
 		public Stream<Ghost> ghosts() {
 			return Stream.of(ghostInfo).map(info -> info.ghost);
 		}
