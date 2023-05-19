@@ -32,9 +32,9 @@ import de.amr.games.pacman.model.GameModel;
  */
 public class SoundEvent extends GameEvent {
 
-	public final String id;
+	public final byte id;
 
-	public SoundEvent(GameModel game, String id) {
+	public SoundEvent(GameModel game, byte id) {
 		super(game, GameEventType.SOUND_EVENT, null);
 		checkNotNull(id);
 		this.id = id;

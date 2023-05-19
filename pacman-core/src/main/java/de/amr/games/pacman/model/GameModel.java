@@ -310,20 +310,19 @@ public class GameModel {
 			np(99, 99, Direction.DOWN) //
 	);
 
-	//@formatter:on
-
-	public static final byte RED_GHOST = 0;
-	public static final byte PINK_GHOST = 1;
-	public static final byte CYAN_GHOST = 2;
+	public static final byte RED_GHOST    = 0;
+	public static final byte PINK_GHOST   = 1;
+	public static final byte CYAN_GHOST   = 2;
 	public static final byte ORANGE_GHOST = 3;
 
 	/** Game loop frequency. */
 	public static final short FPS = 60;
+
 	/** Pixels/tick at 100% relative speed. */
-	public static final float SPEED_PX_100_PERCENT = 1.25f;
-	public static final float SPEED_PX_INSIDE_HOUSE = 0.5f; // correct?
+	public static final float SPEED_PX_100_PERCENT        = 1.25f;
+	public static final float SPEED_PX_INSIDE_HOUSE       = 0.5f; // correct?
 	public static final float SPEED_PX_RETURNING_TO_HOUSE = 2.0f; // correct?
-	public static final float SPEED_PX_ENTERING_HOUSE = 1.25f; // correct?
+	public static final float SPEED_PX_ENTERING_HOUSE     = 1.25f; // correct?
 
 	public static final byte MAX_CREDIT = 99;
 	public static final byte LEVEL_COUNTER_MAX_SYMBOLS = 7;
@@ -338,42 +337,41 @@ public class GameModel {
 	public static final short PAC_POWER_FADES_TICKS = 2 * FPS - 1; // unsure
 
 	// Animation keys (positive byte value, -1 = no selection)
-	public static final byte AK_GHOST_BLUE = 0;
-	public static final byte AK_GHOST_COLOR = 1;
-	public static final byte AK_GHOST_EYES = 2;
-	public static final byte AK_GHOST_FLASHING = 3;
-	public static final byte AK_GHOST_VALUE = 4;
+	public static final byte AK_GHOST_BLUE              = 0;
+	public static final byte AK_GHOST_COLOR             = 1;
+	public static final byte AK_GHOST_EYES              = 2;
+	public static final byte AK_GHOST_FLASHING          = 3;
+	public static final byte AK_GHOST_VALUE             = 4;
 	public static final byte AK_MAZE_ENERGIZER_BLINKING = 5;
-	public static final byte AK_MAZE_FLASHING = 6;
-	public static final byte AK_PAC_DYING = 7;
-	public static final byte AK_PAC_MUNCHING = 8;
-	public static final byte AK_PAC_BIG = 9;
-	public static final byte AK_BLINKY_DAMAGED = 10;
-	public static final byte AK_BLINKY_PATCHED = 11;
-	public static final byte AK_BLINKY_NAKED = 12;
+	public static final byte AK_MAZE_FLASHING           = 6;
+	public static final byte AK_PAC_DYING               = 7;
+	public static final byte AK_PAC_MUNCHING            = 8;
+	public static final byte AK_PAC_BIG                 = 9;
+	public static final byte AK_BLINKY_DAMAGED          = 10;
+	public static final byte AK_BLINKY_PATCHED          = 11;
+	public static final byte AK_BLINKY_NAKED            = 12;
 
-	public static final byte ANIMATION_MAP_CAPACITY = 13; // size of animation maps
+	public static final byte ANIMATION_MAP_CAPACITY     = 13; // size of animation maps
 
 	// Sound events
-	public static final String SE_BONUS_EATEN = "bonus_eaten";
-	public static final String SE_CREDIT_ADDED = "credit_added";
-	public static final String SE_EXTRA_LIFE = "extra_life";
-	public static final String SE_GHOST_EATEN = "ghost_eaten";
-	public static final String SE_HUNTING_PHASE_STARTED_0 = "hunting_phase_started_0";
-	public static final String SE_HUNTING_PHASE_STARTED_2 = "hunting_phase_started_2";
-	public static final String SE_HUNTING_PHASE_STARTED_4 = "hunting_phase_started_4";
-	public static final String SE_HUNTING_PHASE_STARTED_6 = "hunting_phase_started_5";
-	public static final String SE_PACMAN_DEATH = "pacman_death";
-	public static final String SE_PACMAN_FOUND_FOOD = "pacman_found_food";
-	public static final String SE_PACMAN_POWER_ENDS = "pacman_power_ends";
-	public static final String SE_PACMAN_POWER_STARTS = "pacman_power_starts";
-	public static final String SE_READY_TO_PLAY = "ready_to_play";
-	public static final String SE_START_INTERMISSION_1 = "start_intermission_1";
-	public static final String SE_START_INTERMISSION_2 = "start_intermission_2";
-	public static final String SE_START_INTERMISSION_3 = "start_intermission_3";
-	public static final String SE_STOP_ALL_SOUNDS = "stop_all_sounds";
+	public static final byte SE_BONUS_EATEN             =  0;
+	public static final byte SE_CREDIT_ADDED            =  1;
+	public static final byte SE_EXTRA_LIFE              =  2;
+	public static final byte SE_GHOST_EATEN             =  3;
+	public static final byte SE_HUNTING_PHASE_STARTED_0 =  4;
+	public static final byte SE_HUNTING_PHASE_STARTED_2 =  5;
+	public static final byte SE_HUNTING_PHASE_STARTED_4 =  6;
+	public static final byte SE_HUNTING_PHASE_STARTED_6 =  7;
+	public static final byte SE_PACMAN_DEATH            =  8;
+	public static final byte SE_PACMAN_FOUND_FOOD       =  9;
+	public static final byte SE_PACMAN_POWER_ENDS       = 10;
+	public static final byte SE_PACMAN_POWER_STARTS     = 11;
+	public static final byte SE_READY_TO_PLAY           = 12;
+	public static final byte SE_START_INTERMISSION_1    = 13;
+	public static final byte SE_START_INTERMISSION_2    = 14;
+	public static final byte SE_START_INTERMISSION_3    = 15;
+	public static final byte SE_STOP_ALL_SOUNDS         = 16;
 
-	//@formatter:off
 	private static final byte[][] LEVEL_DATA = {
 	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5, 0},
 	/* 2*/ { 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5, 1},

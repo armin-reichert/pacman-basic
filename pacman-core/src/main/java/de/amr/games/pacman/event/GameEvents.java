@@ -81,10 +81,10 @@ public class GameEvents {
 		publishGameEvent(new GameEvent(gameController.game(), type, null));
 	}
 
-	public static void publishSoundEvent(String soundCommand) {
-		checkNotNull(soundCommand);
+	public static void publishSoundEvent(byte soundEventID) {
+		checkNotNull(soundEventID);
 		if (GameEvents.soundEventsEnabled) {
-			publishGameEvent(new SoundEvent(gameController.game(), soundCommand));
+			publishGameEvent(new SoundEvent(gameController.game(), soundEventID));
 		}
 	}
 }
