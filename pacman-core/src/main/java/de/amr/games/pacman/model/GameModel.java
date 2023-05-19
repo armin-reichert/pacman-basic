@@ -440,22 +440,26 @@ public class GameModel {
 	// Note: Ms. Pac-Man bonus #3 is an orange! (Found in official Manual)
 
 	//@formatter:off
-	public static final BonusInfo MS_PACMAN_CHERRIES     = new BonusInfo(0,  100);
-	public static final BonusInfo MS_PACMAN_STRAWBERRY   = new BonusInfo(1,  200);
-	public static final BonusInfo MS_PACMAN_ORANGE       = new BonusInfo(2,  500);
-	public static final BonusInfo MS_PACMAN_PRETZEL      = new BonusInfo(3,  700);
-	public static final BonusInfo MS_PACMAN_APPLE        = new BonusInfo(4, 1000);
-	public static final BonusInfo MS_PACMAN_PEAR         = new BonusInfo(5, 2000);
-	public static final BonusInfo MS_PACMAN_BANANA       = new BonusInfo(6, 5000);
+	public static final byte MS_PACMAN_CHERRIES     = 0;
+	public static final byte MS_PACMAN_STRAWBERRY   = 1;
+	public static final byte MS_PACMAN_ORANGE       = 2;
+	public static final byte MS_PACMAN_PRETZEL      = 3;
+	public static final byte MS_PACMAN_APPLE        = 4;
+	public static final byte MS_PACMAN_PEAR         = 5;
+	public static final byte MS_PACMAN_BANANA       = 6;
 
-	public static final BonusInfo PACMAN_CHERRIES        = new BonusInfo(0,  100);
-	public static final BonusInfo PACMAN_STRAWBERRY      = new BonusInfo(1,  300);
-	public static final BonusInfo PACMAN_PEACH           = new BonusInfo(2,  500);
-	public static final BonusInfo PACMAN_APPLE           = new BonusInfo(3,  700);
-	public static final BonusInfo PACMAN_GRAPES          = new BonusInfo(4, 1000);
-	public static final BonusInfo PACMAN_GALAXIAN        = new BonusInfo(5, 2000);
-	public static final BonusInfo PACMAN_BELL            = new BonusInfo(6, 3000);
-	public static final BonusInfo PACMAN_KEY             = new BonusInfo(7, 5000);
+	public static final byte[] BONUS_VALUES_MS_PACMAN = {1, 2, 5, 7, 10, 20, 50}; // * 100
+
+	public static final byte PACMAN_CHERRIES        = 0;
+	public static final byte PACMAN_STRAWBERRY      = 1;
+	public static final byte PACMAN_PEACH           = 2;
+	public static final byte PACMAN_APPLE           = 3;
+	public static final byte PACMAN_GRAPES          = 4;
+	public static final byte PACMAN_GALAXIAN        = 5;
+	public static final byte PACMAN_BELL            = 6;
+	public static final byte PACMAN_KEY             = 7;
+
+	public static final byte[] BONUS_VALUES_PACMAN = {1, 3, 5, 7, 10, 20, 30, 50 }; // * 100
 	//@formatter:on
 
 	public static int initialLives = 3;

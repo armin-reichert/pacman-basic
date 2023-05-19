@@ -221,7 +221,7 @@ public class GameLevel {
 	}
 
 	public byte symbol() {
-		return bonusManagement.bonusInfo(0).symbol();
+		return bonusManagement.bonusSymbol(0);
 	}
 
 	public BonusManagement bonusManagement() {

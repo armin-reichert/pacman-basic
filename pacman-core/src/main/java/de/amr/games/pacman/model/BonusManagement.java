@@ -50,7 +50,7 @@ import de.amr.games.pacman.model.world.World;
 public class BonusManagement {
 
 	private final GameLevel level;
-	private final BonusInfo[] bonusInfo = new BonusInfo[2];
+	private final byte[] bonusSymbols = new byte[2];
 	private Bonus bonus;
 
 	public BonusManagement(GameLevel level) {
@@ -58,15 +58,15 @@ public class BonusManagement {
 	}
 
 	public void onLevelStart() {
-		bonusInfo[0] = createNextBonusInfo();
-		bonusInfo[1] = createNextBonusInfo();
+		bonusSymbols[0] = createNextBonusSymbol();
+		bonusSymbols[1] = createNextBonusSymbol();
 	}
 
 	public void onLevelEnd() {
 		deactivateBonus();
 	}
 
-	private BonusInfo createNextBonusInfo() {
+	private byte createNextBonusSymbol() {
 		if (level.game().variant() == GameVariant.MS_PACMAN) {
 			return nextMsPacManBonusInfo();
 		} else {
@@ -120,7 +120,7 @@ public class BonusManagement {
 	 * </tr>
 	 * </table>
 	 */
-	private BonusInfo nextMsPacManBonusInfo() {
+	private byte nextMsPacManBonusInfo() {
 		return switch (level.number()) {
 		//@formatter:off
 			case 1 -> GameModel.MS_PACMAN_CHERRIES;
@@ -164,8 +164,8 @@ public class BonusManagement {
 		return Optional.ofNullable(bonus);
 	}
 
-	public BonusInfo bonusInfo(int index) {
-		return bonusInfo[index];
+	public byte bonusSymbol(int index) {
+		return bonusSymbols[index];
 	}
 
 	public void deactivateBonus() {
@@ -208,7 +208,7 @@ public class BonusManagement {
 	}
 
 	private Bonus createStaticBonus(int bonusIndex) {
-		var staticBonus = new StaticBonus(bonusInfo[bonusIndex]);
+		var staticBonus = new StaticBonus(bonusSymbols[bonusIndex]);
 		staticBonus.entity().setPosition(halfTileRightOf(13, 20));
 		return staticBonus;
 	}
@@ -237,7 +237,7 @@ public class BonusManagement {
 		route.add(exitPoint);
 		route.trimToSize();
 
-		var movingBonus = new MovingBonus(bonusInfo[bonusIndex]);
+		var movingBonus = new MovingBonus(bonusSymbols[bonusIndex]);
 		movingBonus.setRoute(route);
 		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
 		movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);

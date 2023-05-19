@@ -34,7 +34,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.anim.SimpleAnimation;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.steering.RouteBasedSteering;
-import de.amr.games.pacman.model.BonusInfo;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 
@@ -49,18 +48,18 @@ import de.amr.games.pacman.model.GameModel;
  */
 public class MovingBonus extends Creature implements Bonus {
 
-	private final BonusInfo info;
+	private final byte symbol;
 	private long timer;
 	private byte state;
 
 	private final SimpleAnimation<Float> jumpAnimation;
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
-	public MovingBonus(BonusInfo info) {
-		super("MovingBonus-%d-%d".formatted(info.symbol(), info.points()));
+	public MovingBonus(byte symbol) {
+		super("MovingBonus-%d".formatted(symbol));
 		super.reset(); // TODO check this
 
-		this.info = info;
+		this.symbol = symbol;
 		this.canTeleport = false; // override setting from reset()
 		this.timer = 0;
 		this.state = Bonus.STATE_INACTIVE;
@@ -93,12 +92,12 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public byte symbol() {
-		return info.symbol();
+		return symbol;
 	}
 
 	@Override
 	public int points() {
-		return info.points();
+		return GameModel.BONUS_VALUES_MS_PACMAN[symbol] * 100;
 	}
 
 	@Override
@@ -124,6 +123,7 @@ public class MovingBonus extends Creature implements Bonus {
 		state = Bonus.STATE_EATEN;
 		timer = GameModel.BONUS_POINTS_SHOWN_TICKS;
 		jumpAnimation.stop();
+		Logger.info("Bonus eaten: {}", this);
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
 		publishSoundEvent(GameModel.SE_BONUS_EATEN);
 	}

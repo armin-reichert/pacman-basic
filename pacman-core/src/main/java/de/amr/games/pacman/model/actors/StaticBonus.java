@@ -29,7 +29,6 @@ import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.model.BonusInfo;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 
@@ -40,12 +39,12 @@ import de.amr.games.pacman.model.GameModel;
  */
 public class StaticBonus extends Entity implements Bonus {
 
-	private final BonusInfo info;
+	private final byte symbol;
 	private long timer;
 	private byte state;
 
-	public StaticBonus(BonusInfo info) {
-		this.info = info;
+	public StaticBonus(byte symbol) {
+		this.symbol = symbol;
 		this.timer = 0;
 		this.state = Bonus.STATE_INACTIVE;
 	}
@@ -57,8 +56,8 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public String toString() {
-		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(info.symbol(), info.points(),
-				state, position, timer);
+		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(symbol, points(), state, position,
+				timer);
 	}
 
 	@Override
@@ -68,12 +67,12 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public byte symbol() {
-		return info.symbol();
+		return symbol;
 	}
 
 	@Override
 	public int points() {
-		return info.points();
+		return GameModel.BONUS_VALUES_PACMAN[symbol] * 100;
 	}
 
 	@Override
