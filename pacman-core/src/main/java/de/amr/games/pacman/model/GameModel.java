@@ -325,12 +325,12 @@ public class GameModel {
 	public static final float SPEED_PX_RETURNING_TO_HOUSE = 2.0f; // correct?
 	public static final float SPEED_PX_ENTERING_HOUSE = 1.25f; // correct?
 
-	public static final short MAX_CREDIT = 99;
-	public static final short LEVEL_COUNTER_MAX_SYMBOLS = 7;
-	public static final short RESTING_TICKS_NORMAL_PELLET = 1;
-	public static final short RESTING_TICKS_ENERGIZER = 3;
-	public static final short POINTS_NORMAL_PELLET = 10;
-	public static final short POINTS_ENERGIZER = 50;
+	public static final byte MAX_CREDIT = 99;
+	public static final byte LEVEL_COUNTER_MAX_SYMBOLS = 7;
+	public static final byte RESTING_TICKS_NORMAL_PELLET = 1;
+	public static final byte RESTING_TICKS_ENERGIZER = 3;
+	public static final byte POINTS_NORMAL_PELLET = 10;
+	public static final byte POINTS_ENERGIZER = 50;
 	public static final short POINTS_ALL_GHOSTS_KILLED_IN_LEVEL = 12_000;
 	public static final short[] POINTS_GHOSTS_SEQUENCE = { 200, 400, 800, 1600 };
 	public static final short SCORE_EXTRA_LIFE = 10_000;
