@@ -437,7 +437,7 @@ public class GameModel {
 		};
 	}
 
-	// Note: To avoid religious wars I named the peach/orange thingy peach_orange
+	// Note: Ms. Pac-Man bonus #3 is an orange! (Found in official Manual)
 
 	//@formatter:off
 	public static final BonusInfo MS_PACMAN_CHERRIES     = new BonusInfo(0,  100);
@@ -450,7 +450,7 @@ public class GameModel {
 
 	public static final BonusInfo PACMAN_CHERRIES        = new BonusInfo(0,  100);
 	public static final BonusInfo PACMAN_STRAWBERRY      = new BonusInfo(1,  300);
-	public static final BonusInfo PACMAN_PEACH_ORANGE    = new BonusInfo(2,  500);
+	public static final BonusInfo PACMAN_ORANGE          = new BonusInfo(2,  500);
 	public static final BonusInfo PACMAN_APPLE           = new BonusInfo(3,  700);
 	public static final BonusInfo PACMAN_GRAPES          = new BonusInfo(4, 1000);
 	public static final BonusInfo PACMAN_GALAXIAN        = new BonusInfo(5, 2000);

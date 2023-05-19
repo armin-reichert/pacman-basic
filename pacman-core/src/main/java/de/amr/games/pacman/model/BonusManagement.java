@@ -75,7 +75,7 @@ public class BonusManagement {
 			//@formatter:off
 			case 1 ->      GameModel.PACMAN_CHERRIES;
 			case 2 ->      GameModel.PACMAN_STRAWBERRY;
-			case 3, 4 ->   GameModel.PACMAN_PEACH_ORANGE;
+			case 3, 4 ->   GameModel.PACMAN_ORANGE;
 			case 5, 6 ->   GameModel.PACMAN_APPLE;
 			case 7, 8 ->   GameModel.PACMAN_GRAPES;
 			case 9, 10 ->  GameModel.PACMAN_GALAXIAN;
