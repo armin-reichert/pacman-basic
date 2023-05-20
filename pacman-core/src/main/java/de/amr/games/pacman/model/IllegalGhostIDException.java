@@ -6,6 +6,6 @@ package de.amr.games.pacman.model;
 public class IllegalGhostIDException extends IllegalArgumentException {
 
 	public IllegalGhostIDException(int id) {
-		super("Illegal ghost ID value '%d' (Allowed values: 0-3)".formatted(id));
+		super(String.format("Illegal ghost ID value '%d' (Allowed values: 0-3)", id));
 	}
 }

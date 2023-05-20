@@ -84,13 +84,8 @@ public class Globals {
 	}
 
 	public static void checkGameVariant(GameVariant variant) {
-		if (variant == null) {
+		if (variant != GameVariant.MS_PACMAN && variant != GameVariant.PACMAN) {
 			throw new IllegalGameVariantException(variant);
-		}
-		switch (variant) {
-		case MS_PACMAN, PACMAN -> { // ok
-		}
-		default -> throw new IllegalGameVariantException(variant);
 		}
 	}
 
@@ -114,7 +109,7 @@ public class Globals {
 
 	public static double requirePositive(double value, String messageFormat) {
 		if (value < 0) {
-			throw new IllegalArgumentException(messageFormat.formatted(value));
+			throw new IllegalArgumentException(String.format(messageFormat, value));
 		}
 		return value;
 	}
@@ -170,7 +165,7 @@ public class Globals {
 
 	public static boolean inPercentOfCases(int percent) {
 		if (percent < 0 || percent > 100) {
-			throw new IllegalArgumentException("Percent value must be in range [0, 100] but is %d".formatted(percent));
+			throw new IllegalArgumentException(String.format("Percent value must be in range [0, 100] but is %d", percent));
 		}
 		if (percent == 0) {
 			return false;
@@ -245,7 +240,7 @@ public class Globals {
 	 */
 	public static boolean differsAtMost(double delta, double value, double target) {
 		if (delta < 0) {
-			throw new IllegalArgumentException("Difference must not be negative but is %f".formatted(delta));
+			throw new IllegalArgumentException(String.format("Difference must not be negative but is %f", delta));
 		}
 		return value >= (target - delta) && value <= (target + delta);
 	}
@@ -256,10 +251,13 @@ public class Globals {
 
 	@SafeVarargs
 	public static <T> boolean oneOf(T value, T... alternatives) {
-		return switch (alternatives.length) {
-		case 0 -> false;
-		case 1 -> value.equals(alternatives[0]);
-		default -> Stream.of(alternatives).anyMatch(value::equals);
-		};
+		switch (alternatives.length) {
+		case 0:
+			return false;
+		case 1:
+			return value.equals(alternatives[0]);
+		default:
+			return Stream.of(alternatives).anyMatch(value::equals);
+		}
 	}
 }

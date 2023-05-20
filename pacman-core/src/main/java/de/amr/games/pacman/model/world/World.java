@@ -35,6 +35,7 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -138,7 +139,7 @@ public class World extends Entity implements AnimatedEntity {
 		tileMap = new TileMap(tileMapData);
 		portals = buildPortals(tileMap);
 		eatenSet = new BitSet(tileMap.numCols() * tileMap.numRows());
-		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
+		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
 	}

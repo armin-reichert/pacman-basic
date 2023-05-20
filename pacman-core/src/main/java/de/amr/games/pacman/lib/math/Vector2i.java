@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib.math;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.steering.Direction;
@@ -32,9 +33,25 @@ import de.amr.games.pacman.lib.steering.Direction;
  * 
  * @author Armin Reichert
  */
-public record Vector2i(int x, int y) {
+public final class Vector2i {
 
 	public static final Vector2i ZERO = new Vector2i(0, 0);
+
+	private final int x;
+	private final int y;
+
+	public Vector2i(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public int x() {
+		return x;
+	}
+
+	public int y() {
+		return y;
+	}
 
 	public Vector2i scaled(int s) {
 		return new Vector2i(s * x, s * y);
@@ -75,5 +92,22 @@ public record Vector2i(int x, int y) {
 
 	public Vector2f toFloatVec() {
 		return new Vector2f(x, y);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vector2i other = (Vector2i) obj;
+		return x == other.x && y == other.y;
 	}
 }

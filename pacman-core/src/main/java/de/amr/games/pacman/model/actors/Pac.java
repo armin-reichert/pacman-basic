@@ -61,9 +61,10 @@ public class Pac extends Creature implements AnimatedEntity {
 
 	@Override
 	public String toString() {
-		return "['%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]"
-				.formatted(name(), position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead,
-						restingTicks, starvingTicks);
+		return String.format(
+				"['%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]",
+				name(), position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead, restingTicks,
+				starvingTicks);
 	}
 
 	@Override
@@ -151,7 +152,7 @@ public class Pac extends Creature implements AnimatedEntity {
 
 	public void rest(long ticks) {
 		if (ticks != REST_FOREVER && ticks < 0) {
-			throw new IllegalArgumentException("Resting time cannot be negative, but is: %d".formatted(ticks));
+			throw new IllegalArgumentException(String.format("Resting time cannot be negative, but is: %d", ticks));
 		}
 		restingTicks = ticks;
 	}

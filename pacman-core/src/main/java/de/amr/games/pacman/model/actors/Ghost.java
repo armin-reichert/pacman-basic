@@ -86,8 +86,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	public String toString() {
-		return "[%-6s (%s) position=%s tile=%s offset=%s velocity=%s dir=%s wishDir=%s reverse=%s]".formatted(name(), state,
-				position, tile(), offset(), velocity, moveDir(), wishDir(), gotReverseCommand);
+		return String.format("[%-6s (%s) position=%s tile=%s offset=%s velocity=%s dir=%s wishDir=%s reverse=%s]", name(),
+				state, position, tile(), offset(), velocity, moveDir(), wishDir(), gotReverseCommand);
 	}
 
 	/**
@@ -287,14 +287,29 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void update(GameLevel level) {
 		checkLevelNotNull(level);
 		switch (state) {
-		case LOCKED -> updateStateLocked(level);
-		case LEAVING_HOUSE -> updateStateLeavingHouse(level);
-		case HUNTING_PAC -> updateStateHuntingPac(level);
-		case FRIGHTENED -> updateStateFrightened(level);
-		case EATEN -> updateStateEaten();
-		case RETURNING_TO_HOUSE -> updateStateReturningToHouse(level);
-		case ENTERING_HOUSE -> updateStateEnteringHouse(level);
-		default -> throw new IllegalArgumentException("Unknown ghost state: '%s'".formatted(state));
+		case LOCKED:
+			updateStateLocked(level);
+			break;
+		case LEAVING_HOUSE:
+			updateStateLeavingHouse(level);
+			break;
+		case HUNTING_PAC:
+			updateStateHuntingPac(level);
+			break;
+		case FRIGHTENED:
+			updateStateFrightened(level);
+			break;
+		case EATEN:
+			updateStateEaten();
+			break;
+		case RETURNING_TO_HOUSE:
+			updateStateReturningToHouse(level);
+			break;
+		case ENTERING_HOUSE:
+			updateStateEnteringHouse(level);
+			break;
+		default:
+			throw new IllegalArgumentException(String.format("Unknown ghost state: '%s'", state));
 		}
 		animate();
 	}

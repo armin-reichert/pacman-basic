@@ -68,12 +68,12 @@ public class Memory {
 
 		var foodText = "";
 		if (foodFoundTile.isPresent()) {
-			foodText = "%s at %s".formatted(energizerFound ? "Energizer" : "Pellet", foodFoundTile.get());
+			foodText = String.format("%s at %s", energizerFound ? "Energizer" : "Pellet", foodFoundTile.get());
 		}
 
 		var bonusText = "";
 		if (bonusReachedIndex != -1) {
-			bonusText = "Bonus %d reached".formatted(bonusReachedIndex);
+			bonusText = String.format("Bonus %d reached", bonusReachedIndex);
 		}
 
 		var powerText = "";
@@ -97,12 +97,12 @@ public class Memory {
 
 		var preyText = "";
 		if (!pacPrey.isEmpty()) {
-			preyText = "Prey: %s".formatted(pacPrey);
+			preyText = String.format("Prey: %s", pacPrey);
 		}
 
 		var killedGhostsText = killedGhosts.isEmpty() ? "" : killedGhosts.toString();
 
-		return "%s%s%s%s%s%s".formatted(foodText, bonusText, powerText, pacKilledText, preyText, killedGhostsText);
+		return String.format("%s%s%s%s%s%s", foodText, bonusText, powerText, pacKilledText, preyText, killedGhostsText);
 	}
 
 	public boolean edibleGhostsExist() {

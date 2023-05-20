@@ -64,7 +64,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 
 	@Override
 	public String toString() {
-		return "FSM[name=%s, state=%s, prev=%s]".formatted(name, currentState, prevState);
+		return String.format("FSM[name=%s, state=%s, prev=%s]", name, currentState, prevState);
 	}
 
 	/**

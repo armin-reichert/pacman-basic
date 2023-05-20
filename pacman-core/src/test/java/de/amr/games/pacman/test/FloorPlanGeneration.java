@@ -57,7 +57,7 @@ public class FloorPlanGeneration {
 		long time = System.nanoTime();
 		var floorPlan = new FloorPlan(world, resolution);
 		time = System.nanoTime() - time;
-		var timeLog = "%.2f millis".formatted(time / 1e6);
+		var timeLog = String.format("%.2f millis", time / 1e6);
 		try (var w = new FileWriter(file, StandardCharsets.UTF_8)) {
 			floorPlan.print(w, true);
 			Logger.info("Created file {} ({})", file.getAbsolutePath(), timeLog);

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.tinylog.Logger;
 
@@ -65,18 +66,18 @@ public class RuleBasedSteering implements Steering {
 		public String toString() {
 			StringBuilder s = new StringBuilder("-- Begin autopilot info\n");
 			if (hunterAhead != null) {
-				s.append("Hunter ahead:  %s, distance: %.2g\n".formatted(hunterAhead.name(), hunterAheadDistance));
+				s.append(String.format("Hunter ahead:  %s, distance: %.2g\n", hunterAhead.name(), hunterAheadDistance));
 			} else {
 				s.append("No hunter ahead\n");
 			}
 			if (hunterBehind != null) {
-				s.append("Hunter behind: %s, distance: %.2g\n".formatted(hunterBehind.name(), hunterBehindDistance));
+				s.append(String.format("Hunter behind: %s, distance: %.2g\n", hunterBehind.name(), hunterBehindDistance));
 			} else {
 				s.append("No hunter behind\n");
 			}
 			for (int i = 0; i < frightenedGhosts.size(); ++i) {
 				Ghost ghost = frightenedGhosts.get(i);
-				s.append("Prey: %s, distance: %.2g\n".formatted(ghost.name(), frightenedGhostsDistance.get(i)));
+				s.append(String.format("Prey: %s, distance: %.2g\n", ghost.name(), frightenedGhostsDistance.get(i)));
 			}
 			if (frightenedGhosts.isEmpty()) {
 				s.append("No prey\n");
@@ -117,9 +118,10 @@ public class RuleBasedSteering implements Steering {
 			data.hunterBehindDistance = pac.tile().manhattanDistance(hunterBehind.tile());
 		}
 		data.frightenedGhosts = level.ghosts(GhostState.FRIGHTENED)
-				.filter(ghost -> ghost.tile().manhattanDistance(pac.tile()) <= CollectedData.MAX_GHOST_CHASE_DIST).toList();
+				.filter(ghost -> ghost.tile().manhattanDistance(pac.tile()) <= CollectedData.MAX_GHOST_CHASE_DIST)
+				.collect(Collectors.toList());
 		data.frightenedGhostsDistance = data.frightenedGhosts.stream()
-				.map(ghost -> ghost.tile().manhattanDistance(pac.tile())).toList();
+				.map(ghost -> ghost.tile().manhattanDistance(pac.tile())).collect(Collectors.toList());
 		return data;
 	}
 

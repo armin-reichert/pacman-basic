@@ -80,7 +80,7 @@ public abstract class Creature extends Entity {
 			sb.append(tunnelEntered ? " entered tunnel" : "");
 			sb.append(teleported ? " teleported" : "");
 			sb.append(moved ? " moved" : "");
-			return sb.isEmpty() ? "" : "[" + sb.toString().trim() + "]";
+			return sb.length() == 0 ? "" : "[" + sb.toString().trim() + "]";
 		}
 	}
 
@@ -97,7 +97,7 @@ public abstract class Creature extends Entity {
 	protected float corneringSpeedUp = 0;
 
 	protected Creature(String name) {
-		this.name = (name != null) ? name : "%s@%d".formatted(getClass().getSimpleName(), hashCode());
+		this.name = (name != null) ? name : String.format("%s@%d", getClass().getSimpleName(), hashCode());
 	}
 
 	public void reset() {
@@ -126,7 +126,7 @@ public abstract class Creature extends Entity {
 
 	@Override
 	public String toString() {
-		return "%s: position=%s, tile=%s (%s), velocity=%s, moveDir=%s, wishDir=%s".formatted(name, position, tile(),
+		return String.format("%s: position=%s, tile=%s (%s), velocity=%s, moveDir=%s, wishDir=%s", name, position, tile(),
 				offset(), velocity, moveDir, wishDir);
 	}
 
@@ -420,11 +420,11 @@ public abstract class Creature extends Entity {
 		if (tile.y() == portal.leftTunnelEnd().y() && position.x() < (portal.leftTunnelEnd().x() - portal.depth()) * TS) {
 			placeAtTile(portal.rightTunnelEnd());
 			moveResult.teleported = true;
-			moveResult.messages.add("%s: Teleported from %s to %s".formatted(name, oldPosition, position));
+			moveResult.messages.add(String.format("%s: Teleported from %s to %s", name, oldPosition, position));
 		} else if (tile.equals(portal.rightTunnelEnd().plus(portal.depth(), 0))) {
 			placeAtTile(portal.leftTunnelEnd().minus(portal.depth(), 0));
 			moveResult.teleported = true;
-			moveResult.messages.add("%s: Teleported from %s to %s".formatted(name, oldPosition, position));
+			moveResult.messages.add(String.format("%s: Teleported from %s to %s", name, oldPosition, position));
 		}
 	}
 
@@ -440,7 +440,7 @@ public abstract class Creature extends Entity {
 			if (!aroundCorner) {
 				placeAtTile(tile()); // adjust if blocked and moving forward
 			}
-			moveResult.messages.add("Cannot move %s into tile %s".formatted(dir, touchedTile));
+			moveResult.messages.add(String.format("Cannot move %s into tile %s", dir, touchedTile));
 			return;
 		}
 
@@ -450,7 +450,7 @@ public abstract class Creature extends Entity {
 			if (atTurnPosition) {
 				placeAtTile(tile()); // adjust if moving around corner
 			} else {
-				moveResult.messages.add("Wants to take corner towards %s but not at turn position".formatted(dir));
+				moveResult.messages.add(String.format("Wants to take corner towards %s but not at turn position", dir));
 				return;
 			}
 		}
@@ -468,6 +468,6 @@ public abstract class Creature extends Entity {
 		newTileEntered = !tileBeforeMove.equals(tile());
 		moveResult.moved = true;
 		moveResult.tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
-		moveResult.messages.add("%5s (%.2f pixels)".formatted(dir, newVelocity.length()));
+		moveResult.messages.add(String.format("%5s (%.2f pixels)", dir, newVelocity.length()));
 	}
 }

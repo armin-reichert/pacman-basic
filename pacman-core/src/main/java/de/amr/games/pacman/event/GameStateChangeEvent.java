@@ -44,6 +44,6 @@ public class GameStateChangeEvent extends GameEvent {
 
 	@Override
 	public String toString() {
-		return "%s(%s->%s)".formatted(getClass().getSimpleName(), oldGameState, newGameState);
+		return String.format("%s(%s->%s)", getClass().getSimpleName(), oldGameState, newGameState);
 	}
 }

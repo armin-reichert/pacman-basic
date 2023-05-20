@@ -37,23 +37,56 @@ public interface GameEventListener {
 	 */
 	default void onGameEvent(GameEvent event) {
 		switch (event.type) {
-		case GAME_STATE_CHANGED -> onGameStateChange((GameStateChangeEvent) event);
-		case BONUS_GETS_ACTIVE -> onBonusGetsActive(event);
-		case BONUS_GETS_EATEN -> onBonusGetsEaten(event);
-		case BONUS_EXPIRES -> onBonusExpires(event);
-		case GHOST_ENTERS_HOUSE -> onGhostEntersHouse(event);
-		case GHOST_STARTS_LEAVING_HOUSE -> onGhostStartsLeavingHouse(event);
-		case GHOST_COMPLETES_LEAVING_HOUSE -> onGhostCompletesLeavingHouse(event);
-		case GHOST_STARTS_RETURNING_HOME -> onGhostStartsReturningHome(event);
-		case LEVEL_STARTING -> onLevelStarting(event);
-		case PAC_FINDS_FOOD -> onPlayerFindsFood(event);
-		case PLAYER_GETS_EXTRA_LIFE -> onPlayerGetsExtraLife(event);
-		case PAC_GETS_POWER -> onPlayerGetsPower(event);
-		case PAC_STARTS_LOSING_POWER -> onPlayerStartsLosingPower(event);
-		case PAC_LOSES_POWER -> onPlayerLosesPower(event);
-		case SOUND_EVENT -> onSoundEvent((SoundEvent) event);
-		case UNSPECIFIED_CHANGE -> onUnspecifiedChange(event);
-		default -> throw new IllegalArgumentException("Unknown event type: " + event.type);
+		case GAME_STATE_CHANGED:
+			onGameStateChange((GameStateChangeEvent) event);
+			break;
+		case BONUS_GETS_ACTIVE:
+			onBonusGetsActive(event);
+			break;
+		case BONUS_GETS_EATEN:
+			onBonusGetsEaten(event);
+			break;
+		case BONUS_EXPIRES:
+			onBonusExpires(event);
+			break;
+		case GHOST_ENTERS_HOUSE:
+			onGhostEntersHouse(event);
+			break;
+		case GHOST_STARTS_LEAVING_HOUSE:
+			onGhostStartsLeavingHouse(event);
+			break;
+		case GHOST_COMPLETES_LEAVING_HOUSE:
+			onGhostCompletesLeavingHouse(event);
+			break;
+		case GHOST_STARTS_RETURNING_HOME:
+			onGhostStartsReturningHome(event);
+			break;
+		case LEVEL_STARTING:
+			onLevelStarting(event);
+			break;
+		case PAC_FINDS_FOOD:
+			onPlayerFindsFood(event);
+			break;
+		case PLAYER_GETS_EXTRA_LIFE:
+			onPlayerGetsExtraLife(event);
+			break;
+		case PAC_GETS_POWER:
+			onPlayerGetsPower(event);
+			break;
+		case PAC_STARTS_LOSING_POWER:
+			onPlayerStartsLosingPower(event);
+			break;
+		case PAC_LOSES_POWER:
+			onPlayerLosesPower(event);
+			break;
+		case SOUND_EVENT:
+			onSoundEvent((SoundEvent) event);
+			break;
+		case UNSPECIFIED_CHANGE:
+			onUnspecifiedChange(event);
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown event type: " + event.type);
 		}
 	}
 

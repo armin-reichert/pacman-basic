@@ -70,19 +70,24 @@ public class BonusManagement {
 		if (level.game().variant() == GameVariant.MS_PACMAN) {
 			return nextMsPacManBonusInfo();
 		} else {
-			// In the Pac-Man game, each level has two boni with the same symbol and value
-			return switch (level.number()) {
+			// In the Pac-Man game, each level has two equal bonus symbols
+			switch (level.number()) {
 			//@formatter:off
-			case 1 ->      GameModel.PACMAN_CHERRIES;
-			case 2 ->      GameModel.PACMAN_STRAWBERRY;
-			case 3, 4 ->   GameModel.PACMAN_PEACH;
-			case 5, 6 ->   GameModel.PACMAN_APPLE;
-			case 7, 8 ->   GameModel.PACMAN_GRAPES;
-			case 9, 10 ->  GameModel.PACMAN_GALAXIAN;
-			case 11, 12 -> GameModel.PACMAN_BELL;
-			default ->     GameModel.PACMAN_KEY;
-			};
+				case 1:  return GameModel.PACMAN_CHERRIES;
+				case 2:  return GameModel.PACMAN_STRAWBERRY;
+				case 3:  
+				case 4:  return GameModel.PACMAN_PEACH;
+				case 5:  
+				case 6:  return GameModel.PACMAN_APPLE;
+				case 7:  
+				case 8:  return GameModel.PACMAN_GRAPES;
+				case 9:  
+				case 10: return GameModel.PACMAN_GALAXIAN;
+				case 11: 
+				case 12: return GameModel.PACMAN_BELL;
+				default: return GameModel.PACMAN_KEY;
 			//@formatter:on
+			}
 		}
 	}
 
@@ -121,43 +126,48 @@ public class BonusManagement {
 	 * </table>
 	 */
 	private byte nextMsPacManBonusInfo() {
-		return switch (level.number()) {
+		switch (level.number()) {
 		//@formatter:off
-			case 1 -> GameModel.MS_PACMAN_CHERRIES;
-			case 2 -> GameModel.MS_PACMAN_STRAWBERRY;
-			case 3 -> GameModel.MS_PACMAN_ORANGE;
-			case 4 -> GameModel.MS_PACMAN_PRETZEL;
-			case 5 -> GameModel.MS_PACMAN_APPLE;
-			case 6 -> GameModel.MS_PACMAN_PEAR;
-			case 7 -> GameModel.MS_PACMAN_BANANA;
-			default -> {
+			case 1: return GameModel.MS_PACMAN_CHERRIES;
+			case 2: return GameModel.MS_PACMAN_STRAWBERRY;
+			case 3: return GameModel.MS_PACMAN_ORANGE;
+			case 4: return GameModel.MS_PACMAN_PRETZEL;
+			case 5: return GameModel.MS_PACMAN_APPLE;
+			case 6: return GameModel.MS_PACMAN_PEAR;
+			case 7: return GameModel.MS_PACMAN_BANANA;
+			default:
 				int random = Globals.randomInt(0, 320);
-				if (random < 50)  yield GameModel.MS_PACMAN_CHERRIES;
-				if (random < 100) yield GameModel.MS_PACMAN_STRAWBERRY;
-				if (random < 150) yield GameModel.MS_PACMAN_ORANGE;
-				if (random < 200) yield GameModel.MS_PACMAN_PRETZEL;
-				if (random < 240) yield GameModel.MS_PACMAN_APPLE;
-				if (random < 280) yield GameModel.MS_PACMAN_PEAR;
-				else              yield GameModel.MS_PACMAN_BANANA;
-			}
+				if (random < 50)  return GameModel.MS_PACMAN_CHERRIES;
+				if (random < 100) return GameModel.MS_PACMAN_STRAWBERRY;
+				if (random < 150) return GameModel.MS_PACMAN_ORANGE;
+				if (random < 200) return GameModel.MS_PACMAN_PRETZEL;
+				if (random < 240) return GameModel.MS_PACMAN_APPLE;
+				if (random < 280) return GameModel.MS_PACMAN_PEAR;
+				else              return GameModel.MS_PACMAN_BANANA;
 		//@formatter:on
-		};
+		}
 	}
 
 	public boolean isFirstBonusReached() {
-		return switch (level.game().variant()) {
-		case MS_PACMAN -> level.world().eatenFoodCount() == 64;
-		case PACMAN -> level.world().eatenFoodCount() == 70;
-		default -> throw new IllegalGameVariantException(level.game().variant());
-		};
+		switch (level.game().variant()) {
+		case MS_PACMAN:
+			return level.world().eatenFoodCount() == 64;
+		case PACMAN:
+			return level.world().eatenFoodCount() == 70;
+		default:
+			throw new IllegalGameVariantException(level.game().variant());
+		}
 	}
 
 	public boolean isSecondBonusReached() {
-		return switch (level.game().variant()) {
-		case MS_PACMAN -> level.world().eatenFoodCount() == 176;
-		case PACMAN -> level.world().eatenFoodCount() == 170;
-		default -> throw new IllegalGameVariantException(level.game().variant());
-		};
+		switch (level.game().variant()) {
+		case MS_PACMAN:
+			return level.world().eatenFoodCount() == 176;
+		case PACMAN:
+			return level.world().eatenFoodCount() == 170;
+		default:
+			throw new IllegalGameVariantException(level.game().variant());
+		}
 	}
 
 	public Optional<Bonus> getBonus() {
@@ -187,7 +197,7 @@ public class BonusManagement {
 	 */
 	public void handleBonusReached(int bonusIndex) {
 		switch (level.game().variant()) {
-		case MS_PACMAN -> {
+		case MS_PACMAN: {
 			if (bonusIndex == 1 && bonus != null && bonus.state() != Bonus.STATE_INACTIVE) {
 				Logger.info("First bonus still active, skip second one");
 				return;
@@ -196,14 +206,17 @@ public class BonusManagement {
 			bonus.setEdible(TickTimer.INDEFINITE);
 			Logger.info("Moving bonus activated");
 			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
+			break;
 		}
-		case PACMAN -> {
+		case PACMAN: {
 			bonus = createStaticBonus(bonusIndex);
 			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 			bonus.setEdible(ticks);
 			GameEvents.publishGameEvent(GameEventType.BONUS_GETS_ACTIVE, bonus.entity().tile());
+			break;
 		}
-		default -> throw new IllegalGameVariantException(level.game().variant());
+		default:
+			throw new IllegalGameVariantException(level.game().variant());
 		}
 	}
 

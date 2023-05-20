@@ -45,14 +45,20 @@ public class FloorPlan {
 	public static final byte DOOR = 4;
 
 	private static char symbol(byte b) {
-		return switch (b) {
-		case CORNER -> '+';
-		case EMPTY -> ' ';
-		case HWALL -> '\u2014';
-		case VWALL -> '|';
-		case DOOR -> 'd';
-		default -> '?';
-		};
+		switch (b) {
+		case CORNER:
+			return '+';
+		case EMPTY:
+			return ' ';
+		case HWALL:
+			return '\u2014';
+		case VWALL:
+			return '|';
+		case DOOR:
+			return 'd';
+		default:
+			return '?';
+		}
 	}
 
 	private byte[][] info;

@@ -65,7 +65,7 @@ public class Option<T> {
 
 	@Override
 	public String toString() {
-		return "[Option name=%s value=%s]".formatted(name, value);
+		return String.format("[Option name=%s value=%s]", name, value);
 	}
 
 	public String getName() {

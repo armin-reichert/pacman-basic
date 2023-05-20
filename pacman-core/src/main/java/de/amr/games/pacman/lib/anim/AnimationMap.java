@@ -47,13 +47,13 @@ public class AnimationMap {
 
 	private void checkValidEntryKey(byte key) {
 		if (key < 0 || key > animations.length - 1) {
-			throw new IllegalArgumentException("Invalid animation map key: %d".formatted(key));
+			throw new IllegalArgumentException(String.format("Invalid animation map key: %d", key));
 		}
 	}
 
 	private void checkValidSelectionKey(byte key) {
 		if (key < -1 || key > animations.length - 1) {
-			throw new IllegalArgumentException("Invalid animation map key: %d".formatted(key));
+			throw new IllegalArgumentException(String.format("Invalid animation map key: %d", key));
 		}
 	}
 

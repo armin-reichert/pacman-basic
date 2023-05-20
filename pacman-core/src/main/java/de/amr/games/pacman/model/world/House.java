@@ -36,21 +36,50 @@ import de.amr.games.pacman.lib.math.Vector2i;
 /**
  * @author Armin Reichert
  */
-public record House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2f> seatPositions, Vector2f center) {
+public final class House {
+	private final Vector2i topLeftTile;
+	private final Vector2i size;
+	private final Door door;
+	private final List<Vector2f> seatPositions;
+	private final Vector2f center;
 
-	public House {
+	public House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2f> seatPositions, Vector2f center) {
 		checkTileNotNull(topLeftTile);
 		checkNotNull(size);
 		checkNotNull(door);
 		checkNotNull(seatPositions);
 		checkNotNull(center);
-
 		if (seatPositions.size() != 3) {
 			throw new IllegalArgumentException("There must be exactly 3 seat positions");
 		}
 		if (seatPositions.stream().anyMatch(Objects::isNull)) {
 			throw new IllegalArgumentException("House seat position must not be null");
 		}
+		this.topLeftTile = topLeftTile;
+		this.size = size;
+		this.door = door;
+		this.seatPositions = seatPositions;
+		this.center = center;
+	}
+
+	public Vector2i topLeftTile() {
+		return topLeftTile;
+	}
+
+	public Vector2i size() {
+		return size;
+	}
+
+	public Door door() {
+		return door;
+	}
+
+	public List<Vector2f> seatPositions() {
+		return seatPositions;
+	}
+
+	public Vector2f center() {
+		return center;
 	}
 
 	public Vector2f seatPosition(int i) {

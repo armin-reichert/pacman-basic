@@ -111,7 +111,7 @@ public class FrameSequence<T> implements Animated {
 	public void setFrameIndex(int i) {
 		if (i < 0 || i >= frames.length) {
 			throw new IllegalArgumentException(
-					"Illegal frame index: %d. Index must be from interval 0..%d".formatted(i, frames.length - 1));
+					String.format("Illegal frame index: %d. Index must be from interval 0..%d", i, frames.length - 1));
 		}
 		frameIndex = i;
 	}

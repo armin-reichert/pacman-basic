@@ -716,7 +716,7 @@ public class GameModel {
 		p.setProperty("level", String.valueOf(highScore.levelNumber()));
 		p.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
 		try (var out = new FileOutputStream(file)) {
-			p.storeToXML(out, "%s Hiscore".formatted(variant()));
+			p.storeToXML(out, String.format("%s Hiscore", variant()));
 			Logger.info("Highscore saved. File: '{}' Points: {} Level: {}", file.getAbsolutePath(), highScore.points(),
 					highScore.levelNumber());
 		} catch (Exception x) {

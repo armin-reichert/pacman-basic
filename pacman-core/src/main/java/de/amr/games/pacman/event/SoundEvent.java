@@ -42,6 +42,6 @@ public class SoundEvent extends GameEvent {
 
 	@Override
 	public String toString() {
-		return "SoundEvent('%s')".formatted(id);
+		return String.format("SoundEvent('%s')", id);
 	}
 }

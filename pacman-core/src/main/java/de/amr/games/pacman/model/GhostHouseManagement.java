@@ -44,13 +44,28 @@ import de.amr.games.pacman.model.actors.Ghost;
  */
 public class GhostHouseManagement {
 
-	public record GhostUnlockResult(Ghost ghost, String reason) {
+	public final class GhostUnlockResult {
+		private final Ghost ghost;
+		private final String reason;
+
+		public GhostUnlockResult(Ghost ghost, String reason) {
+			this.ghost = ghost;
+			this.reason = reason;
+		}
+
+		public Ghost ghost() {
+			return ghost;
+		}
+
+		public String reason() {
+			return reason;
+		}
 	}
 
 	private final GameLevel level;
 	private final long pacStarvingTicksLimit;
 	private final byte[] globalGhostDotLimits;
-	private final byte[] privateGhostDotLimits;
+	private byte[] privateGhostDotLimits;
 	private final int[] ghostDotCounters;
 	private int globalDotCounter;
 	private boolean globalDotCounterEnabled;
@@ -59,11 +74,17 @@ public class GhostHouseManagement {
 		this.level = level;
 		pacStarvingTicksLimit = level.number() < 5 ? 4 * GameModel.FPS : 3 * GameModel.FPS;
 		globalGhostDotLimits = new byte[] { -1, 7, 17, -1 };
-		privateGhostDotLimits = switch (level.number()) {
-		case 1 -> new byte[] { 0, 0, 30, 60 };
-		case 2 -> new byte[] { 0, 0, 0, 50 };
-		default -> new byte[] { 0, 0, 0, 0 };
-		};
+		switch (level.number()) {
+		case 1:
+			privateGhostDotLimits = new byte[] { 0, 0, 30, 60 };
+			break;
+		case 2:
+			privateGhostDotLimits = new byte[] { 0, 0, 0, 50 };
+			break;
+		default:
+			privateGhostDotLimits = new byte[] { 0, 0, 0, 0 };
+			break;
+		}
 		ghostDotCounters = new int[] { 0, 0, 0, 0 };
 		globalDotCounter = 0;
 		globalDotCounterEnabled = false;
@@ -132,6 +153,6 @@ public class GhostHouseManagement {
 	}
 
 	private Optional<GhostUnlockResult> unlockResult(Ghost ghost, String reason, Object... args) {
-		return Optional.of(new GhostUnlockResult(ghost, reason.formatted(args)));
+		return Optional.of(new GhostUnlockResult(ghost, String.format(reason, args)));
 	}
 }
