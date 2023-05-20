@@ -46,7 +46,7 @@ import de.amr.games.pacman.model.world.World;
  * 
  * @author Armin Reichert
  */
-public class RuleBasedSteering implements Steering {
+public class RuleBasedSteering extends Steering {
 
 	private static class CollectedData {
 

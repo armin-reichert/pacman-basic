@@ -29,21 +29,27 @@ import de.amr.games.pacman.model.actors.Creature;
 /**
  * @author Armin Reichert
  */
-public interface Steering {
+public abstract class Steering {
 
-	public static final Steering NONE = (level, guy) -> {
+	public static final Steering NONE = new Steering() {
+		@Override
+		public void steer(GameLevel level, Creature guy) {
+		}
 	};
 
-	void steer(GameLevel level, Creature guy);
+	private boolean enabled;
 
-	default boolean isEnabled() {
-		return false;
-	}
-
-	default void setEnabled(boolean enabled) {
-	}
-
-	default void init() {
+	public void init() {
 		// implement if needed
+	}
+
+	public abstract void steer(GameLevel level, Creature guy);
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }

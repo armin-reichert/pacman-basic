@@ -37,7 +37,7 @@ import de.amr.games.pacman.model.actors.Creature;
  * 
  * @author Armin Reichert
  */
-public class RouteBasedSteering implements Steering {
+public class RouteBasedSteering extends Steering {
 
 	private List<NavigationPoint> route = List.of();
 	private int targetIndex;
