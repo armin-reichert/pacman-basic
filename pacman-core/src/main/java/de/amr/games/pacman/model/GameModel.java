@@ -23,9 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.lib.Globals.checkGameVariant;
 import static de.amr.games.pacman.lib.Globals.checkLevelNumber;
-import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
 
@@ -273,23 +271,27 @@ public class GameModel {
 	 * <p>
 	 */
 	public static int mazeNumberMsPacMan(int levelNumber) {
-		return switch (levelNumber) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
-		};
+		checkLevelNumber(levelNumber);
+		if (levelNumber <= 2) {
+			return 1;
+		}
+		if (levelNumber <= 5) {
+			return 2;
+		}
+		if (levelNumber <= 9) {
+			return 3;
+		}
+		if (levelNumber <= 13) {
+			return 4;
+		}
+		// alternate between maze #5 and #6 every 4th level
+		return (levelNumber - 14) % 8 < 4 ? 5 : 6;
 	}
 	
 	private static int mapNumberMsPacMan(int levelNumber) {
-		return switch (levelNumber) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
-		};
+		checkLevelNumber(levelNumber);
+		// from level 14, alternate between map #3 and #4 every 4th level
+		return levelNumber <= 13 ? mazeNumberMsPacMan(levelNumber) : mazeNumberMsPacMan(levelNumber) - 2;
 	}
 	
 	private static final List<NavigationPoint> PACMAN_DEMOLEVEL_ROUTE = List.of( //
@@ -397,39 +399,48 @@ public class GameModel {
 	};
 	
 	
-	private static int levelDataIndex(int levelNumber) {
+	private static int dataRow(int levelNumber) {
 		return (levelNumber - 1) < LEVEL_DATA.length ? (levelNumber - 1) : (LEVEL_DATA.length - 1); 
 	}
-
 	
 	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
 	private static final int[][] HUNTING_DURATIONS_PACMAN = {
-		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS,   20 * FPS, 5 * FPS, -1 }, // level 1
-		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS,       1, -1 }, // levels 2-4
-		{ 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS,       1, -1 }, // levels 5+
+		{ 7 * FPS,   20 * FPS,   7 * FPS,   20 * FPS,   5 * FPS,     20 * FPS,   5 * FPS,   -1 }, // level 1
+		{ 7 * FPS,   20 * FPS,   7 * FPS,   20 * FPS,   5 * FPS,   1033 * FPS,         1,   -1 }, // levels 2-4
+		{ 5 * FPS,   20 * FPS,   5 * FPS,   20 * FPS,   5 * FPS,   1037 * FPS,         1,   -1 }, // levels 5+
 	};
-	
-	// Got this from a conversation on Reddit
-	// https://www.reddit.com/r/Pacman/comments/12q4ny3/is_anyone_able_to_explain_the_ai_behind_the/
-	// https://github.com/armin-reichert/pacman-basic/blob/main/doc/mspacman-details-reddit-user-damselindis.md
-	// TODO: is this information correct?
+
+	/** 
+	 * These numbers are from a conversation with user "damselindis" on Reddit. I am not sure if they are correct.
+	 * 
+	 * @see <a href="https://www.reddit.com/r/Pacman/comments/12q4ny3/is_anyone_able_to_explain_the_ai_behind_the/">Reddit</a>
+	 * @see <a href=" https://github.com/armin-reichert/pacman-basic/blob/main/doc/mspacman-details-reddit-user-damselindis.md">GitHub</a>
+	 */
 	private static final int[][] HUNTING_DURATIONS_MS_PACMAN = {
-			{ 7 * FPS, 20 * FPS, 1, 1037 * FPS, 1, 1037 * FPS, 1, -1 }, // levels 1-4
-			{ 5 * FPS, 20 * FPS, 1, 1037 * FPS, 1, 1037 * FPS, 1, -1 }, // levels 5+
-		};
+		{ 7 * FPS,   20 * FPS,   1,   1037 * FPS,   1,   1037 * FPS,   1,   -1 }, // levels 1-4
+		{ 5 * FPS,   20 * FPS,   1,   1037 * FPS,   1,   1037 * FPS,   1,   -1 }, // levels 5+
+	};
 	
 	//@formatter:on
 
 	public int[] huntingDurations(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		return switch (variant) {
-		case MS_PACMAN -> HUNTING_DURATIONS_MS_PACMAN[levelNumber <= 4 ? 0 : 1];
-		case PACMAN -> HUNTING_DURATIONS_PACMAN[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
-		default -> throw new IllegalGameVariantException(variant);
-		};
+		if (variant == GameVariant.MS_PACMAN) {
+			return HUNTING_DURATIONS_MS_PACMAN[levelNumber <= 4 ? 0 : 1];
+		}
+		if (variant == GameVariant.PACMAN) {
+			if (levelNumber == 1) {
+				return HUNTING_DURATIONS_PACMAN[0];
+			}
+			if (levelNumber <= 4) {
+				return HUNTING_DURATIONS_PACMAN[1];
+			}
+			return HUNTING_DURATIONS_PACMAN[2];
+		}
+		throw new IllegalGameVariantException(variant);
 	}
 
-	// Note: Ms. Pac-Man bonus #3 is an orange! (Found in official Manual)
+	// Ms. Pac-Man bonus #3 is an orange, not a peach! (Found in official Arcade machine manual)
 
 	//@formatter:off
 	public static final byte MS_PACMAN_CHERRIES     = 0;
@@ -454,6 +465,7 @@ public class GameModel {
 	public static final byte[] BONUS_VALUES_PACMAN = {1, 3, 5, 7, 10, 20, 30, 50 }; // * 100
 	//@formatter:on
 
+	// TODO: Maybe implement all Arcade machine DIP switches?
 	public static int initialLives = 3;
 
 	private final GameVariant variant;
@@ -465,6 +477,7 @@ public class GameModel {
 	private int lives;
 	private boolean playing;
 	private boolean scoringEnabled;
+
 	private boolean immune; // extra feature
 	private boolean oneLessLifeDisplayed; // TODO get rid of this
 	public int intermissionTestNumber; // intermission test mode
@@ -513,29 +526,34 @@ public class GameModel {
 	public void enterLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 
-		var map = switch (variant) {
-		case MS_PACMAN -> MS_PACMAN_MAPS[mapNumberMsPacMan(levelNumber) - 1];
-		case PACMAN -> PACMAN_MAP;
-		default -> throw new IllegalGameVariantException(variant);
-		};
-		level = new GameLevel(this, new World(map), levelNumber, LEVEL_DATA[levelDataIndex(levelNumber)], false);
+		World world;
+		if (variant == GameVariant.MS_PACMAN) {
+			int mapIndex = mapNumberMsPacMan(levelNumber) - 1;
+			world = new World(MS_PACMAN_MAPS[mapIndex]);
+		} else if (variant == GameVariant.PACMAN) {
+			world = new World(PACMAN_MAP);
+		} else {
+			throw new IllegalGameVariantException(variant);
+		}
 
-		if (level.number() == 1) {
+		level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
+		level.letsGetReadyToRumbleAndShowGuys(false);
+
+		if (levelNumber == 1) {
 			levelCounter.clear();
 		}
-		// In Ms. Pac-Man, the level counter stays unchanged from level 8 on and bonus symbols are created randomly whenever
-		// a bonus is reached (also in the same level). At least that's what I was told.
-		if (variant == GameVariant.PACMAN || level.number() <= 7) {
+		if (variant == GameVariant.PACMAN || levelNumber <= 7) {
+			// In Ms. Pac-Man, the level counter stays fixed from level 8 on and bonus symbols are created randomly
+			// (also inside the same level) whenever a bonus is earned . That's what I was told.
 			levelCounter.add(level.symbol());
 			if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
 				levelCounter.remove(0);
 			}
 		}
+
 		if (score != null) {
 			score.setLevelNumber(levelNumber);
 		}
-
-		level.letsGetReadyToRumbleAndShowGuys(false);
 	}
 
 	/**
@@ -545,19 +563,20 @@ public class GameModel {
 		GameEvents.setSoundEventsEnabled(false);
 		scoringEnabled = false;
 		switch (variant) {
-		case MS_PACMAN -> {
+		case MS_PACMAN:
 			level = new GameLevel(this, new World(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
-			level.setPacSteering(new RuleBasedSteering());
+			level.setPacSteering(new RuleBasedSteering()); // TODO check which route Ms. Pac-Man takes in demo level
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			Logger.info("Ms. Pac-Man demo level entered");
-		}
-		case PACMAN -> {
+			break;
+		case PACMAN:
 			level = new GameLevel(this, new World(PACMAN_MAP), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE));
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			Logger.info("Pac-Man demo level entered");
-		}
-		default -> throw new IllegalGameVariantException(variant);
+			break;
+		default:
+			throw new IllegalGameVariantException(variant);
 		}
 	}
 
@@ -652,17 +671,17 @@ public class GameModel {
 	}
 
 	private static File highscoreFile(GameVariant variant) {
-		checkGameVariant(variant);
-		var dir = System.getProperty("user.home");
-		return switch (variant) {
-		case PACMAN -> new File(dir, "highscore-pacman.xml");
-		case MS_PACMAN -> new File(dir, "highscore-ms_pacman.xml");
-		default -> throw new IllegalGameVariantException(variant);
-		};
+		switch (variant) {
+		case PACMAN:
+			return new File(System.getProperty("user.home"), "highscore-pacman.xml");
+		case MS_PACMAN:
+			return new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
+		default:
+			throw new IllegalGameVariantException(variant);
+		}
 	}
 
 	private static Score loadHighscore(File file) {
-		checkNotNull(file);
 		try (var in = new FileInputStream(file)) {
 			var props = new Properties();
 			props.loadFromXML(in);
