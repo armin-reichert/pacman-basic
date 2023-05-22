@@ -93,13 +93,13 @@ public enum GameState implements FsmState<GameModel> {
 			gc.getManualPacSteering().setEnabled(false);
 			publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
 			if (!game.hasCredit()) {
-				game.init();
+				game.start();
 				game.enterDemoLevel();
 				publishGameEventOfType(GameEventType.LEVEL_STARTING);
 			} else if (game.isPlaying()) {
 				game.level().ifPresent(level -> level.letsGetReadyToRumbleAndShowGuys(true));
 			} else {
-				game.init();
+				game.start();
 				game.score().reset();
 				game.clearLevelCounter();
 				game.enterLevel(1);
@@ -379,7 +379,7 @@ public enum GameState implements FsmState<GameModel> {
 				break;
 			}
 			timer.restartIndefinitely();
-			game.init();
+			game.start();
 			game.enterLevel(1);
 			publishGameEventOfType(GameEventType.LEVEL_STARTING);
 		}

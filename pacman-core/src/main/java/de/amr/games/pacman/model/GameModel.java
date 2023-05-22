@@ -321,22 +321,21 @@ public class GameModel {
 	public static final short FPS = 60;
 
 	/** Pixels/tick at 100% relative speed. */
-	public static final float SPEED_PX_100_PERCENT        = 1.25f;
-	public static final float SPEED_PX_INSIDE_HOUSE       = 0.5f; // correct?
-	public static final float SPEED_PX_RETURNING_TO_HOUSE = 2.0f; // correct?
-	public static final float SPEED_PX_ENTERING_HOUSE     = 1.25f; // correct?
-
-	public static final byte MAX_CREDIT = 99;
-	public static final byte LEVEL_COUNTER_MAX_SYMBOLS = 7;
-	public static final byte RESTING_TICKS_NORMAL_PELLET = 1;
-	public static final byte RESTING_TICKS_ENERGIZER = 3;
-	public static final byte POINTS_NORMAL_PELLET = 10;
-	public static final byte POINTS_ENERGIZER = 50;
-	public static final short POINTS_ALL_GHOSTS_KILLED_IN_LEVEL = 12_000;
+	public static final float   SPEED_PX_100_PERCENT        = 1.25f;
+	public static final float   SPEED_PX_INSIDE_HOUSE       = 0.5f; // correct?
+	public static final float   SPEED_PX_RETURNING_TO_HOUSE = 2.0f; // correct?
+	public static final float   SPEED_PX_ENTERING_HOUSE     = 1.25f; // correct?
+	public static final byte    MAX_CREDIT = 99;
+	public static final byte    LEVEL_COUNTER_MAX_SYMBOLS = 7;
+	public static final byte    RESTING_TICKS_NORMAL_PELLET = 1;
+	public static final byte    RESTING_TICKS_ENERGIZER = 3;
+	public static final byte    POINTS_NORMAL_PELLET = 10;
+	public static final byte    POINTS_ENERGIZER = 50;
+	public static final short   POINTS_ALL_GHOSTS_KILLED_IN_LEVEL = 12_000;
 	public static final short[] POINTS_GHOSTS_SEQUENCE = { 200, 400, 800, 1600 };
-	public static final short SCORE_EXTRA_LIFE = 10_000;
-	public static final short BONUS_POINTS_SHOWN_TICKS = 2 * FPS; // unsure
-	public static final short PAC_POWER_FADES_TICKS = 2 * FPS - 1; // unsure
+	public static final short   SCORE_EXTRA_LIFE = 10_000;
+	public static final short   BONUS_POINTS_SHOWN_TICKS = 2 * FPS; // unsure
+	public static final short   PAC_POWER_FADES_TICKS = 2 * FPS - 1; // unsure
 
 	// Animation keys (positive byte value, -1 = no selection)
 	public static final byte AK_GHOST_BLUE              = 0;
@@ -465,15 +464,13 @@ public class GameModel {
 	public static final byte[] BONUS_VALUES_PACMAN = {1, 3, 5, 7, 10, 20, 30, 50 }; // * 100
 	//@formatter:on
 
-	// TODO: Maybe implement all Arcade machine DIP switches?
-	public static int initialLives = 3;
-
 	private final GameVariant variant;
 	private GameLevel level;
 	private final List<Byte> levelCounter = new LinkedList<>();
 	private final Score score;
 	private final Score highScore;
 	private int credit;
+	private int initialLives;
 	private int lives;
 	private boolean playing;
 	private boolean scoringEnabled;
@@ -486,19 +483,27 @@ public class GameModel {
 		this.variant = variant;
 		this.score = new Score();
 		this.highScore = new Score();
-		init();
+		initialLives = 3;
 	}
 
 	/**
-	 * Initializes the game. Credit, immunity and scores remain unchanged.
+	 * Starts the game. Credit, immunity and scores remain unchanged.
 	 */
-	public void init() {
+	public void start() {
 		level = null;
 		lives = initialLives;
 		playing = false;
 		scoringEnabled = true;
 		oneLessLifeDisplayed = false; // @remove
 		Logger.trace("Game model ({}) initialized", variant());
+	}
+
+	public int getInitialLives() {
+		return initialLives;
+	}
+
+	public void setInitialLives(int initialLives) {
+		this.initialLives = initialLives;
 	}
 
 	/**
