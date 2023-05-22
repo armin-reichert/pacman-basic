@@ -471,8 +471,8 @@ public class GameModel {
 	private final GameVariant variant;
 	private GameLevel level;
 	private final List<Byte> levelCounter = new LinkedList<>();
-	private Score score;
-	private Score highScore;
+	private final Score score;
+	private final Score highScore;
 	private int credit;
 	private int lives;
 	private boolean playing;
@@ -484,6 +484,8 @@ public class GameModel {
 
 	public GameModel(GameVariant variant) {
 		this.variant = variant;
+		this.score = new Score();
+		this.highScore = new Score();
 		init();
 	}
 
@@ -634,16 +636,12 @@ public class GameModel {
 		levelCounter.clear();
 	}
 
-	public Optional<Score> score() {
-		return Optional.ofNullable(score);
+	public Score score() {
+		return score;
 	}
 
-	public void newScore() {
-		score = new Score();
-	}
-
-	public Optional<Score> highScore() {
-		return Optional.ofNullable(highScore);
+	public Score highScore() {
+		return highScore;
 	}
 
 	public void scorePoints(int points) {
@@ -681,46 +679,43 @@ public class GameModel {
 		}
 	}
 
-	private static Score loadHighscore(File file) {
+	private static void loadHighscore(Score score, File file) {
 		try (var in = new FileInputStream(file)) {
 			var props = new Properties();
 			props.loadFromXML(in);
 			var points = Integer.parseInt(props.getProperty("points"));
 			var levelNumber = Integer.parseInt(props.getProperty("level"));
 			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
-			Score scoreFromFile = new Score();
-			scoreFromFile.setPoints(points);
-			scoreFromFile.setLevelNumber(levelNumber);
-			scoreFromFile.setDate(date);
-			Logger.info("Highscore loaded. File: '{}' Points: {} Level: {}", file.getAbsolutePath(), scoreFromFile.points(),
-					scoreFromFile.levelNumber());
-			return scoreFromFile;
+			score.setPoints(points);
+			score.setLevelNumber(levelNumber);
+			score.setDate(date);
+			Logger.info("Highscore loaded. File: '{}' Points: {} Level: {}", file.getAbsolutePath(), score.points(),
+					score.levelNumber());
 		} catch (Exception x) {
 			Logger.info("Highscore could not be loaded. File '{}' Reason: {}", file, x.getMessage());
-			return new Score();
 		}
 	}
 
 	public void loadHighscore() {
-		highScore = loadHighscore(highscoreFile(variant()));
+		loadHighscore(highScore, highscoreFile(variant()));
 	}
 
 	public void saveNewHighscore() {
 		var file = highscoreFile(variant());
-		var oldHiscore = loadHighscore(file);
-		if (highScore.points() <= oldHiscore.points()) {
-			return;
-		}
-		var p = new Properties();
-		p.setProperty("points", String.valueOf(highScore.points()));
-		p.setProperty("level", String.valueOf(highScore.levelNumber()));
-		p.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
-		try (var out = new FileOutputStream(file)) {
-			p.storeToXML(out, String.format("%s Hiscore", variant()));
-			Logger.info("Highscore saved. File: '{}' Points: {} Level: {}", file.getAbsolutePath(), highScore.points(),
-					highScore.levelNumber());
-		} catch (Exception x) {
-			Logger.error("Highscore could not be saved. File '{}' Reason: {}", file, x.getMessage());
+		var savedHiscore = new Score();
+		loadHighscore(savedHiscore, file);
+		if (highScore.points() > savedHiscore.points()) {
+			var p = new Properties();
+			p.setProperty("points", String.valueOf(highScore.points()));
+			p.setProperty("level", String.valueOf(highScore.levelNumber()));
+			p.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
+			try (var out = new FileOutputStream(file)) {
+				p.storeToXML(out, String.format("%s Hiscore", variant()));
+				Logger.info("Highscore saved to '{}' Points: {} Level: {}", file.getAbsolutePath(), highScore.points(),
+						highScore.levelNumber());
+			} catch (Exception x) {
+				Logger.error("Highscore could not be saved to '{}': {}", file, x.getMessage());
+			}
 		}
 	}
 

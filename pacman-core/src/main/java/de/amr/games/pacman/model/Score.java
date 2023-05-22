@@ -35,6 +35,10 @@ public class Score {
 	private LocalDate date;
 
 	public Score() {
+		reset();
+	}
+
+	public void reset() {
 		points = 0;
 		levelNumber = 1;
 		date = LocalDate.now();

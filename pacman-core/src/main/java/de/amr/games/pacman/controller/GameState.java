@@ -50,7 +50,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.restartIndefinitely();
 			game.clearLevelCounter();
-			game.newScore();
+			game.score().reset();
 			game.loadHighscore();
 			publishSoundEvent(GameModel.SE_STOP_ALL_SOUNDS);
 		}
@@ -100,7 +100,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.level().ifPresent(level -> level.letsGetReadyToRumbleAndShowGuys(true));
 			} else {
 				game.init();
-				game.newScore();
+				game.score().reset();
 				game.clearLevelCounter();
 				game.enterLevel(1);
 				publishSoundEvent(GameModel.SE_READY_TO_PLAY);
