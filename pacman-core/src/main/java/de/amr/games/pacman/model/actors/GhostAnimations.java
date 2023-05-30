@@ -7,7 +7,7 @@ package de.amr.games.pacman.model.actors;
 /**
  * @author Armin Reichert
  */
-public interface GhostAnimations {
+public interface GhostAnimations<A> {
 
 	public static final String GHOST_NORMAL = "normal";
 	public static final String GHOST_FRIGHTENED = "frightened";
@@ -19,9 +19,11 @@ public interface GhostAnimations {
 	public static final String BLINKY_PATCHED = "patched";
 	public static final String BLINKY_NAKED = "naked";
 
-	void select(String name);
+	A selectedAnimation();
 
-	void selectNumber(int killedIndex);
+	String selectedAnimationName();
+
+	void select(String name, Object... args);
 
 	void startSelected();
 
