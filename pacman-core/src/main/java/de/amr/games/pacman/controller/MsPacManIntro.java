@@ -90,6 +90,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 				ctx.msPacMan.setMoveDir(LEFT);
 				ctx.msPacMan.setPixelSpeed(ctx.speed);
 				ctx.msPacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
+				ctx.msPacMan.startAnimation();
 				ctx.ghosts.forEach(ghost -> {
 					ghost.setPosition(TS * 33.5f, TS * 20);
 					ghost.setMoveAndWishDir(LEFT);
