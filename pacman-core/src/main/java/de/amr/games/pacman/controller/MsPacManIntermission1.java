@@ -7,7 +7,6 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.lib.Globals.TS;
 
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.math.Vector2f;
@@ -110,7 +109,6 @@ public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPa
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
 					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_1);
-					ctx.clapperboard.animation().ifPresent(Animated::restart);
 				}
 				if (timer.hasExpired()) {
 					ctx.clapperboard.setVisible(false);

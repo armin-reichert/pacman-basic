@@ -7,7 +7,6 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.lib.Globals.TS;
 
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.steering.Direction;
@@ -77,7 +76,6 @@ public class MsPacManIntermission2 extends Fsm<MsPacManIntermission2.State, MsPa
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
 					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_2);
-					ctx.clapperboard.animation().ifPresent(Animated::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.setVisible(false);
 				} else if (timer.atSecond(3)) {
