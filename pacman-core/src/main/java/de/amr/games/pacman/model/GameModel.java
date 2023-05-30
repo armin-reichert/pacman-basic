@@ -320,11 +320,6 @@ public class GameModel {
 	public static final short   BONUS_POINTS_SHOWN_TICKS = 2 * FPS; // unsure
 	public static final short   PAC_POWER_FADES_TICKS = 2 * FPS - 1; // unsure
 
-	// Animation keys (positive byte value, -1 = no selection)
-	public static final byte AK_MAZE_ENERGIZER_BLINKING = 0;
-	public static final byte AK_MAZE_FLASHING           = 1;
-	public static final byte ANIMATION_MAP_CAPACITY     = 2; // size of animation maps
-
 	// Sound events
 	public static final byte SE_BONUS_EATEN             =  0;
 	public static final byte SE_CREDIT_ADDED            =  1;
