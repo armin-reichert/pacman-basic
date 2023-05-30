@@ -31,11 +31,9 @@ import org.tinylog.Logger;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GhostEvent;
-import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.model.AnimatedEntity;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.House;
@@ -45,7 +43,7 @@ import de.amr.games.pacman.model.world.House;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature implements AnimatedEntity {
+public class Ghost extends Creature {
 
 	private final byte id;
 	private GhostState state;
@@ -54,8 +52,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private Vector2f revivalPosition = Vector2f.ZERO;
 	private Vector2i scatterTile = Vector2i.ZERO;
 	private Direction initialDirection = Direction.UP;
-
-	private AnimationMap animations;
+	private GhostAnimations animations;
 	private int killedIndex;
 
 	public Ghost(byte id, String name) {
@@ -83,11 +80,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void reset() {
 		super.reset();
 		setKilledIndex(-1);
-	}
-
-	@Override
-	public Entity entity() {
-		return this;
 	}
 
 	/**
@@ -292,7 +284,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 		default:
 			throw new IllegalArgumentException(String.format("Unknown ghost state: '%s'", state));
 		}
-		animate();
 	}
 
 	// --- LOCKED ---
@@ -304,7 +295,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateLocked() {
 		state = LOCKED;
 		setPixelSpeed(0);
-		selectAndResetAnimation(GameModel.AK_GHOST_COLOR);
+		selectAnimation(GhostAnimations.GHOST_NORMAL);
 	}
 
 	private void updateStateLocked(GameLevel level) {
@@ -323,7 +314,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			updateFrightenedAnimation(level);
 		} else {
 			// got already killed in this power phase, not frightened anymore
-			selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
+			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
 	}
 
@@ -352,7 +343,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (frightened) {
 			updateFrightenedAnimation(level);
 		} else {
-			selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
+			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
 		var outOfHouse = moveOutsideHouse(level.world().house());
 		if (outOfHouse) {
@@ -429,7 +420,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 */
 	public void enterStateHuntingPac() {
 		state = HUNTING_PAC;
-		selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
+		selectAnimation(GhostAnimations.GHOST_NORMAL);
 	}
 
 	private void updateStateHuntingPac(GameLevel level) {
@@ -448,7 +439,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 */
 	public void enterStateFrightened() {
 		state = FRIGHTENED;
-		selectAndRunAnimation(GameModel.AK_GHOST_BLUE);
+		selectAnimation(GhostAnimations.GHOST_FRIGHTENED);
 	}
 
 	private void updateStateFrightened(GameLevel level) {
@@ -466,7 +457,9 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 */
 	public void enterStateEaten() {
 		state = EATEN;
-		selectAndRunAnimation(GameModel.AK_GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
+		if (animations != null) {
+			animations.selectNumber(killedIndex);
+		}
 	}
 
 	private void updateStateEaten() {
@@ -485,7 +478,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		checkLevelNotNull(level);
 		state = RETURNING_TO_HOUSE;
 		setTargetTile(level.world().house().door().leftWing());
-		selectAndRunAnimation(GameModel.AK_GHOST_EYES);
+		selectAnimation(GhostAnimations.GHOST_EYES);
 	}
 
 	private void updateStateReturningToHouse(GameLevel level) {
@@ -528,13 +521,36 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	// Animation
 
-	public void setAnimations(AnimationMap animationSet) {
-		this.animations = animationSet;
+	public void setAnimations(GhostAnimations animations) {
+		this.animations = animations;
 	}
 
-	@Override
-	public Optional<AnimationMap> animations() {
+	public Optional<GhostAnimations> animations() {
 		return Optional.ofNullable(animations);
+	}
+
+	public void selectAnimation(String name) {
+		if (animations != null) {
+			animations.select(name);
+		}
+	}
+
+	public void startAnimation() {
+		if (animations != null) {
+			animations.startSelected();
+		}
+	}
+
+	public void stopAnimation() {
+		if (animations != null) {
+			animations.stopSelected();
+		}
+	}
+
+	public void resetAnimation() {
+		if (animations != null) {
+			animations.resetSelected();
+		}
 	}
 
 	private void updateFrightenedAnimation(GameLevel level) {
@@ -544,32 +560,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 		var timer = level.pac().powerTimer();
 		if (timer.remaining() == GameModel.PAC_POWER_FADES_TICKS
 				|| timer.duration() < GameModel.PAC_POWER_FADES_TICKS && timer.tick() == 1) {
-			startFlashing(level.numFlashes, timer.remaining());
+			animations.select(GhostAnimations.GHOST_FLASHING);
 		} else if (timer.remaining() > GameModel.PAC_POWER_FADES_TICKS) {
-			selectAndRunAnimation(GameModel.AK_GHOST_BLUE);
-		}
-	}
-
-	private void startFlashing(int numFlashes, long totalTicks) {
-		animations.animation(GameModel.AK_GHOST_FLASHING).ifPresent(flashing -> {
-			selectAndResetAnimation(GameModel.AK_GHOST_FLASHING);
-			long frameTicks = totalTicks / (numFlashes * flashing.numFrames());
-			flashing.setFrameDuration(frameTicks);
-			flashing.setRepetitions(numFlashes);
-			flashing.restart();
-			Logger.trace("{}: Start flashing for {} ticks: {} flashes, {} ticks per flash", name(), totalTicks, numFlashes,
-					frameTicks);
-		});
-	}
-
-	public void stopFlashing(boolean stop) {
-		animation(GameModel.AK_GHOST_FLASHING).ifPresent(flashing -> {
-			if (stop) {
-				flashing.stop();
-				flashing.setFrameIndex(0);
-			} else {
-				flashing.start();
+			if (animations != null) {
+				animations.select(GhostAnimations.GHOST_FRIGHTENED);
 			}
-		});
+		}
 	}
 }

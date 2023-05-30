@@ -8,9 +8,7 @@ import static de.amr.games.pacman.lib.Globals.checkLevelNotNull;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.model.AnimatedEntity;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 
@@ -19,7 +17,7 @@ import de.amr.games.pacman.model.GameModel;
  * 
  * @author Armin Reichert
  */
-public class Pac extends Creature implements AnimatedEntity {
+public class Pac extends Creature {
 
 	public static final long REST_FOREVER = -1;
 
@@ -27,17 +25,12 @@ public class Pac extends Creature implements AnimatedEntity {
 	private boolean dead;
 	private long restingTicks;
 	private long starvingTicks;
-	private AnimationMap animationMap;
+	private PacAnimations animations;
 
 	public Pac(String name) {
 		super(name);
 		powerTimer = new TickTimer("PacPower");
 		reset();
-	}
-
-	@Override
-	public Entity entity() {
-		return this;
 	}
 
 	@Override
@@ -54,22 +47,13 @@ public class Pac extends Creature implements AnimatedEntity {
 	}
 
 	@Override
-	public Optional<AnimationMap> animations() {
-		return Optional.ofNullable(animationMap);
-	}
-
-	public void setAnimations(AnimationMap animationMap) {
-		this.animationMap = animationMap;
-	}
-
-	@Override
 	public void reset() {
 		super.reset();
 		dead = false;
 		restingTicks = 0;
 		starvingTicks = 0;
 		corneringSpeedUp = 1.5f; // TODO experimental
-		selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
+		selectAnimation(PacAnimations.PAC_MUNCHING);
 		powerTimer.reset(0);
 	}
 
@@ -90,9 +74,11 @@ public class Pac extends Creature implements AnimatedEntity {
 			var speed = powerTimer.isRunning() ? level.pacSpeedPowered : level.pacSpeed;
 			setRelSpeed(speed);
 			tryMoving(level);
-			selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
+			selectAnimation(PacAnimations.PAC_MUNCHING);
 			if (moved()) {
-				animate();
+				startAnimation();
+			} else {
+				stopAnimation();
 			}
 		} else {
 			--restingTicks;
@@ -102,7 +88,6 @@ public class Pac extends Creature implements AnimatedEntity {
 
 	private void updateDead() {
 		setPixelSpeed(0);
-		animate();
 	}
 
 	public void killed() {
@@ -153,5 +138,39 @@ public class Pac extends Creature implements AnimatedEntity {
 
 	public boolean isStandingStill() {
 		return velocity().length() == 0 || !moved() || restingTicks == REST_FOREVER;
+	}
+
+	// Animation
+
+	public void setAnimations(PacAnimations animations) {
+		this.animations = animations;
+	}
+
+	public Optional<PacAnimations> animations() {
+		return Optional.ofNullable(animations);
+	}
+
+	public void selectAnimation(String name) {
+		if (animations != null) {
+			animations.select(name);
+		}
+	}
+
+	public void startAnimation() {
+		if (animations != null) {
+			animations.startSelected();
+		}
+	}
+
+	public void stopAnimation() {
+		if (animations != null) {
+			animations.stopSelected();
+		}
+	}
+
+	public void resetAnimation() {
+		if (animations != null) {
+			animations.resetSelected();
+		}
 	}
 }

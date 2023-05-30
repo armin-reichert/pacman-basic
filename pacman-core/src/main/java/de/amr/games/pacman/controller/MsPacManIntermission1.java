@@ -17,7 +17,9 @@ import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Clapperboard;
 import de.amr.games.pacman.model.actors.Entity;
 import de.amr.games.pacman.model.actors.Ghost;
+import de.amr.games.pacman.model.actors.GhostAnimations;
 import de.amr.games.pacman.model.actors.Pac;
+import de.amr.games.pacman.model.actors.PacAnimations;
 
 /**
  * Intermission scene 1: "They meet".
@@ -80,25 +82,25 @@ public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPa
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(-TS * (2), ctx.upperY);
-				ctx.pacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
+				ctx.pacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
 				ctx.inky.setMoveAndWishDir(Direction.RIGHT);
 				ctx.inky.setPosition(ctx.pacMan.position().minus(TS * (6), 0));
-				ctx.inky.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
+				ctx.inky.selectAnimation(GhostAnimations.GHOST_NORMAL);
 				ctx.inky.show();
 
 				ctx.msPac = new Pac("Ms. Pac-Man");
 				ctx.msPac.setMoveDir(Direction.LEFT);
 				ctx.msPac.setPosition(TS * (30), ctx.lowerY);
-				ctx.msPac.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
+				ctx.msPac.selectAnimation(PacAnimations.PAC_MUNCHING);
 				ctx.msPac.show();
 
 				ctx.pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
 				ctx.pinky.setMoveAndWishDir(Direction.LEFT);
 				ctx.pinky.setPosition(ctx.msPac.position().plus(TS * (6), 0));
-				ctx.pinky.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
+				ctx.pinky.selectAnimation(GhostAnimations.GHOST_NORMAL);
 				ctx.pinky.show();
 
 				ctx.heart = new Entity();
@@ -132,10 +134,10 @@ public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPa
 					intermission.changeState(State.COMING_TOGETHER);
 					return;
 				}
-				ctx.pacMan.moveAndAnimate();
-				ctx.msPac.moveAndAnimate();
-				ctx.inky.moveAndAnimate();
-				ctx.pinky.moveAndAnimate();
+				ctx.pacMan.move();
+				ctx.msPac.move();
+				ctx.inky.move();
+				ctx.pinky.move();
 			}
 		},
 
@@ -182,10 +184,10 @@ public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPa
 					ctx.pinky.setVelocity(ctx.pinky.velocity().minus(0, 2.0f));
 					ctx.pinky.setAcceleration(0, 0.4f);
 				} else {
-					ctx.pacMan.moveAndAnimate();
-					ctx.msPac.moveAndAnimate();
-					ctx.inky.moveAndAnimate();
-					ctx.pinky.moveAndAnimate();
+					ctx.pacMan.move();
+					ctx.msPac.move();
+					ctx.inky.move();
+					ctx.pinky.move();
 					if (ctx.inky.position().y() > ctx.middleY) {
 						ctx.inky.setPosition(ctx.inky.position().x(), ctx.middleY);
 						ctx.inky.setAcceleration(Vector2f.ZERO);
@@ -205,10 +207,12 @@ public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPa
 				timer.start();
 				ctx.pacMan.setPixelSpeed(0);
 				ctx.pacMan.setMoveDir(Direction.LEFT);
-				ctx.pacMan.animation(GameModel.AK_PAC_MUNCHING).ifPresent(Animated::reset);
+				ctx.pacMan.stopAnimation();
+				ctx.pacMan.animations().ifPresent(PacAnimations::resetSelected);
 				ctx.msPac.setPixelSpeed(0);
 				ctx.msPac.setMoveDir(Direction.RIGHT);
-				ctx.msPac.animation(GameModel.AK_PAC_MUNCHING).ifPresent(Animated::reset);
+				ctx.msPac.stopAnimation();
+				ctx.msPac.animations().ifPresent(PacAnimations::resetSelected);
 				ctx.inky.setPixelSpeed(0);
 				ctx.inky.hide();
 				ctx.pinky.setPixelSpeed(0);

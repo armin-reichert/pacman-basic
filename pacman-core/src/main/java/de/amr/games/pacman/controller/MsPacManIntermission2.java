@@ -15,6 +15,7 @@ import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Clapperboard;
 import de.amr.games.pacman.model.actors.Pac;
+import de.amr.games.pacman.model.actors.PacAnimations;
 
 /**
  * Intermission scene 2: "The chase".
@@ -66,10 +67,10 @@ public class MsPacManIntermission2 extends Fsm<MsPacManIntermission2.State, MsPa
 				ctx.clapperboard.setVisible(true);
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
+				ctx.pacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
-				ctx.msPacMan.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
+				ctx.msPacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
 			}
 
 			@Override
@@ -134,8 +135,8 @@ public class MsPacManIntermission2 extends Fsm<MsPacManIntermission2.State, MsPa
 					ctx.gameController.terminateCurrentState();
 					return;
 				}
-				ctx.pacMan.moveAndAnimate();
-				ctx.msPacMan.moveAndAnimate();
+				ctx.pacMan.move();
+				ctx.msPacMan.move();
 			}
 		};
 

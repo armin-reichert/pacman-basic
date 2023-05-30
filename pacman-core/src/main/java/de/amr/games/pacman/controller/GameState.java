@@ -7,6 +7,8 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
+import org.tinylog.Logger;
+
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.anim.Animated;
@@ -18,6 +20,7 @@ import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Creature;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.GhostState;
+import de.amr.games.pacman.model.actors.PacAnimations;
 
 /**
  * Rule of thumb: here, specify "what" and "when", not "how" (this should be implemented in the model).
@@ -76,7 +79,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (!game.hasCredit()) {
 				game.start();
 				game.enterDemoLevel();
-				publishGameEventOfType(GameEventType.LEVEL_STARTING);
+				publishGameEventOfType(GameEventType.LEVEL_STARTED);
 			} else if (game.isPlaying()) {
 				game.level().ifPresent(level -> level.letsGetReadyToRumbleAndShowGuys(true));
 			} else {
@@ -85,7 +88,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.clearLevelCounter();
 				game.enterLevel(1);
 				publishSoundEvent(GameModel.SE_READY_TO_PLAY);
-				publishGameEventOfType(GameEventType.LEVEL_STARTING);
+				publishGameEventOfType(GameEventType.LEVEL_STARTED);
 			}
 		}
 
@@ -144,6 +147,8 @@ public enum GameState implements FsmState<GameModel> {
 				default:
 					break;
 				}
+				level.pac().startAnimation();
+				level.ghosts().forEach(Ghost::startAnimation);
 				level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::restart);
 			});
 		}
@@ -210,7 +215,7 @@ public enum GameState implements FsmState<GameModel> {
 			gc.getManualPacSteering().setEnabled(false);
 			timer.restartSeconds(1);
 			game.nextLevel();
-			publishGameEventOfType(GameEventType.LEVEL_STARTING);
+			publishGameEventOfType(GameEventType.LEVEL_STARTED);
 		}
 
 		@Override
@@ -227,7 +232,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.restartSeconds(1);
 			game.level().ifPresent(level -> {
 				level.pac().hide();
-				level.ghosts().forEach(ghost -> ghost.stopFlashing(true));
+				level.ghosts().forEach(ghost -> ghost.animations().ifPresent(ani -> ani.stopSelected()));
 				publishSoundEvent(GameModel.SE_GHOST_EATEN);
 			});
 		}
@@ -252,7 +257,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.level().ifPresent(level -> {
 				level.pac().show();
 				level.ghosts(GhostState.EATEN).forEach(ghost -> ghost.enterStateReturningToHouse(level));
-				level.ghosts().forEach(ghost -> ghost.stopFlashing(false));
+				level.ghosts().forEach(ghost -> ghost.animations().ifPresent(ani -> ani.startSelected()));
 			});
 		}
 	},
@@ -272,9 +277,12 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
 				if (timer.atSecond(1)) {
-					level.pac().selectAndResetAnimation(GameModel.AK_PAC_DYING);
+					// TODO
+					level.pac().selectAnimation(PacAnimations.PAC_DYING);
+					level.pac().resetAnimation();
 					level.ghosts().forEach(Ghost::hide);
 				} else if (timer.atSecond(1.4)) {
+					Logger.info("Dying animation start");
 					level.pac().startAnimation();
 					publishSoundEvent(GameModel.SE_PACMAN_DEATH);
 				} else if (timer.atSecond(3.0)) {
@@ -295,7 +303,6 @@ public enum GameState implements FsmState<GameModel> {
 				} else {
 					level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
 					level.pac().update(level);
-					level.ghosts().forEach(Ghost::animate);
 				}
 			});
 		}
@@ -362,7 +369,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.restartIndefinitely();
 			game.start();
 			game.enterLevel(1);
-			publishGameEventOfType(GameEventType.LEVEL_STARTING);
+			publishGameEventOfType(GameEventType.LEVEL_STARTED);
 		}
 
 		@Override
@@ -389,7 +396,7 @@ public enum GameState implements FsmState<GameModel> {
 						level.exit();
 						game.nextLevel();
 						timer.restartIndefinitely();
-						publishGameEventOfType(GameEventType.LEVEL_STARTING);
+						publishGameEventOfType(GameEventType.LEVEL_STARTED);
 					}
 					level.world().animations().ifPresent(AnimationMap::animate);
 					level.ghosts().forEach(ghost -> ghost.update(level));

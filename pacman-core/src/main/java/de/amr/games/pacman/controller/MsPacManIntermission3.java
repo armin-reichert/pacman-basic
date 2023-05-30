@@ -17,6 +17,7 @@ import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Clapperboard;
 import de.amr.games.pacman.model.actors.Entity;
 import de.amr.games.pacman.model.actors.Pac;
+import de.amr.games.pacman.model.actors.PacAnimations;
 
 /**
  * Intermission scene 3: "Junior".
@@ -97,12 +98,12 @@ public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPa
 
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(TS * (3), ctx.groundY - 4);
-				ctx.pacMan.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
+				ctx.pacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
 				ctx.msPacMan.setPosition(TS * (5), ctx.groundY - 4);
-				ctx.msPacMan.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
+				ctx.msPacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
 				ctx.msPacMan.show();
 
 				ctx.stork.setPosition(TS * (30), TS * (12));

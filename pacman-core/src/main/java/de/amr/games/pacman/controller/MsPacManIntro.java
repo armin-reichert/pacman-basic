@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.tinylog.Logger;
 
-import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -23,6 +22,7 @@ import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.Pac;
+import de.amr.games.pacman.model.actors.PacAnimations;
 
 /**
  * Intro scene of the Ms. Pac-Man game.
@@ -47,11 +47,11 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 		public int            bulbOnDistance       = 16;
 		public Pac            msPacMan             = new Pac("Ms. Pac-Man");
 		public List<Ghost>    ghosts               = List.of(
-			new Ghost(GameModel.RED_GHOST,    "Blinky"),
-			new Ghost(GameModel.PINK_GHOST,   "Pinky"),
-			new Ghost(GameModel.CYAN_GHOST,   "Inky"),
-			new Ghost(GameModel.ORANGE_GHOST, "Sue")
-			);
+			                                             new Ghost(GameModel.RED_GHOST,    "Blinky"),
+			                                             new Ghost(GameModel.PINK_GHOST,   "Pinky"),
+			                                             new Ghost(GameModel.CYAN_GHOST,   "Inky"),
+			                                             new Ghost(GameModel.ORANGE_GHOST, "Sue")
+			                                           );
 		public int ghostIndex = 0;
 		//@formatter:on
 
@@ -89,7 +89,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 				ctx.msPacMan.setPosition(TS * 31, TS * 20);
 				ctx.msPacMan.setMoveDir(LEFT);
 				ctx.msPacMan.setPixelSpeed(ctx.speed);
-				ctx.msPacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
+				ctx.msPacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
 				ctx.ghosts.forEach(ghost -> {
 					ghost.setPosition(TS * 33.5f, TS * 20);
 					ghost.setMoveAndWishDir(LEFT);
@@ -121,7 +121,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 						ghost.setMoveAndWishDir(UP);
 						ctx.ticksUntilLifting = 2;
 					} else {
-						ghost.moveAndAnimate();
+						ghost.move();
 					}
 					return;
 				}
@@ -134,14 +134,17 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 					}
 					if (ghost.position().y() <= ctx.stopY + ghost.id() * 16) {
 						ghost.setPixelSpeed(0);
-						ghost.animation().ifPresent(Animated::reset);
+						ghost.animations().ifPresent(ani -> {
+							ani.stopSelected();
+							ani.resetSelected();
+						});
 						if (ctx.ghostIndex == 3) {
 							intro.changeState(State.MSPACMAN);
 						} else {
 							++ctx.ghostIndex;
 						}
 					} else {
-						ghost.moveAndAnimate();
+						ghost.move();
 					}
 				}
 			}
@@ -152,10 +155,10 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			public void onUpdate(MsPacManIntro.Context ctx) {
 				ctx.marqueeTimer.advance();
 				ctx.msPacMan.show();
-				ctx.msPacMan.moveAndAnimate();
+				ctx.msPacMan.move();
 				if (ctx.msPacMan.position().x() <= ctx.stopMsPacX) {
 					ctx.msPacMan.setPixelSpeed(0);
-					ctx.msPacMan.animation().ifPresent(Animated::reset);
+					ctx.msPacMan.animations().ifPresent(PacAnimations::resetSelected);
 					intro.changeState(State.READY_TO_PLAY);
 				}
 			}

@@ -8,7 +8,6 @@ import static de.amr.games.pacman.lib.Globals.TS;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -16,8 +15,10 @@ import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Ghost;
+import de.amr.games.pacman.model.actors.GhostAnimations;
 import de.amr.games.pacman.model.actors.GhostState;
 import de.amr.games.pacman.model.actors.Pac;
+import de.amr.games.pacman.model.actors.PacAnimations;
 
 /**
  * Intro scene of the PacMan game.
@@ -127,14 +128,16 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 				ctx.pacMan.setMoveDir(Direction.LEFT);
 				ctx.pacMan.setPixelSpeed(ctx.chaseSpeed);
 				ctx.pacMan.show();
-				ctx.pacMan.selectAndRunAnimation(GameModel.AK_PAC_MUNCHING);
+				ctx.pacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
+				ctx.pacMan.startAnimation();
 				ctx.ghosts().forEach(ghost -> {
 					ghost.enterStateHuntingPac();
 					ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id() + 1), 0));
 					ghost.setMoveAndWishDir(Direction.LEFT);
 					ghost.setPixelSpeed(ctx.chaseSpeed);
 					ghost.show();
-					ghost.selectAndRunAnimation(GameModel.AK_GHOST_COLOR);
+					ghost.selectAnimation(GhostAnimations.GHOST_NORMAL);
+					ghost.startAnimation();
 				});
 			}
 
@@ -148,12 +151,12 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 				else if (ctx.pacMan.position().x() <= TS * (ctx.leftTileX) + 4) {
 					ctx.ghosts().forEach(ghost -> {
 						ghost.enterStateFrightened();
-						ghost.selectAndRunAnimation(GameModel.AK_GHOST_BLUE);
+						ghost.animations().ifPresent(ani -> ani.select(GhostAnimations.GHOST_FRIGHTENED));
 						ghost.setMoveAndWishDir(Direction.RIGHT);
 						ghost.setPixelSpeed(0.6f);
-						ghost.moveAndAnimate();
+						ghost.move();
 					});
-					ctx.pacMan.moveAndAnimate();
+					ctx.pacMan.move();
 				}
 				// keep moving
 				else {
@@ -162,8 +165,8 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 						ctx.blinking.start();
 					}
 					ctx.blinking.animate();
-					ctx.pacMan.moveAndAnimate();
-					ctx.ghosts().forEach(Ghost::moveAndAnimate);
+					ctx.pacMan.move();
+					ctx.ghosts().forEach(Ghost::move);
 				}
 			}
 		},
@@ -197,7 +200,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 					ctx.pacMan.setPixelSpeed(0);
 					ctx.ghosts().forEach(ghost -> {
 						ghost.setPixelSpeed(0);
-						ghost.animation(GameModel.AK_GHOST_BLUE).ifPresent(Animated::stop);
+						ghost.stopAnimation();
 					});
 				});
 
@@ -209,14 +212,14 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 						if (!ghost.is(GhostState.EATEN)) {
 							ghost.show();
 							ghost.setPixelSpeed(0.6f);
-							ghost.animation(GameModel.AK_GHOST_BLUE).ifPresent(Animated::start);
+							ghost.startAnimation();
 						} else {
 							ghost.hide();
 						}
 					});
 				}
-				ctx.pacMan.moveAndAnimate();
-				ctx.ghosts().forEach(Ghost::moveAndAnimate);
+				ctx.pacMan.move();
+				ctx.ghosts().forEach(Ghost::move);
 				ctx.blinking.animate();
 			}
 		},

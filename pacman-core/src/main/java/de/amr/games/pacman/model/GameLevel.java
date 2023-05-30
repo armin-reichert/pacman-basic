@@ -42,6 +42,7 @@ import de.amr.games.pacman.model.actors.Creature;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.GhostState;
 import de.amr.games.pacman.model.actors.Pac;
+import de.amr.games.pacman.model.actors.PacAnimations;
 import de.amr.games.pacman.model.world.World;
 
 /**
@@ -190,7 +191,7 @@ public class GameLevel {
 	public void exit() {
 		Logger.trace("Exit level {} ({})", number, game.variant());
 		pac.rest(Pac.REST_FOREVER);
-		pac.selectAndResetAnimation(GameModel.AK_PAC_MUNCHING);
+		pac.selectAnimation(PacAnimations.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonusManagement.onLevelEnd();
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
@@ -445,12 +446,16 @@ public class GameLevel {
 		pac.setPosition(halfTileRightOf(13, 26));
 		pac.setMoveAndWishDir(Direction.LEFT);
 		pac.setVisible(guysVisible);
+		pac.stopAnimation();
+		pac.resetAnimation();
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setPosition(ghost.initialPosition());
 			ghost.setMoveAndWishDir(ghost.initialDirection());
 			ghost.setVisible(guysVisible);
 			ghost.enterStateLocked();
+			ghost.stopAnimation();
+			ghost.resetAnimation();
 		});
 		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
 	}
