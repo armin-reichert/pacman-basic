@@ -15,16 +15,14 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.TileMap;
-import de.amr.games.pacman.lib.anim.AnimationMap;
+import de.amr.games.pacman.lib.anim.Pulse;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.model.AnimatedEntity;
 import de.amr.games.pacman.model.actors.Entity;
 
 /**
@@ -35,7 +33,7 @@ import de.amr.games.pacman.model.actors.Entity;
  * 
  * @author Armin Reichert
  */
-public class World extends Entity implements AnimatedEntity {
+public class World extends Entity {
 
 	//@formatter:off
 	private static final byte SPACE           = 0;
@@ -109,9 +107,10 @@ public class World extends Entity implements AnimatedEntity {
 	private final List<Portal> portals;
 	private final List<Vector2i> energizerTiles;
 	private final BitSet eatenSet;
+	private final Pulse energizerBlinking;
+	private final Pulse mazeFlashing;
 	private final int totalFoodCount;
 	private int uneatenFoodCount;
-	private AnimationMap animationMap;
 
 	/**
 	 * @param tileMapData byte-array of tile map data
@@ -121,17 +120,22 @@ public class World extends Entity implements AnimatedEntity {
 		portals = buildPortals(tileMap);
 		eatenSet = new BitSet(tileMap.numCols() * tileMap.numRows());
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
+		energizerBlinking = new Pulse(10, true);
+		mazeFlashing = new Pulse(10, true);
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
 	}
 
-	@Override
-	public Entity entity() {
-		return this;
-	}
-
 	public House house() {
 		return ARCADE_HOUSE;
+	}
+
+	public Pulse getEnergizerBlinking() {
+		return energizerBlinking;
+	}
+
+	public Pulse getMazeFlashing() {
+		return mazeFlashing;
 	}
 
 	/**
@@ -170,15 +174,6 @@ public class World extends Entity implements AnimatedEntity {
 	 */
 	public boolean insideBounds(double x, double y) {
 		return 0 <= x && x < numCols() * TS && 0 <= y && y < numRows() * TS;
-	}
-
-	@Override
-	public Optional<AnimationMap> animations() {
-		return Optional.ofNullable(animationMap);
-	}
-
-	public void setAnimations(AnimationMap animationMap) {
-		this.animationMap = animationMap;
 	}
 
 	public int numCols() {

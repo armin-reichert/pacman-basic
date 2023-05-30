@@ -34,7 +34,6 @@ import org.tinylog.Logger;
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.anim.Animated;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
@@ -194,7 +193,7 @@ public class GameLevel {
 		pac.selectAnimation(PacAnimations.PAC_MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonusManagement.onLevelEnd();
-		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
+		world.getMazeFlashing().reset();
 		stopHuntingTimer();
 	}
 
@@ -457,7 +456,7 @@ public class GameLevel {
 			ghost.stopAnimation();
 			ghost.resetAnimation();
 		});
-		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::reset);
+		world.getMazeFlashing().reset();
 	}
 
 	/**
@@ -577,7 +576,7 @@ public class GameLevel {
 		memo.pacKilled = !game.isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 
 		// Update world and guys
-		world.animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
+		world.getMazeFlashing().animate();
 		pac.update(this);
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonusManagement.updateBonus();

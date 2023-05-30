@@ -321,21 +321,9 @@ public class GameModel {
 	public static final short   PAC_POWER_FADES_TICKS = 2 * FPS - 1; // unsure
 
 	// Animation keys (positive byte value, -1 = no selection)
-	public static final byte AK_GHOST_BLUE              = 0;
-	public static final byte AK_GHOST_COLOR             = 1;
-	public static final byte AK_GHOST_EYES              = 2;
-	public static final byte AK_GHOST_FLASHING          = 3;
-	public static final byte AK_GHOST_VALUE             = 4;
-	public static final byte AK_MAZE_ENERGIZER_BLINKING = 5;
-	public static final byte AK_MAZE_FLASHING           = 6;
-	public static final byte AK_PAC_DYING               = 7;
-	public static final byte AK_PAC_MUNCHING            = 8;
-	public static final byte AK_PAC_BIG                 = 9;
-	public static final byte AK_BLINKY_DAMAGED          = 10;
-	public static final byte AK_BLINKY_PATCHED          = 11;
-	public static final byte AK_BLINKY_NAKED            = 12;
-
-	public static final byte ANIMATION_MAP_CAPACITY     = 13; // size of animation maps
+	public static final byte AK_MAZE_ENERGIZER_BLINKING = 0;
+	public static final byte AK_MAZE_FLASHING           = 1;
+	public static final byte ANIMATION_MAP_CAPACITY     = 2; // size of animation maps
 
 	// Sound events
 	public static final byte SE_BONUS_EATEN             =  0;

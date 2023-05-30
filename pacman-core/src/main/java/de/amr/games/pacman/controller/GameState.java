@@ -11,8 +11,6 @@ import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.anim.Animated;
-import de.amr.games.pacman.lib.anim.AnimationMap;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.GameLevel;
@@ -149,7 +147,7 @@ public enum GameState implements FsmState<GameModel> {
 				}
 				level.pac().startAnimation();
 				level.ghosts().forEach(Ghost::startAnimation);
-				level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::restart);
+				level.world().getEnergizerBlinking().restart();
 			});
 		}
 
@@ -159,8 +157,8 @@ public enum GameState implements FsmState<GameModel> {
 				// TODO this looks ugly
 				var steering = level.pacSteering().orElse(gc.steering());
 				steering.steer(level, level.pac());
-
 				level.update();
+				level.world().getEnergizerBlinking().animate();
 				if (level.isCompleted()) {
 					gc.changeState(LEVEL_COMPLETE);
 				} else if (level.pacKilled()) {
@@ -195,14 +193,13 @@ public enum GameState implements FsmState<GameModel> {
 						gc.changeState(CHANGING_TO_NEXT_LEVEL); // next level
 					}
 				} else {
-					level.world().animation(GameModel.AK_MAZE_FLASHING).ifPresent(flashing -> {
-						if (timer.atSecond(1)) {
-							flashing.setRepetitions(level.numFlashes);
-							flashing.restart();
-						} else {
-							flashing.animate();
-						}
-					});
+					var flashing = level.world().getMazeFlashing();
+					if (timer.atSecond(1)) {
+						flashing.setRepetitions(level.numFlashes);
+						flashing.restart();
+					} else {
+						flashing.animate();
+					}
 					level.pac().update(level);
 				}
 			});
@@ -247,7 +244,7 @@ public enum GameState implements FsmState<GameModel> {
 					steering.steer(level, level.pac());
 					level.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
 							.forEach(ghost -> ghost.update(level));
-					level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
+					level.world().getEnergizerBlinking().animate();
 				});
 			}
 		}
@@ -277,7 +274,6 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
 				if (timer.atSecond(1)) {
-					// TODO
 					level.pac().selectAnimation(PacAnimations.PAC_DYING);
 					level.pac().resetAnimation();
 					level.ghosts().forEach(Ghost::hide);
@@ -289,7 +285,7 @@ public enum GameState implements FsmState<GameModel> {
 					level.pac().hide();
 					game.setLives(game.lives() - 1);
 					if (game.lives() == 0) {
-						level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::stop);
+						level.world().getMazeFlashing().stop();
 						game.setOneLessLifeDisplayed(false);
 					}
 				} else if (timer.hasExpired()) {
@@ -301,7 +297,7 @@ public enum GameState implements FsmState<GameModel> {
 						gc.changeState(game.lives() == 0 ? GAME_OVER : READY);
 					}
 				} else {
-					level.world().animation(GameModel.AK_MAZE_ENERGIZER_BLINKING).ifPresent(Animated::animate);
+					level.world().getEnergizerBlinking().animate();
 					level.pac().update(level);
 				}
 			});
@@ -388,17 +384,17 @@ public enum GameState implements FsmState<GameModel> {
 						level.bonusManagement().getBonus().get().eat();
 						level.guys().forEach(Creature::hide);
 					} else if (timer.atSecond(7.5)) {
-						level.world().animation(GameModel.AK_MAZE_FLASHING).ifPresent(flashing -> {
-							flashing.setRepetitions(level.numFlashes);
-							flashing.restart();
-						});
+						var flashing = level.world().getMazeFlashing();
+						flashing.setRepetitions(level.numFlashes);
+						flashing.restart();
 					} else if (timer.atSecond(8.0)) {
 						level.exit();
 						game.nextLevel();
 						timer.restartIndefinitely();
 						publishGameEventOfType(GameEventType.LEVEL_STARTED);
 					}
-					level.world().animations().ifPresent(AnimationMap::animate);
+					level.world().getEnergizerBlinking().animate();
+					level.world().getMazeFlashing().animate();
 					level.ghosts().forEach(ghost -> ghost.update(level));
 					level.bonusManagement().updateBonus();
 				} else {
