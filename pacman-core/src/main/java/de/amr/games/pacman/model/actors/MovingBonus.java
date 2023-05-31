@@ -106,7 +106,6 @@ public class MovingBonus extends Creature implements Bonus {
 		jumpAnimation.stop();
 		Logger.info("Bonus eaten: {}", this);
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
-		publishSoundEvent(GameModel.SE_BONUS_EATEN);
 	}
 
 	public void setRoute(List<NavigationPoint> route) {
@@ -127,6 +126,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (sameTile(level.pac())) {
 				level.game().scorePoints(points());
 				eat();
+				publishSoundEvent(GameModel.SE_BONUS_EATEN, level.game());
 				return;
 			}
 			steering.steer(level, this);

@@ -526,7 +526,7 @@ public class GameLevel {
 			}
 			ghostHouseManagement.update();
 			GameEvents.publishGameEvent(GameEventType.PAC_FINDS_FOOD, foodTile);
-			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD);
+			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD, game);
 		} else {
 			pac.starve();
 		}
@@ -547,10 +547,10 @@ public class GameLevel {
 			Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
-			GameEvents.publishGameEventOfType(GameEventType.PAC_GETS_POWER);
-			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_STARTS);
+			GameEvents.publishGameEventOfType(GameEventType.PAC_GETS_POWER, game);
+			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_STARTS, game);
 		} else if (memo.pacPowerFading) {
-			GameEvents.publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER);
+			GameEvents.publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER, game);
 		} else if (memo.pacPowerLost) {
 			Logger.info("{} power ends, timer: {}", pac.name(), pac.powerTimer());
 			huntingTimer.start();
@@ -558,8 +558,8 @@ public class GameLevel {
 			pac.powerTimer().stop();
 			pac.powerTimer().resetIndefinitely();
 			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-			GameEvents.publishGameEventOfType(GameEventType.PAC_LOSES_POWER);
-			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS);
+			GameEvents.publishGameEventOfType(GameEventType.PAC_LOSES_POWER, game);
+			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS, game);
 		}
 
 		checkIfGhostCanGetUnlocked();

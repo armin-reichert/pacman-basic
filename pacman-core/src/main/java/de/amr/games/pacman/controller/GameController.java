@@ -117,7 +117,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (!game.isPlaying()) {
 			boolean added = game.changeCredit(1);
 			if (added) {
-				publishSoundEvent(GameModel.SE_CREDIT_ADDED);
+				publishSoundEvent(GameModel.SE_CREDIT_ADDED, game);
 			}
 			if (state() != GameState.CREDIT) {
 				changeState(GameState.CREDIT);
@@ -143,7 +143,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			game.level().ifPresent(level -> {
 				var world = level.world();
 				world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
-				publishGameEventOfType(GameEventType.PAC_FINDS_FOOD);
+				publishGameEventOfType(GameEventType.PAC_FINDS_FOOD, game);
 				if (world.uneatenFoodCount() == 0) {
 					changeState(GameState.LEVEL_COMPLETE);
 				}

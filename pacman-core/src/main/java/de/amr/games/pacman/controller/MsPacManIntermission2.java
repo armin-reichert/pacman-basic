@@ -53,6 +53,10 @@ public class MsPacManIntermission2 extends Fsm<MsPacManIntermission2.State, MsPa
 		public Context(GameController gameController) {
 			this.gameController = gameController;
 		}
+
+		public GameModel game() {
+			return gameController.game();
+		}
 	}
 
 	public enum State implements FsmState<Context> {
@@ -84,7 +88,7 @@ public class MsPacManIntermission2 extends Fsm<MsPacManIntermission2.State, MsPa
 			public void onUpdate(Context ctx) {
 				if (timer.hasExpired()) {
 					ctx.clapperboard.setVisible(false);
-					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_2);
+					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_2, ctx.game());
 					intermission.changeState(State.CHASING);
 				}
 			}

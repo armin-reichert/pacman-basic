@@ -90,7 +90,7 @@ public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPa
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
-					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_3);
+					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_3, ctx.gameController.game());
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.setVisible(false);
 				} else if (timer.atSecond(3)) {

@@ -13,6 +13,7 @@ import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.model.GameModel;
 
 /**
  * @author Armin Reichert
@@ -58,14 +59,14 @@ public class GameEvents {
 		publishGameEvent(new GameEvent(gameController.game(), type, tile));
 	}
 
-	public static void publishGameEventOfType(GameEventType type) {
-		publishGameEvent(new GameEvent(gameController.game(), type, null));
+	public static void publishGameEventOfType(GameEventType type, GameModel game) {
+		publishGameEvent(new GameEvent(game, type, null));
 	}
 
-	public static void publishSoundEvent(byte soundEventID) {
+	public static void publishSoundEvent(byte soundEventID, GameModel game) {
 		checkNotNull(soundEventID);
 		if (GameEvents.soundEventsEnabled) {
-			publishGameEvent(new SoundEvent(gameController.game(), soundEventID));
+			publishGameEvent(new SoundEvent(game, soundEventID));
 		}
 	}
 }
