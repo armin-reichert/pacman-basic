@@ -30,19 +30,19 @@ import de.amr.games.pacman.model.actors.PacAnimations;
  */
 public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPacManIntermission3.Context> {
 
-	private final Context intermissionData;
+	private final Context context;
 
 	public MsPacManIntermission3(GameController gameController) {
 		super(State.values());
 		for (var state : states) {
 			state.intermission = this;
 		}
-		this.intermissionData = new Context(gameController);
+		this.context = new Context(gameController);
 	}
 
 	@Override
 	public Context context() {
-		return intermissionData;
+		return context;
 	}
 
 	public static class Context {
@@ -63,18 +63,28 @@ public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPa
 
 	public enum State implements FsmState<Context> {
 
-		FLAP {
+		INIT {
 			@Override
 			public void onEnter(Context ctx) {
-				timer.restartIndefinitely();
 				ctx.clapperboard = new Clapperboard("3", "JUNIOR");
-				ctx.clapperboard.setPosition(TS * (3), TS * (10));
-				ctx.clapperboard.setVisible(true);
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
 				ctx.stork = new Entity();
 				ctx.bag = new Entity();
-				ctx.bagOpen = false;
+			}
+
+			@Override
+			public void onUpdate(Context context) {
+				intermission.changeState(FLAP);
+			}
+		},
+
+		FLAP {
+			@Override
+			public void onEnter(Context ctx) {
+				timer.restartIndefinitely();
+				ctx.clapperboard.setPosition(TS * (3), TS * (10));
+				ctx.clapperboard.setVisible(true);
 			}
 
 			@Override
@@ -96,7 +106,7 @@ public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPa
 
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(TS * (3), ctx.groundY - 4);
-				ctx.pacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
+				ctx.pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);

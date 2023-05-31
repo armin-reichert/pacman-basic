@@ -11,7 +11,12 @@ public interface PacAnimations {
 
 	public static final String PAC_MUNCHING = "munching";
 	public static final String PAC_DYING = "dying";
+
+	// Pac-Man game specific
 	public static final String BIG_PACMAN = "bigpacman";
+
+	// Ms. Pac-Man game specific
+	public static final String HUSBAND_MUNCHING = "husband_munching";
 
 	void select(String name);
 
