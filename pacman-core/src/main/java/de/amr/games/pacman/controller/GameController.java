@@ -131,9 +131,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 	}
 
-	public void startCutscenesTest() {
+	public void startCutscenesTest(int cutSceneNumber) {
 		if (state() == GameState.INTRO) {
-			game.intermissionTestNumber = 1;
+			game.intermissionTestNumber = cutSceneNumber;
 			changeState(GameState.INTERMISSION_TEST);
 		}
 	}
