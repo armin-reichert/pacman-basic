@@ -193,6 +193,8 @@ public enum GameState implements FsmState<GameModel> {
 						gc.changeState(CHANGING_TO_NEXT_LEVEL); // next level
 					}
 				} else {
+					level.pac().stopAnimation();
+					level.pac().resetAnimation();
 					var flashing = level.world().getMazeFlashing();
 					if (timer.atSecond(1)) {
 						flashing.setRepetitions(level.numFlashes);
