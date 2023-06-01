@@ -25,7 +25,7 @@ public class Pac extends Creature {
 	private boolean dead;
 	private long restingTicks;
 	private long starvingTicks;
-	private PacAnimations<?> animations;
+	private PacAnimations<?, ?> animations;
 
 	public Pac(String name) {
 		super(name);
@@ -53,7 +53,7 @@ public class Pac extends Creature {
 		restingTicks = 0;
 		starvingTicks = 0;
 		corneringSpeedUp = 1.5f; // TODO experimental
-		selectAnimation(PacAnimations.PAC_MUNCHING);
+		selectAnimation(PacAnimations.MUNCHING);
 		powerTimer.reset(0);
 	}
 
@@ -74,7 +74,7 @@ public class Pac extends Creature {
 			var speed = powerTimer.isRunning() ? level.pacSpeedPowered : level.pacSpeed;
 			setRelSpeed(speed);
 			tryMoving(level);
-			selectAnimation(PacAnimations.PAC_MUNCHING);
+			selectAnimation(PacAnimations.MUNCHING);
 			if (moved()) {
 				startAnimation();
 			} else {
@@ -142,11 +142,11 @@ public class Pac extends Creature {
 
 	// Animation
 
-	public void setAnimations(PacAnimations<?> animations) {
+	public void setAnimations(PacAnimations<?, ?> animations) {
 		this.animations = animations;
 	}
 
-	public Optional<PacAnimations<?>> animations() {
+	public Optional<PacAnimations<?, ?>> animations() {
 		return Optional.ofNullable(animations);
 	}
 

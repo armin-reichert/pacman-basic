@@ -7,15 +7,15 @@ package de.amr.games.pacman.model.actors;
 /**
  * @author Armin Reichert
  */
-public interface PacAnimations<A> {
+public interface PacAnimations<A, S> {
 
-	public static final String PAC_MUNCHING = "munching";
-	public static final String PAC_DYING = "dying";
+	public static final String MUNCHING = "munching";
+	public static final String DYING = "dying";
 
-	// Pac-Man game specific
-	public static final String BIG_PACMAN = "bigpacman";
+	// In Pac-Man cutscene, big Pac-Man appears
+	public static final String BIG_PACMAN = "big_pacman";
 
-	// Ms. Pac-Man game specific
+	// In Ms. Pac-Man cutscenes, also Ms. PacMan's husband appears
 	public static final String HUSBAND_MUNCHING = "husband_munching";
 
 	A selectedAnimation();
@@ -30,5 +30,5 @@ public interface PacAnimations<A> {
 
 	void resetSelected();
 
-	Object currentSprite();
+	S currentSprite();
 }

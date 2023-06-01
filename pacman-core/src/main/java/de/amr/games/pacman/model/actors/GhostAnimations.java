@@ -7,7 +7,7 @@ package de.amr.games.pacman.model.actors;
 /**
  * @author Armin Reichert
  */
-public interface GhostAnimations<A> {
+public interface GhostAnimations<A, S> {
 
 	public static final String GHOST_NORMAL = "normal";
 	public static final String GHOST_FRIGHTENED = "frightened";
@@ -31,5 +31,5 @@ public interface GhostAnimations<A> {
 
 	void resetSelected();
 
-	Object currentSprite();
+	S currentSprite();
 }

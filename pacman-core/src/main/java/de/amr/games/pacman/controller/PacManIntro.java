@@ -128,7 +128,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 				ctx.pacMan.setMoveDir(Direction.LEFT);
 				ctx.pacMan.setPixelSpeed(ctx.chaseSpeed);
 				ctx.pacMan.show();
-				ctx.pacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
+				ctx.pacMan.selectAnimation(PacAnimations.MUNCHING);
 				ctx.pacMan.startAnimation();
 				ctx.ghosts().forEach(ghost -> {
 					ghost.enterStateHuntingPac();

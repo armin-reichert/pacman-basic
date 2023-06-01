@@ -52,7 +52,7 @@ public class Ghost extends Creature {
 	private Vector2f revivalPosition = Vector2f.ZERO;
 	private Vector2i scatterTile = Vector2i.ZERO;
 	private Direction initialDirection = Direction.UP;
-	private GhostAnimations<?> animations;
+	private GhostAnimations<?, ?> animations;
 	private int killedIndex;
 
 	public Ghost(byte id, String name) {
@@ -519,11 +519,11 @@ public class Ghost extends Creature {
 
 	// Animation
 
-	public void setAnimations(GhostAnimations<?> animations) {
+	public void setAnimations(GhostAnimations<?, ?> animations) {
 		this.animations = animations;
 	}
 
-	public Optional<GhostAnimations<?>> animations() {
+	public Optional<GhostAnimations<?, ?>> animations() {
 		return Optional.ofNullable(animations);
 	}
 

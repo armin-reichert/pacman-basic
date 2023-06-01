@@ -190,7 +190,7 @@ public class GameLevel {
 	public void exit() {
 		Logger.trace("Exit level {} ({})", number, game.variant());
 		pac.rest(Pac.REST_FOREVER);
-		pac.selectAnimation(PacAnimations.PAC_MUNCHING);
+		pac.selectAnimation(PacAnimations.MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonusManagement.onLevelEnd();
 		world.getMazeFlashing().reset();

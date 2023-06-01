@@ -102,7 +102,7 @@ public class MsPacManIntermission2 extends Fsm<MsPacManIntermission2.State, MsPa
 				ctx.pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
 				ctx.pacMan.startAnimation();
 				ctx.msPac.setMoveDir(Direction.RIGHT);
-				ctx.msPac.selectAnimation(PacAnimations.PAC_MUNCHING);
+				ctx.msPac.selectAnimation(PacAnimations.MUNCHING);
 				ctx.msPac.startAnimation();
 			}
 

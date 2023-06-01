@@ -111,7 +111,7 @@ public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPa
 
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
 				ctx.msPacMan.setPosition(TS * (5), ctx.groundY - 4);
-				ctx.msPacMan.selectAnimation(PacAnimations.PAC_MUNCHING);
+				ctx.msPacMan.selectAnimation(PacAnimations.MUNCHING);
 				ctx.msPacMan.show();
 
 				ctx.stork.setPosition(TS * (30), TS * (12));
