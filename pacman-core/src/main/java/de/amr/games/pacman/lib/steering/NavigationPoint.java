@@ -13,6 +13,19 @@ import de.amr.games.pacman.lib.math.Vector2i;
  */
 public final class NavigationPoint {
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("NavigationPoint [x=");
+		builder.append(x);
+		builder.append(", y=");
+		builder.append(y);
+		builder.append(", dir=");
+		builder.append(dir);
+		builder.append("]");
+		return builder.toString();
+	}
+
 	public static NavigationPoint np(Vector2i tile, Direction dir) {
 		return new NavigationPoint(tile.x(), tile.y(), dir);
 	}
