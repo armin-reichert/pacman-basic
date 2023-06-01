@@ -30,4 +30,6 @@ public interface GhostAnimations<A> {
 	void stopSelected();
 
 	void resetSelected();
+
+	Object currentSprite();
 }

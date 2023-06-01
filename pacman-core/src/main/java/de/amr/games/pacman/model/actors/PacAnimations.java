@@ -25,4 +25,6 @@ public interface PacAnimations {
 	void stopSelected();
 
 	void resetSelected();
+
+	Object currentSprite();
 }

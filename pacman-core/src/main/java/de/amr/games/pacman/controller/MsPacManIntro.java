@@ -96,6 +96,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 					ghost.setMoveAndWishDir(LEFT);
 					ghost.setPixelSpeed(ctx.speed);
 					ghost.enterStateHuntingPac();
+					ghost.startAnimation();
 				});
 				ctx.ghostIndex = 0;
 			}
