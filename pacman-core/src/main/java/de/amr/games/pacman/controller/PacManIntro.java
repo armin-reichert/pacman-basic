@@ -151,7 +151,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 				else if (ctx.pacMan.position().x() <= TS * (ctx.leftTileX) + 4) {
 					ctx.ghosts().forEach(ghost -> {
 						ghost.enterStateFrightened();
-						ghost.animations().ifPresent(ani -> ani.select(GhostAnimations.GHOST_FRIGHTENED));
+						ghost.selectAnimation(GhostAnimations.GHOST_FRIGHTENED);
 						ghost.setMoveAndWishDir(Direction.RIGHT);
 						ghost.setPixelSpeed(0.6f);
 						ghost.move();

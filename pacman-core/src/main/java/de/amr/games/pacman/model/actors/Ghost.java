@@ -457,7 +457,7 @@ public class Ghost extends Creature {
 	 */
 	public void enterStateEaten() {
 		state = EATEN;
-		selectAnimation(GhostAnimations.GHOST_NUMBER, killedIndex);
+		selectNumberAnimation(killedIndex);
 	}
 
 	private void updateStateEaten() {
@@ -527,9 +527,9 @@ public class Ghost extends Creature {
 		return Optional.ofNullable(animations);
 	}
 
-	public void selectAnimation(String name, Object... args) {
+	public void selectAnimation(String name) {
 		if (animations != null) {
-			animations.select(name, args);
+			animations.select(name);
 		}
 	}
 
@@ -551,18 +551,19 @@ public class Ghost extends Creature {
 		}
 	}
 
-	private void updateFrightenedAnimation(GameLevel level) {
-		if (animations == null) {
-			return;
+	private void selectNumberAnimation(int index) {
+		if (animations != null) {
+			animations.select(GhostAnimations.GHOST_NUMBER, index);
 		}
+	}
+
+	private void updateFrightenedAnimation(GameLevel level) {
 		var timer = level.pac().powerTimer();
 		if (timer.remaining() == GameModel.PAC_POWER_FADES_TICKS
 				|| timer.duration() < GameModel.PAC_POWER_FADES_TICKS && timer.tick() == 1) {
-			animations.select(GhostAnimations.GHOST_FLASHING);
+			selectAnimation(GhostAnimations.GHOST_FLASHING);
 		} else if (timer.remaining() > GameModel.PAC_POWER_FADES_TICKS) {
-			if (animations != null) {
-				animations.select(GhostAnimations.GHOST_FRIGHTENED);
-			}
+			selectAnimation(GhostAnimations.GHOST_FRIGHTENED);
 		}
 	}
 }
