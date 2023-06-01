@@ -7,7 +7,7 @@ package de.amr.games.pacman.model.actors;
 /**
  * @author Armin Reichert
  */
-public interface PacAnimations {
+public interface PacAnimations<A> {
 
 	public static final String PAC_MUNCHING = "munching";
 	public static final String PAC_DYING = "dying";
@@ -17,6 +17,10 @@ public interface PacAnimations {
 
 	// Ms. Pac-Man game specific
 	public static final String HUSBAND_MUNCHING = "husband_munching";
+
+	A selectedAnimation();
+
+	String selectedAnimationName();
 
 	void select(String name);
 

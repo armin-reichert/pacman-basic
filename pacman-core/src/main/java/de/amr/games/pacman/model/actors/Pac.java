@@ -25,7 +25,7 @@ public class Pac extends Creature {
 	private boolean dead;
 	private long restingTicks;
 	private long starvingTicks;
-	private PacAnimations animations;
+	private PacAnimations<?> animations;
 
 	public Pac(String name) {
 		super(name);
@@ -142,11 +142,11 @@ public class Pac extends Creature {
 
 	// Animation
 
-	public void setAnimations(PacAnimations animations) {
+	public void setAnimations(PacAnimations<?> animations) {
 		this.animations = animations;
 	}
 
-	public Optional<PacAnimations> animations() {
+	public Optional<PacAnimations<?>> animations() {
 		return Optional.ofNullable(animations);
 	}
 
