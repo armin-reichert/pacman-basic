@@ -7,8 +7,6 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
-import org.tinylog.Logger;
-
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -280,7 +278,6 @@ public enum GameState implements FsmState<GameModel> {
 					level.pac().resetAnimation();
 					level.ghosts().forEach(Ghost::hide);
 				} else if (timer.atSecond(1.4)) {
-					Logger.info("Dying animation start");
 					level.pac().startAnimation();
 					publishSoundEvent(GameModel.SE_PACMAN_DEATH, game);
 				} else if (timer.atSecond(3.0)) {
