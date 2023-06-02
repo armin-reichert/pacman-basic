@@ -519,7 +519,9 @@ public class GameLevel {
 			if (memo.energizerFound) {
 				numGhostsKilledByEnergizer = 0;
 				pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
-				game.scorePoints(GameModel.POINTS_ENERGIZER);
+				int points = GameModel.POINTS_ENERGIZER;
+				game.scorePoints(points);
+				Logger.info("Scored {} points for eating energizer", points);
 			} else {
 				pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
 				game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
@@ -614,9 +616,9 @@ public class GameLevel {
 			memo.pacPrey.forEach(this::killGhost);
 			numGhostsKilledInLevel += memo.pacPrey.size();
 			if (numGhostsKilledInLevel == 16) {
-				game.scorePoints(GameModel.POINTS_ALL_GHOSTS_KILLED_IN_LEVEL);
-				Logger.trace("All ghosts killed at level {}, {} wins {} points", number, pac.name(),
-						GameModel.POINTS_ALL_GHOSTS_KILLED_IN_LEVEL);
+				int points = GameModel.POINTS_ALL_GHOSTS_KILLED_IN_LEVEL;
+				game.scorePoints(points);
+				Logger.info("Scored {} points for killing all ghosts at level {}", points, number);
 			}
 		}
 	}
@@ -628,7 +630,7 @@ public class GameLevel {
 		memo.killedGhosts.add(ghost);
 		int points = GameModel.POINTS_GHOSTS_SEQUENCE[ghost.killedIndex()];
 		game.scorePoints(points);
-		Logger.trace("{} killed at tile {}, {} wins {} points", ghost.name(), ghost.tile(), pac.name(), points);
+		Logger.info("Scored {} points for killing {} at tile {}", points, ghost.name(), ghost.tile());
 	}
 
 	// Pac-Man

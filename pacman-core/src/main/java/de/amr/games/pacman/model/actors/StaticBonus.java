@@ -95,8 +95,10 @@ public class StaticBonus extends Entity implements Bonus {
 			break;
 		}
 		case Bonus.STATE_EDIBLE: {
+			// TODO does this belong here? I doubt it.
 			if (sameTile(level.pac())) {
 				level.game().scorePoints(points());
+				Logger.info("Scored {} points for eating bonus {}", points(), this);
 				eat();
 				GameEvents.publishSoundEvent(GameModel.SE_BONUS_EATEN, level.game());
 			} else if (timer == 0) {
