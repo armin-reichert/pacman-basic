@@ -7,28 +7,11 @@ package de.amr.games.pacman.model.actors;
 /**
  * @author Armin Reichert
  */
-public interface PacAnimations<A, S> {
-
+public interface PacAnimations<A, S> extends Animations<A, S> {
 	public static final String MUNCHING = "munching";
 	public static final String DYING = "dying";
-
 	// In Pac-Man cutscene, big Pac-Man appears
 	public static final String BIG_PACMAN = "big_pacman";
-
 	// In Ms. Pac-Man cutscenes, also Ms. PacMan's husband appears
 	public static final String HUSBAND_MUNCHING = "husband_munching";
-
-	A selectedAnimation();
-
-	String selectedAnimationName();
-
-	void select(String name);
-
-	void startSelected();
-
-	void stopSelected();
-
-	void resetSelected();
-
-	S currentSprite();
 }

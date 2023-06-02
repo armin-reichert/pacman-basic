@@ -7,8 +7,7 @@ package de.amr.games.pacman.model.actors;
 /**
  * @author Armin Reichert
  */
-public interface GhostAnimations<A, S> {
-
+public interface GhostAnimations<A, S> extends Animations<A, S> {
 	public static final String GHOST_NORMAL = "normal";
 	public static final String GHOST_FRIGHTENED = "frightened";
 	public static final String GHOST_EYES = "eyes";
@@ -18,18 +17,4 @@ public interface GhostAnimations<A, S> {
 	public static final String BLINKY_STRETCHED = "stretched";
 	public static final String BLINKY_PATCHED = "patched";
 	public static final String BLINKY_NAKED = "naked";
-
-	A selectedAnimation();
-
-	String selectedAnimationName();
-
-	void select(String name, Object... args);
-
-	void startSelected();
-
-	void stopSelected();
-
-	void resetSelected();
-
-	S currentSprite();
 }
