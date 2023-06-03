@@ -26,6 +26,7 @@ import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.Portal;
+import de.amr.games.pacman.model.world.World;
 
 /**
  * Base class for all creatures which can live inside a game level and can move through its world.
@@ -76,15 +77,23 @@ public abstract class Creature extends Entity {
 		return level;
 	}
 
+	protected World world() {
+		return level.world();
+	}
+
+	protected GameModel game() {
+		return level.game();
+	}
+
 	/**
 	 * @param level the level to set
 	 */
 	public void setLevel(GameLevel level) {
+		checkLevelNotNull(level);
 		this.level = level;
 	}
 
 	/**
-	 * @param level game level
 	 * @return if the creature can reverse its direction
 	 */
 	public abstract boolean canReverse();
@@ -195,11 +204,10 @@ public abstract class Creature extends Entity {
 	 */
 	public boolean canAccessTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		checkLevelNotNull(level);
-		if (level.world().insideBounds(tile)) {
-			return !level.world().isWall(tile) && !level.world().house().door().occupies(tile);
+		if (world().insideBounds(tile)) {
+			return !world().isWall(tile) && !world().house().door().occupies(tile);
 		}
-		return level.world().belongsToPortal(tile);
+		return world().belongsToPortal(tile);
 	}
 
 	/**
@@ -284,18 +292,15 @@ public abstract class Creature extends Entity {
 
 	/**
 	 * Sets the new wish direction for reaching the target tile.
-	 * 
-	 * @param level the game level
 	 */
 	public void navigateTowardsTarget() {
-		checkLevelNotNull(level);
 		if (!newTileEntered && moved()) {
 			return; // we don't need no navigation, dim dit diddit diddit dim dit diddit diddit...
 		}
 		if (targetTile == null) {
 			return;
 		}
-		if (level.world().belongsToPortal(tile())) {
+		if (world().belongsToPortal(tile())) {
 			return; // inside portal, no navigation happens
 		}
 		computeTargetDirection().ifPresent(this::setWishDir);
@@ -334,17 +339,14 @@ public abstract class Creature extends Entity {
 	}
 
 	/**
-	 * Tries moving through the given game level.
+	 * Tries moving through the game level.
 	 * <p>
 	 * First checks if the creature can teleport, then if the creature can move to its wish direction. If this is not
 	 * possible, it keeps moving to its current move direction.
-	 * 
-	 * @param level the game level
 	 */
 	public void tryMoving() {
-		checkLevelNotNull(level);
 		moveResult = new MoveResult();
-		tryTeleport(level.world().portals());
+		tryTeleport(world().portals());
 		if (!moveResult.teleported) {
 			checkReverseCommand();
 			tryMoving(wishDir);
@@ -431,7 +433,7 @@ public abstract class Creature extends Entity {
 
 		newTileEntered = !tileBeforeMove.equals(tile());
 		moveResult.moved = true;
-		moveResult.tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
+		moveResult.tunnelEntered = !world().isTunnel(tileBeforeMove) && world().isTunnel(tile());
 		moveResult.messages.add(String.format("%5s (%.2f pixels)", dir, newVelocity.length()));
 	}
 }
