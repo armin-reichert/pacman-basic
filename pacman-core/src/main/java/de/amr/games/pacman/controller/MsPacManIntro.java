@@ -7,8 +7,6 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.v2i;
-import static de.amr.games.pacman.lib.steering.Direction.LEFT;
-import static de.amr.games.pacman.lib.steering.Direction.UP;
 
 import java.util.BitSet;
 import java.util.List;
@@ -18,6 +16,7 @@ import org.tinylog.Logger;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.lib.timer.TickTimer;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Ghost;
@@ -87,13 +86,13 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			public void onEnter(MsPacManIntro.Context ctx) {
 				ctx.marqueeTimer.restartIndefinitely();
 				ctx.msPacMan.setPosition(TS * 31, TS * 20);
-				ctx.msPacMan.setMoveDir(LEFT);
+				ctx.msPacMan.setMoveDir(Direction.LEFT);
 				ctx.msPacMan.setPixelSpeed(ctx.speed);
 				ctx.msPacMan.selectAnimation(PacAnimations.MUNCHING);
 				ctx.msPacMan.startAnimation();
 				ctx.ghosts.forEach(ghost -> {
 					ghost.setPosition(TS * 33.5f, TS * 20);
-					ghost.setMoveAndWishDir(LEFT);
+					ghost.setMoveAndWishDir(Direction.LEFT);
 					ghost.setPixelSpeed(ctx.speed);
 					ghost.enterStateHuntingPac();
 					ghost.startAnimation();
@@ -117,10 +116,10 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 				var ghost = ctx.ghosts.get(ctx.ghostIndex);
 				ghost.show();
 
-				if (ghost.moveDir() == LEFT) {
+				if (ghost.moveDir() == Direction.LEFT) {
 					if (ghost.position().x() <= ctx.stopX) {
 						ghost.setX(ctx.stopX);
-						ghost.setMoveAndWishDir(UP);
+						ghost.setMoveAndWishDir(Direction.UP);
 						ctx.ticksUntilLifting = 2;
 					} else {
 						ghost.move();
@@ -128,7 +127,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 					return;
 				}
 
-				if (ghost.moveDir() == UP) {
+				if (ghost.moveDir() == Direction.UP) {
 					if (ctx.ticksUntilLifting > 0) {
 						ctx.ticksUntilLifting -= 1;
 						Logger.trace("Ticks until lifting {}: {}", ghost.name(), ctx.ticksUntilLifting);

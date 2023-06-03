@@ -8,7 +8,7 @@ import static de.amr.games.pacman.lib.Globals.TS;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.anim.Pulse;
+import de.amr.games.pacman.lib.Pulse;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.lib.steering.Direction;

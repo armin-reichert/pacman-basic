@@ -4,12 +4,11 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
-import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 import static de.amr.games.pacman.lib.Globals.checkGameVariant;
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
-import static java.util.function.Predicate.not;
+
+import java.util.function.Predicate;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -53,7 +52,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 		// map FSM state change events to "game state change" events
 		addStateChangeListener(
-				(oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
+				(oldState, newState) -> GameEvents.publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
 		game = new GameModel(variant);
 		GameEvents.setGameController(this);
 	}
@@ -142,8 +141,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (game.isPlaying() && state() == GameState.HUNTING) {
 			game.level().ifPresent(level -> {
 				var world = level.world();
-				world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
-				publishGameEventOfType(GameEventType.PAC_FINDS_FOOD, game);
+				world.tiles().filter(Predicate.not(world::isEnergizerTile)).forEach(world::removeFood);
+				GameEvents.publishGameEventOfType(GameEventType.PAC_FINDS_FOOD, game);
 				if (world.uneatenFoodCount() == 0) {
 					changeState(GameState.LEVEL_COMPLETE);
 				}

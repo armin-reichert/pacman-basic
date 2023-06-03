@@ -8,7 +8,6 @@ module de.amr.games.pacman {
 	exports de.amr.games.pacman.controller;
 	exports de.amr.games.pacman.event;
 	exports de.amr.games.pacman.lib;
-	exports de.amr.games.pacman.lib.anim;
 	exports de.amr.games.pacman.lib.fsm;
 	exports de.amr.games.pacman.lib.math;
 	exports de.amr.games.pacman.lib.option;

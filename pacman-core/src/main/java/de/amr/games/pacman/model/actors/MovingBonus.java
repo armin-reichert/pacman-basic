@@ -12,7 +12,7 @@ import java.util.List;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.lib.anim.SimpleAnimation;
+import de.amr.games.pacman.lib.Pulse;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.steering.RouteBasedSteering;
 import de.amr.games.pacman.model.GameModel;
@@ -32,7 +32,7 @@ public class MovingBonus extends Creature implements Bonus {
 	private long timer;
 	private byte state;
 
-	private final SimpleAnimation<Float> jumpAnimation;
+	private final Pulse jumpAnimation;
 	private final RouteBasedSteering steering = new RouteBasedSteering();
 
 	public MovingBonus(byte symbol) {
@@ -44,9 +44,7 @@ public class MovingBonus extends Creature implements Bonus {
 		this.timer = 0;
 		this.state = Bonus.STATE_INACTIVE;
 
-		jumpAnimation = new SimpleAnimation<>(1.5f, -1.5f);
-		jumpAnimation.setFrameDuration(10);
-		jumpAnimation.repeatForever();
+		jumpAnimation = new Pulse(10, false);
 	}
 
 	@Override
@@ -112,7 +110,10 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	public float dy() {
-		return jumpAnimation.isRunning() ? jumpAnimation.frame() : 0;
+		if (!jumpAnimation.isRunning()) {
+			return 0;
+		}
+		return jumpAnimation.on() ? -4f : 4f;
 	}
 
 	@Override
@@ -137,7 +138,7 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 			navigateTowardsTarget();
 			tryMoving();
-			jumpAnimation.animate();
+			jumpAnimation.tick();
 			break;
 		}
 		case STATE_EATEN: {

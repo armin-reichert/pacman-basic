@@ -2,7 +2,7 @@
 Copyright (c) 2021-2023 Armin Reichert (MIT License)
 See file LICENSE in repository root directory for details.
 */
-package de.amr.games.pacman.lib.anim;
+package de.amr.games.pacman.lib;
 
 /**
  * @author Armin Reichert
