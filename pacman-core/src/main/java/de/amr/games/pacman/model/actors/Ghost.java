@@ -263,13 +263,15 @@ public class Ghost extends Creature {
 			setPixelSpeed(GameModel.SPEED_PX_INSIDE_HOUSE);
 			move();
 		}
-		boolean frightened = level().pac().powerTimer().isRunning() && killedIndex == -1;
-		if (frightened) {
+		if (killable()) {
 			updateFrightenedAnimation();
 		} else {
-			// got already killed in this power phase, not frightened anymore
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
+	}
+
+	private boolean killable() {
+		return level().pac().powerTimer().isRunning() && killedIndex == -1;
 	}
 
 	// --- LEAVING_HOUSE ---
@@ -281,19 +283,14 @@ public class Ghost extends Creature {
 	 * door on top of the house.
 	 * <p>
 	 * The ghost speed is slower than outside but I do not know the exact value.
-	 * 
-	 * @param level the game level
 	 */
 	public void enterStateLeavingHouse() {
 		state = LEAVING_HOUSE;
 		setPixelSpeed(GameModel.SPEED_PX_INSIDE_HOUSE);
-		// TODO is this event needed/handled at all?
-		GameEvents.publishGameEvent(new GhostEvent(level().game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
 	}
 
 	private void updateStateLeavingHouse() {
-		boolean frightened = level().pac().powerTimer().isRunning() && killedIndex == -1;
-		if (frightened) {
+		if (killable()) {
 			updateFrightenedAnimation();
 		} else {
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
@@ -302,16 +299,12 @@ public class Ghost extends Creature {
 		if (outOfHouse) {
 			setMoveAndWishDir(LEFT);
 			newTileEntered = false; // force moving left until next tile is entered
-			if (frightened) {
+			if (killable()) {
 				enterStateFrightened();
-				Logger.trace("Ghost {} leaves house frightened", name());
 			} else {
 				killedIndex = -1;
 				enterStateHuntingPac();
-				Logger.trace("Ghost {} leaves house hunting", name());
 			}
-			// TODO is this event needed/handled at all?
-			GameEvents.publishGameEvent(new GhostEvent(level().game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
 		}
 	}
 

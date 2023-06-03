@@ -33,12 +33,6 @@ public interface GameEventListener {
 		case GHOST_ENTERS_HOUSE:
 			onGhostEntersHouse(event);
 			break;
-		case GHOST_STARTS_LEAVING_HOUSE:
-			onGhostStartsLeavingHouse(event);
-			break;
-		case GHOST_COMPLETES_LEAVING_HOUSE:
-			onGhostCompletesLeavingHouse(event);
-			break;
 		case GHOST_STARTS_RETURNING_HOME:
 			onGhostStartsReturningHome(event);
 			break;
@@ -95,12 +89,6 @@ public interface GameEventListener {
 	default void onGhostStartsReturningHome(GameEvent e) {
 	}
 
-	default void onGhostStartsLeavingHouse(GameEvent e) {
-	}
-
-	default void onGhostCompletesLeavingHouse(GameEvent e) {
-	}
-
 	default void onLevelBeforeStart(GameEvent e) {
 	}
 
@@ -124,5 +112,4 @@ public interface GameEventListener {
 
 	default void onUnspecifiedChange(GameEvent e) {
 	}
-
 }
