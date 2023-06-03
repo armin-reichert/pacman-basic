@@ -20,16 +20,29 @@ import de.amr.games.pacman.lib.Vector2i;
  */
 public class Entity {
 
-	protected boolean visible;
-	protected Vector2f position;
-	protected Vector2f velocity;
-	protected Vector2f acceleration;
+	protected String name;
+	protected boolean visible = false;
+	protected Vector2f position = Vector2f.ZERO;
+	protected Vector2f velocity = Vector2f.ZERO;
+	protected Vector2f acceleration = Vector2f.ZERO;
+
+	public Entity(String name) {
+		this.name = name;
+	}
 
 	public Entity() {
-		visible = false;
-		position = Vector2f.ZERO;
-		velocity = Vector2f.ZERO;
-		acceleration = Vector2f.ZERO;
+		this.name = getClass().getSimpleName() + "@" + hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return "Entity [name=" + name + ", visible=" + visible + ", position=" + position + ", velocity=" + velocity
+				+ ", acceleration=" + acceleration + "]";
+	}
+
+	/** Readable name, for display and logging purposes. */
+	public String name() {
+		return name;
 	}
 
 	public boolean isVisible() {
@@ -49,8 +62,7 @@ public class Entity {
 	}
 
 	/**
-	 * @return Entity position. This is the upper left corner of the entity collision box which is a square of size one
-	 *         tile.
+	 * @return upper left corner of the entity collision box which is a square of size one tile.
 	 */
 	public Vector2f position() {
 		return position;

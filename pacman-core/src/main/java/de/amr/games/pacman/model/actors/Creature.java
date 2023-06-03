@@ -38,7 +38,6 @@ public abstract class Creature extends Entity {
 
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
-	private final String name;
 	private Direction moveDir;
 	private Direction wishDir;
 	private Vector2i targetTile;
@@ -53,7 +52,15 @@ public abstract class Creature extends Entity {
 	protected float corneringSpeedUp = 0;
 
 	protected Creature(String name) {
-		this.name = (name != null) ? name : String.format("%s@%d", getClass().getSimpleName(), hashCode());
+		super(name);
+	}
+
+	@Override
+	public String toString() {
+		return "Creature [moveDir=" + moveDir + ", wishDir=" + wishDir + ", targetTile=" + targetTile + ", newTileEntered="
+				+ newTileEntered + ", gotReverseCommand=" + gotReverseCommand + ", canTeleport=" + canTeleport
+				+ ", corneringSpeedUp=" + corneringSpeedUp + ", name=" + name + ", visible=" + visible + ", position="
+				+ position + ", velocity=" + velocity + ", acceleration=" + acceleration + "]";
 	}
 
 	public void reset() {
@@ -106,17 +113,6 @@ public abstract class Creature extends Entity {
 	 * @return if the creature can reverse its direction
 	 */
 	public abstract boolean canReverse();
-
-	@Override
-	public String toString() {
-		return String.format("%s: position=%s, tile=%s (%s), velocity=%s, moveDir=%s, wishDir=%s", name, position, tile(),
-				offset(), velocity, moveDir, wishDir);
-	}
-
-	/** Readable name, for display and logging purposes. */
-	public String name() {
-		return name;
-	}
 
 	/** Tells if the creature entered a new tile with its last move or placement. */
 	public boolean isNewTileEntered() {
