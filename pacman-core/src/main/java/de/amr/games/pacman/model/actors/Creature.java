@@ -422,11 +422,11 @@ public abstract class Creature extends Entity {
 			setVelocity(newVelocity.plus(dirVector.scaled(corneringSpeedUp)));
 			Logger.trace("{} velocity around corner: {}", name(), velocity.length());
 			move();
+			setVelocity(newVelocity);
 		} else {
 			setVelocity(newVelocity);
 			move();
 		}
-		setVelocity(newVelocity);
 
 		newTileEntered = !tileBeforeMove.equals(tile());
 		moveResult.moved = true;
