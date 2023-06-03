@@ -25,6 +25,7 @@ import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.World;
 
@@ -79,6 +80,14 @@ public abstract class Creature extends Entity {
 
 	protected World world() {
 		return level.world();
+	}
+
+	public House house() {
+		return world().house();
+	}
+
+	public boolean insideHouse() {
+		return house().contains(tile());
 	}
 
 	protected GameModel game() {
@@ -205,7 +214,7 @@ public abstract class Creature extends Entity {
 	public boolean canAccessTile(Vector2i tile) {
 		checkTileNotNull(tile);
 		if (world().insideBounds(tile)) {
-			return !world().isWall(tile) && !world().house().door().occupies(tile);
+			return !world().isWall(tile) && !house().door().occupies(tile);
 		}
 		return world().belongsToPortal(tile);
 	}

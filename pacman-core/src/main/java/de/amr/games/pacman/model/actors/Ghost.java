@@ -90,10 +90,6 @@ public class Ghost extends Creature {
 		this.fnChasingTarget = fnChasingTarget;
 	}
 
-	public House house() {
-		return world().house();
-	}
-
 	public Vector2f initialPosition() {
 		return initialPosition;
 	}
@@ -142,19 +138,20 @@ public class Ghost extends Creature {
 	}
 
 	@Override
-	public boolean canAccessTile(Vector2i tile) {
-		checkTileNotNull(tile);
+	public boolean canAccessTile(Vector2i targetTile) {
+		checkTileNotNull(targetTile);
 		var currentTile = tile();
 		for (var dir : Direction.values()) {
-			if (tile.equals(currentTile.plus(dir.vector())) && !level().isSteeringAllowed(this, dir)) {
-				Logger.trace("{} cannot access tile {} because he cannot move to %s at {}", name(), tile, dir, currentTile);
+			if (targetTile.equals(currentTile.plus(dir.vector())) && !level().isSteeringAllowed(this, dir)) {
+				Logger.trace("{} cannot access tile {} because he cannot move to %s at {}", name(), targetTile, dir,
+						currentTile);
 				return false;
 			}
 		}
-		if (house().door().occupies(tile)) {
+		if (house().door().occupies(targetTile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		return super.canAccessTile(tile);
+		return super.canAccessTile(targetTile);
 	}
 
 	@Override
@@ -163,7 +160,7 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * While "scattering", a ghost aims to "his" corner in the maze and circles around the wall block in that corner
+	 * While "scattering", a ghost aims to "his" maze corner and circles around the wall block in that corner.
 	 */
 	public void scatter() {
 		setTargetTile(scatterTile);
@@ -172,7 +169,7 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * While chasing Pac-Man, a ghost aims toward his chasing target tile
+	 * While chasing Pac-Man, a ghost aims toward his chasing target (depends on ghost personality).
 	 */
 	public void chase() {
 		setTargetTile(fnChasingTarget.get());
@@ -184,10 +181,6 @@ public class Ghost extends Creature {
 	 * While frightened, a ghost walks randomly through the maze.
 	 */
 	public void roam() {
-		moveRandomly();
-	}
-
-	private void moveRandomly() {
 		if (isNewTileEntered() || !moved()) {
 			Direction.shuffled().stream() //
 					.filter(dir -> dir != moveDir().opposite()) //
@@ -214,14 +207,8 @@ public class Ghost extends Creature {
 		return oneOf(state, alternatives);
 	}
 
-	public boolean insideHouse() {
-		return house().contains(tile());
-	}
-
 	/**
-	 * Executes a single simulation step for this ghost in the specified game level.
-	 * 
-	 * @param game the game
+	 * Executes a single simulation step for this ghost in the current game level.
 	 */
 	public void update() {
 		switch (state) {
@@ -264,11 +251,13 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateLocked() {
-		var baseLevel = initialPosition.y();
+		var base = initialPosition.y();
+		var bounceAbove = base - HTS;
+		var bounceBelow = base + HTS;
 		if (insideHouse()) {
-			if (position.y() <= baseLevel - HTS) {
+			if (position.y() <= bounceAbove) {
 				setMoveAndWishDir(DOWN);
-			} else if (position.y() >= baseLevel + HTS) {
+			} else if (position.y() >= bounceBelow) {
 				setMoveAndWishDir(UP);
 			}
 			setPixelSpeed(GameModel.SPEED_PX_INSIDE_HOUSE);
