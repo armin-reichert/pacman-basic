@@ -12,6 +12,7 @@ import static de.amr.games.pacman.lib.Globals.isEven;
 import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.percent;
 import static de.amr.games.pacman.lib.Globals.v2i;
+import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.model.GameModel.CYAN_GHOST;
 import static de.amr.games.pacman.model.GameModel.ORANGE_GHOST;
 import static de.amr.games.pacman.model.GameModel.PINK_GHOST;
@@ -564,8 +565,6 @@ public class GameLevel {
 			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS, game);
 		}
 
-		checkIfGhostCanGetUnlocked();
-
 		// Cruise Elroy
 		if (world.uneatenFoodCount() == elroy1DotsLeft) {
 			setCruiseElroyState(1);
@@ -580,6 +579,7 @@ public class GameLevel {
 		// Update world and guys
 		world.getMazeFlashing().animate();
 		pac.update(this);
+		unlockGhost();
 		ghosts().forEach(ghost -> ghost.update(this));
 		bonusManagement.updateBonus();
 
@@ -650,15 +650,20 @@ public class GameLevel {
 		return world.uneatenFoodCount() == 0;
 	}
 
-	private void checkIfGhostCanGetUnlocked() {
-		ghostHouseManagement.checkIfNextGhostCanLeaveHouse().ifPresent(unlockInfo -> {
-			var ghost = unlockInfo.ghost();
-			ghost.leaveHouse(this);
+	private void unlockGhost() {
+		ghostHouseManagement.checkIfNextGhostCanLeaveHouse().ifPresent(unlocked -> {
+			var ghost = unlocked.ghost();
+			if (ghost.insideHouse(this)) {
+				ghost.enterStateLeavingHouse(this);
+			} else {
+				ghost.setMoveAndWishDir(LEFT);
+				ghost.enterStateHuntingPac();
+			}
 			if (ghost.id() == ORANGE_GHOST && cruiseElroyState < 0) {
 				// Blinky's "cruise elroy" state is re-enabled when orange ghost is unlocked
 				setCruiseElroyStateEnabled(true);
 			}
-			Logger.info("{} unlocked: {}", unlockInfo.ghost().name(), unlockInfo.reason());
+			Logger.info("{} unlocked: {}", unlocked.ghost().name(), unlocked.reason());
 		});
 	}
 }

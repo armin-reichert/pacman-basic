@@ -160,15 +160,6 @@ public class Ghost extends Creature {
 		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 
-	public void leaveHouse(GameLevel level) {
-		if (insideHouse(level)) {
-			enterStateLeavingHouse(level);
-		} else {
-			setMoveAndWishDir(LEFT);
-			enterStateHuntingPac();
-		}
-	}
-
 	/**
 	 * While "scattering", a ghost aims to "his" corner in the maze and circles around the wall block in that corner
 	 * 
