@@ -415,7 +415,7 @@ public class Ghost extends Creature {
 	 */
 	public void enterStateEaten() {
 		state = EATEN;
-		selectNumberAnimation(killedIndex);
+		selectAnimation(GhostAnimations.GHOST_NUMBER, killedIndex);
 	}
 
 	private void updateStateEaten() {
@@ -483,9 +483,9 @@ public class Ghost extends Creature {
 		return Optional.ofNullable(animations);
 	}
 
-	public void selectAnimation(String name) {
+	public void selectAnimation(String name, Object... args) {
 		if (animations != null) {
-			animations.select(name);
+			animations.select(name, args);
 		}
 	}
 
@@ -504,12 +504,6 @@ public class Ghost extends Creature {
 	public void resetAnimation() {
 		if (animations != null) {
 			animations.resetSelected();
-		}
-	}
-
-	private void selectNumberAnimation(int index) {
-		if (animations != null) {
-			animations.select(GhostAnimations.GHOST_NUMBER, index);
 		}
 	}
 
