@@ -15,10 +15,8 @@ import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
 import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.world.World.tileAt;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.tinylog.Logger;
 
@@ -37,33 +35,6 @@ import de.amr.games.pacman.model.world.Portal;
 public abstract class Creature extends Entity {
 
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
-
-	private static class MoveResult {
-		private boolean moved;
-		private boolean tunnelEntered;
-		private boolean teleported;
-		private List<String> messages;
-
-		public MoveResult() {
-			moved = false;
-			tunnelEntered = false;
-			teleported = false;
-			messages = new ArrayList<>(3);
-		}
-
-		public String summary() {
-			return messages.stream().collect(Collectors.joining(", "));
-		}
-
-		@Override
-		public String toString() {
-			var sb = new StringBuilder("");
-			sb.append(tunnelEntered ? " entered tunnel" : "");
-			sb.append(teleported ? " teleported" : "");
-			sb.append(moved ? " moved" : "");
-			return sb.length() == 0 ? "" : "[" + sb.toString().trim() + "]";
-		}
-	}
 
 	private final String name;
 	private Direction moveDir;
