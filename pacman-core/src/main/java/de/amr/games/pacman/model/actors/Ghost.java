@@ -90,6 +90,10 @@ public class Ghost extends Creature {
 		this.fnChasingTarget = fnChasingTarget;
 	}
 
+	public House house() {
+		return world().house();
+	}
+
 	public Vector2f initialPosition() {
 		return initialPosition;
 	}
@@ -141,11 +145,13 @@ public class Ghost extends Creature {
 	public boolean canAccessTile(Vector2i tile) {
 		checkTileNotNull(tile);
 		var currentTile = tile();
-		if (tile.equals(currentTile.plus(UP.vector())) && !level().isSteeringAllowed(this, UP)) {
-			Logger.trace("{} cannot access tile {} because he cannot move UP at {}", name(), tile, currentTile);
-			return false;
+		for (var dir : Direction.values()) {
+			if (tile.equals(currentTile.plus(dir.vector())) && !level().isSteeringAllowed(this, dir)) {
+				Logger.trace("{} cannot access tile {} because he cannot move to %s at {}", name(), tile, dir, currentTile);
+				return false;
+			}
 		}
-		if (level().world().house().door().occupies(tile)) {
+		if (house().door().occupies(tile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile);
@@ -209,7 +215,7 @@ public class Ghost extends Creature {
 	}
 
 	public boolean insideHouse() {
-		return level().world().house().contains(tile());
+		return house().contains(tile());
 	}
 
 	/**
@@ -303,7 +309,7 @@ public class Ghost extends Creature {
 		} else {
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
-		var outOfHouse = moveOutsideHouse(level().world().house());
+		var outOfHouse = moveOutsideHouse(house());
 		if (outOfHouse) {
 			setMoveAndWishDir(LEFT);
 			newTileEntered = false; // force moving left until next tile is entered
@@ -401,7 +407,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateFrightened() {
-		var speed = level().world().isTunnel(tile()) ? level().ghostSpeedTunnel : level().ghostSpeedFrightened;
+		var speed = world().isTunnel(tile()) ? level().ghostSpeedTunnel : level().ghostSpeedFrightened;
 		setRelSpeed(speed);
 		roam();
 		updateFrightenedAnimation();
@@ -432,12 +438,12 @@ public class Ghost extends Creature {
 	 */
 	public void enterStateReturningToHouse() {
 		state = RETURNING_TO_HOUSE;
-		setTargetTile(level().world().house().door().leftWing());
+		setTargetTile(house().door().leftWing());
 		selectAnimation(GhostAnimations.GHOST_EYES);
 	}
 
 	private void updateStateReturningToHouse() {
-		var houseEntry = level().world().house().door().entryPosition();
+		var houseEntry = house().door().entryPosition();
 		// TODO should this check for difference by speed instead of 1?
 		if (position().almostEquals(houseEntry, 1, 0)) {
 			setPosition(houseEntry);
@@ -466,7 +472,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateEnteringHouse() {
-		boolean atRevivalPosition = moveInsideHouse(level().world().house(), revivalPosition);
+		boolean atRevivalPosition = moveInsideHouse(house(), revivalPosition);
 		if (atRevivalPosition) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();
