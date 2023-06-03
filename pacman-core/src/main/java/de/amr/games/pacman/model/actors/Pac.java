@@ -35,10 +35,10 @@ public class Pac extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format(
-				"['%s' position=%s offset=%s tile=%s velocity=%s speed=%.2f moveDir=%s wishDir=%s dead=%s restingTicks=%d starvingTicks=%d]",
-				name(), position, offset(), tile(), velocity, velocity.length(), moveDir(), wishDir(), dead, restingTicks,
-				starvingTicks);
+		return "Pac [powerTimer=" + powerTimer + ", dead=" + dead + ", restingTicks=" + restingTicks + ", starvingTicks="
+				+ starvingTicks + ", newTileEntered=" + newTileEntered + ", gotReverseCommand=" + gotReverseCommand
+				+ ", canTeleport=" + canTeleport + ", corneringSpeedUp=" + corneringSpeedUp + ", name=" + name + ", visible="
+				+ visible + ", position=" + position + ", velocity=" + velocity + ", acceleration=" + acceleration + "]";
 	}
 
 	@Override

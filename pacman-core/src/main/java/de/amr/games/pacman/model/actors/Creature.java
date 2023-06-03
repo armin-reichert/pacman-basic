@@ -55,14 +55,6 @@ public abstract class Creature extends Entity {
 		super(name);
 	}
 
-	@Override
-	public String toString() {
-		return "Creature [moveDir=" + moveDir + ", wishDir=" + wishDir + ", targetTile=" + targetTile + ", newTileEntered="
-				+ newTileEntered + ", gotReverseCommand=" + gotReverseCommand + ", canTeleport=" + canTeleport
-				+ ", corneringSpeedUp=" + corneringSpeedUp + ", name=" + name + ", visible=" + visible + ", position="
-				+ position + ", velocity=" + velocity + ", acceleration=" + acceleration + "]";
-	}
-
 	public void reset() {
 		// entity
 		visible = false;

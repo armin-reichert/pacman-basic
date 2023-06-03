@@ -62,8 +62,11 @@ public class Ghost extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format("[%-6s (%s) position=%s tile=%s offset=%s velocity=%s dir=%s wishDir=%s reverse=%s]", name(),
-				state, position, tile(), offset(), velocity, moveDir(), wishDir(), gotReverseCommand);
+		return "Ghost [id=" + id + ", state=" + state + ", initialPosition=" + initialPosition + ", revivalPosition="
+				+ revivalPosition + ", scatterTile=" + scatterTile + ", initialDirection=" + initialDirection + ", killedIndex="
+				+ killedIndex + ", newTileEntered=" + newTileEntered + ", gotReverseCommand=" + gotReverseCommand
+				+ ", canTeleport=" + canTeleport + ", corneringSpeedUp=" + corneringSpeedUp + ", name=" + name + ", visible="
+				+ visible + ", position=" + position + ", velocity=" + velocity + ", acceleration=" + acceleration + "]";
 	}
 
 	/**
