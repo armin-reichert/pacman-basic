@@ -60,6 +60,14 @@ public class Entity {
 		position = v2f(x, y);
 	}
 
+	public void setX(float x) {
+		position = v2f(x, position.y());
+	}
+
+	public void setY(float y) {
+		position = v2f(position.x(), y);
+	}
+
 	public void setPosition(Vector2f position) {
 		checkNotNull(position, "Position of entity must not be null");
 		this.position = position;

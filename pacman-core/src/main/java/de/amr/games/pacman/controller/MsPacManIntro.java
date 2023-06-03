@@ -119,7 +119,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 
 				if (ghost.moveDir() == LEFT) {
 					if (ghost.position().x() <= ctx.stopX) {
-						ghost.setPosition(ctx.stopX, ghost.position().y());
+						ghost.setX(ctx.stopX);
 						ghost.setMoveAndWishDir(UP);
 						ctx.ticksUntilLifting = 2;
 					} else {

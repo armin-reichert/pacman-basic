@@ -318,9 +318,10 @@ public class Ghost extends Creature {
 			return true;
 		}
 		float houseCenterX = house().center().x();
-		if (differsAtMost(velocity().length() / 2, center().x(), houseCenterX)) {
-			// center reached: halign and start rising
-			setPosition(houseCenterX - HTS, position().y());
+		float speed = GameModel.SPEED_PX_INSIDE_HOUSE;
+		if (differsAtMost(0.5 * speed, center().x(), houseCenterX)) {
+			// valign and raise
+			setX(houseCenterX - HTS);
 			setMoveAndWishDir(UP);
 		} else {
 			// move sidewards until center axis is reached
@@ -340,7 +341,7 @@ public class Ghost extends Creature {
 			setPosition(entryPosition);
 			setMoveAndWishDir(Direction.DOWN);
 		} else if (position().y() >= house.center().y()) {
-			setPosition(position().x(), house.center().y());
+			setY(house.center().y());
 			if (targetPosition.x() < house.center().x()) {
 				setMoveAndWishDir(LEFT);
 			} else if (targetPosition.x() > house.center().x()) {

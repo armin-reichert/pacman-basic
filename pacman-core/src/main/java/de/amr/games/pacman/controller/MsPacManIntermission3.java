@@ -142,7 +142,7 @@ public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPa
 					++ctx.numBagBounces;
 					if (ctx.numBagBounces < 3) {
 						ctx.bag.setVelocity(-0.2f, -1f / ctx.numBagBounces);
-						ctx.bag.setPosition(ctx.bag.position().x(), ctx.groundY);
+						ctx.bag.setY(ctx.groundY);
 					} else {
 						ctx.bagOpen = true;
 						ctx.bag.setVelocity(Vector2f.ZERO);
