@@ -7,6 +7,9 @@ package de.amr.games.pacman.model.world;
 import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
 
 import java.util.BitSet;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.math.Vector2i;
 
@@ -16,15 +19,21 @@ import de.amr.games.pacman.lib.math.Vector2i;
 public class FoodStorage {
 
 	private final World world;
+	private final List<Vector2i> energizerTiles;
 	private final BitSet eaten;
 	private final long totalCount;
 	private long uneatenCount;
 
 	public FoodStorage(World world) {
 		this.world = world;
+		energizerTiles = world.tiles().filter(world::isEnergizerTile).collect(Collectors.toList());
 		eaten = new BitSet(world.numCols() * world.numRows());
 		totalCount = world.tiles().filter(world::isFoodTile).count();
 		uneatenCount = totalCount;
+	}
+
+	public Stream<Vector2i> energizerTiles() {
+		return energizerTiles.stream();
 	}
 
 	private int index(Vector2i tile) {
@@ -54,6 +63,10 @@ public class FoodStorage {
 			return eaten.get(index(tile));
 		}
 		return false;
+	}
+
+	public long totalCount() {
+		return totalCount;
 	}
 
 	public long uneatenCount() {

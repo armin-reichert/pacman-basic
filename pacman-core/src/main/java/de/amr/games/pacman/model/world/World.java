@@ -14,7 +14,6 @@ import static de.amr.games.pacman.lib.Globals.v2i;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -108,7 +107,6 @@ public class World extends Entity {
 	private final TileMap tileMap;
 	private final FoodStorage foodStorage;
 	private final List<Portal> portals;
-	private final List<Vector2i> energizerTiles;
 	private final Pulse energizerBlinking;
 	private final Pulse mazeFlashing;
 
@@ -118,7 +116,6 @@ public class World extends Entity {
 	public World(byte[][] tileMapData) {
 		tileMap = new TileMap(tileMapData);
 		portals = buildPortals(tileMap);
-		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
 		foodStorage = new FoodStorage(this);
 
 		// Animations
@@ -217,10 +214,6 @@ public class World extends Entity {
 	public boolean isEnergizerTile(Vector2i tile) {
 		checkTileNotNull(tile);
 		return contentOrSpace(tile) == ENERGIZER;
-	}
-
-	public Stream<Vector2i> energizerTiles() {
-		return energizerTiles.stream();
 	}
 
 	public boolean isIntersection(Vector2i tile) {
