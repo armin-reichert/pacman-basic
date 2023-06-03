@@ -5,7 +5,7 @@ See file LICENSE in repository root directory for details.
 package de.amr.games.pacman.model;
 
 import static de.amr.games.pacman.lib.Globals.RND;
-import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
+import static de.amr.games.pacman.lib.NavigationPoint.np;
 import static de.amr.games.pacman.model.world.World.halfTileRightOf;
 
 import java.util.ArrayList;
@@ -15,10 +15,10 @@ import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Globals;
-import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.lib.steering.NavigationPoint;
-import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.lib.NavigationPoint;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.actors.Bonus;
 import de.amr.games.pacman.model.actors.MovingBonus;
 import de.amr.games.pacman.model.actors.StaticBonus;

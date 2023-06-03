@@ -11,8 +11,8 @@ import static de.amr.games.pacman.lib.Globals.v2f;
 
 import java.util.Objects;
 
-import de.amr.games.pacman.lib.math.Vector2f;
-import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.Vector2f;
+import de.amr.games.pacman.lib.Vector2i;
 
 /**
  * @author Armin Reichert

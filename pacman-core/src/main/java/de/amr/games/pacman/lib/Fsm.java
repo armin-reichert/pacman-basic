@@ -2,15 +2,14 @@
 Copyright (c) 2021-2023 Armin Reichert (MIT License)
 See file LICENSE in repository root directory for details.
 */
-package de.amr.games.pacman.lib.fsm;
+package de.amr.games.pacman.lib;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.tinylog.Logger;
 
-import de.amr.games.pacman.lib.timer.TickTimer;
-import de.amr.games.pacman.lib.timer.TickTimer.State;
+import de.amr.games.pacman.lib.TickTimer.State;
 
 /**
  * A finite-state machine.

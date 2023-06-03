@@ -2,7 +2,7 @@
 Copyright (c) 2021-2023 Armin Reichert (MIT License)
 See file LICENSE in repository root directory for details.
 */
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.lib;
 
 import java.time.LocalDate;
 

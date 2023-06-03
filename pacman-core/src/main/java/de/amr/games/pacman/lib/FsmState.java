@@ -2,9 +2,7 @@
 Copyright (c) 2021-2023 Armin Reichert (MIT License)
 See file LICENSE in repository root directory for details.
 */
-package de.amr.games.pacman.lib.fsm;
-
-import de.amr.games.pacman.lib.timer.TickTimer;
+package de.amr.games.pacman.lib;
 
 /**
  * Interface implemented by all states (enums) of a FSM. Each state has a timer and a reference to its FSM.

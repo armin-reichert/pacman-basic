@@ -19,8 +19,8 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Pulse;
 import de.amr.games.pacman.lib.TileMap;
-import de.amr.games.pacman.lib.math.Vector2f;
-import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.Vector2f;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.actors.Entity;
 
 /**

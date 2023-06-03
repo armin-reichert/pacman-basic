@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.Vector2i;
 
 /**
  * @author Armin Reichert

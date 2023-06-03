@@ -4,16 +4,16 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.checkGhostID;
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
 import static de.amr.games.pacman.lib.Globals.differsAtMost;
 import static de.amr.games.pacman.lib.Globals.oneOf;
-import static de.amr.games.pacman.lib.steering.Direction.DOWN;
-import static de.amr.games.pacman.lib.steering.Direction.LEFT;
-import static de.amr.games.pacman.lib.steering.Direction.RIGHT;
-import static de.amr.games.pacman.lib.steering.Direction.UP;
 import static de.amr.games.pacman.model.actors.GhostState.EATEN;
 import static de.amr.games.pacman.model.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.actors.GhostState.FRIGHTENED;
@@ -30,9 +30,9 @@ import org.tinylog.Logger;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GhostEvent;
-import de.amr.games.pacman.lib.math.Vector2f;
-import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.lib.steering.Direction;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Vector2f;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.House;
 

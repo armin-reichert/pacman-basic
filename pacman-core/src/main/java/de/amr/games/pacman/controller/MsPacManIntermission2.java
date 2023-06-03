@@ -7,10 +7,10 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.lib.Globals.TS;
 
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.fsm.Fsm;
-import de.amr.games.pacman.lib.fsm.FsmState;
-import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.lib.FsmState;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Clapperboard;
 import de.amr.games.pacman.model.actors.Pac;

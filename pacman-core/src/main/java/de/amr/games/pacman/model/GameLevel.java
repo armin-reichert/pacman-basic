@@ -4,6 +4,7 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model;
 
+import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Globals.checkGameNotNull;
 import static de.amr.games.pacman.lib.Globals.checkGhostID;
 import static de.amr.games.pacman.lib.Globals.checkLevelNumber;
@@ -12,7 +13,6 @@ import static de.amr.games.pacman.lib.Globals.isEven;
 import static de.amr.games.pacman.lib.Globals.isOdd;
 import static de.amr.games.pacman.lib.Globals.percent;
 import static de.amr.games.pacman.lib.Globals.v2i;
-import static de.amr.games.pacman.lib.steering.Direction.LEFT;
 import static de.amr.games.pacman.model.GameModel.CYAN_GHOST;
 import static de.amr.games.pacman.model.GameModel.ORANGE_GHOST;
 import static de.amr.games.pacman.model.GameModel.PINK_GHOST;
@@ -35,9 +35,9 @@ import org.tinylog.Logger;
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.actors.Creature;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.GhostState;

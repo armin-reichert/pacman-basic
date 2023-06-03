@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
-import de.amr.games.pacman.lib.fsm.Fsm;
-import de.amr.games.pacman.lib.steering.RuleBasedSteering;
+import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.lib.RuleBasedSteering;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.GameVariant;
 

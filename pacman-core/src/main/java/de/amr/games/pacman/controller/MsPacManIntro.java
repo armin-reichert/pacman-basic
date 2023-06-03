@@ -13,11 +13,11 @@ import java.util.List;
 
 import org.tinylog.Logger;
 
-import de.amr.games.pacman.lib.fsm.Fsm;
-import de.amr.games.pacman.lib.fsm.FsmState;
-import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.lib.FsmState;
+import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.Pac;

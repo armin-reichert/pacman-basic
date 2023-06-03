@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.world.Door;
 import de.amr.games.pacman.model.world.House;
 

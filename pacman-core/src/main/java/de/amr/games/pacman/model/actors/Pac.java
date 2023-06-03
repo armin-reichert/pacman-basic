@@ -8,7 +8,7 @@ import static de.amr.games.pacman.lib.Globals.checkLevelNotNull;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 

@@ -2,12 +2,12 @@
 Copyright (c) 2021-2023 Armin Reichert (MIT License)
 See file LICENSE in repository root directory for details.
 */
-package de.amr.games.pacman.lib.timer;
+package de.amr.games.pacman.lib;
 
-import static de.amr.games.pacman.lib.timer.TickTimer.State.EXPIRED;
-import static de.amr.games.pacman.lib.timer.TickTimer.State.READY;
-import static de.amr.games.pacman.lib.timer.TickTimer.State.RUNNING;
-import static de.amr.games.pacman.lib.timer.TickTimer.State.STOPPED;
+import static de.amr.games.pacman.lib.TickTimer.State.EXPIRED;
+import static de.amr.games.pacman.lib.TickTimer.State.READY;
+import static de.amr.games.pacman.lib.TickTimer.State.RUNNING;
+import static de.amr.games.pacman.lib.TickTimer.State.STOPPED;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 import org.tinylog.Logger;
 
-import de.amr.games.pacman.lib.timer.TickTimerEvent.Type;
+import de.amr.games.pacman.lib.TickTimerEvent.Type;
 
 /**
  * A simple, but useful, passive timer counting ticks.

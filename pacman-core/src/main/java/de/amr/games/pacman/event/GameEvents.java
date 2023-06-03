@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 
 /**

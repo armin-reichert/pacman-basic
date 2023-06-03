@@ -6,7 +6,7 @@ package de.amr.games.pacman.model.world;
 
 import java.util.Objects;
 
-import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.Vector2i;
 
 /**
  * A portal connects two tunnel ends leading out of the map.

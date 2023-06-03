@@ -7,7 +7,7 @@ package de.amr.games.pacman.model;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.lib.Globals.checkLevelNumber;
 import static de.amr.games.pacman.lib.Globals.v2i;
-import static de.amr.games.pacman.lib.steering.NavigationPoint.np;
+import static de.amr.games.pacman.lib.NavigationPoint.np;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,11 +24,12 @@ import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.math.Vector2i;
-import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.lib.steering.NavigationPoint;
-import de.amr.games.pacman.lib.steering.RouteBasedSteering;
-import de.amr.games.pacman.lib.steering.RuleBasedSteering;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.NavigationPoint;
+import de.amr.games.pacman.lib.RouteBasedSteering;
+import de.amr.games.pacman.lib.RuleBasedSteering;
+import de.amr.games.pacman.lib.Score;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.world.World;
 
 /**

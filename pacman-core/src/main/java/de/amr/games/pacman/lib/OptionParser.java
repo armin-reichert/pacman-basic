@@ -2,7 +2,7 @@
 Copyright (c) 2021-2023 Armin Reichert (MIT License)
 See file LICENSE in repository root directory for details.
 */
-package de.amr.games.pacman.lib.option;
+package de.amr.games.pacman.lib;
 
 import java.util.Arrays;
 import java.util.HashMap;

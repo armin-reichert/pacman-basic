@@ -9,7 +9,7 @@ import static de.amr.games.pacman.lib.Globals.checkNotNull;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.math.Vector2i;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 
 /**

@@ -12,9 +12,9 @@ import java.util.List;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.Pulse;
-import de.amr.games.pacman.lib.steering.NavigationPoint;
-import de.amr.games.pacman.lib.steering.RouteBasedSteering;
+import de.amr.games.pacman.lib.RouteBasedSteering;
 import de.amr.games.pacman.model.GameModel;
 
 /**

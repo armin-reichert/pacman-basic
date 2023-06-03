@@ -8,11 +8,11 @@ import static de.amr.games.pacman.lib.Globals.TS;
 
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.Pulse;
-import de.amr.games.pacman.lib.fsm.Fsm;
-import de.amr.games.pacman.lib.fsm.FsmState;
-import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.lib.timer.TickTimer;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.GhostAnimations;
