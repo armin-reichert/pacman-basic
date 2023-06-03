@@ -125,7 +125,7 @@ public class World extends Entity {
 		eatenSet = new BitSet(tileMap.numCols() * tileMap.numRows());
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
 		energizerBlinking = new Pulse(10, true);
-		mazeFlashing = new Pulse(10, true);
+		mazeFlashing = new Pulse(10, false);
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
 	}

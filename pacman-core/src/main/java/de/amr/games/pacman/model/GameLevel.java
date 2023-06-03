@@ -581,7 +581,7 @@ public class GameLevel {
 		memo.pacKilled = !game.isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 
 		// Update world and guys
-		world.getMazeFlashing().animate();
+		world.getMazeFlashing().tick();
 		pac.update(this);
 		unlockGhost();
 		ghosts().forEach(ghost -> ghost.update());

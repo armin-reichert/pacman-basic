@@ -164,7 +164,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 					if (timer.atSecond(1)) {
 						ctx.blinking.start();
 					}
-					ctx.blinking.animate();
+					ctx.blinking.tick();
 					ctx.pacMan.move();
 					ctx.ghosts().forEach(Ghost::move);
 				}
@@ -220,7 +220,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 				}
 				ctx.pacMan.move();
 				ctx.ghosts().forEach(Ghost::move);
-				ctx.blinking.animate();
+				ctx.blinking.tick();
 			}
 		},
 

@@ -156,7 +156,7 @@ public enum GameState implements FsmState<GameModel> {
 				var steering = level.pacSteering().orElse(gc.steering());
 				steering.steer(level, level.pac());
 				level.update();
-				level.world().getEnergizerBlinking().animate();
+				level.world().getEnergizerBlinking().tick();
 				if (level.isCompleted()) {
 					gc.changeState(LEVEL_COMPLETE);
 				} else if (level.pacKilled()) {
@@ -195,10 +195,9 @@ public enum GameState implements FsmState<GameModel> {
 					level.pac().resetAnimation();
 					var flashing = level.world().getMazeFlashing();
 					if (timer.atSecond(1)) {
-						flashing.setRepetitions(level.numFlashes);
-						flashing.restart();
+						flashing.restart(2 * level.numFlashes);
 					} else {
-						flashing.animate();
+						flashing.tick();
 					}
 					level.pac().update(level);
 				}
@@ -244,7 +243,7 @@ public enum GameState implements FsmState<GameModel> {
 					steering.steer(level, level.pac());
 					level.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
 							.forEach(ghost -> ghost.update());
-					level.world().getEnergizerBlinking().animate();
+					level.world().getEnergizerBlinking().tick();
 				});
 			}
 		}
@@ -296,7 +295,7 @@ public enum GameState implements FsmState<GameModel> {
 						gc.changeState(game.lives() == 0 ? GAME_OVER : READY);
 					}
 				} else {
-					level.world().getEnergizerBlinking().animate();
+					level.world().getEnergizerBlinking().tick();
 					level.pac().update(level);
 				}
 			});
@@ -383,18 +382,17 @@ public enum GameState implements FsmState<GameModel> {
 					} else if (timer.atSecond(5.5)) {
 						level.bonusManagement().getBonus().get().eat();
 						level.guys().forEach(Creature::hide);
-					} else if (timer.atSecond(7.5)) {
+					} else if (timer.atSecond(6.5)) {
 						var flashing = level.world().getMazeFlashing();
-						flashing.setRepetitions(level.numFlashes);
-						flashing.restart();
-					} else if (timer.atSecond(8.0)) {
+						flashing.restart(2 * level.numFlashes);
+					} else if (timer.atSecond(12.0)) {
 						level.exit();
 						game.nextLevel();
 						timer.restartIndefinitely();
 						publishGameEventOfType(GameEventType.LEVEL_STARTED, game);
 					}
-					level.world().getEnergizerBlinking().animate();
-					level.world().getMazeFlashing().animate();
+					level.world().getEnergizerBlinking().tick();
+					level.world().getMazeFlashing().tick();
 					level.ghosts().forEach(ghost -> ghost.update());
 					level.bonusManagement().updateBonus();
 				} else {
