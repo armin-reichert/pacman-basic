@@ -145,7 +145,7 @@ public enum GameState implements FsmState<GameModel> {
 				}
 				level.pac().startAnimation();
 				level.ghosts().forEach(Ghost::startAnimation);
-				level.world().getEnergizerBlinking().restart();
+				level.world().energizerBlinking().restart();
 			});
 		}
 
@@ -156,7 +156,7 @@ public enum GameState implements FsmState<GameModel> {
 				var steering = level.pacSteering().orElse(gc.steering());
 				steering.steer(level, level.pac());
 				level.update();
-				level.world().getEnergizerBlinking().tick();
+				level.world().energizerBlinking().tick();
 				if (level.isCompleted()) {
 					gc.changeState(LEVEL_COMPLETE);
 				} else if (level.pacKilled()) {
@@ -193,7 +193,7 @@ public enum GameState implements FsmState<GameModel> {
 				} else {
 					level.pac().stopAnimation();
 					level.pac().resetAnimation();
-					var flashing = level.world().getMazeFlashing();
+					var flashing = level.world().mazeFlashing();
 					if (timer.atSecond(1)) {
 						flashing.restart(2 * level.numFlashes);
 					} else {
@@ -243,7 +243,7 @@ public enum GameState implements FsmState<GameModel> {
 					steering.steer(level, level.pac());
 					level.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
 							.forEach(ghost -> ghost.update());
-					level.world().getEnergizerBlinking().tick();
+					level.world().energizerBlinking().tick();
 				});
 			}
 		}
@@ -283,7 +283,7 @@ public enum GameState implements FsmState<GameModel> {
 					level.pac().hide();
 					game.setLives(game.lives() - 1);
 					if (game.lives() == 0) {
-						level.world().getMazeFlashing().stop();
+						level.world().mazeFlashing().stop();
 						game.setOneLessLifeDisplayed(false);
 					}
 				} else if (timer.hasExpired()) {
@@ -295,7 +295,7 @@ public enum GameState implements FsmState<GameModel> {
 						gc.changeState(game.lives() == 0 ? GAME_OVER : READY);
 					}
 				} else {
-					level.world().getEnergizerBlinking().tick();
+					level.world().energizerBlinking().tick();
 					level.pac().update(level);
 				}
 			});
@@ -383,7 +383,7 @@ public enum GameState implements FsmState<GameModel> {
 						level.bonusManagement().getBonus().get().eat();
 						level.guys().forEach(Creature::hide);
 					} else if (timer.atSecond(6.5)) {
-						var flashing = level.world().getMazeFlashing();
+						var flashing = level.world().mazeFlashing();
 						flashing.restart(2 * level.numFlashes);
 					} else if (timer.atSecond(12.0)) {
 						level.exit();
@@ -391,8 +391,8 @@ public enum GameState implements FsmState<GameModel> {
 						timer.restartIndefinitely();
 						publishGameEventOfType(GameEventType.LEVEL_STARTED, game);
 					}
-					level.world().getEnergizerBlinking().tick();
-					level.world().getMazeFlashing().tick();
+					level.world().energizerBlinking().tick();
+					level.world().mazeFlashing().tick();
 					level.ghosts().forEach(ghost -> ghost.update());
 					level.bonusManagement().updateBonus();
 				} else {

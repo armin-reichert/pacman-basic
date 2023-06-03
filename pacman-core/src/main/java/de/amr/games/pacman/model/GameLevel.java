@@ -198,7 +198,7 @@ public class GameLevel {
 		pac.selectAnimation(PacAnimations.MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		bonusManagement.onLevelEnd();
-		world.getMazeFlashing().reset();
+		world.mazeFlashing().reset();
 		stopHuntingTimer();
 	}
 
@@ -461,7 +461,7 @@ public class GameLevel {
 			ghost.stopAnimation();
 			ghost.resetAnimation();
 		});
-		world.getMazeFlashing().reset();
+		world.mazeFlashing().reset();
 	}
 
 	/**
@@ -492,7 +492,7 @@ public class GameLevel {
 		var pacTile = pac.tile();
 
 		// Food information
-		if (world.containsFood(pacTile)) {
+		if (world.foodStorage().hasFoodAt(pacTile)) {
 			memo.foodFoundTile = Optional.of(pacTile);
 			memo.energizerFound = world.isEnergizerTile(pacTile);
 		}
@@ -514,7 +514,7 @@ public class GameLevel {
 		// Food
 		if (memo.foodFoundTile.isPresent()) {
 			var foodTile = memo.foodFoundTile.get();
-			world.removeFood(foodTile);
+			world.foodStorage().removeFood(foodTile);
 			pac.endStarving();
 			if (bonusManagement.isFirstBonusReached()) {
 				memo.bonusReachedIndex = 0;
@@ -570,9 +570,9 @@ public class GameLevel {
 		}
 
 		// Cruise Elroy
-		if (world.uneatenFoodCount() == elroy1DotsLeft) {
+		if (world.foodStorage().uneatenCount() == elroy1DotsLeft) {
 			setCruiseElroyState(1);
-		} else if (world.uneatenFoodCount() == elroy2DotsLeft) {
+		} else if (world.foodStorage().uneatenCount() == elroy2DotsLeft) {
 			setCruiseElroyState(2);
 		}
 
@@ -581,7 +581,7 @@ public class GameLevel {
 		memo.pacKilled = !game.isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 
 		// Update world and guys
-		world.getMazeFlashing().tick();
+		world.mazeFlashing().tick();
 		pac.update(this);
 		unlockGhost();
 		ghosts().forEach(ghost -> ghost.update());
@@ -651,7 +651,7 @@ public class GameLevel {
 	}
 
 	public boolean isCompleted() {
-		return world.uneatenFoodCount() == 0;
+		return world.foodStorage().uneatenCount() == 0;
 	}
 
 	private void unlockGhost() {

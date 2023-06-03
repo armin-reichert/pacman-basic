@@ -27,7 +27,6 @@ public class WorldTest {
 	@Test(expected = NullPointerException.class)
 	public void testNullTileArg() {
 		var world = new World(GameModel.PACMAN_MAP);
-		world.index(null);
 		world.insideBounds(null);
 		world.belongsToPortal(null);
 		world.isIntersection(null);
@@ -35,9 +34,9 @@ public class WorldTest {
 		world.isTunnel(null);
 		world.isFoodTile(null);
 		world.isEnergizerTile(null);
-		world.removeFood(null);
-		world.containsFood(null);
-		world.containsEatenFood(null);
+		world.foodStorage().removeFood(null);
+		world.foodStorage().hasFoodAt(null);
+		world.foodStorage().hasEatenFoodAt(null);
 	}
 
 	@Test

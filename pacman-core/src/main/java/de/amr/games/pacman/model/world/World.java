@@ -12,7 +12,6 @@ import static de.amr.games.pacman.lib.Globals.v2f;
 import static de.amr.games.pacman.lib.Globals.v2i;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,11 +35,11 @@ import de.amr.games.pacman.model.actors.Entity;
 public class World extends Entity {
 
 	//@formatter:off
-	private static final byte SPACE           = 0;
-	private static final byte WALL            = 1;
-	private static final byte TUNNEL          = 2;
-	private static final byte PELLET          = 3;
-	private static final byte ENERGIZER       = 4;
+	public static final byte SPACE           = 0;
+	public static final byte WALL            = 1;
+	public static final byte TUNNEL          = 2;
+	public static final byte PELLET          = 3;
+	public static final byte ENERGIZER       = 4;
 	//@formatter:on
 
 	/** World size in x-direction in tiles. */
@@ -107,13 +106,11 @@ public class World extends Entity {
 	}
 
 	private final TileMap tileMap;
+	private final FoodStorage foodStorage;
 	private final List<Portal> portals;
 	private final List<Vector2i> energizerTiles;
-	private final BitSet eatenSet;
 	private final Pulse energizerBlinking;
 	private final Pulse mazeFlashing;
-	private final int totalFoodCount;
-	private int uneatenFoodCount;
 
 	/**
 	 * @param tileMapData byte-array of tile map data
@@ -121,23 +118,27 @@ public class World extends Entity {
 	public World(byte[][] tileMapData) {
 		tileMap = new TileMap(tileMapData);
 		portals = buildPortals(tileMap);
-		eatenSet = new BitSet(tileMap.numCols() * tileMap.numRows());
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
+		foodStorage = new FoodStorage(this);
+
+		// Animations
 		energizerBlinking = new Pulse(10, true);
 		mazeFlashing = new Pulse(10, false);
-		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
-		uneatenFoodCount = totalFoodCount;
+	}
+
+	public FoodStorage foodStorage() {
+		return foodStorage;
 	}
 
 	public House house() {
 		return ARCADE_HOUSE;
 	}
 
-	public Pulse getEnergizerBlinking() {
+	public Pulse energizerBlinking() {
 		return energizerBlinking;
 	}
 
-	public Pulse getMazeFlashing() {
+	public Pulse mazeFlashing() {
 		return mazeFlashing;
 	}
 
@@ -146,14 +147,6 @@ public class World extends Entity {
 	 */
 	public Stream<Vector2i> tiles() {
 		return IntStream.range(0, numCols() * numRows()).mapToObj(this::tile);
-	}
-
-	/**
-	 * @param tile a tile
-	 * @return tile index in order top-to-bottom, left-to-right
-	 */
-	public int index(Vector2i tile) {
-		return numCols() * tile.y() + tile.x();
 	}
 
 	/**
@@ -200,7 +193,7 @@ public class World extends Entity {
 	 * @param tile some tile (may be outside world bound)
 	 * @return the content at the given tile or empty space if outside world
 	 */
-	private byte contentOrSpace(Vector2i tile) {
+	public byte contentOrSpace(Vector2i tile) {
 		// Note: content is stored row-wise, so use (y,x) to index content
 		return tileMap.content(tile.y(), tile.x(), SPACE);
 	}
@@ -228,39 +221,6 @@ public class World extends Entity {
 
 	public Stream<Vector2i> energizerTiles() {
 		return energizerTiles.stream();
-	}
-
-	public void removeFood(Vector2i tile) {
-		checkTileNotNull(tile);
-		if (insideBounds(tile) && containsFood(tile)) {
-			eatenSet.set(index(tile));
-			--uneatenFoodCount;
-		}
-	}
-
-	public boolean containsFood(Vector2i tile) {
-		checkTileNotNull(tile);
-		if (insideBounds(tile)) {
-			byte data = contentOrSpace(tile);
-			return (data == PELLET || data == ENERGIZER) && !eatenSet.get(index(tile));
-		}
-		return false;
-	}
-
-	public boolean containsEatenFood(Vector2i tile) {
-		checkTileNotNull(tile);
-		if (insideBounds(tile)) {
-			return eatenSet.get(index(tile));
-		}
-		return false;
-	}
-
-	public int uneatenFoodCount() {
-		return uneatenFoodCount;
-	}
-
-	public int eatenFoodCount() {
-		return totalFoodCount - uneatenFoodCount;
 	}
 
 	public boolean isIntersection(Vector2i tile) {
