@@ -4,6 +4,8 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.world;
 
+import static de.amr.games.pacman.lib.Globals.HTS;
+import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
 
@@ -23,12 +25,11 @@ public final class House {
 	private final List<Vector2f> seatPositions;
 	private final Vector2f center;
 
-	public House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2f> seatPositions, Vector2f center) {
+	public House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2f> seatPositions) {
 		checkTileNotNull(topLeftTile);
 		checkNotNull(size);
 		checkNotNull(door);
 		checkNotNull(seatPositions);
-		checkNotNull(center);
 		if (seatPositions.size() != 3) {
 			throw new IllegalArgumentException("There must be exactly 3 seat positions");
 		}
@@ -37,9 +38,10 @@ public final class House {
 		}
 		this.topLeftTile = topLeftTile;
 		this.size = size;
+		this.center = topLeftTile.toFloatVec().scaled(TS).plus(size.toFloatVec().scaled(HTS));
 		this.door = door;
 		this.seatPositions = seatPositions;
-		this.center = center;
+
 	}
 
 	public Vector2i topLeftTile() {

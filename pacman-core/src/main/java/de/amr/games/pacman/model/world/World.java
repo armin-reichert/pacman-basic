@@ -12,6 +12,7 @@ import static de.amr.games.pacman.lib.Globals.v2f;
 import static de.amr.games.pacman.lib.Globals.v2i;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
@@ -57,8 +58,7 @@ public class World extends Entity {
 		v2i(10, 15), // top-left corner
 		v2i(8, 5),   // size in tiles
 		new Door(v2i(13, 15), v2i(14, 15)),
-		List.of(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17)),
-		halfTileRightOf(13, 17).plus(0, HTS) // center position
+		Arrays.asList(halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17))
 	);
 	//@formatter:on
 
@@ -87,6 +87,10 @@ public class World extends Entity {
 	 */
 	public static Vector2f halfTileRightOf(int tileX, int tileY) {
 		return v2f(TS * tileX + HTS, TS * tileY);
+	}
+
+	public static Vector2f centerOfTile(int tileX, int tileY) {
+		return v2f(TS * tileX + HTS, TS * tileY + HTS);
 	}
 
 	private static List<Portal> buildPortals(TileMap tileMap) {

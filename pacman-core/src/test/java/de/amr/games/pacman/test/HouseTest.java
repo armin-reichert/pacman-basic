@@ -4,7 +4,6 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.v2i;
 
 import java.util.List;
@@ -30,7 +29,6 @@ public class HouseTest {
 			World.halfTileRightOf(5, 12), //
 			World.halfTileRightOf(7, 12), //
 			World.halfTileRightOf(9, 12));
-	static final Vector2f CENTER = World.halfTileRightOf(7, 12).plus(0, HTS);
 
 	@Test(expected = NullPointerException.class)
 	public void testLeftDoorWingNotNull() {
@@ -44,37 +42,37 @@ public class HouseTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testPositionNotNull() {
-		new House(null, SIZE, DOOR, SEATS, CENTER);
+		new House(null, SIZE, DOOR, SEATS);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSizeNotNull() {
-		new House(POSITION, null, DOOR, SEATS, CENTER);
+		new House(POSITION, null, DOOR, SEATS);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testDoorNotNull() {
-		new House(POSITION, SIZE, null, SEATS, CENTER);
+		new House(POSITION, SIZE, null, SEATS);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSeatsNotNull() {
-		new House(POSITION, SIZE, DOOR, null, CENTER);
+		new House(POSITION, SIZE, DOOR, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testSeatCount() {
-		new House(POSITION, SIZE, DOOR, List.of(), CENTER);
+		new House(POSITION, SIZE, DOOR, List.of());
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testSeatContainsNull() {
-		new House(POSITION, SIZE, DOOR, List.of(null, SEATS.get(0)), CENTER);
+		new House(POSITION, SIZE, DOOR, List.of(null, SEATS.get(0)));
 	}
 
 	@Test
 	public void testHouseProperties() {
-		var house = new House(POSITION, SIZE, DOOR, SEATS, CENTER);
+		var house = new House(POSITION, SIZE, DOOR, SEATS);
 		Assert.assertEquals(POSITION, house.topLeftTile());
 		Assert.assertEquals(SIZE, house.size());
 		Assert.assertEquals(DOOR, house.door());

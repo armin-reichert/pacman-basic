@@ -295,14 +295,14 @@ public class Ghost extends Creature {
 		} else {
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
-		var outOfHouse = moveOutsideHouse(house());
+		var outOfHouse = leaveHouse();
 		if (outOfHouse) {
 			setMoveAndWishDir(LEFT);
-			newTileEntered = false; // force moving left until next tile is entered
+			newTileEntered = false; // keep moving left until new tile is entered
 			if (killable()) {
 				enterStateFrightened();
 			} else {
-				killedIndex = -1;
+				killedIndex = -1; // TODO check this
 				enterStateHuntingPac();
 			}
 		}
@@ -311,19 +311,20 @@ public class Ghost extends Creature {
 	/**
 	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
 	 */
-	private boolean moveOutsideHouse(House house) {
-		var endPosition = house.door().entryPosition();
+	private boolean leaveHouse() {
+		var endPosition = house().door().entryPosition();
 		if (position().y() <= endPosition.y()) {
 			setPosition(endPosition); // valign at house entry
 			return true;
 		}
-		if (differsAtMost(velocity().length() / 2, position().x(), house.center().x())) {
+		float houseCenterX = house().center().x();
+		if (differsAtMost(velocity().length() / 2, center().x(), houseCenterX)) {
 			// center reached: halign and start rising
-			setPosition(house.center().x(), position().y());
+			setPosition(houseCenterX - HTS, position().y());
 			setMoveAndWishDir(UP);
 		} else {
 			// move sidewards until center axis is reached
-			setMoveAndWishDir(position().x() < house.center().x() ? RIGHT : LEFT);
+			setMoveAndWishDir(center().x() < houseCenterX ? RIGHT : LEFT);
 		}
 		move();
 		return false;
