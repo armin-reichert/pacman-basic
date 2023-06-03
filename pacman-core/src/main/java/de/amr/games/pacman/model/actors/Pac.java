@@ -42,7 +42,7 @@ public class Pac extends Creature {
 	}
 
 	@Override
-	public boolean canReverse(GameLevel level) {
+	public boolean canReverse() {
 		return isNewTileEntered();
 	}
 
@@ -73,7 +73,7 @@ public class Pac extends Creature {
 		if (restingTicks == 0) {
 			var speed = powerTimer.isRunning() ? level.pacSpeedPowered : level.pacSpeed;
 			setRelSpeed(speed);
-			tryMoving(level);
+			tryMoving();
 			selectAnimation(PacAnimations.MUNCHING);
 			if (moved()) {
 				startAnimation();

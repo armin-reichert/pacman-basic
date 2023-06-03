@@ -15,7 +15,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.anim.SimpleAnimation;
 import de.amr.games.pacman.lib.steering.NavigationPoint;
 import de.amr.games.pacman.lib.steering.RouteBasedSteering;
-import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 
 /**
@@ -51,7 +50,7 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public boolean canReverse(GameLevel level) {
+	public boolean canReverse() {
 		return false;
 	}
 
@@ -117,27 +116,27 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void update(GameLevel level) {
+	public void update() {
 		switch (state) {
 		case STATE_INACTIVE:
 			// nothing to do
 			break;
 		case STATE_EDIBLE: {
-			if (sameTile(level.pac())) {
-				level.game().scorePoints(points());
+			if (sameTile(level().pac())) {
+				level().game().scorePoints(points());
 				eat();
-				publishSoundEvent(GameModel.SE_BONUS_EATEN, level.game());
+				publishSoundEvent(GameModel.SE_BONUS_EATEN, level().game());
 				return;
 			}
-			steering.steer(level, this);
+			steering.steer(level(), this);
 			if (steering.isComplete()) {
 				Logger.trace("Bonus reached target: {}", this);
 				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
 			}
-			navigateTowardsTarget(level);
-			tryMoving(level);
+			navigateTowardsTarget();
+			tryMoving();
 			jumpAnimation.animate();
 			break;
 		}

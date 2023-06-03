@@ -80,8 +80,7 @@ public class GhostHouseManagement {
 				Logger.trace("Global dot counter = {}", globalDotCounter);
 			}
 		} else {
-			level.ghosts(LOCKED).filter(ghost -> ghost.insideHouse(level)).findFirst()
-					.ifPresent(this::increaseGhostDotCounter);
+			level.ghosts(LOCKED).filter(ghost -> ghost.insideHouse()).findFirst().ifPresent(this::increaseGhostDotCounter);
 		}
 	}
 
@@ -110,7 +109,7 @@ public class GhostHouseManagement {
 			return Optional.empty();
 		}
 
-		if (!ghost.insideHouse(level)) {
+		if (!ghost.insideHouse()) {
 			return unlockResult(ghost, "Already outside house");
 		}
 		var id = ghost.id();

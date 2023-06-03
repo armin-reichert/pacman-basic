@@ -30,7 +30,7 @@ import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.Portal;
 
 /**
- * Base class for all creatures which can move through the world.
+ * Base class for all creatures which can live inside a game level and can move through its world.
  * 
  * @author Armin Reichert
  */
@@ -70,6 +70,8 @@ public abstract class Creature extends Entity {
 	private Direction wishDir;
 	private Vector2i targetTile;
 
+	private GameLevel level;
+
 	private MoveResult moveResult;
 	protected boolean newTileEntered; // TODO put this into move result but currently it has another lifetime
 	protected boolean gotReverseCommand;
@@ -99,11 +101,22 @@ public abstract class Creature extends Entity {
 		newTileEntered = true;
 	}
 
+	public GameLevel level() {
+		return level;
+	}
+
+	/**
+	 * @param level the level to set
+	 */
+	public void setLevel(GameLevel level) {
+		this.level = level;
+	}
+
 	/**
 	 * @param level game level
 	 * @return if the creature can reverse its direction
 	 */
-	public abstract boolean canReverse(GameLevel level);
+	public abstract boolean canReverse();
 
 	@Override
 	public String toString() {
@@ -206,11 +219,10 @@ public abstract class Creature extends Entity {
 	}
 
 	/**
-	 * @param tile  some tile inside or outside of the world
-	 * @param level the game level (tile access can depend on the game level where the creature exists)
+	 * @param tile some tile inside or outside of the world
 	 * @return if this creature can access the given tile
 	 */
-	public boolean canAccessTile(Vector2i tile, GameLevel level) {
+	public boolean canAccessTile(Vector2i tile) {
 		checkTileNotNull(tile);
 		checkLevelNotNull(level);
 		if (level.world().insideBounds(tile)) {
@@ -304,7 +316,7 @@ public abstract class Creature extends Entity {
 	 * 
 	 * @param level the game level
 	 */
-	public void navigateTowardsTarget(GameLevel level) {
+	public void navigateTowardsTarget() {
 		checkLevelNotNull(level);
 		if (!newTileEntered && moved()) {
 			return; // we don't need no navigation, dim dit diddit diddit dim dit diddit diddit...
@@ -315,10 +327,10 @@ public abstract class Creature extends Entity {
 		if (level.world().belongsToPortal(tile())) {
 			return; // inside portal, no navigation happens
 		}
-		computeTargetDirection(level).ifPresent(this::setWishDir);
+		computeTargetDirection().ifPresent(this::setWishDir);
 	}
 
-	private Optional<Direction> computeTargetDirection(GameLevel level) {
+	private Optional<Direction> computeTargetDirection() {
 		final var currentTile = tile();
 		Direction targetDir = null;
 		float minDistance = Float.MAX_VALUE;
@@ -327,7 +339,7 @@ public abstract class Creature extends Entity {
 				continue; // reversing the move direction is not allowed
 			}
 			final var neighborTile = currentTile.plus(dir.vector());
-			if (canAccessTile(neighborTile, level)) {
+			if (canAccessTile(neighborTile)) {
 				final var distance = neighborTile.euclideanDistance(targetTile);
 				if (distance < minDistance) {
 					minDistance = distance;
@@ -358,17 +370,17 @@ public abstract class Creature extends Entity {
 	 * 
 	 * @param level the game level
 	 */
-	public void tryMoving(GameLevel level) {
+	public void tryMoving() {
 		checkLevelNotNull(level);
 		moveResult = new MoveResult();
 		tryTeleport(level.world().portals());
 		if (!moveResult.teleported) {
-			checkReverseCommand(level);
-			tryMoving(wishDir, level);
+			checkReverseCommand();
+			tryMoving(wishDir);
 			if (moveResult.moved) {
 				setMoveDir(wishDir);
 			} else {
-				tryMoving(moveDir, level);
+				tryMoving(moveDir);
 			}
 		}
 		if (moveResult.teleported || moveResult.moved) {
@@ -376,8 +388,8 @@ public abstract class Creature extends Entity {
 		}
 	}
 
-	private void checkReverseCommand(GameLevel level) {
-		if (gotReverseCommand && canReverse(level)) {
+	private void checkReverseCommand() {
+		if (gotReverseCommand && canReverse()) {
 			setWishDir(moveDir.opposite());
 			gotReverseCommand = false;
 			Logger.trace("{}: [turned around]", name);
@@ -409,7 +421,7 @@ public abstract class Creature extends Entity {
 		}
 	}
 
-	private void tryMoving(Direction dir, GameLevel level) {
+	private void tryMoving(Direction dir) {
 		final var tileBeforeMove = tile();
 		final var aroundCorner = !dir.sameOrientation(moveDir);
 		final var dirVector = dir.vector().toFloatVec();
@@ -417,7 +429,7 @@ public abstract class Creature extends Entity {
 		final var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
 		final var touchedTile = tileAt(touchPosition);
 
-		if (!canAccessTile(touchedTile, level)) {
+		if (!canAccessTile(touchedTile)) {
 			if (!aroundCorner) {
 				placeAtTile(tile()); // adjust if blocked and moving forward
 			}

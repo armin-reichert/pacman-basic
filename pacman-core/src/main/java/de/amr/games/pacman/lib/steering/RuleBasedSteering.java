@@ -141,7 +141,7 @@ public class RuleBasedSteering extends Steering {
 			Vector2i foodTile = findTileFarestFromGhosts(level, findNearestFoodTiles(level));
 			pac.setTargetTile(foodTile);
 		}
-		pac.navigateTowardsTarget(level);
+		pac.navigateTowardsTarget();
 	}
 
 	private boolean isEdibleBonusNearPac(GameLevel level, Pac pac) {
@@ -161,7 +161,7 @@ public class RuleBasedSteering extends Steering {
 		boolean energizerFound = false;
 		for (int i = 1; i <= CollectedData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
 			Vector2i ahead = pacManTile.plus(pac.moveDir().vector().scaled(i));
-			if (!pac.canAccessTile(ahead, level)) {
+			if (!pac.canAccessTile(ahead)) {
 				break;
 			}
 			if (level.world().isEnergizerTile(ahead) && !level.world().containsEatenFood(ahead)) {
@@ -187,7 +187,7 @@ public class RuleBasedSteering extends Steering {
 		Vector2i pacManTile = pac.tile();
 		for (int i = 1; i <= CollectedData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			Vector2i behind = pacManTile.plus(pac.moveDir().opposite().vector().scaled(i));
-			if (!pac.canAccessTile(behind, level)) {
+			if (!pac.canAccessTile(behind)) {
 				break;
 			}
 			for (Ghost ghost : level.ghosts().toArray(Ghost[]::new)) {
@@ -208,7 +208,7 @@ public class RuleBasedSteering extends Steering {
 				continue;
 			}
 			Vector2i neighbor = pacManTile.plus(dir.vector());
-			if (pac.canAccessTile(neighbor, level)) {
+			if (pac.canAccessTile(neighbor)) {
 				escapes.add(dir);
 			}
 		}

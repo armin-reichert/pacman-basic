@@ -6,7 +6,6 @@ package de.amr.games.pacman.model.actors;
 
 import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.checkGhostID;
-import static de.amr.games.pacman.lib.Globals.checkLevelNotNull;
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
 import static de.amr.games.pacman.lib.Globals.differsAtMost;
@@ -34,7 +33,6 @@ import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
 import de.amr.games.pacman.lib.steering.Direction;
-import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.House;
 
@@ -140,88 +138,59 @@ public class Ghost extends Creature {
 	}
 
 	@Override
-	public boolean canAccessTile(Vector2i tile, GameLevel level) {
+	public boolean canAccessTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		checkLevelNotNull(level);
 		var currentTile = tile();
-		if (tile.equals(currentTile.plus(UP.vector())) && !level.isSteeringAllowed(this, UP)) {
+		if (tile.equals(currentTile.plus(UP.vector())) && !level().isSteeringAllowed(this, UP)) {
 			Logger.trace("{} cannot access tile {} because he cannot move UP at {}", name(), tile, currentTile);
 			return false;
 		}
-		if (level.world().house().door().occupies(tile)) {
+		if (level().world().house().door().occupies(tile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		return super.canAccessTile(tile, level);
+		return super.canAccessTile(tile);
 	}
 
 	@Override
-	public boolean canReverse(GameLevel level) {
-		checkLevelNotNull(level);
+	public boolean canReverse() {
 		return isNewTileEntered() && is(HUNTING_PAC, FRIGHTENED);
 	}
 
 	/**
 	 * While "scattering", a ghost aims to "his" corner in the maze and circles around the wall block in that corner
-	 * 
-	 * @param level game level
 	 */
-	public void scatter(GameLevel level) {
-		checkLevelNotNull(level);
+	public void scatter() {
 		setTargetTile(scatterTile);
-		navigateTowardsTarget(level);
-		tryMoving(level);
+		navigateTowardsTarget();
+		tryMoving();
 	}
 
 	/**
 	 * While chasing Pac-Man, a ghost aims toward his chasing target tile
-	 * 
-	 * @param level game level
 	 */
-	public void chase(GameLevel level) {
-		checkLevelNotNull(level);
+	public void chase() {
 		setTargetTile(fnChasingTarget.get());
-		navigateTowardsTarget(level);
-		tryMoving(level);
+		navigateTowardsTarget();
+		tryMoving();
 	}
 
 	/**
 	 * While frightened, a ghost walks randomly through the maze.
-	 * 
-	 * @param level game level
 	 */
-	public void roam(GameLevel level) {
-		checkLevelNotNull(level);
-		moveRandomly(level);
+	public void roam() {
+		moveRandomly();
 	}
 
-	private void moveRandomly(GameLevel level) {
+	private void moveRandomly() {
 		if (isNewTileEntered() || !moved()) {
 			Direction.shuffled().stream() //
 					.filter(dir -> dir != moveDir().opposite()) //
-					.filter(dir -> canAccessTile(tile().plus(dir.vector()), level)) //
+					.filter(dir -> canAccessTile(tile().plus(dir.vector()))) //
 					.findAny() //
 					.ifPresent(this::setWishDir);
 		}
-		tryMoving(level);
+		tryMoving();
 	}
-
-//	private void movePseudoRandomly(GameLevel level) {
-//		var route = level.game().getDemoLevelGhostRoute(id);
-//		if (route.isEmpty()) {
-//			moveRandomly(level);
-//		} else if (tile().equals(route.get(attractRouteIndex).tile())) {
-//			var navPoint = route.get(attractRouteIndex);
-//			if (atTurnPositionTo(navPoint.dir())) {
-//				setWishDir(navPoint.dir());
-//				Logger.trace("New wish dir {} at nav point {} for {}", navPoint.dir(), navPoint.tile(), this);
-//				++attractRouteIndex;
-//			}
-//			tryMoving(level);
-//		} else {
-//			navigateTowardsTarget(level);
-//			tryMoving(level);
-//		}
-//	}
 
 	// Here begins the state machine part
 
@@ -239,8 +208,8 @@ public class Ghost extends Creature {
 		return oneOf(state, alternatives);
 	}
 
-	public boolean insideHouse(GameLevel level) {
-		return level.world().house().contains(tile());
+	public boolean insideHouse() {
+		return level().world().house().contains(tile());
 	}
 
 	/**
@@ -248,29 +217,28 @@ public class Ghost extends Creature {
 	 * 
 	 * @param game the game
 	 */
-	public void update(GameLevel level) {
-		checkLevelNotNull(level);
+	public void update() {
 		switch (state) {
 		case LOCKED:
-			updateStateLocked(level);
+			updateStateLocked();
 			break;
 		case LEAVING_HOUSE:
-			updateStateLeavingHouse(level);
+			updateStateLeavingHouse();
 			break;
 		case HUNTING_PAC:
-			updateStateHuntingPac(level);
+			updateStateHuntingPac();
 			break;
 		case FRIGHTENED:
-			updateStateFrightened(level);
+			updateStateFrightened();
 			break;
 		case EATEN:
 			updateStateEaten();
 			break;
 		case RETURNING_TO_HOUSE:
-			updateStateReturningToHouse(level);
+			updateStateReturningToHouse();
 			break;
 		case ENTERING_HOUSE:
-			updateStateEnteringHouse(level);
+			updateStateEnteringHouse();
 			break;
 		default:
 			throw new IllegalArgumentException(String.format("Unknown ghost state: '%s'", state));
@@ -289,9 +257,9 @@ public class Ghost extends Creature {
 		selectAnimation(GhostAnimations.GHOST_NORMAL);
 	}
 
-	private void updateStateLocked(GameLevel level) {
+	private void updateStateLocked() {
 		var baseLevel = initialPosition.y();
-		if (insideHouse(level)) {
+		if (insideHouse()) {
 			if (position.y() <= baseLevel - HTS) {
 				setMoveAndWishDir(DOWN);
 			} else if (position.y() >= baseLevel + HTS) {
@@ -300,9 +268,9 @@ public class Ghost extends Creature {
 			setPixelSpeed(GameModel.SPEED_PX_INSIDE_HOUSE);
 			move();
 		}
-		boolean frightened = level.pac().powerTimer().isRunning() && killedIndex == -1;
+		boolean frightened = level().pac().powerTimer().isRunning() && killedIndex == -1;
 		if (frightened) {
-			updateFrightenedAnimation(level);
+			updateFrightenedAnimation();
 		} else {
 			// got already killed in this power phase, not frightened anymore
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
@@ -321,22 +289,21 @@ public class Ghost extends Creature {
 	 * 
 	 * @param level the game level
 	 */
-	public void enterStateLeavingHouse(GameLevel level) {
-		checkLevelNotNull(level);
+	public void enterStateLeavingHouse() {
 		state = LEAVING_HOUSE;
 		setPixelSpeed(GameModel.SPEED_PX_INSIDE_HOUSE);
 		// TODO is this event needed/handled at all?
-		GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
+		GameEvents.publishGameEvent(new GhostEvent(level().game(), GameEventType.GHOST_STARTS_LEAVING_HOUSE, this));
 	}
 
-	private void updateStateLeavingHouse(GameLevel level) {
-		boolean frightened = level.pac().powerTimer().isRunning() && killedIndex == -1;
+	private void updateStateLeavingHouse() {
+		boolean frightened = level().pac().powerTimer().isRunning() && killedIndex == -1;
 		if (frightened) {
-			updateFrightenedAnimation(level);
+			updateFrightenedAnimation();
 		} else {
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
-		var outOfHouse = moveOutsideHouse(level.world().house());
+		var outOfHouse = moveOutsideHouse(level().world().house());
 		if (outOfHouse) {
 			setMoveAndWishDir(LEFT);
 			newTileEntered = false; // force moving left until next tile is entered
@@ -349,7 +316,7 @@ public class Ghost extends Creature {
 				Logger.trace("Ghost {} leaves house hunting", name());
 			}
 			// TODO is this event needed/handled at all?
-			GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
+			GameEvents.publishGameEvent(new GhostEvent(level().game(), GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this));
 		}
 	}
 
@@ -414,9 +381,9 @@ public class Ghost extends Creature {
 		selectAnimation(GhostAnimations.GHOST_NORMAL);
 	}
 
-	private void updateStateHuntingPac(GameLevel level) {
-		setRelSpeed(level.huntingSpeed(this));
-		level.doGhostHuntingAction(this);
+	private void updateStateHuntingPac() {
+		setRelSpeed(level().huntingSpeed(this));
+		level().doGhostHuntingAction(this);
 	}
 
 	// --- FRIGHTENED ---
@@ -433,11 +400,11 @@ public class Ghost extends Creature {
 		selectAnimation(GhostAnimations.GHOST_FRIGHTENED);
 	}
 
-	private void updateStateFrightened(GameLevel level) {
-		var speed = level.world().isTunnel(tile()) ? level.ghostSpeedTunnel : level.ghostSpeedFrightened;
+	private void updateStateFrightened() {
+		var speed = level().world().isTunnel(tile()) ? level().ghostSpeedTunnel : level().ghostSpeedFrightened;
 		setRelSpeed(speed);
-		roam(level);
-		updateFrightenedAnimation(level);
+		roam();
+		updateFrightenedAnimation();
 	}
 
 	// --- EATEN ---
@@ -463,23 +430,22 @@ public class Ghost extends Creature {
 	 * 
 	 * @param level the game level
 	 */
-	public void enterStateReturningToHouse(GameLevel level) {
-		checkLevelNotNull(level);
+	public void enterStateReturningToHouse() {
 		state = RETURNING_TO_HOUSE;
-		setTargetTile(level.world().house().door().leftWing());
+		setTargetTile(level().world().house().door().leftWing());
 		selectAnimation(GhostAnimations.GHOST_EYES);
 	}
 
-	private void updateStateReturningToHouse(GameLevel level) {
-		var houseEntry = level.world().house().door().entryPosition();
+	private void updateStateReturningToHouse() {
+		var houseEntry = level().world().house().door().entryPosition();
 		// TODO should this check for difference by speed instead of 1?
 		if (position().almostEquals(houseEntry, 1, 0)) {
 			setPosition(houseEntry);
-			enterStateEnteringHouse(level);
+			enterStateEnteringHouse();
 		} else {
 			setPixelSpeed(GameModel.SPEED_PX_RETURNING_TO_HOUSE);
-			navigateTowardsTarget(level);
-			tryMoving(level);
+			navigateTowardsTarget();
+			tryMoving();
 		}
 	}
 
@@ -491,17 +457,16 @@ public class Ghost extends Creature {
 	 * 
 	 * @param level the game level
 	 */
-	public void enterStateEnteringHouse(GameLevel level) {
-		checkLevelNotNull(level);
+	public void enterStateEnteringHouse() {
 		state = ENTERING_HOUSE;
 		setTargetTile(null);
 		setPixelSpeed(GameModel.SPEED_PX_ENTERING_HOUSE);
 		// TODO is this event needed/handled at all?
-		GameEvents.publishGameEvent(new GhostEvent(level.game(), GameEventType.GHOST_ENTERS_HOUSE, this));
+		GameEvents.publishGameEvent(new GhostEvent(level().game(), GameEventType.GHOST_ENTERS_HOUSE, this));
 	}
 
-	private void updateStateEnteringHouse(GameLevel level) {
-		boolean atRevivalPosition = moveInsideHouse(level.world().house(), revivalPosition);
+	private void updateStateEnteringHouse() {
+		boolean atRevivalPosition = moveInsideHouse(level().world().house(), revivalPosition);
 		if (atRevivalPosition) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();
@@ -548,8 +513,8 @@ public class Ghost extends Creature {
 		}
 	}
 
-	private void updateFrightenedAnimation(GameLevel level) {
-		var timer = level.pac().powerTimer();
+	private void updateFrightenedAnimation() {
+		var timer = level().pac().powerTimer();
 		if (timer.remaining() == GameModel.PAC_POWER_FADES_TICKS
 				|| timer.duration() < GameModel.PAC_POWER_FADES_TICKS && timer.tick() == 1) {
 			selectAnimation(GhostAnimations.GHOST_FLASHING);

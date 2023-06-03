@@ -23,6 +23,7 @@ public class StaticBonus extends Entity implements Bonus {
 	private final byte symbol;
 	private long timer;
 	private byte state;
+	private GameLevel level;
 
 	public StaticBonus(byte symbol) {
 		this.symbol = symbol;
@@ -81,6 +82,10 @@ public class StaticBonus extends Entity implements Bonus {
 		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
 	}
 
+	public void setLevel(GameLevel level) {
+		this.level = level;
+	}
+
 	private void expire() {
 		setInactive();
 		Logger.info("Bonus expired: {}", this);
@@ -88,7 +93,7 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public void update(GameLevel level) {
+	public void update() {
 		switch (state) {
 		case Bonus.STATE_INACTIVE: {
 			// stay inactive
@@ -120,4 +125,5 @@ public class StaticBonus extends Entity implements Bonus {
 			throw new IllegalStateException();
 		}
 	}
+
 }

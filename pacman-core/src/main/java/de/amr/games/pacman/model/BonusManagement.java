@@ -166,7 +166,7 @@ public class BonusManagement {
 
 	public void updateBonus() {
 		if (bonus != null) {
-			bonus.update(level);
+			bonus.update();
 		}
 	}
 
@@ -203,6 +203,7 @@ public class BonusManagement {
 	private Bonus createStaticBonus(int bonusIndex) {
 		var staticBonus = new StaticBonus(bonusSymbols[bonusIndex]);
 		staticBonus.entity().setPosition(halfTileRightOf(13, 20));
+		staticBonus.setLevel(level);
 		return staticBonus;
 	}
 
@@ -231,6 +232,7 @@ public class BonusManagement {
 		route.trimToSize();
 
 		var movingBonus = new MovingBonus(bonusSymbols[bonusIndex]);
+		movingBonus.setLevel(level);
 		movingBonus.setRoute(route);
 		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
 		movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);

@@ -43,15 +43,15 @@ public class RouteBasedSteering extends Steering {
 
 	@Override
 	public void steer(GameLevel level, Creature guy) {
-		guy.navigateTowardsTarget(level);
+		guy.navigateTowardsTarget();
 		if (targetIndex == route.size()) {
 			complete = true;
 		} else if (guy.targetTile().isEmpty()) {
 			guy.setTargetTile(currentTarget().tile());
-			guy.navigateTowardsTarget(level);
+			guy.navigateTowardsTarget();
 			Logger.trace("New target tile for {}={}s", guy.name(), guy.targetTile().get());
 		} else if (guy.tile().equals(currentTarget().tile())) {
-			nextTarget(level, guy);
+			nextTarget(guy);
 			Logger.trace("New target tile for {}={}", guy.name(), guy.targetTile().get());
 		}
 	}
@@ -60,11 +60,11 @@ public class RouteBasedSteering extends Steering {
 		return complete;
 	}
 
-	private void nextTarget(GameLevel level, Creature guy) {
+	private void nextTarget(Creature guy) {
 		++targetIndex;
 		if (targetIndex < route.size()) {
 			guy.setTargetTile(currentTarget().tile());
-			guy.navigateTowardsTarget(level);
+			guy.navigateTowardsTarget();
 		}
 	}
 

@@ -142,6 +142,7 @@ public class GameLevel {
 		intermissionNumber = data[11];
 
 		pac = new Pac(game.variant() == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
+		pac.setLevel(this);
 
 		ghosts = new Ghost[] { //
 				new Ghost(RED_GHOST, "Blinky"), //
@@ -149,6 +150,9 @@ public class GameLevel {
 				new Ghost(CYAN_GHOST, "Inky"), //
 				new Ghost(ORANGE_GHOST, game.variant() == GameVariant.MS_PACMAN ? "Sue" : "Clyde") //
 		};
+		for (var ghost : ghosts) {
+			ghost.setLevel(this);
+		}
 
 		// Blinky: attacks Pac-Man directly
 		ghosts[RED_GHOST].setInitialDirection(Direction.LEFT);
@@ -396,19 +400,19 @@ public class GameLevel {
 			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
 			if (scatterPhase().isPresent() && (ghost.id() == RED_GHOST || ghost.id() == PINK_GHOST)) {
-				ghost.roam(this); // not sure
+				ghost.roam(); // not sure
 			} else if (chasingPhase().isPresent() || cruiseElroy) {
-				ghost.chase(this);
+				ghost.chase();
 			} else {
-				ghost.scatter(this);
+				ghost.scatter();
 			}
 			break;
 		}
 		case PACMAN: {
 			if (chasingPhase().isPresent() || cruiseElroy) {
-				ghost.chase(this);
+				ghost.chase();
 			} else {
-				ghost.scatter(this);
+				ghost.scatter();
 			}
 			break;
 		}
@@ -580,7 +584,7 @@ public class GameLevel {
 		world.getMazeFlashing().animate();
 		pac.update(this);
 		unlockGhost();
-		ghosts().forEach(ghost -> ghost.update(this));
+		ghosts().forEach(ghost -> ghost.update());
 		bonusManagement.updateBonus();
 
 		// Update hunting timer
@@ -653,8 +657,8 @@ public class GameLevel {
 	private void unlockGhost() {
 		ghostHouseManagement.checkIfNextGhostCanLeaveHouse().ifPresent(unlocked -> {
 			var ghost = unlocked.ghost();
-			if (ghost.insideHouse(this)) {
-				ghost.enterStateLeavingHouse(this);
+			if (ghost.insideHouse()) {
+				ghost.enterStateLeavingHouse();
 			} else {
 				ghost.setMoveAndWishDir(LEFT);
 				ghost.enterStateHuntingPac();
