@@ -9,8 +9,8 @@ import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import de.amr.games.pacman.lib.math.Vector2f;
 import de.amr.games.pacman.lib.math.Vector2i;
@@ -19,33 +19,37 @@ import de.amr.games.pacman.lib.math.Vector2i;
  * @author Armin Reichert
  */
 public final class House {
-	private final Vector2i topLeftTile;
+	private final Vector2i minTile;
 	private final Vector2i size;
 	private final Door door;
 	private final List<Vector2f> seatPositions;
 	private final Vector2f center;
 
-	public House(Vector2i topLeftTile, Vector2i size, Door door, List<Vector2f> seatPositions) {
-		checkTileNotNull(topLeftTile);
+	/**
+	 * @param minTile       top-left tile
+	 * @param size          size in tiles
+	 * @param door          door of this house
+	 * @param seatPositions left-upper corners of the seats (each seat is supposed as single-tile square)
+	 */
+	public House(Vector2i minTile, Vector2i size, Door door, Vector2f seat1, Vector2f seat2, Vector2f seat3) {
+		checkTileNotNull(minTile);
 		checkNotNull(size);
 		checkNotNull(door);
-		checkNotNull(seatPositions);
-		if (seatPositions.size() != 3) {
-			throw new IllegalArgumentException("There must be exactly 3 seat positions");
+		checkNotNull(seat1);
+		checkNotNull(seat2);
+		checkNotNull(seat3);
+		if (size.x() < 1 || size.y() < 1) {
+			throw new IllegalArgumentException("House size must be larger than one square tile but is: " + size);
 		}
-		if (seatPositions.stream().anyMatch(Objects::isNull)) {
-			throw new IllegalArgumentException("House seat position must not be null");
-		}
-		this.topLeftTile = topLeftTile;
+		this.minTile = minTile;
 		this.size = size;
-		this.center = topLeftTile.toFloatVec().scaled(TS).plus(size.toFloatVec().scaled(HTS));
+		this.center = minTile.toFloatVec().scaled(TS).plus(size.toFloatVec().scaled(HTS));
 		this.door = door;
-		this.seatPositions = seatPositions;
-
+		this.seatPositions = Arrays.asList(seat1, seat2, seat3);
 	}
 
 	public Vector2i topLeftTile() {
-		return topLeftTile;
+		return minTile;
 	}
 
 	public Vector2i size() {
@@ -73,8 +77,8 @@ public final class House {
 	 * @return tells if the given tile is part of this house
 	 */
 	public boolean contains(Vector2i tile) {
-		Vector2i bottomRightTileOutside = topLeftTile.plus(size());
-		return tile.x() >= topLeftTile.x() && tile.x() < bottomRightTileOutside.x() //
-				&& tile.y() >= topLeftTile.y() && tile.y() < bottomRightTileOutside.y();
+		Vector2i max = minTile.plus(size().minus(1, 1));
+		return tile.x() >= minTile.x() && tile.x() <= max.x() //
+				&& tile.y() >= minTile.y() && tile.y() <= max.y();
 	}
 }
