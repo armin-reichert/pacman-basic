@@ -25,7 +25,7 @@ import de.amr.games.pacman.model.actors.PacAnimations;
  */
 public enum GameState implements FsmState<GameModel> {
 
-	BOOT() { // "Das muss das Boot abkönnen!"
+	BOOT { // "Das muss das Boot abkönnen!"
 		@Override
 		public void onEnter(GameModel game) {
 			timer.restartIndefinitely();
@@ -43,7 +43,7 @@ public enum GameState implements FsmState<GameModel> {
 		}
 	},
 
-	INTRO() {
+	INTRO {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.restartIndefinitely();
