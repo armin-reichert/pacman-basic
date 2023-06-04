@@ -8,156 +8,116 @@ import static de.amr.games.pacman.lib.Globals.TS;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Fsm;
-import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.actors.PacAnimations;
 
 /**
- * Intermission scene 2: "The chase".
- * <p>
- * Pac-Man and Ms. Pac-Man chase each other across the screen over and over. After three turns, they both rapidly run
- * from left to right and right to left. (Played after round 5)
- * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission2 extends Fsm<MsPacManIntermission2.State, MsPacManIntermission2.Context> {
+public class MsPacManIntermission2 {
 
-	private final Context context;
+	public final GameController gameController;
+
+	public int upperY = TS * 12;
+	public int middleY = TS * 18;
+	public int lowerY = TS * 24;
+	public boolean clapVisible = false;
+	public Pac pacMan;
+	public Pac msPac;
+
+	public static final byte STATE_FLAP = 0;
+	public static final byte STATE_CHASING = 1;
+
+	private byte state;
+	private TickTimer stateTimer = new TickTimer("MsPacIntermission2");
+
+	public void changeState(byte state, long ticks) {
+		this.state = state;
+		stateTimer.reset(ticks);
+		stateTimer.start();
+	}
 
 	public MsPacManIntermission2(GameController gameController) {
-		super(State.values());
-		for (var state : State.values()) {
-			state.intermission = this;
-		}
-		this.context = new Context(gameController);
+		this.gameController = gameController;
+		clapVisible = true;
+		pacMan = new Pac("Pac-Man");
+		msPac = new Pac("Ms. Pac-Man");
 	}
 
-	@Override
-	public Context context() {
-		return context;
+	public void tick() {
+		switch (state) {
+		case STATE_FLAP:
+			updateFlap();
+			break;
+		case STATE_CHASING:
+			updateChasing();
+			break;
+		default:
+			throw new IllegalStateException("Illegal state: " + state);
+
+		}
+		stateTimer.advance();
 	}
 
-	public static class Context {
-		public GameController gameController;
-		public int upperY = TS * (12);
-		public int middleY = TS * (18);
-		public int lowerY = TS * (24);
-		public boolean clapVisible = false;
-		public Pac pacMan;
-		public Pac msPac;
-
-		public Context(GameController gameController) {
-			this.gameController = gameController;
-		}
-
-		public GameModel game() {
-			return gameController.game();
+	private void updateFlap() {
+		if (stateTimer.hasExpired()) {
+			clapVisible = false;
+			GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_2, gameController.game());
+			pacMan.setMoveDir(Direction.RIGHT);
+			pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
+			pacMan.startAnimation();
+			msPac.setMoveDir(Direction.RIGHT);
+			msPac.selectAnimation(PacAnimations.MUNCHING);
+			msPac.startAnimation();
+			changeState(STATE_CHASING, TickTimer.INDEFINITE);
 		}
 	}
 
-	public enum State implements FsmState<Context> {
-
-		INIT {
-			@Override
-			public void onEnter(Context ctx) {
-				ctx.clapVisible = false;
-				ctx.pacMan = new Pac("Pac-Man");
-				ctx.msPac = new Pac("Ms. Pac-Man");
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				intermission.changeState(FLAP);
-			}
-		},
-
-		FLAP {
-			@Override
-			public void onEnter(Context ctx) {
-				timer.resetSeconds(2);
-				timer.start();
-				ctx.clapVisible = true;
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				if (timer.hasExpired()) {
-					ctx.clapVisible = false;
-					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_2, ctx.game());
-					intermission.changeState(State.CHASING);
-				}
-			}
-		},
-
-		CHASING {
-			@Override
-			public void onEnter(Context ctx) {
-				timer.restartIndefinitely();
-				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
-				ctx.pacMan.startAnimation();
-				ctx.msPac.setMoveDir(Direction.RIGHT);
-				ctx.msPac.selectAnimation(PacAnimations.MUNCHING);
-				ctx.msPac.startAnimation();
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				if (timer.atSecond(4.5)) {
-					ctx.pacMan.setPosition(-TS * (2), ctx.upperY);
-					ctx.pacMan.setMoveDir(Direction.RIGHT);
-					ctx.pacMan.setPixelSpeed(2.0f);
-					ctx.pacMan.show();
-					ctx.msPac.setPosition(-TS * (8), ctx.upperY);
-					ctx.msPac.setMoveDir(Direction.RIGHT);
-					ctx.msPac.setPixelSpeed(2.0f);
-					ctx.msPac.show();
-				} else if (timer.atSecond(9)) {
-					ctx.pacMan.setPosition(TS * (36), ctx.lowerY);
-					ctx.pacMan.setMoveDir(Direction.LEFT);
-					ctx.pacMan.setPixelSpeed(2.0f);
-					ctx.msPac.setPosition(TS * (30), ctx.lowerY);
-					ctx.msPac.setMoveDir(Direction.LEFT);
-					ctx.msPac.setPixelSpeed(2.0f);
-				} else if (timer.atSecond(13.5)) {
-					ctx.pacMan.setMoveDir(Direction.RIGHT);
-					ctx.pacMan.setPixelSpeed(2.0f);
-					ctx.msPac.setPosition(TS * (-8), ctx.middleY);
-					ctx.msPac.setMoveDir(Direction.RIGHT);
-					ctx.msPac.setPixelSpeed(2.0f);
-					ctx.pacMan.setPosition(TS * (-2), ctx.middleY);
-				} else if (timer.atSecond(17.5)) {
-					ctx.pacMan.setPosition(TS * (42), ctx.upperY);
-					ctx.pacMan.setMoveDir(Direction.LEFT);
-					ctx.pacMan.setPixelSpeed(4.0f);
-					ctx.msPac.setPosition(TS * (30), ctx.upperY);
-					ctx.msPac.setMoveDir(Direction.LEFT);
-					ctx.msPac.setPixelSpeed(4.0f);
-				} else if (timer.atSecond(18.5)) {
-					ctx.pacMan.setPosition(TS * (-2), ctx.lowerY);
-					ctx.pacMan.setMoveDir(Direction.RIGHT);
-					ctx.pacMan.setPixelSpeed(4.0f);
-					ctx.msPac.setPosition(TS * (-14), ctx.lowerY);
-					ctx.msPac.setMoveDir(Direction.RIGHT);
-					ctx.msPac.setPixelSpeed(4.0f);
-				} else if (timer.atSecond(23)) {
-					ctx.gameController.terminateCurrentState();
-					return;
-				}
-				ctx.pacMan.move();
-				ctx.msPac.move();
-			}
-		};
-
-		MsPacManIntermission2 intermission;
-		final TickTimer timer = new TickTimer("Timer-" + name());
-
-		@Override
-		public TickTimer timer() {
-			return timer;
+	private void updateChasing() {
+		if (stateTimer.atSecond(4.5)) {
+			pacMan.setPosition(-TS * (2), upperY);
+			pacMan.setMoveDir(Direction.RIGHT);
+			pacMan.setPixelSpeed(2.0f);
+			pacMan.show();
+			msPac.setPosition(-TS * (8), upperY);
+			msPac.setMoveDir(Direction.RIGHT);
+			msPac.setPixelSpeed(2.0f);
+			msPac.show();
+		} else if (stateTimer.atSecond(9)) {
+			pacMan.setPosition(TS * (36), lowerY);
+			pacMan.setMoveDir(Direction.LEFT);
+			pacMan.setPixelSpeed(2.0f);
+			msPac.setPosition(TS * (30), lowerY);
+			msPac.setMoveDir(Direction.LEFT);
+			msPac.setPixelSpeed(2.0f);
+		} else if (stateTimer.atSecond(13.5)) {
+			pacMan.setMoveDir(Direction.RIGHT);
+			pacMan.setPixelSpeed(2.0f);
+			msPac.setPosition(TS * (-8), middleY);
+			msPac.setMoveDir(Direction.RIGHT);
+			msPac.setPixelSpeed(2.0f);
+			pacMan.setPosition(TS * (-2), middleY);
+		} else if (stateTimer.atSecond(17.5)) {
+			pacMan.setPosition(TS * (42), upperY);
+			pacMan.setMoveDir(Direction.LEFT);
+			pacMan.setPixelSpeed(4.0f);
+			msPac.setPosition(TS * (30), upperY);
+			msPac.setMoveDir(Direction.LEFT);
+			msPac.setPixelSpeed(4.0f);
+		} else if (stateTimer.atSecond(18.5)) {
+			pacMan.setPosition(TS * (-2), lowerY);
+			pacMan.setMoveDir(Direction.RIGHT);
+			pacMan.setPixelSpeed(4.0f);
+			msPac.setPosition(TS * (-14), lowerY);
+			msPac.setMoveDir(Direction.RIGHT);
+			msPac.setPixelSpeed(4.0f);
+		} else if (stateTimer.atSecond(23)) {
+			gameController.terminateCurrentState();
+			return;
 		}
+		pacMan.move();
+		msPac.move();
 	}
 }

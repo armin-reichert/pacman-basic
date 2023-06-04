@@ -8,8 +8,6 @@ import static de.amr.games.pacman.lib.Globals.TS;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Fsm;
-import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.model.GameModel;
@@ -18,160 +16,117 @@ import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.actors.PacAnimations;
 
 /**
- * Intermission scene 3: "Junior".
- * 
- * <p>
- * Pac-Man and Ms. Pac-Man gradually wait for a stork, who flies overhead with a little blue bundle. The stork drops the
- * bundle, which falls to the ground in front of Pac-Man and Ms. Pac-Man, and finally opens up to reveal a tiny Pac-Man.
- * (Played after rounds 9, 13, and 17)
- * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPacManIntermission3.Context> {
+public class MsPacManIntermission3 {
 
-	private final Context context;
+	public final GameController gameController;
+	public int groundY = TS * (24);
+	public boolean clapVisible = false;
+	public Pac pacMan;
+	public Pac msPacMan;
+	public Entity stork;
+	public Entity bag;
+	public boolean bagOpen;
+	public int numBagBounces;
+
+	public static final byte STATE_FLAP = 0;
+	public static final byte STATE_DELIVER_JUNIOR = 1;
+	public static final byte STATE_STORK_LEAVES_SCENE = 2;
+
+	private byte state;
+	private TickTimer stateTimer = new TickTimer("MsPacIntermission3");
+
+	public void changeState(byte state, long ticks) {
+		this.state = state;
+		stateTimer.reset(ticks);
+		stateTimer.start();
+	}
 
 	public MsPacManIntermission3(GameController gameController) {
-		super(State.values());
-		for (var state : states) {
-			state.intermission = this;
+		this.gameController = gameController;
+		clapVisible = true;
+		pacMan = new Pac("Pac-Man");
+		msPacMan = new Pac("Ms. Pac-Man");
+		stork = new Entity();
+		bag = new Entity();
+	}
+
+	public void tick() {
+		switch (state) {
+		case STATE_FLAP:
+			updateFlap();
+			break;
+		case STATE_DELIVER_JUNIOR:
+			updateDeliverJunior();
+			break;
+		case STATE_STORK_LEAVES_SCENE:
+			updateStorkLeavesScene();
+			break;
+		default:
+			throw new IllegalStateException("Illegal state: " + state);
 		}
-		this.context = new Context(gameController);
+		stateTimer.advance();
 	}
 
-	@Override
-	public Context context() {
-		return context;
-	}
-
-	public static class Context {
-		public GameController gameController;
-		public int groundY = TS * (24);
-		public boolean clapVisible = false;
-		public Pac pacMan;
-		public Pac msPacMan;
-		public Entity stork;
-		public Entity bag;
-		public boolean bagOpen;
-		public int numBagBounces;
-
-		public Context(GameController gameController) {
-			this.gameController = gameController;
+	private void updateFlap() {
+		if (stateTimer.atSecond(1)) {
+			GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_3, gameController.game());
+		} else if (stateTimer.atSecond(2)) {
+			clapVisible = false;
+		} else if (stateTimer.atSecond(3)) {
+			pacMan.setMoveDir(Direction.RIGHT);
+			pacMan.setPosition(TS * (3), groundY - 4);
+			pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
+			pacMan.show();
+	
+			msPacMan.setMoveDir(Direction.RIGHT);
+			msPacMan.setPosition(TS * (5), groundY - 4);
+			msPacMan.selectAnimation(PacAnimations.MUNCHING);
+			msPacMan.show();
+	
+			stork.setPosition(TS * (30), TS * (12));
+			stork.setVelocity(-0.8f, 0);
+			stork.show();
+	
+			bag.setPosition(stork.position().plus(-14, 3));
+			bag.setVelocity(stork.velocity());
+			bag.setAcceleration(Vector2f.ZERO);
+			bag.show();
+			bagOpen = false;
+			numBagBounces = 0;
+			changeState(STATE_DELIVER_JUNIOR, TickTimer.INDEFINITE);
 		}
 	}
 
-	public enum State implements FsmState<Context> {
-
-		INIT {
-			@Override
-			public void onEnter(Context ctx) {
-				ctx.clapVisible = false;
-				ctx.pacMan = new Pac("Pac-Man");
-				ctx.msPacMan = new Pac("Ms. Pac-Man");
-				ctx.stork = new Entity();
-				ctx.bag = new Entity();
+	private void updateDeliverJunior() {
+		stork.move();
+		bag.move();
+	
+		// release bag from storks beak?
+		if ((int) stork.position().x() == TS * (20)) {
+			bag.setAcceleration(0, 0.04f);
+			stork.setVelocity(-1, 0);
+		}
+	
+		// (closed) bag reaches ground for first time?
+		if (!bagOpen && bag.position().y() > groundY) {
+			++numBagBounces;
+			if (numBagBounces < 3) {
+				bag.setVelocity(-0.2f, -1f / numBagBounces);
+				bag.setY(groundY);
+			} else {
+				bagOpen = true;
+				bag.setVelocity(Vector2f.ZERO);
+				changeState(STATE_STORK_LEAVES_SCENE, 3 * 60);
 			}
+		}
+	}
 
-			@Override
-			public void onUpdate(Context context) {
-				intermission.changeState(FLAP);
-			}
-		},
-
-		FLAP {
-			@Override
-			public void onEnter(Context ctx) {
-				timer.restartIndefinitely();
-				ctx.clapVisible = true;
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				if (timer.atSecond(1)) {
-					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_3, ctx.gameController.game());
-				} else if (timer.atSecond(2)) {
-					ctx.clapVisible = false;
-				} else if (timer.atSecond(3)) {
-					intermission.changeState(State.ACTION);
-				}
-			}
-		},
-
-		ACTION {
-			@Override
-			public void onEnter(Context ctx) {
-				timer.restartIndefinitely();
-
-				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.setPosition(TS * (3), ctx.groundY - 4);
-				ctx.pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
-				ctx.pacMan.show();
-
-				ctx.msPacMan.setMoveDir(Direction.RIGHT);
-				ctx.msPacMan.setPosition(TS * (5), ctx.groundY - 4);
-				ctx.msPacMan.selectAnimation(PacAnimations.MUNCHING);
-				ctx.msPacMan.show();
-
-				ctx.stork.setPosition(TS * (30), TS * (12));
-				ctx.stork.setVelocity(-0.8f, 0);
-				ctx.stork.show();
-
-				ctx.bag.setPosition(ctx.stork.position().plus(-14, 3));
-				ctx.bag.setVelocity(ctx.stork.velocity());
-				ctx.bag.setAcceleration(Vector2f.ZERO);
-				ctx.bag.show();
-				ctx.bagOpen = false;
-				ctx.numBagBounces = 0;
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				ctx.stork.move();
-				ctx.bag.move();
-
-				// release bag from storks beak?
-				if ((int) ctx.stork.position().x() == TS * (20)) {
-					ctx.bag.setAcceleration(0, 0.04f);
-					ctx.stork.setVelocity(-1, 0);
-				}
-
-				// (closed) bag reaches ground for first time?
-				if (!ctx.bagOpen && ctx.bag.position().y() > ctx.groundY) {
-					++ctx.numBagBounces;
-					if (ctx.numBagBounces < 3) {
-						ctx.bag.setVelocity(-0.2f, -1f / ctx.numBagBounces);
-						ctx.bag.setY(ctx.groundY);
-					} else {
-						ctx.bagOpen = true;
-						ctx.bag.setVelocity(Vector2f.ZERO);
-						intermission.changeState(State.DONE);
-					}
-				}
-			}
-		},
-
-		DONE {
-			@Override
-			public void onEnter(Context ctx) {
-				timer.resetSeconds(3);
-				timer.start();
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				ctx.stork.move();
-				if (timer.hasExpired()) {
-					ctx.gameController.terminateCurrentState();
-				}
-			}
-		};
-
-		protected MsPacManIntermission3 intermission;
-		protected final TickTimer timer = new TickTimer("Timer-" + name());
-
-		@Override
-		public TickTimer timer() {
-			return timer;
+	private void updateStorkLeavesScene() {
+		stork.move();
+		if (stateTimer.hasExpired()) {
+			gameController.terminateCurrentState();
 		}
 	}
 }

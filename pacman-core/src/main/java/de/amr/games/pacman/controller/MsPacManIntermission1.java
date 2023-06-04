@@ -10,8 +10,6 @@ import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Fsm;
-import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.model.GameModel;
@@ -22,241 +20,188 @@ import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.actors.PacAnimations;
 
 /**
- * Intermission scene 1: "They meet".
- * <p>
- * Pac-Man leads Inky and Ms. Pac-Man leads Pinky. Soon, the two Pac-Men are about to collide, they quickly move
- * upwards, causing Inky and Pinky to collide and vanish. Finally, Pac-Man and Ms. Pac-Man face each other at the top of
- * the screen and a big pink heart appears above them. (Played after round 2)
- * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPacManIntermission1.Context> {
+public class MsPacManIntermission1 {
 
-	private final Context context;
+	public final GameController gameController;
+
+	public int upperY = TS * (12);
+	public int middleY = TS * (18);
+	public int lowerY = TS * (24);
+	public boolean clapVisible = false;
+	public float pacSpeedChased = 1.125f;
+	public float pacSpeedRising = 0.75f;
+	public float ghostSpeedAfterColliding = 0.3f;
+	public float ghostSpeedChasing = 1.25f;
+	public Pac pacMan;
+	public Pac msPac;
+	public Ghost pinky;
+	public Ghost inky;
+	public Entity heart;
+
+	public static final byte STATE_FLAP = 0;
+	public static final byte STATE_CHASED_BY_GHOSTS = 1;
+	public static final byte STATE_COMING_TOGETHER = 2;
+	public static final byte STATE_IN_HEAVEN = 3;
+
+	private byte state;
+	private TickTimer stateTimer = new TickTimer("MsPacIntermission1");
+
+	public void changeState(byte state, long ticks) {
+		this.state = state;
+		stateTimer.reset(ticks);
+		stateTimer.start();
+	}
 
 	public MsPacManIntermission1(GameController gameController) {
-		super(State.values());
-		for (var state : states) {
-			state.intermission = this;
-		}
-		context = new Context(gameController);
+		this.gameController = gameController;
+		Logger.trace("Creating guys for intermission 1");
+		pacMan = new Pac("Pac-Man");
+		inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
+		msPac = new Pac("Ms. Pac-Man");
+		pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
+		heart = new Entity();
+		clapVisible = true;
 	}
 
-	@Override
-	public Context context() {
-		return context;
+	public void tick() {
+		switch (state) {
+		case STATE_FLAP:
+			updateFlap();
+			break;
+		case STATE_COMING_TOGETHER:
+			updateComingTogether();
+			break;
+		case STATE_CHASED_BY_GHOSTS:
+			updateChasedByGhosts();
+			break;
+		case STATE_IN_HEAVEN:
+			if (stateTimer.hasExpired()) {
+				gameController.terminateCurrentState();
+				return;
+			}
+			break;
+		default:
+			throw new IllegalStateException("Illegal state: " + state);
+		}
+		stateTimer.advance();
 	}
 
-	public static class Context {
-		public GameController gameController;
-		public int upperY = TS * (12);
-		public int middleY = TS * (18);
-		public int lowerY = TS * (24);
-		public boolean clapVisible = false;
-		public float pacSpeedChased = 1.125f;
-		public float pacSpeedRising = 0.75f;
-		public float ghostSpeedAfterColliding = 0.3f;
-		public float ghostSpeedChasing = 1.25f;
-		public Pac pacMan;
-		public Pac msPac;
-		public Ghost pinky;
-		public Ghost inky;
-		public Entity heart;
-
-		public Context(GameController gameController) {
-			this.gameController = gameController;
-		}
-
-		public GameModel game() {
-			return gameController.game();
+	private void updateFlap() {
+		if (stateTimer.atSecond(1)) {
+			GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_1, gameController.game());
+		} else if (stateTimer.hasExpired()) {
+			clapVisible = false;
+			pacMan.setMoveDir(Direction.RIGHT);
+			pacMan.setPosition(-TS * (2), upperY);
+			pacMan.setPixelSpeed(pacSpeedChased);
+			pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
+			pacMan.startAnimation();
+			pacMan.show();
+	
+			inky.setMoveAndWishDir(Direction.RIGHT);
+			inky.setPosition(pacMan.position().minus(TS * (6), 0));
+			inky.setPixelSpeed(ghostSpeedChasing);
+			inky.selectAnimation(GhostAnimations.GHOST_NORMAL);
+			inky.startAnimation();
+			inky.show();
+	
+			msPac.setMoveDir(Direction.LEFT);
+			msPac.setPosition(TS * (30), lowerY);
+			msPac.setPixelSpeed(pacSpeedChased);
+			msPac.selectAnimation(PacAnimations.MUNCHING);
+			msPac.startAnimation();
+			msPac.show();
+	
+			pinky.setMoveAndWishDir(Direction.LEFT);
+			pinky.setPosition(msPac.position().plus(TS * (6), 0));
+			pinky.setPixelSpeed(ghostSpeedChasing);
+			pinky.selectAnimation(GhostAnimations.GHOST_NORMAL);
+			pinky.startAnimation();
+			pinky.show();
+	
+			changeState(STATE_CHASED_BY_GHOSTS, TickTimer.INDEFINITE);
 		}
 	}
 
-	public enum State implements FsmState<MsPacManIntermission1.Context> {
+	private void updateChasedByGhosts() {
+		if (inky.position().x() > TS * 30) {
+			msPac.setPosition(TS * (-3), middleY);
+			msPac.setMoveDir(Direction.RIGHT);
+			pinky.setPosition(msPac.position().minus(TS * (5), 0));
+			pinky.setMoveAndWishDir(Direction.RIGHT);
+			pacMan.setPosition(TS * (31), middleY);
+			pacMan.setMoveDir(Direction.LEFT);
+			inky.setPosition(pacMan.position().plus(TS * (5), 0));
+			inky.setMoveAndWishDir(Direction.LEFT);
+			changeState(STATE_COMING_TOGETHER, TickTimer.INDEFINITE);
+		} else {
+			pacMan.move();
+			msPac.move();
+			inky.move();
+			pinky.move();
+		}
+	}
 
-		INIT {
-			@Override
-			public void onEnter(Context ctx) {
-				Logger.trace("Creating guys for intermission 1");
-				ctx.clapVisible = false;
-				ctx.pacMan = new Pac("Pac-Man");
-				ctx.inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
-				ctx.msPac = new Pac("Ms. Pac-Man");
-				ctx.pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
-				ctx.heart = new Entity();
+	private void updateComingTogether() {
+		// Pac-Man and Ms. Pac-Man reach end position?
+		if (pacMan.moveDir() == Direction.UP && pacMan.position().y() < upperY) {
+			pacMan.setPixelSpeed(0);
+			pacMan.setMoveDir(Direction.LEFT);
+			pacMan.stopAnimation();
+			pacMan.resetAnimation();
+
+			msPac.setPixelSpeed(0);
+			msPac.setMoveDir(Direction.RIGHT);
+			msPac.stopAnimation();
+			msPac.resetAnimation();
+
+			inky.setPixelSpeed(0);
+			inky.hide();
+
+			pinky.setPixelSpeed(0);
+			pinky.hide();
+
+			heart.setPosition((pacMan.position().x() + msPac.position().x()) / 2, pacMan.position().y() - TS * (2));
+			heart.show();
+			changeState(STATE_IN_HEAVEN, 3 * 60);
+		}
+
+		// Pac-Man and Ms. Pac-Man meet?
+		else if (pacMan.moveDir() == Direction.LEFT && pacMan.position().x() - msPac.position().x() < TS * (2)) {
+			pacMan.setMoveDir(Direction.UP);
+			pacMan.setPixelSpeed(pacSpeedRising);
+			msPac.setMoveDir(Direction.UP);
+			msPac.setPixelSpeed(pacSpeedRising);
+		}
+
+		// Inky and Pinky collide?
+		else if (inky.moveDir() == Direction.LEFT && inky.position().x() - pinky.position().x() < TS * (2)) {
+			inky.setMoveAndWishDir(Direction.RIGHT);
+			inky.setPixelSpeed(ghostSpeedAfterColliding);
+			inky.setVelocity(inky.velocity().minus(0, 2.0f));
+			inky.setAcceleration(0, 0.4f);
+
+			pinky.setMoveAndWishDir(Direction.LEFT);
+			pinky.setPixelSpeed(ghostSpeedAfterColliding);
+			pinky.setVelocity(pinky.velocity().minus(0, 2.0f));
+			pinky.setAcceleration(0, 0.4f);
+		}
+
+		else {
+			pacMan.move();
+			msPac.move();
+			inky.move();
+			pinky.move();
+			if (inky.position().y() > middleY) {
+				inky.setPosition(inky.position().x(), middleY);
+				inky.setAcceleration(Vector2f.ZERO);
 			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				intermission.changeState(FLAP);
+			if (pinky.position().y() > middleY) {
+				pinky.setPosition(pinky.position().x(), middleY);
+				pinky.setAcceleration(Vector2f.ZERO);
 			}
-		},
-
-		FLAP {
-			@Override
-			public void onEnter(Context ctx) {
-				timer.resetSeconds(2);
-				timer.start();
-				ctx.clapVisible = true;
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				if (timer.atSecond(1)) {
-					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_1, ctx.game());
-				} else if (timer.hasExpired()) {
-					ctx.clapVisible = false;
-					intermission.changeState(State.CHASED_BY_GHOSTS);
-				}
-			}
-		},
-
-		CHASED_BY_GHOSTS {
-			@Override
-			public void onEnter(Context ctx) {
-				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.setPosition(-TS * (2), ctx.upperY);
-				ctx.pacMan.setPixelSpeed(ctx.pacSpeedChased);
-				ctx.pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
-				ctx.pacMan.startAnimation();
-				ctx.pacMan.show();
-
-				ctx.inky.setMoveAndWishDir(Direction.RIGHT);
-				ctx.inky.setPosition(ctx.pacMan.position().minus(TS * (6), 0));
-				ctx.inky.setPixelSpeed(ctx.ghostSpeedChasing);
-				ctx.inky.selectAnimation(GhostAnimations.GHOST_NORMAL);
-				ctx.inky.startAnimation();
-				ctx.inky.show();
-
-				ctx.msPac.setMoveDir(Direction.LEFT);
-				ctx.msPac.setPosition(TS * (30), ctx.lowerY);
-				ctx.msPac.setPixelSpeed(ctx.pacSpeedChased);
-				ctx.msPac.selectAnimation(PacAnimations.MUNCHING);
-				ctx.msPac.startAnimation();
-				ctx.msPac.show();
-
-				ctx.pinky.setMoveAndWishDir(Direction.LEFT);
-				ctx.pinky.setPosition(ctx.msPac.position().plus(TS * (6), 0));
-				ctx.pinky.setPixelSpeed(ctx.ghostSpeedChasing);
-				ctx.pinky.selectAnimation(GhostAnimations.GHOST_NORMAL);
-				ctx.pinky.startAnimation();
-				ctx.pinky.show();
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				if (ctx.inky.position().x() > TS * 30) {
-					intermission.changeState(State.COMING_TOGETHER);
-				} else {
-					ctx.pacMan.move();
-					ctx.msPac.move();
-					ctx.inky.move();
-					ctx.pinky.move();
-				}
-			}
-		},
-
-		COMING_TOGETHER {
-			@Override
-			public void onEnter(Context ctx) {
-				ctx.msPac.setPosition(TS * (-3), ctx.middleY);
-				ctx.msPac.setMoveDir(Direction.RIGHT);
-
-				ctx.pinky.setPosition(ctx.msPac.position().minus(TS * (5), 0));
-				ctx.pinky.setMoveAndWishDir(Direction.RIGHT);
-
-				ctx.pacMan.setPosition(TS * (31), ctx.middleY);
-				ctx.pacMan.setMoveDir(Direction.LEFT);
-
-				ctx.inky.setPosition(ctx.pacMan.position().plus(TS * (5), 0));
-				ctx.inky.setMoveAndWishDir(Direction.LEFT);
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				// Pac-Man and Ms. Pac-Man reach end position?
-				if (ctx.pacMan.moveDir() == Direction.UP && ctx.pacMan.position().y() < ctx.upperY) {
-					intermission.changeState(State.IN_HEAVEN);
-				}
-				// Pac-Man and Ms. Pac-Man meet?
-				else if (ctx.pacMan.moveDir() == Direction.LEFT
-						&& ctx.pacMan.position().x() - ctx.msPac.position().x() < TS * (2)) {
-					ctx.pacMan.setMoveDir(Direction.UP);
-					ctx.pacMan.setPixelSpeed(ctx.pacSpeedRising);
-					ctx.msPac.setMoveDir(Direction.UP);
-					ctx.msPac.setPixelSpeed(ctx.pacSpeedRising);
-				}
-				// Inky and Pinky collide?
-				else if (ctx.inky.moveDir() == Direction.LEFT
-						&& ctx.inky.position().x() - ctx.pinky.position().x() < TS * (2)) {
-					ctx.inky.setMoveAndWishDir(Direction.RIGHT);
-					ctx.inky.setPixelSpeed(ctx.ghostSpeedAfterColliding);
-					ctx.inky.setVelocity(ctx.inky.velocity().minus(0, 2.0f));
-					ctx.inky.setAcceleration(0, 0.4f);
-
-					ctx.pinky.setMoveAndWishDir(Direction.LEFT);
-					ctx.pinky.setPixelSpeed(ctx.ghostSpeedAfterColliding);
-					ctx.pinky.setVelocity(ctx.pinky.velocity().minus(0, 2.0f));
-					ctx.pinky.setAcceleration(0, 0.4f);
-				} else {
-					ctx.pacMan.move();
-					ctx.msPac.move();
-					ctx.inky.move();
-					ctx.pinky.move();
-					if (ctx.inky.position().y() > ctx.middleY) {
-						ctx.inky.setPosition(ctx.inky.position().x(), ctx.middleY);
-						ctx.inky.setAcceleration(Vector2f.ZERO);
-					}
-					if (ctx.pinky.position().y() > ctx.middleY) {
-						ctx.pinky.setPosition(ctx.pinky.position().x(), ctx.middleY);
-						ctx.pinky.setAcceleration(Vector2f.ZERO);
-					}
-				}
-			}
-		},
-
-		IN_HEAVEN {
-			@Override
-			public void onEnter(Context ctx) {
-				timer.resetSeconds(3);
-				timer.start();
-
-				ctx.pacMan.setPixelSpeed(0);
-				ctx.pacMan.setMoveDir(Direction.LEFT);
-				ctx.pacMan.stopAnimation();
-				ctx.pacMan.resetAnimation();
-
-				ctx.msPac.setPixelSpeed(0);
-				ctx.msPac.setMoveDir(Direction.RIGHT);
-				ctx.msPac.stopAnimation();
-				ctx.msPac.resetAnimation();
-
-				ctx.inky.setPixelSpeed(0);
-				ctx.inky.hide();
-
-				ctx.pinky.setPixelSpeed(0);
-				ctx.pinky.hide();
-
-				ctx.heart.setPosition((ctx.pacMan.position().x() + ctx.msPac.position().x()) / 2,
-						ctx.pacMan.position().y() - TS * (2));
-				ctx.heart.show();
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				if (timer.hasExpired()) {
-					ctx.gameController.terminateCurrentState();
-				}
-			}
-		};
-
-		// common fields of each state
-		MsPacManIntermission1 intermission;
-		TickTimer timer = new TickTimer("Timer-" + name());
-
-		@Override
-		public TickTimer timer() {
-			return timer;
 		}
 	}
 }
