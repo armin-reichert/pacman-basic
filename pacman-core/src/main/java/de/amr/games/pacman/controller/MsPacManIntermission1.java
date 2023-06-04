@@ -70,11 +70,11 @@ public class MsPacManIntermission1 {
 		case STATE_FLAP:
 			updateFlap();
 			break;
-		case STATE_COMING_TOGETHER:
-			updateComingTogether();
-			break;
 		case STATE_CHASED_BY_GHOSTS:
 			updateChasedByGhosts();
+			break;
+		case STATE_COMING_TOGETHER:
+			updateComingTogether();
 			break;
 		case STATE_IN_HEAVEN:
 			if (stateTimer.hasExpired()) {
@@ -99,28 +99,28 @@ public class MsPacManIntermission1 {
 			pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
 			pacMan.startAnimation();
 			pacMan.show();
-	
+
 			inky.setMoveAndWishDir(Direction.RIGHT);
 			inky.setPosition(pacMan.position().minus(TS * (6), 0));
 			inky.setPixelSpeed(ghostSpeedChasing);
 			inky.selectAnimation(GhostAnimations.GHOST_NORMAL);
 			inky.startAnimation();
 			inky.show();
-	
+
 			msPac.setMoveDir(Direction.LEFT);
 			msPac.setPosition(TS * (30), lowerY);
 			msPac.setPixelSpeed(pacSpeedChased);
 			msPac.selectAnimation(PacAnimations.MUNCHING);
 			msPac.startAnimation();
 			msPac.show();
-	
+
 			pinky.setMoveAndWishDir(Direction.LEFT);
 			pinky.setPosition(msPac.position().plus(TS * (6), 0));
 			pinky.setPixelSpeed(ghostSpeedChasing);
 			pinky.selectAnimation(GhostAnimations.GHOST_NORMAL);
 			pinky.startAnimation();
 			pinky.show();
-	
+
 			changeState(STATE_CHASED_BY_GHOSTS, TickTimer.INDEFINITE);
 		}
 	}

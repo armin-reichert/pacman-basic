@@ -113,7 +113,7 @@ public class MovingBonus extends Creature implements Bonus {
 		if (!jumpAnimation.isRunning()) {
 			return 0;
 		}
-		return jumpAnimation.on() ? -4f : 4f;
+		return jumpAnimation.on() ? -3f : 3f;
 	}
 
 	@Override
