@@ -36,8 +36,8 @@ public interface GameEventListener {
 		case GameEvent.GHOST_STARTS_RETURNING_HOME:
 			onGhostStartsReturningHome(event);
 			break;
-		case GameEvent.LEVEL_BEFORE_START:
-			onLevelBeforeStart(event);
+		case GameEvent.LEVEL_CREATED:
+			onLevelCreated(event);
 			break;
 		case GameEvent.LEVEL_STARTED:
 			onLevelStarted(event);
@@ -89,7 +89,7 @@ public interface GameEventListener {
 	default void onGhostStartsReturningHome(GameEvent e) {
 	}
 
-	default void onLevelBeforeStart(GameEvent e) {
+	default void onLevelCreated(GameEvent e) {
 	}
 
 	default void onLevelStarted(GameEvent e) {

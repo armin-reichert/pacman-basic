@@ -26,7 +26,7 @@ public class GameEvent {
 	public static final byte GAME_STATE_CHANGED = 3;
 	public static final byte GHOST_ENTERS_HOUSE = 4;
 	public static final byte GHOST_STARTS_RETURNING_HOME = 5;
-	public static final byte LEVEL_BEFORE_START = 6;
+	public static final byte LEVEL_CREATED = 6;
 	public static final byte LEVEL_STARTED = 7;
 	public static final byte PAC_FINDS_FOOD = 8;
 	public static final byte PLAYER_GETS_EXTRA_LIFE = 9;
