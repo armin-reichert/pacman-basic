@@ -467,38 +467,30 @@ public class GameLevel {
 
 	/**
 	 * @param ghost a ghost
-	 * @return relative speed of ghost when hunting
+	 * @return relative speed of ghost
 	 */
 	public float huntingSpeed(Ghost ghost) {
 		if (world.isTunnel(ghost.tile())) {
 			return ghostSpeedTunnel;
-		} else if (ghost.id() == RED_GHOST && cruiseElroyState == 1) {
-			return elroy1Speed;
-		} else if (ghost.id() == RED_GHOST && cruiseElroyState == 2) {
-			return elroy2Speed;
-		} else {
-			return ghostSpeed;
 		}
+		if (ghost.id() == RED_GHOST && cruiseElroyState == 1) {
+			return elroy1Speed;
+		}
+		if (ghost.id() == RED_GHOST && cruiseElroyState == 2) {
+			return elroy2Speed;
+		}
+		return ghostSpeed;
 	}
 
-	/*
-	 * 
-	 * This is the main logic of the game.
-	 *
-	 */
+	/* --- This is the main logic of the game. --- */
 
 	private void collectInformation() {
-		memo.forgetEverything(); // Ich scholze jetzt
-
 		var pacTile = pac.tile();
-
-		// Food information
+		memo.forgetEverything(); // Ich scholze jetzt
 		if (world.foodStorage().hasFoodAt(pacTile)) {
 			memo.foodFoundTile = Optional.of(pacTile);
 			memo.energizerFound = world.isEnergizerTile(pacTile);
 		}
-
-		// Pac power
 		if (memo.energizerFound && pacPowerSeconds > 0) {
 			memo.pacPowerStarts = true;
 			memo.pacPowerActive = true;
