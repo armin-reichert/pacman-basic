@@ -13,7 +13,6 @@ import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.actors.Clapperboard;
 import de.amr.games.pacman.model.actors.Entity;
 import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.actors.PacAnimations;
@@ -48,7 +47,7 @@ public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPa
 	public static class Context {
 		public GameController gameController;
 		public int groundY = TS * (24);
-		public Clapperboard clapperboard;
+		public boolean clapVisible = false;
 		public Pac pacMan;
 		public Pac msPacMan;
 		public Entity stork;
@@ -66,7 +65,7 @@ public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPa
 		INIT {
 			@Override
 			public void onEnter(Context ctx) {
-				ctx.clapperboard = new Clapperboard("3", "JUNIOR");
+				ctx.clapVisible = false;
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
 				ctx.stork = new Entity();
@@ -83,8 +82,7 @@ public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPa
 			@Override
 			public void onEnter(Context ctx) {
 				timer.restartIndefinitely();
-				ctx.clapperboard.setPosition(TS * (3), TS * (10));
-				ctx.clapperboard.setVisible(true);
+				ctx.clapVisible = true;
 			}
 
 			@Override
@@ -92,7 +90,7 @@ public class MsPacManIntermission3 extends Fsm<MsPacManIntermission3.State, MsPa
 				if (timer.atSecond(1)) {
 					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_3, ctx.gameController.game());
 				} else if (timer.atSecond(2)) {
-					ctx.clapperboard.setVisible(false);
+					ctx.clapVisible = false;
 				} else if (timer.atSecond(3)) {
 					intermission.changeState(State.ACTION);
 				}

@@ -15,7 +15,6 @@ import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.actors.Clapperboard;
 import de.amr.games.pacman.model.actors.Entity;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.GhostAnimations;
@@ -53,11 +52,11 @@ public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPa
 		public int upperY = TS * (12);
 		public int middleY = TS * (18);
 		public int lowerY = TS * (24);
+		public boolean clapVisible = false;
 		public float pacSpeedChased = 1.125f;
 		public float pacSpeedRising = 0.75f;
 		public float ghostSpeedAfterColliding = 0.3f;
 		public float ghostSpeedChasing = 1.25f;
-		public Clapperboard clapperboard;
 		public Pac pacMan;
 		public Pac msPac;
 		public Ghost pinky;
@@ -79,7 +78,7 @@ public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPa
 			@Override
 			public void onEnter(Context ctx) {
 				Logger.trace("Creating guys for intermission 1");
-				ctx.clapperboard = new Clapperboard("1", "THEY MEET");
+				ctx.clapVisible = false;
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
 				ctx.msPac = new Pac("Ms. Pac-Man");
@@ -98,8 +97,7 @@ public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPa
 			public void onEnter(Context ctx) {
 				timer.resetSeconds(2);
 				timer.start();
-				ctx.clapperboard.setPosition(TS * 3, TS * 10);
-				ctx.clapperboard.setVisible(true);
+				ctx.clapVisible = true;
 			}
 
 			@Override
@@ -107,7 +105,7 @@ public class MsPacManIntermission1 extends Fsm<MsPacManIntermission1.State, MsPa
 				if (timer.atSecond(1)) {
 					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_1, ctx.game());
 				} else if (timer.hasExpired()) {
-					ctx.clapperboard.setVisible(false);
+					ctx.clapVisible = false;
 					intermission.changeState(State.CHASED_BY_GHOSTS);
 				}
 			}

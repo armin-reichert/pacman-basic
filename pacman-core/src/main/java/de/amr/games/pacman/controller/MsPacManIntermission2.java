@@ -12,7 +12,6 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.actors.Clapperboard;
 import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.actors.PacAnimations;
 
@@ -46,7 +45,7 @@ public class MsPacManIntermission2 extends Fsm<MsPacManIntermission2.State, MsPa
 		public int upperY = TS * (12);
 		public int middleY = TS * (18);
 		public int lowerY = TS * (24);
-		public Clapperboard clapperboard;
+		public boolean clapVisible = false;
 		public Pac pacMan;
 		public Pac msPac;
 
@@ -64,7 +63,7 @@ public class MsPacManIntermission2 extends Fsm<MsPacManIntermission2.State, MsPa
 		INIT {
 			@Override
 			public void onEnter(Context ctx) {
-				ctx.clapperboard = new Clapperboard("2", "THE CHASE");
+				ctx.clapVisible = false;
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.msPac = new Pac("Ms. Pac-Man");
 			}
@@ -80,14 +79,13 @@ public class MsPacManIntermission2 extends Fsm<MsPacManIntermission2.State, MsPa
 			public void onEnter(Context ctx) {
 				timer.resetSeconds(2);
 				timer.start();
-				ctx.clapperboard.setPosition(TS * 3, TS * 10);
-				ctx.clapperboard.setVisible(true);
+				ctx.clapVisible = true;
 			}
 
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.hasExpired()) {
-					ctx.clapperboard.setVisible(false);
+					ctx.clapVisible = false;
 					GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_2, ctx.game());
 					intermission.changeState(State.CHASING);
 				}
