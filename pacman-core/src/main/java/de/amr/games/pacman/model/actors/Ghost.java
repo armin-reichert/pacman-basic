@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 
 import org.tinylog.Logger;
 
-import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GhostEvent;
 import de.amr.games.pacman.lib.Direction;
@@ -455,7 +455,7 @@ public class Ghost extends Creature {
 		setTargetTile(null);
 		setPixelSpeed(GameModel.SPEED_PX_ENTERING_HOUSE);
 		// TODO is this event needed/handled at all?
-		GameEvents.publishGameEvent(new GhostEvent(level().game(), GameEventType.GHOST_ENTERS_HOUSE, this));
+		GameEvents.publishGameEvent(new GhostEvent(level().game(), GameEvent.GHOST_ENTERS_HOUSE, this));
 	}
 
 	private void updateStateEnteringHouse() {

@@ -53,13 +53,12 @@ public class GameEvents {
 		GameEvents.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 
-	public static void publishGameEvent(GameEventType type, Vector2i tile) {
-		checkNotNull(type);
+	public static void publishGameEvent(byte type, Vector2i tile) {
 		checkNotNull(tile);
 		publishGameEvent(new GameEvent(gameController.game(), type, tile));
 	}
 
-	public static void publishGameEventOfType(GameEventType type, GameModel game) {
+	public static void publishGameEventOfType(byte type, GameModel game) {
 		publishGameEvent(new GameEvent(game, type, null));
 	}
 

@@ -16,7 +16,7 @@ public class GhostEvent extends GameEvent {
 
 	public final Ghost ghost;
 
-	public GhostEvent(GameModel game, GameEventType type, Ghost ghost) {
+	public GhostEvent(GameModel game, byte type, Ghost ghost) {
 		super(game, type, ghost.tile());
 		checkNotNull(ghost);
 		this.ghost = ghost;

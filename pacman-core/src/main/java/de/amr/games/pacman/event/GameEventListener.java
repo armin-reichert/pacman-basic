@@ -18,49 +18,49 @@ public interface GameEventListener {
 	 */
 	default void onGameEvent(GameEvent event) {
 		switch (event.type) {
-		case GAME_STATE_CHANGED:
+		case GameEvent.GAME_STATE_CHANGED:
 			onGameStateChange((GameStateChangeEvent) event);
 			break;
-		case BONUS_GETS_ACTIVE:
+		case GameEvent.BONUS_GETS_ACTIVE:
 			onBonusGetsActive(event);
 			break;
-		case BONUS_GETS_EATEN:
+		case GameEvent.BONUS_GETS_EATEN:
 			onBonusGetsEaten(event);
 			break;
-		case BONUS_EXPIRES:
+		case GameEvent.BONUS_EXPIRES:
 			onBonusExpires(event);
 			break;
-		case GHOST_ENTERS_HOUSE:
+		case GameEvent.GHOST_ENTERS_HOUSE:
 			onGhostEntersHouse(event);
 			break;
-		case GHOST_STARTS_RETURNING_HOME:
+		case GameEvent.GHOST_STARTS_RETURNING_HOME:
 			onGhostStartsReturningHome(event);
 			break;
-		case LEVEL_BEFORE_START:
+		case GameEvent.LEVEL_BEFORE_START:
 			onLevelBeforeStart(event);
 			break;
-		case LEVEL_STARTED:
+		case GameEvent.LEVEL_STARTED:
 			onLevelStarted(event);
 			break;
-		case PAC_FINDS_FOOD:
+		case GameEvent.PAC_FINDS_FOOD:
 			onPlayerFindsFood(event);
 			break;
-		case PLAYER_GETS_EXTRA_LIFE:
+		case GameEvent.PLAYER_GETS_EXTRA_LIFE:
 			onPlayerGetsExtraLife(event);
 			break;
-		case PAC_GETS_POWER:
+		case GameEvent.PAC_GETS_POWER:
 			onPlayerGetsPower(event);
 			break;
-		case PAC_STARTS_LOSING_POWER:
+		case GameEvent.PAC_STARTS_LOSING_POWER:
 			onPlayerStartsLosingPower(event);
 			break;
-		case PAC_LOSES_POWER:
+		case GameEvent.PAC_LOSES_POWER:
 			onPlayerLosesPower(event);
 			break;
-		case SOUND_EVENT:
+		case GameEvent.SOUND_EVENT:
 			onSoundEvent((SoundEvent) event);
 			break;
-		case UNSPECIFIED_CHANGE:
+		case GameEvent.UNSPECIFIED_CHANGE:
 			onUnspecifiedChange(event);
 			break;
 		default:

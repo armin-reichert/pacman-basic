@@ -8,7 +8,7 @@ import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
 
 import org.tinylog.Logger;
 
-import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.model.GameLevel;
@@ -80,7 +80,7 @@ public class StaticBonus extends Entity implements Bonus {
 		timer = GameModel.BONUS_POINTS_SHOWN_TICKS;
 		state = Bonus.STATE_EATEN;
 		Logger.info("Bonus eaten: {}", this);
-		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
+		publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
 	}
 
 	public void setLevel(GameLevel level) {
@@ -90,7 +90,7 @@ public class StaticBonus extends Entity implements Bonus {
 	private void expire() {
 		setInactive();
 		Logger.info("Bonus expired: {}", this);
-		publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
+		publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
 	}
 
 	@Override

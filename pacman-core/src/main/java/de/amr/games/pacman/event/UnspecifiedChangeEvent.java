@@ -12,6 +12,6 @@ import de.amr.games.pacman.model.GameModel;
 public class UnspecifiedChangeEvent extends GameEvent {
 
 	public UnspecifiedChangeEvent(GameModel game) {
-		super(game, GameEventType.UNSPECIFIED_CHANGE, null);
+		super(game, GameEvent.UNSPECIFIED_CHANGE, null);
 	}
 }

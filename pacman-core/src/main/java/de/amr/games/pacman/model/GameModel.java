@@ -22,7 +22,7 @@ import java.util.Properties;
 
 import org.tinylog.Logger;
 
-import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Direction;
@@ -493,7 +493,7 @@ public class GameModel {
 		}
 
 		level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
-		publishGameEventOfType(GameEventType.LEVEL_BEFORE_START, this);
+		publishGameEventOfType(GameEvent.LEVEL_BEFORE_START, this);
 
 		level.letsGetReadyToRumbleAndShowGuys(false);
 
@@ -524,14 +524,14 @@ public class GameModel {
 		case MS_PACMAN:
 			level = new GameLevel(this, new World(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RuleBasedSteering()); // TODO check which route Ms. Pac-Man takes in demo level
-			publishGameEventOfType(GameEventType.LEVEL_BEFORE_START, this);
+			publishGameEventOfType(GameEvent.LEVEL_BEFORE_START, this);
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			Logger.info("Ms. Pac-Man demo level entered");
 			break;
 		case PACMAN:
 			level = new GameLevel(this, new World(PACMAN_MAP), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE));
-			publishGameEventOfType(GameEventType.LEVEL_BEFORE_START, this);
+			publishGameEventOfType(GameEvent.LEVEL_BEFORE_START, this);
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			Logger.info("Pac-Man demo level entered");
 			break;

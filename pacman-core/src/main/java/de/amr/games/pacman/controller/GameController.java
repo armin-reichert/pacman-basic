@@ -10,7 +10,7 @@ import static de.amr.games.pacman.lib.Globals.checkNotNull;
 
 import java.util.function.Predicate;
 
-import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.SoundEvent;
@@ -143,7 +143,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			game.level().ifPresent(level -> {
 				var world = level.world();
 				world.tiles().filter(Predicate.not(world::isEnergizerTile)).forEach(world.foodStorage()::removeFood);
-				GameEvents.publishGameEventOfType(GameEventType.PAC_FINDS_FOOD, game);
+				GameEvents.publishGameEventOfType(GameEvent.PAC_FINDS_FOOD, game);
 				if (world.foodStorage().uneatenCount() == 0) {
 					changeState(GameState.LEVEL_COMPLETE);
 				}

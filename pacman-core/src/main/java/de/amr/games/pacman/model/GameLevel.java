@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.Steering;
-import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Direction;
@@ -533,7 +533,7 @@ public class GameLevel {
 				game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 			}
 			ghostHouseManagement.update();
-			GameEvents.publishGameEvent(GameEventType.PAC_FINDS_FOOD, foodTile);
+			GameEvents.publishGameEvent(GameEvent.PAC_FINDS_FOOD, foodTile);
 			GameEvents.publishSoundEvent(SoundEvent.PACMAN_FOUND_FOOD, game);
 		} else {
 			pac.starve();
@@ -555,10 +555,10 @@ public class GameLevel {
 			Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
-			GameEvents.publishGameEventOfType(GameEventType.PAC_GETS_POWER, game);
+			GameEvents.publishGameEventOfType(GameEvent.PAC_GETS_POWER, game);
 			GameEvents.publishSoundEvent(SoundEvent.PACMAN_POWER_STARTS, game);
 		} else if (memo.pacPowerFading) {
-			GameEvents.publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER, game);
+			GameEvents.publishGameEventOfType(GameEvent.PAC_STARTS_LOSING_POWER, game);
 		} else if (memo.pacPowerLost) {
 			Logger.info("{} power ends, timer: {}", pac.name(), pac.powerTimer());
 			huntingTimer.start();
@@ -566,7 +566,7 @@ public class GameLevel {
 			pac.powerTimer().stop();
 			pac.powerTimer().resetIndefinitely();
 			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-			GameEvents.publishGameEventOfType(GameEventType.PAC_LOSES_POWER, game);
+			GameEvents.publishGameEventOfType(GameEvent.PAC_LOSES_POWER, game);
 			GameEvents.publishSoundEvent(SoundEvent.PACMAN_POWER_ENDS, game);
 		}
 

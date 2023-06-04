@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.tinylog.Logger;
 
-import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.Pulse;
@@ -103,7 +103,7 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = GameModel.BONUS_POINTS_SHOWN_TICKS;
 		jumpAnimation.stop();
 		Logger.info("Bonus eaten: {}", this);
-		publishGameEvent(GameEventType.BONUS_GETS_EATEN, tile());
+		publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
 	}
 
 	public void setRoute(List<NavigationPoint> route) {
@@ -133,7 +133,7 @@ public class MovingBonus extends Creature implements Bonus {
 			steering.steer(level(), this);
 			if (steering.isComplete()) {
 				Logger.trace("Bonus reached target: {}", this);
-				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
+				publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
 			}
@@ -146,7 +146,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (--timer == 0) {
 				setInactive();
 				Logger.trace("Bonus expired: {}", this);
-				publishGameEvent(GameEventType.BONUS_EXPIRES, tile());
+				publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
 			}
 			break;
 		}

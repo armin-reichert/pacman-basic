@@ -7,7 +7,7 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 
-import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.FsmState;
@@ -76,7 +76,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (!game.hasCredit()) {
 				game.start();
 				game.enterDemoLevel();
-				publishGameEventOfType(GameEventType.LEVEL_STARTED, game);
+				publishGameEventOfType(GameEvent.LEVEL_STARTED, game);
 			} else if (game.isPlaying()) {
 				game.level().ifPresent(level -> level.letsGetReadyToRumbleAndShowGuys(true));
 			} else {
@@ -85,7 +85,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.clearLevelCounter();
 				game.enterLevel(1);
 				publishSoundEvent(SoundEvent.READY_TO_PLAY, game);
-				publishGameEventOfType(GameEventType.LEVEL_STARTED, game);
+				publishGameEventOfType(GameEvent.LEVEL_STARTED, game);
 			}
 		}
 
@@ -212,7 +212,7 @@ public enum GameState implements FsmState<GameModel> {
 			gc.getManualPacSteering().setEnabled(false);
 			timer.restartSeconds(1);
 			game.nextLevel();
-			publishGameEventOfType(GameEventType.LEVEL_STARTED, game);
+			publishGameEventOfType(GameEvent.LEVEL_STARTED, game);
 		}
 
 		@Override
@@ -364,7 +364,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.restartIndefinitely();
 			game.start();
 			game.enterLevel(1);
-			publishGameEventOfType(GameEventType.LEVEL_STARTED, game);
+			publishGameEventOfType(GameEvent.LEVEL_STARTED, game);
 		}
 
 		@Override
@@ -390,7 +390,7 @@ public enum GameState implements FsmState<GameModel> {
 						level.exit();
 						game.nextLevel();
 						timer.restartIndefinitely();
-						publishGameEventOfType(GameEventType.LEVEL_STARTED, game);
+						publishGameEventOfType(GameEvent.LEVEL_STARTED, game);
 					}
 					level.world().energizerBlinking().tick();
 					level.world().mazeFlashing().tick();
@@ -420,7 +420,7 @@ public enum GameState implements FsmState<GameModel> {
 				if (game.intermissionTestNumber < 3) {
 					++game.intermissionTestNumber;
 					timer.restartIndefinitely();
-					publishGameEventOfType(GameEventType.UNSPECIFIED_CHANGE, game);
+					publishGameEventOfType(GameEvent.UNSPECIFIED_CHANGE, game);
 				} else {
 					game.intermissionTestNumber = 1;
 					gc.changeState(INTRO);

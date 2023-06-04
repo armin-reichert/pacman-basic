@@ -34,7 +34,7 @@ public class SoundEvent extends GameEvent {
 	public final byte id;
 
 	public SoundEvent(GameModel game, byte id) {
-		super(game, GameEventType.SOUND_EVENT, null);
+		super(game, GameEvent.SOUND_EVENT, null);
 		checkNotNull(id);
 		this.id = id;
 	}
