@@ -29,7 +29,6 @@ public class MsPacManIntermission3 {
 
 	public final GameController gameController;
 	public int groundY = TS * (24);
-	public boolean clapVisible = false;
 	public Pac pacMan;
 	public Pac msPacMan;
 	public Entity stork;
@@ -52,7 +51,6 @@ public class MsPacManIntermission3 {
 
 	public MsPacManIntermission3(GameController gameController) {
 		this.gameController = gameController;
-		clapVisible = true;
 		pacMan = new Pac("Pac-Man");
 		msPacMan = new Pac("Ms. Pac-Man");
 		stork = new Entity();
@@ -79,8 +77,6 @@ public class MsPacManIntermission3 {
 	private void updateFlap() {
 		if (stateTimer.atSecond(1)) {
 			GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_3, gameController.game());
-		} else if (stateTimer.atSecond(2)) {
-			clapVisible = false;
 		} else if (stateTimer.atSecond(3)) {
 			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setPosition(TS * (3), groundY - 4);

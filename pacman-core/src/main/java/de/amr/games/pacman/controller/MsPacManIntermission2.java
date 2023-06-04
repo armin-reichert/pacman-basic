@@ -28,7 +28,6 @@ public class MsPacManIntermission2 {
 	public int upperY = TS * 12;
 	public int middleY = TS * 18;
 	public int lowerY = TS * 24;
-	public boolean clapVisible = false;
 	public Pac pacMan;
 	public Pac msPac;
 
@@ -46,7 +45,6 @@ public class MsPacManIntermission2 {
 
 	public MsPacManIntermission2(GameController gameController) {
 		this.gameController = gameController;
-		clapVisible = true;
 		pacMan = new Pac("Pac-Man");
 		msPac = new Pac("Ms. Pac-Man");
 	}
@@ -68,7 +66,6 @@ public class MsPacManIntermission2 {
 
 	private void updateFlap() {
 		if (stateTimer.hasExpired()) {
-			clapVisible = false;
 			GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_2, gameController.game());
 			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);

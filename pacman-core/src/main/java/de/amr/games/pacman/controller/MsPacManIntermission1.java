@@ -35,7 +35,6 @@ public class MsPacManIntermission1 {
 	public int upperY = TS * (12);
 	public int middleY = TS * (18);
 	public int lowerY = TS * (24);
-	public boolean clapVisible = false;
 	public float pacSpeedChased = 1.125f;
 	public float pacSpeedRising = 0.75f;
 	public float ghostSpeedAfterColliding = 0.3f;
@@ -68,7 +67,6 @@ public class MsPacManIntermission1 {
 		msPac = new Pac("Ms. Pac-Man");
 		pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
 		heart = new Entity();
-		clapVisible = true;
 	}
 
 	public void tick() {
@@ -98,7 +96,6 @@ public class MsPacManIntermission1 {
 		if (stateTimer.atSecond(1)) {
 			GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_1, gameController.game());
 		} else if (stateTimer.hasExpired()) {
-			clapVisible = false;
 			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setPosition(-TS * (2), upperY);
 			pacMan.setPixelSpeed(pacSpeedChased);
