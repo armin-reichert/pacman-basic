@@ -35,6 +35,7 @@ import org.tinylog.Logger;
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Vector2i;
@@ -533,7 +534,7 @@ public class GameLevel {
 			}
 			ghostHouseManagement.update();
 			GameEvents.publishGameEvent(GameEventType.PAC_FINDS_FOOD, foodTile);
-			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_FOUND_FOOD, game);
+			GameEvents.publishSoundEvent(SoundEvent.PACMAN_FOUND_FOOD, game);
 		} else {
 			pac.starve();
 		}
@@ -555,7 +556,7 @@ public class GameLevel {
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
 			GameEvents.publishGameEventOfType(GameEventType.PAC_GETS_POWER, game);
-			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_STARTS, game);
+			GameEvents.publishSoundEvent(SoundEvent.PACMAN_POWER_STARTS, game);
 		} else if (memo.pacPowerFading) {
 			GameEvents.publishGameEventOfType(GameEventType.PAC_STARTS_LOSING_POWER, game);
 		} else if (memo.pacPowerLost) {
@@ -566,7 +567,7 @@ public class GameLevel {
 			pac.powerTimer().resetIndefinitely();
 			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
 			GameEvents.publishGameEventOfType(GameEventType.PAC_LOSES_POWER, game);
-			GameEvents.publishSoundEvent(GameModel.SE_PACMAN_POWER_ENDS, game);
+			GameEvents.publishSoundEvent(SoundEvent.PACMAN_POWER_ENDS, game);
 		}
 
 		// Cruise Elroy

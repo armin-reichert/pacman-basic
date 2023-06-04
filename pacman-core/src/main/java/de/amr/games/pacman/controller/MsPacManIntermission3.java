@@ -7,10 +7,10 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.lib.Globals.TS;
 
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Vector2f;
-import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Entity;
 import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.actors.PacAnimations;
@@ -76,7 +76,7 @@ public class MsPacManIntermission3 {
 
 	private void updateFlap() {
 		if (stateTimer.atSecond(1)) {
-			GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_3, gameController.game());
+			GameEvents.publishSoundEvent(SoundEvent.START_INTERMISSION_3, gameController.game());
 		} else if (stateTimer.atSecond(3)) {
 			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setPosition(TS * (3), groundY - 4);

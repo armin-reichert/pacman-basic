@@ -9,6 +9,7 @@ import static de.amr.games.pacman.lib.Globals.TS;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Vector2f;
@@ -94,7 +95,7 @@ public class MsPacManIntermission1 {
 
 	private void updateFlap() {
 		if (stateTimer.atSecond(1)) {
-			GameEvents.publishSoundEvent(GameModel.SE_START_INTERMISSION_1, gameController.game());
+			GameEvents.publishSoundEvent(SoundEvent.START_INTERMISSION_1, gameController.game());
 		} else if (stateTimer.hasExpired()) {
 			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setPosition(-TS * (2), upperY);

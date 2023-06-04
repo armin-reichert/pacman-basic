@@ -24,6 +24,7 @@ import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.RouteBasedSteering;
@@ -320,25 +321,6 @@ public class GameModel {
 	public static final short   SCORE_EXTRA_LIFE = 10_000;
 	public static final short   BONUS_POINTS_SHOWN_TICKS = 2 * FPS; // unsure
 	public static final short   PAC_POWER_FADES_TICKS = 2 * FPS - 1; // unsure
-
-	// Sound events
-	public static final byte SE_BONUS_EATEN             =  0;
-	public static final byte SE_CREDIT_ADDED            =  1;
-	public static final byte SE_EXTRA_LIFE              =  2;
-	public static final byte SE_GHOST_EATEN             =  3;
-	public static final byte SE_HUNTING_PHASE_STARTED_0 =  4;
-	public static final byte SE_HUNTING_PHASE_STARTED_2 =  5;
-	public static final byte SE_HUNTING_PHASE_STARTED_4 =  6;
-	public static final byte SE_HUNTING_PHASE_STARTED_6 =  7;
-	public static final byte SE_PACMAN_DEATH            =  8;
-	public static final byte SE_PACMAN_FOUND_FOOD       =  9;
-	public static final byte SE_PACMAN_POWER_ENDS       = 10;
-	public static final byte SE_PACMAN_POWER_STARTS     = 11;
-	public static final byte SE_READY_TO_PLAY           = 12;
-	public static final byte SE_START_INTERMISSION_1    = 13;
-	public static final byte SE_START_INTERMISSION_2    = 14;
-	public static final byte SE_START_INTERMISSION_3    = 15;
-	public static final byte SE_STOP_ALL_SOUNDS         = 16;
 
 	private static final byte[][] LEVEL_DATA = {
 	/* 1*/ { 80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5, 0},
@@ -640,7 +622,7 @@ public class GameModel {
 		}
 		if (oldScore < SCORE_EXTRA_LIFE && newScore >= SCORE_EXTRA_LIFE) {
 			lives += 1;
-			GameEvents.publishSoundEvent(SE_EXTRA_LIFE, this);
+			GameEvents.publishSoundEvent(SoundEvent.EXTRA_LIFE, this);
 		}
 	}
 

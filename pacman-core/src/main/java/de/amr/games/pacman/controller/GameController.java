@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
+import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.RuleBasedSteering;
 import de.amr.games.pacman.model.GameModel;
@@ -116,7 +117,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (!game.isPlaying()) {
 			boolean added = game.changeCredit(1);
 			if (added) {
-				publishSoundEvent(GameModel.SE_CREDIT_ADDED, game);
+				publishSoundEvent(SoundEvent.CREDIT_ADDED, game);
 			}
 			if (state() != GameState.CREDIT) {
 				changeState(GameState.CREDIT);

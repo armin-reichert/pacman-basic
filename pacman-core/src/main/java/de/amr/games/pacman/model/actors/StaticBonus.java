@@ -10,6 +10,7 @@ import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 
@@ -105,7 +106,7 @@ public class StaticBonus extends Entity implements Bonus {
 				level.game().scorePoints(points());
 				Logger.info("Scored {} points for eating bonus {}", points(), this);
 				eat();
-				GameEvents.publishSoundEvent(GameModel.SE_BONUS_EATEN, level.game());
+				GameEvents.publishSoundEvent(SoundEvent.BONUS_EATEN, level.game());
 			} else if (timer == 0) {
 				expire();
 			} else {
