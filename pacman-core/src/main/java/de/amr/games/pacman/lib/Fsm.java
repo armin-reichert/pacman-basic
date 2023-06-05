@@ -123,6 +123,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	 */
 	public void changeState(S newState) {
 		if (newState == currentState) {
+			// TODO check this
 			throw new IllegalStateException("FiniteStateMachine: Self loop in state " + currentState);
 		}
 		C context = context();
@@ -137,6 +138,10 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		currentState.onEnter(context);
 		Logger.trace("After Enter state {} timer={}", currentState, currentState.timer());
 		subscribers.forEach(listener -> listener.onStateChange(prevState, currentState));
+	}
+
+	public void clearState() {
+		currentState = null;
 	}
 
 	/**
