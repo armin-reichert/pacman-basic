@@ -42,7 +42,7 @@ public abstract class Creature extends Entity {
 	private Direction wishDir;
 	private Vector2i targetTile;
 
-	private GameLevel level;
+	protected GameLevel level;
 
 	private MoveResult moveResult;
 	protected boolean newTileEntered; // TODO put this into move result but currently it has another lifetime

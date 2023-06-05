@@ -200,7 +200,7 @@ public enum GameState implements FsmState<GameModel> {
 					} else {
 						flashing.tick();
 					}
-					level.pac().update(level);
+					level.pac().update();
 				}
 			});
 		}
@@ -297,7 +297,7 @@ public enum GameState implements FsmState<GameModel> {
 					}
 				} else {
 					level.world().energizerBlinking().tick();
-					level.pac().update(level);
+					level.pac().update();
 				}
 			});
 		}

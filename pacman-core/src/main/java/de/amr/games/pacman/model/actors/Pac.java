@@ -4,12 +4,9 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
-import static de.amr.games.pacman.lib.Globals.checkLevelNotNull;
-
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 
 /**
@@ -57,16 +54,15 @@ public class Pac extends Creature {
 		powerTimer.reset(0);
 	}
 
-	public void update(GameLevel level) {
-		checkLevelNotNull(level);
+	public void update() {
 		if (dead) {
 			updateDead();
 		} else {
-			updateAlive(level);
+			updateAlive();
 		}
 	}
 
-	private void updateAlive(GameLevel level) {
+	private void updateAlive() {
 		if (restingTicks == REST_FOREVER) {
 			return;
 		}
@@ -98,8 +94,7 @@ public class Pac extends Creature {
 		restingTicks = 0;
 	}
 
-	public boolean isPowerFading(GameLevel level) {
-		checkLevelNotNull(level);
+	public boolean isPowerFading() {
 		return powerTimer.isRunning() && powerTimer.remaining() <= GameModel.PAC_POWER_FADES_TICKS;
 	}
 
@@ -146,7 +141,8 @@ public class Pac extends Creature {
 		this.animations = animations;
 	}
 
-	public Optional<PacAnimations<?, ?>> animations() {
+	@SuppressWarnings("rawtypes")
+	public Optional<PacAnimations> animations() {
 		return Optional.ofNullable(animations);
 	}
 

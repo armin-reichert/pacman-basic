@@ -575,9 +575,9 @@ public class GameLevel {
 
 		// Update world and guys
 		world.mazeFlashing().tick();
-		pac.update(this);
+		pac.update();
 		unlockGhost();
-		ghosts().forEach(ghost -> ghost.update());
+		ghosts().forEach(Ghost::update);
 		bonusManagement.updateBonus();
 
 		// Update hunting timer
