@@ -267,7 +267,7 @@ public class Ghost extends Creature implements AnimationDirector<GhostAnimations
 			move();
 		}
 		if (killable()) {
-			updateFrightenedAnimation();
+			selectFrightenedAnimation();
 		} else {
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
@@ -294,7 +294,7 @@ public class Ghost extends Creature implements AnimationDirector<GhostAnimations
 
 	private void updateStateLeavingHouse() {
 		if (killable()) {
-			updateFrightenedAnimation();
+			selectFrightenedAnimation();
 		} else {
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
@@ -390,14 +390,13 @@ public class Ghost extends Creature implements AnimationDirector<GhostAnimations
 	 */
 	public void enterStateFrightened() {
 		state = FRIGHTENED;
-		selectAnimation(GhostAnimations.GHOST_FRIGHTENED);
 	}
 
 	private void updateStateFrightened() {
 		var speed = world().isTunnel(tile()) ? level().ghostSpeedTunnel : level().ghostSpeedFrightened;
 		setRelSpeed(speed);
 		roam();
-		updateFrightenedAnimation();
+		selectFrightenedAnimation();
 	}
 
 	// --- EATEN ---
@@ -477,7 +476,7 @@ public class Ghost extends Creature implements AnimationDirector<GhostAnimations
 		return Optional.ofNullable(animations);
 	}
 
-	private void updateFrightenedAnimation() {
+	private void selectFrightenedAnimation() {
 		var timer = level().pac().powerTimer();
 		if (timer.remaining() == GameModel.PAC_POWER_FADES_TICKS
 				|| timer.duration() < GameModel.PAC_POWER_FADES_TICKS && timer.tick() == 1) {

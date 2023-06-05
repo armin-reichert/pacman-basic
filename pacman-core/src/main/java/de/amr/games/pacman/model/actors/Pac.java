@@ -50,23 +50,18 @@ public class Pac extends Creature implements AnimationDirector<PacAnimations<?, 
 		restingTicks = 0;
 		starvingTicks = 0;
 		corneringSpeedUp = 1.5f; // TODO experimental
-		selectAnimation(PacAnimations.MUNCHING);
 		powerTimer.reset(0);
+		selectAnimation(PacAnimations.MUNCHING);
 	}
 
 	public void update() {
-		if (dead) {
-			return;
-		}
-
-		if (restingTicks == REST_FOREVER) {
+		if (dead || restingTicks == REST_FOREVER) {
 			return;
 		}
 		if (restingTicks == 0) {
 			var speed = powerTimer.isRunning() ? level.pacSpeedPowered : level.pacSpeed;
 			setRelSpeed(speed);
 			tryMoving();
-			selectAnimation(PacAnimations.MUNCHING);
 			if (moved()) {
 				startAnimation();
 			} else {
@@ -105,7 +100,7 @@ public class Pac extends Creature implements AnimationDirector<PacAnimations<?, 
 
 	public void rest(long ticks) {
 		if (ticks != REST_FOREVER && ticks < 0) {
-			throw new IllegalArgumentException(String.format("Resting time cannot be negative, but is: %d", ticks));
+			throw new IllegalArgumentException("Resting time cannot be negative, but is: " + ticks);
 		}
 		restingTicks = ticks;
 	}
