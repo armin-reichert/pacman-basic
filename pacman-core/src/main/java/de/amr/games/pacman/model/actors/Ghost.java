@@ -22,7 +22,6 @@ import static de.amr.games.pacman.model.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.actors.GhostState.RETURNING_TO_HOUSE;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.tinylog.Logger;
@@ -41,7 +40,7 @@ import de.amr.games.pacman.model.world.House;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature implements AnimationDirector<GhostAnimations<?, ?>> {
+public class Ghost extends Creature {
 
 	private final byte id;
 	private GhostState state;
@@ -50,7 +49,6 @@ public class Ghost extends Creature implements AnimationDirector<GhostAnimations
 	private Vector2f revivalPosition = Vector2f.ZERO;
 	private Vector2i scatterTile = Vector2i.ZERO;
 	private Direction initialDirection = Direction.UP;
-	private GhostAnimations<?, ?> animations;
 	private int killedIndex;
 
 	public Ghost(byte id, String name) {
@@ -463,17 +461,6 @@ public class Ghost extends Creature implements AnimationDirector<GhostAnimations
 			setMoveAndWishDir(UP);
 			enterStateLocked();
 		}
-	}
-
-	// Animations
-
-	public void setAnimations(GhostAnimations<?, ?> animations) {
-		this.animations = animations;
-	}
-
-	@Override
-	public Optional<GhostAnimations<?, ?>> animations() {
-		return Optional.ofNullable(animations);
 	}
 
 	private void selectFrightenedAnimation() {

@@ -19,6 +19,7 @@ import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.actors.Animations;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.actors.PacAnimations;
@@ -159,7 +160,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 				ctx.msPacMan.move();
 				if (ctx.msPacMan.position().x() <= ctx.stopMsPacX) {
 					ctx.msPacMan.setPixelSpeed(0);
-					ctx.msPacMan.animations().ifPresent(PacAnimations::resetSelected);
+					ctx.msPacMan.animations().ifPresent(Animations::resetSelected);
 					intro.changeState(State.READY_TO_PLAY);
 				}
 			}

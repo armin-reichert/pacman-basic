@@ -30,11 +30,11 @@ import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.World;
 
 /**
- * Base class for all creatures which can live inside a game level and can move through its world.
+ * Base class for all creatures which can move through a level's world.
  * 
  * @author Armin Reichert
  */
-public abstract class Creature extends Entity {
+public abstract class Creature extends Entity implements AnimationDirector {
 
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
@@ -48,8 +48,9 @@ public abstract class Creature extends Entity {
 	protected boolean newTileEntered; // TODO put this into move result but currently it has another lifetime
 	protected boolean gotReverseCommand;
 	protected boolean canTeleport;
-
 	protected float corneringSpeedUp = 0;
+
+	private Animations<?, ?> animations;
 
 	protected Creature(String name) {
 		super(name);
@@ -71,6 +72,16 @@ public abstract class Creature extends Entity {
 
 		moveResult = null;
 		newTileEntered = true;
+	}
+
+	public void setAnimations(Animations<?, ?> animations) {
+		this.animations = animations;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Optional<Animations> animations() {
+		return Optional.ofNullable(animations);
 	}
 
 	public GameLevel level() {

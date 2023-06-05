@@ -9,9 +9,11 @@ package de.amr.games.pacman.model.actors;
  */
 public interface Animations<A, S> {
 
-	A selectedAnimation();
+	String currentAnimationName();
 
-	String selectedAnimationName();
+	A currentAnimation();
+
+	S currentSprite();
 
 	void select(String name, Object... args);
 
@@ -21,5 +23,4 @@ public interface Animations<A, S> {
 
 	void resetSelected();
 
-	S currentSprite();
 }

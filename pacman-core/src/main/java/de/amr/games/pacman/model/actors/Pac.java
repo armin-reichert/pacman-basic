@@ -4,8 +4,6 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
-import java.util.Optional;
-
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.GameModel;
 
@@ -14,7 +12,7 @@ import de.amr.games.pacman.model.GameModel;
  * 
  * @author Armin Reichert
  */
-public class Pac extends Creature implements AnimationDirector<PacAnimations<?, ?>> {
+public class Pac extends Creature {
 
 	public static final long REST_FOREVER = -1;
 
@@ -22,7 +20,6 @@ public class Pac extends Creature implements AnimationDirector<PacAnimations<?, 
 	private boolean dead;
 	private long restingTicks;
 	private long starvingTicks;
-	private PacAnimations<?, ?> animations;
 
 	public Pac(String name) {
 		super(name);
@@ -120,16 +117,5 @@ public class Pac extends Creature implements AnimationDirector<PacAnimations<?, 
 
 	public boolean isStandingStill() {
 		return velocity().length() == 0 || !moved() || restingTicks == REST_FOREVER;
-	}
-
-	// Animations
-
-	public void setAnimations(PacAnimations<?, ?> animations) {
-		this.animations = animations;
-	}
-
-	@Override
-	public Optional<PacAnimations<?, ?>> animations() {
-		return Optional.ofNullable(animations);
 	}
 }

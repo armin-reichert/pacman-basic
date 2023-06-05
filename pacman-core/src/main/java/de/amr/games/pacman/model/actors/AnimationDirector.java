@@ -9,9 +9,10 @@ import java.util.Optional;
 /**
  * @author Armin Reichert
  */
-public interface AnimationDirector<A extends Animations<?, ?>> {
+public interface AnimationDirector {
 
-	Optional<A> animations();
+	@SuppressWarnings("rawtypes")
+	Optional<Animations> animations();
 
 	default void selectAnimation(String name, Object... args) {
 		animations().ifPresent(a -> a.select(name, args));
