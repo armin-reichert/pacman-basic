@@ -41,7 +41,7 @@ import de.amr.games.pacman.model.world.House;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature {
+public class Ghost extends Creature implements AnimationDirector<GhostAnimations<?, ?>> {
 
 	private final byte id;
 	private GhostState state;
@@ -466,38 +466,15 @@ public class Ghost extends Creature {
 		}
 	}
 
-	// Animation
+	// Animations
 
 	public void setAnimations(GhostAnimations<?, ?> animations) {
 		this.animations = animations;
 	}
 
+	@Override
 	public Optional<GhostAnimations<?, ?>> animations() {
 		return Optional.ofNullable(animations);
-	}
-
-	public void selectAnimation(String name, Object... args) {
-		if (animations != null) {
-			animations.select(name, args);
-		}
-	}
-
-	public void startAnimation() {
-		if (animations != null) {
-			animations.startSelected();
-		}
-	}
-
-	public void stopAnimation() {
-		if (animations != null) {
-			animations.stopSelected();
-		}
-	}
-
-	public void resetAnimation() {
-		if (animations != null) {
-			animations.resetSelected();
-		}
 	}
 
 	private void updateFrightenedAnimation() {

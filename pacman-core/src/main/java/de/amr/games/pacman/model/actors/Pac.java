@@ -14,7 +14,7 @@ import de.amr.games.pacman.model.GameModel;
  * 
  * @author Armin Reichert
  */
-public class Pac extends Creature {
+public class Pac extends Creature implements AnimationDirector<PacAnimations<?, ?>> {
 
 	public static final long REST_FOREVER = -1;
 
@@ -56,13 +56,9 @@ public class Pac extends Creature {
 
 	public void update() {
 		if (dead) {
-			updateDead();
-		} else {
-			updateAlive();
+			return;
 		}
-	}
 
-	private void updateAlive() {
 		if (restingTicks == REST_FOREVER) {
 			return;
 		}
@@ -80,10 +76,6 @@ public class Pac extends Creature {
 			--restingTicks;
 		}
 		powerTimer.advance();
-	}
-
-	private void updateDead() {
-		setPixelSpeed(0);
 	}
 
 	public void killed() {
@@ -135,38 +127,14 @@ public class Pac extends Creature {
 		return velocity().length() == 0 || !moved() || restingTicks == REST_FOREVER;
 	}
 
-	// Animation
+	// Animations
 
 	public void setAnimations(PacAnimations<?, ?> animations) {
 		this.animations = animations;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public Optional<PacAnimations> animations() {
+	@Override
+	public Optional<PacAnimations<?, ?>> animations() {
 		return Optional.ofNullable(animations);
-	}
-
-	public void selectAnimation(String name) {
-		if (animations != null) {
-			animations.select(name);
-		}
-	}
-
-	public void startAnimation() {
-		if (animations != null) {
-			animations.startSelected();
-		}
-	}
-
-	public void stopAnimation() {
-		if (animations != null) {
-			animations.stopSelected();
-		}
-	}
-
-	public void resetAnimation() {
-		if (animations != null) {
-			animations.resetSelected();
-		}
 	}
 }
