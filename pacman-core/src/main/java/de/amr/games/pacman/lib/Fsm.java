@@ -101,7 +101,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	 */
 	public void restart(S state) {
 		resetTimers();
-		currentState = null; // no exit hook
+		clearState();
 		changeState(state);
 	}
 

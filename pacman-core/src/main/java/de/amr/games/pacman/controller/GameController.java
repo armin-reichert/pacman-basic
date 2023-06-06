@@ -100,14 +100,12 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 * @param variant Pac-Man or Ms. Pac-Man
 	 */
 	public void selectGameVariant(GameVariant variant) {
-		if (state() == GameState.INTRO) {
-			boolean immune = game.isImmune();
-			int credit = game.credit();
-			game = new GameModel(variant);
-			game.setImmune(immune);
-			game.setCredit(credit);
-			restart(GameState.BOOT);
-		}
+		boolean immune = game.isImmune();
+		int credit = game.credit();
+		game = new GameModel(variant);
+		game.setImmune(immune);
+		game.setCredit(credit);
+		restart(GameState.BOOT);
 	}
 
 	/**
