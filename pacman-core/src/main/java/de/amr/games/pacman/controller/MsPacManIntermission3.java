@@ -27,21 +27,23 @@ import de.amr.games.pacman.model.actors.PacAnimations;
  */
 public class MsPacManIntermission3 {
 
-	public final GameController gameController;
-	public int groundY = TS * (24);
-	public Pac pacMan;
-	public Pac msPacMan;
-	public Entity stork;
-	public Entity bag;
-	public boolean bagOpen;
-	public int numBagBounces;
-
 	public static final byte STATE_FLAP = 0;
 	public static final byte STATE_DELIVER_JUNIOR = 1;
 	public static final byte STATE_STORK_LEAVES_SCENE = 2;
 
+	public static final int LANE_Y = TS * 24;
+
+	public final GameController gameController;
+	public final Pac pacMan;
+	public final Pac msPacMan;
+	public final Entity stork;
+	public final Entity bag;
+
+	public boolean bagOpen;
+	public int numBagBounces;
+
 	private byte state;
-	private TickTimer stateTimer = new TickTimer("MsPacIntermission3");
+	private final TickTimer stateTimer = new TickTimer("MsPacManIntermission3");
 
 	public void changeState(byte state, long ticks) {
 		this.state = state;
@@ -60,13 +62,13 @@ public class MsPacManIntermission3 {
 	public void tick() {
 		switch (state) {
 		case STATE_FLAP:
-			updateFlap();
+			updateStateFlap();
 			break;
 		case STATE_DELIVER_JUNIOR:
-			updateDeliverJunior();
+			updateStateDeliverJunior();
 			break;
 		case STATE_STORK_LEAVES_SCENE:
-			updateStorkLeavesScene();
+			updateStateStorkLeavesScene();
 			break;
 		default:
 			throw new IllegalStateException("Illegal state: " + state);
@@ -74,50 +76,55 @@ public class MsPacManIntermission3 {
 		stateTimer.advance();
 	}
 
-	private void updateFlap() {
+	private void updateStateFlap() {
 		if (stateTimer.atSecond(1)) {
 			GameEvents.publishSoundEvent(SoundEvent.START_INTERMISSION_3, gameController.game());
 		} else if (stateTimer.atSecond(3)) {
-			pacMan.setMoveDir(Direction.RIGHT);
-			pacMan.setPosition(TS * (3), groundY - 4);
-			pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
-			pacMan.show();
-
-			msPacMan.setMoveDir(Direction.RIGHT);
-			msPacMan.setPosition(TS * (5), groundY - 4);
-			msPacMan.selectAnimation(PacAnimations.MUNCHING);
-			msPacMan.show();
-
-			stork.setPosition(TS * (30), TS * (12));
-			stork.setVelocity(-0.8f, 0);
-			stork.show();
-
-			bag.setPosition(stork.position().plus(-14, 3));
-			bag.setVelocity(stork.velocity());
-			bag.setAcceleration(Vector2f.ZERO);
-			bag.show();
-			bagOpen = false;
-			numBagBounces = 0;
-			changeState(STATE_DELIVER_JUNIOR, TickTimer.INDEFINITE);
+			enterStateDeliverJunior();
 		}
 	}
 
-	private void updateDeliverJunior() {
+	private void enterStateDeliverJunior() {
+		pacMan.setMoveDir(Direction.RIGHT);
+		pacMan.setPosition(TS * 3, LANE_Y - 4);
+		pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
+		pacMan.show();
+
+		msPacMan.setMoveDir(Direction.RIGHT);
+		msPacMan.setPosition(TS * 5, LANE_Y - 4);
+		msPacMan.selectAnimation(PacAnimations.MUNCHING);
+		msPacMan.show();
+
+		stork.setPosition(TS * 30, TS * 12);
+		stork.setVelocity(-0.8f, 0);
+		stork.show();
+
+		bag.setPosition(stork.position().plus(-14, 3));
+		bag.setVelocity(stork.velocity());
+		bag.setAcceleration(Vector2f.ZERO);
+		bag.show();
+		bagOpen = false;
+		numBagBounces = 0;
+
+		changeState(STATE_DELIVER_JUNIOR, TickTimer.INDEFINITE);
+	}
+
+	private void updateStateDeliverJunior() {
 		stork.move();
 		bag.move();
 
 		// release bag from storks beak?
-		if ((int) stork.position().x() == TS * (20)) {
-			bag.setAcceleration(0, 0.04f);
+		if (stork.tile().x() == 20) {
+			bag.setAcceleration(0, 0.04f); // gravity
 			stork.setVelocity(-1, 0);
 		}
 
 		// (closed) bag reaches ground for first time?
-		if (!bagOpen && bag.position().y() > groundY) {
+		if (!bagOpen && bag.position().y() > LANE_Y) {
 			++numBagBounces;
 			if (numBagBounces < 3) {
 				bag.setVelocity(-0.2f, -1f / numBagBounces);
-				bag.setY(groundY);
+				bag.setY(LANE_Y);
 			} else {
 				bagOpen = true;
 				bag.setVelocity(Vector2f.ZERO);
@@ -126,7 +133,7 @@ public class MsPacManIntermission3 {
 		}
 	}
 
-	private void updateStorkLeavesScene() {
+	private void updateStateStorkLeavesScene() {
 		stork.move();
 		if (stateTimer.hasExpired()) {
 			gameController.terminateCurrentState();
