@@ -6,8 +6,6 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.games.pacman.lib.Globals.TS;
 
-import org.tinylog.Logger;
-
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Direction;
@@ -31,28 +29,29 @@ import de.amr.games.pacman.model.actors.PacAnimations;
  */
 public class MsPacManIntermission1 {
 
-	public final GameController gameController;
-
-	public int upperY = TS * (12);
-	public int middleY = TS * (18);
-	public int lowerY = TS * (24);
-	public float pacSpeedChased = 1.125f;
-	public float pacSpeedRising = 0.75f;
-	public float ghostSpeedAfterColliding = 0.3f;
-	public float ghostSpeedChasing = 1.25f;
-	public Pac pacMan;
-	public Pac msPac;
-	public Ghost pinky;
-	public Ghost inky;
-	public Entity heart;
-
 	public static final byte STATE_FLAP = 0;
 	public static final byte STATE_CHASED_BY_GHOSTS = 1;
 	public static final byte STATE_COMING_TOGETHER = 2;
 	public static final byte STATE_IN_HEAVEN = 3;
 
+	public static final int UPPER_LANE_Y = TS * 12;
+	public static final int MIDDLE_LANE_Y = TS * 18;
+	public static final int LOWER_LANE_Y = TS * 24;
+
+	public static final float SPEED_PAC_CHASING = 1.125f;
+	public static final float SPEED_PAC_RISING = 0.75f;
+	public static final float SPEED_GHOST_AFTER_COLLISION = 0.3f;
+	public static final float SPEED_GHOST_CHASING = 1.25f;
+
+	public final GameController gameController;
+	public final Pac pacMan;
+	public final Pac msPac;
+	public final Ghost pinky;
+	public final Ghost inky;
+	public final Entity heart;
+
 	private byte state;
-	private TickTimer stateTimer = new TickTimer("MsPacIntermission1");
+	private final TickTimer stateTimer = new TickTimer("MsPacManIntermission1");
 
 	public void changeState(byte state, long ticks) {
 		this.state = state;
@@ -62,7 +61,6 @@ public class MsPacManIntermission1 {
 
 	public MsPacManIntermission1(GameController gameController) {
 		this.gameController = gameController;
-		Logger.trace("Creating guys for intermission 1");
 		pacMan = new Pac("Pac-Man");
 		inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
 		msPac = new Pac("Ms. Pac-Man");
@@ -73,13 +71,13 @@ public class MsPacManIntermission1 {
 	public void tick() {
 		switch (state) {
 		case STATE_FLAP:
-			updateFlap();
+			updateStateFlap();
 			break;
 		case STATE_CHASED_BY_GHOSTS:
-			updateChasedByGhosts();
+			updateStateChasedByGhosts();
 			break;
 		case STATE_COMING_TOGETHER:
-			updateComingTogether();
+			updateStateComingTogether();
 			break;
 		case STATE_IN_HEAVEN:
 			if (stateTimer.hasExpired()) {
@@ -93,53 +91,49 @@ public class MsPacManIntermission1 {
 		stateTimer.advance();
 	}
 
-	private void updateFlap() {
+	private void updateStateFlap() {
 		if (stateTimer.atSecond(1)) {
 			GameEvents.publishSoundEvent(SoundEvent.START_INTERMISSION_1, gameController.game());
 		} else if (stateTimer.hasExpired()) {
-			pacMan.setMoveDir(Direction.RIGHT);
-			pacMan.setPosition(-TS * (2), upperY);
-			pacMan.setPixelSpeed(pacSpeedChased);
-			pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
-			pacMan.startAnimation();
-			pacMan.show();
-
-			inky.setMoveAndWishDir(Direction.RIGHT);
-			inky.setPosition(pacMan.position().minus(TS * (6), 0));
-			inky.setPixelSpeed(ghostSpeedChasing);
-			inky.selectAnimation(GhostAnimations.GHOST_NORMAL);
-			inky.startAnimation();
-			inky.show();
-
-			msPac.setMoveDir(Direction.LEFT);
-			msPac.setPosition(TS * (30), lowerY);
-			msPac.setPixelSpeed(pacSpeedChased);
-			msPac.selectAnimation(PacAnimations.MUNCHING);
-			msPac.startAnimation();
-			msPac.show();
-
-			pinky.setMoveAndWishDir(Direction.LEFT);
-			pinky.setPosition(msPac.position().plus(TS * (6), 0));
-			pinky.setPixelSpeed(ghostSpeedChasing);
-			pinky.selectAnimation(GhostAnimations.GHOST_NORMAL);
-			pinky.startAnimation();
-			pinky.show();
-
-			changeState(STATE_CHASED_BY_GHOSTS, TickTimer.INDEFINITE);
+			enterStateChasedByGhosts();
 		}
 	}
 
-	private void updateChasedByGhosts() {
+	private void enterStateChasedByGhosts() {
+		pacMan.setMoveDir(Direction.RIGHT);
+		pacMan.setPosition(TS * (-2), UPPER_LANE_Y);
+		pacMan.setPixelSpeed(SPEED_PAC_CHASING);
+		pacMan.selectAnimation(PacAnimations.HUSBAND_MUNCHING);
+		pacMan.startAnimation();
+		pacMan.show();
+
+		inky.setMoveAndWishDir(Direction.RIGHT);
+		inky.setPosition(pacMan.position().minus(TS * 6, 0));
+		inky.setPixelSpeed(SPEED_GHOST_CHASING);
+		inky.selectAnimation(GhostAnimations.GHOST_NORMAL);
+		inky.startAnimation();
+		inky.show();
+
+		msPac.setMoveDir(Direction.LEFT);
+		msPac.setPosition(TS * 30, LOWER_LANE_Y);
+		msPac.setPixelSpeed(SPEED_PAC_CHASING);
+		msPac.selectAnimation(PacAnimations.MUNCHING);
+		msPac.startAnimation();
+		msPac.show();
+
+		pinky.setMoveAndWishDir(Direction.LEFT);
+		pinky.setPosition(msPac.position().plus(TS * 6, 0));
+		pinky.setPixelSpeed(SPEED_GHOST_CHASING);
+		pinky.selectAnimation(GhostAnimations.GHOST_NORMAL);
+		pinky.startAnimation();
+		pinky.show();
+
+		changeState(STATE_CHASED_BY_GHOSTS, TickTimer.INDEFINITE);
+	}
+
+	private void updateStateChasedByGhosts() {
 		if (inky.position().x() > TS * 30) {
-			msPac.setPosition(TS * (-3), middleY);
-			msPac.setMoveDir(Direction.RIGHT);
-			pinky.setPosition(msPac.position().minus(TS * (5), 0));
-			pinky.setMoveAndWishDir(Direction.RIGHT);
-			pacMan.setPosition(TS * (31), middleY);
-			pacMan.setMoveDir(Direction.LEFT);
-			inky.setPosition(pacMan.position().plus(TS * (5), 0));
-			inky.setMoveAndWishDir(Direction.LEFT);
-			changeState(STATE_COMING_TOGETHER, TickTimer.INDEFINITE);
+			enterStateComingTogether();
 		} else {
 			pacMan.move();
 			msPac.move();
@@ -148,47 +142,41 @@ public class MsPacManIntermission1 {
 		}
 	}
 
-	private void updateComingTogether() {
+	private void enterStateComingTogether() {
+		msPac.setPosition(TS * (-3), MIDDLE_LANE_Y);
+		msPac.setMoveDir(Direction.RIGHT);
+		pinky.setPosition(msPac.position().minus(TS * 5, 0));
+		pinky.setMoveAndWishDir(Direction.RIGHT);
+		pacMan.setPosition(TS * 31, MIDDLE_LANE_Y);
+		pacMan.setMoveDir(Direction.LEFT);
+		inky.setPosition(pacMan.position().plus(TS * 5, 0));
+		inky.setMoveAndWishDir(Direction.LEFT);
+		changeState(STATE_COMING_TOGETHER, TickTimer.INDEFINITE);
+	}
+
+	private void updateStateComingTogether() {
 		// Pac-Man and Ms. Pac-Man reach end position?
-		if (pacMan.moveDir() == Direction.UP && pacMan.position().y() < upperY) {
-			pacMan.setPixelSpeed(0);
-			pacMan.setMoveDir(Direction.LEFT);
-			pacMan.stopAnimation();
-			pacMan.resetAnimation();
-
-			msPac.setPixelSpeed(0);
-			msPac.setMoveDir(Direction.RIGHT);
-			msPac.stopAnimation();
-			msPac.resetAnimation();
-
-			inky.setPixelSpeed(0);
-			inky.hide();
-
-			pinky.setPixelSpeed(0);
-			pinky.hide();
-
-			heart.setPosition((pacMan.position().x() + msPac.position().x()) / 2, pacMan.position().y() - TS * (2));
-			heart.show();
-			changeState(STATE_IN_HEAVEN, 3 * 60);
+		if (pacMan.moveDir() == Direction.UP && pacMan.position().y() < UPPER_LANE_Y) {
+			enterStateInHeaven();
 		}
 
 		// Pac-Man and Ms. Pac-Man meet?
 		else if (pacMan.moveDir() == Direction.LEFT && pacMan.position().x() - msPac.position().x() < TS * (2)) {
 			pacMan.setMoveDir(Direction.UP);
-			pacMan.setPixelSpeed(pacSpeedRising);
+			pacMan.setPixelSpeed(SPEED_PAC_RISING);
 			msPac.setMoveDir(Direction.UP);
-			msPac.setPixelSpeed(pacSpeedRising);
+			msPac.setPixelSpeed(SPEED_PAC_RISING);
 		}
 
 		// Inky and Pinky collide?
 		else if (inky.moveDir() == Direction.LEFT && inky.position().x() - pinky.position().x() < TS * (2)) {
 			inky.setMoveAndWishDir(Direction.RIGHT);
-			inky.setPixelSpeed(ghostSpeedAfterColliding);
+			inky.setPixelSpeed(SPEED_GHOST_AFTER_COLLISION);
 			inky.setVelocity(inky.velocity().minus(0, 2.0f));
 			inky.setAcceleration(0, 0.4f);
 
 			pinky.setMoveAndWishDir(Direction.LEFT);
-			pinky.setPixelSpeed(ghostSpeedAfterColliding);
+			pinky.setPixelSpeed(SPEED_GHOST_AFTER_COLLISION);
 			pinky.setVelocity(pinky.velocity().minus(0, 2.0f));
 			pinky.setAcceleration(0, 0.4f);
 		}
@@ -198,14 +186,37 @@ public class MsPacManIntermission1 {
 			msPac.move();
 			inky.move();
 			pinky.move();
-			if (inky.position().y() > middleY) {
-				inky.setPosition(inky.position().x(), middleY);
+			if (inky.position().y() > MIDDLE_LANE_Y) {
+				inky.setPosition(inky.position().x(), MIDDLE_LANE_Y);
 				inky.setAcceleration(Vector2f.ZERO);
 			}
-			if (pinky.position().y() > middleY) {
-				pinky.setPosition(pinky.position().x(), middleY);
+			if (pinky.position().y() > MIDDLE_LANE_Y) {
+				pinky.setPosition(pinky.position().x(), MIDDLE_LANE_Y);
 				pinky.setAcceleration(Vector2f.ZERO);
 			}
 		}
+	}
+
+	private void enterStateInHeaven() {
+		pacMan.setPixelSpeed(0);
+		pacMan.setMoveDir(Direction.LEFT);
+		pacMan.stopAnimation();
+		pacMan.resetAnimation();
+
+		msPac.setPixelSpeed(0);
+		msPac.setMoveDir(Direction.RIGHT);
+		msPac.stopAnimation();
+		msPac.resetAnimation();
+
+		inky.setPixelSpeed(0);
+		inky.hide();
+
+		pinky.setPixelSpeed(0);
+		pinky.hide();
+
+		heart.setPosition((pacMan.position().x() + msPac.position().x()) / 2, pacMan.position().y() - TS * (2));
+		heart.show();
+
+		changeState(STATE_IN_HEAVEN, 3 * 60);
 	}
 }
