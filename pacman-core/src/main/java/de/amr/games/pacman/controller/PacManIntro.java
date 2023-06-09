@@ -44,7 +44,6 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 	}
 
 	public static class Context {
-		public GameController gameController;
 		public float chaseSpeed = 1.1f;
 		public int leftTileX = 4;
 		public Pulse blinking = new Pulse(10, true);
@@ -55,8 +54,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 		public int ghostIndex;
 		public long ghostKilledTime;
 
-		public Context(GameController gameController) {
-			this.gameController = gameController;
+		public Context() {
 			ghostInfo[0] = new GhostInfo(GameModel.RED_GHOST, "BLINKY", "SHADOW");
 			ghostInfo[1] = new GhostInfo(GameModel.PINK_GHOST, "PINKY", "SPEEDY");
 			ghostInfo[2] = new GhostInfo(GameModel.CYAN_GHOST, "INKY", "BASHFUL");
@@ -229,13 +227,13 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(0.75)) {
 					ctx.ghostInfo[3].ghost.hide();
-					if (!ctx.gameController.game().hasCredit()) {
-						ctx.gameController.changeState(GameState.READY);
+					if (!GameController.it().game().hasCredit()) {
+						GameController.it().changeState(GameState.READY);
 						return;
 					}
 				}
 				if (timer.atSecond(5)) {
-					ctx.gameController.changeState(GameState.CREDIT);
+					GameController.it().changeState(GameState.CREDIT);
 				}
 			}
 		};
@@ -251,12 +249,12 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 
 	private final Context introData;
 
-	public PacManIntro(GameController gameController) {
+	public PacManIntro() {
 		super(State.values());
 		for (var state : states) {
 			state.controller = this;
 		}
-		introData = new Context(gameController);
+		introData = new Context();
 	}
 
 	@Override

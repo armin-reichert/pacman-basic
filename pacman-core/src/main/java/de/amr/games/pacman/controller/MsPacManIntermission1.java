@@ -42,7 +42,6 @@ public class MsPacManIntermission1 {
 	public static final float SPEED_GHOST_AFTER_COLLISION = 0.3f;
 	public static final float SPEED_GHOST_CHASING = 1.25f;
 
-	public final GameController gameController;
 	public final Pac pacMan;
 	public final Pac msPac;
 	public final Ghost pinky;
@@ -58,8 +57,7 @@ public class MsPacManIntermission1 {
 		stateTimer.start();
 	}
 
-	public MsPacManIntermission1(GameController gameController) {
-		this.gameController = gameController;
+	public MsPacManIntermission1() {
 		pacMan = new Pac("Pac-Man");
 		inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
 		msPac = new Pac("Ms. Pac-Man");
@@ -80,7 +78,7 @@ public class MsPacManIntermission1 {
 			break;
 		case STATE_IN_HEAVEN:
 			if (stateTimer.hasExpired()) {
-				gameController.terminateCurrentState();
+				GameController.it().terminateCurrentState();
 				return;
 			}
 			break;

@@ -35,7 +35,6 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 
 	public static class Context {
 		//@formatter:off
-		public GameController gameController;
 		public float          speed                = 1.1f;
 		public int            stopY                = TS * 11 + 1;
 		public int            stopX                = TS * 6 - 4; 
@@ -54,10 +53,6 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			                                           );
 		public int ghostIndex = 0;
 		//@formatter:on
-
-		public Context(GameController gameController) {
-			this.gameController = gameController;
-		}
 
 		/**
 		 * In the Arcade game, 6 of the 96 bulbs are switched-on every frame, shifting every tick. The bulbs in the leftmost
@@ -170,11 +165,11 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			@Override
 			public void onUpdate(MsPacManIntro.Context ctx) {
 				ctx.marqueeTimer.advance();
-				if (timer.atSecond(2.0) && !ctx.gameController.game().hasCredit()) {
-					ctx.gameController.changeState(GameState.READY);
+				if (timer.atSecond(2.0) && !GameController.it().game().hasCredit()) {
+					GameController.it().changeState(GameState.READY);
 					// go into demo mode
 				} else if (timer.atSecond(5)) {
-					ctx.gameController.changeState(GameState.CREDIT);
+					GameController.it().changeState(GameState.CREDIT);
 				}
 			}
 		};
@@ -190,12 +185,12 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 
 	private final Context introData;
 
-	public MsPacManIntro(GameController gameController) {
+	public MsPacManIntro() {
 		super(State.values());
 		for (var state : states) {
 			state.intro = this;
 		}
-		introData = new Context(gameController);
+		introData = new Context();
 	}
 
 	@Override

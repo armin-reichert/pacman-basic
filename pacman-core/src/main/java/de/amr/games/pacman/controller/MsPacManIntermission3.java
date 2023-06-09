@@ -32,7 +32,6 @@ public class MsPacManIntermission3 {
 
 	public static final int LANE_Y = TS * 24;
 
-	public final GameController gameController;
 	public final Pac pacMan;
 	public final Pac msPacMan;
 	public final Entity stork;
@@ -50,8 +49,7 @@ public class MsPacManIntermission3 {
 		stateTimer.start();
 	}
 
-	public MsPacManIntermission3(GameController gameController) {
-		this.gameController = gameController;
+	public MsPacManIntermission3() {
 		pacMan = new Pac("Pac-Man");
 		msPacMan = new Pac("Ms. Pac-Man");
 		stork = new Entity();
@@ -135,7 +133,7 @@ public class MsPacManIntermission3 {
 	private void updateStateStorkLeavesScene() {
 		stork.move();
 		if (stateTimer.hasExpired()) {
-			gameController.terminateCurrentState();
+			GameController.it().terminateCurrentState();
 		}
 	}
 }

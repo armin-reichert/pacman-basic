@@ -29,7 +29,6 @@ public class MsPacManIntermission2 {
 	public static final int MIDDLE_LANE_Y = TS * 18;
 	public static final int LOWER_LANE_Y = TS * 24;
 
-	public final GameController gameController;
 	public final Pac pacMan;
 	public final Pac msPac;
 
@@ -42,8 +41,7 @@ public class MsPacManIntermission2 {
 		stateTimer.start();
 	}
 
-	public MsPacManIntermission2(GameController gameController) {
-		this.gameController = gameController;
+	public MsPacManIntermission2() {
 		pacMan = new Pac("Pac-Man");
 		msPac = new Pac("Ms. Pac-Man");
 	}
@@ -120,7 +118,7 @@ public class MsPacManIntermission2 {
 			msPac.setMoveDir(Direction.RIGHT);
 			msPac.setPixelSpeed(4.0f);
 		} else if (stateTimer.atSecond(23)) {
-			gameController.terminateCurrentState();
+			GameController.it().terminateCurrentState();
 			return;
 		}
 		pacMan.move();
