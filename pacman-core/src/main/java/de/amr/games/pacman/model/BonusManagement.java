@@ -13,8 +13,8 @@ import java.util.Optional;
 
 import org.tinylog.Logger;
 
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Globals;
 import de.amr.games.pacman.lib.NavigationPoint;
@@ -185,14 +185,14 @@ public class BonusManagement {
 			bonus = createMovingBonus(bonusIndex);
 			bonus.setEdible(TickTimer.INDEFINITE);
 			Logger.info("Moving bonus activated");
-			GameEvents.publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
+			GameController.publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
 			break;
 		}
 		case PACMAN: {
 			bonus = createStaticBonus(bonusIndex);
 			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 			bonus.setEdible(ticks);
-			GameEvents.publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
+			GameController.publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
 			break;
 		}
 		default:

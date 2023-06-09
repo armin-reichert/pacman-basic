@@ -4,7 +4,6 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.event.GameEvents.publishGameEventOfType;
 import static de.amr.games.pacman.lib.Globals.checkLevelNumber;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static de.amr.games.pacman.lib.NavigationPoint.np;
@@ -22,8 +21,8 @@ import java.util.Properties;
 
 import org.tinylog.Logger;
 
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.NavigationPoint;
@@ -493,7 +492,7 @@ public class GameModel {
 		}
 
 		level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
-		publishGameEventOfType(GameEvent.LEVEL_CREATED, this);
+		GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
 
 		level.letsGetReadyToRumbleAndShowGuys(false);
 
@@ -518,20 +517,20 @@ public class GameModel {
 	 * Enters the demo game level ("attract mode").
 	 */
 	public void enterDemoLevel() {
-		GameEvents.setSoundEventsEnabled(false);
+		GameController.setSoundEventsEnabled(false);
 		scoringEnabled = false;
 		switch (variant) {
 		case MS_PACMAN:
 			level = new GameLevel(this, new World(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RuleBasedSteering()); // TODO check which route Ms. Pac-Man takes in demo level
-			publishGameEventOfType(GameEvent.LEVEL_CREATED, this);
+			GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			Logger.info("Ms. Pac-Man demo level entered");
 			break;
 		case PACMAN:
 			level = new GameLevel(this, new World(PACMAN_MAP), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE));
-			publishGameEventOfType(GameEvent.LEVEL_CREATED, this);
+			GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			Logger.info("Pac-Man demo level entered");
 			break;
@@ -622,7 +621,7 @@ public class GameModel {
 		}
 		if (oldScore < SCORE_EXTRA_LIFE && newScore >= SCORE_EXTRA_LIFE) {
 			lives += 1;
-			GameEvents.publishSoundEvent(SoundEvent.EXTRA_LIFE, this);
+			GameController.publishSoundEvent(SoundEvent.EXTRA_LIFE);
 		}
 	}
 

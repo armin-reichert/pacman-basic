@@ -4,18 +4,22 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
 import static de.amr.games.pacman.lib.Globals.checkGameVariant;
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Predicate;
 
+import org.tinylog.Logger;
+
 import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.event.GameEventListener;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.RuleBasedSteering;
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.GameVariant;
 
@@ -40,12 +44,26 @@ import de.amr.games.pacman.model.GameVariant;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
+	private static GameController it;
+
+	public static GameController it() {
+		return it;
+	}
+
+	public static void create(GameVariant variant) {
+		if (it == null) {
+			it = new GameController(variant);
+		} else {
+			throw new IllegalStateException("Game controller already created");
+		}
+	}
+
 	private GameModel game;
 	private Steering autopilot = new RuleBasedSteering();
 	private Steering manualPacSteering = Steering.NONE;
 	private boolean autoControlled;
 
-	public GameController(GameVariant variant) {
+	private GameController(GameVariant variant) {
 		super(GameState.values());
 		checkGameVariant(variant);
 		for (var state : states) {
@@ -53,9 +71,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 		// map FSM state change events to "game state change" events
 		addStateChangeListener(
-				(oldState, newState) -> GameEvents.publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
+				(oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
 		game = new GameModel(variant);
-		GameEvents.setGameController(this);
+		GameController.it = this;
 	}
 
 	@Override
@@ -115,7 +133,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (!game.isPlaying()) {
 			boolean added = game.changeCredit(1);
 			if (added) {
-				publishSoundEvent(SoundEvent.CREDIT_ADDED, game);
+				publishSoundEvent(SoundEvent.CREDIT_ADDED);
 			}
 			if (state() != GameState.CREDIT) {
 				changeState(GameState.CREDIT);
@@ -141,7 +159,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			game.level().ifPresent(level -> {
 				var world = level.world();
 				world.tiles().filter(Predicate.not(world::isEnergizerTile)).forEach(world.foodStorage()::removeFood);
-				GameEvents.publishGameEventOfType(GameEvent.PAC_FINDS_FOOD, game);
+				publishGameEventOfType(GameEvent.PAC_FINDS_FOOD);
 				if (world.foodStorage().uneatenCount() == 0) {
 					changeState(GameState.LEVEL_COMPLETE);
 				}
@@ -165,6 +183,48 @@ public class GameController extends Fsm<GameState, GameModel> {
 				world.tiles().forEach(world.foodStorage()::removeFood);
 				changeState(GameState.LEVEL_COMPLETE);
 			});
+		}
+	}
+
+	// Events
+
+	private final Collection<GameEventListener> subscribers = new ArrayList<>();
+	private boolean soundEventsEnabled = true;
+
+	public static void setSoundEventsEnabled(boolean enabled) {
+		it.soundEventsEnabled = enabled;
+		Logger.info("Sound events {}", enabled ? "enabled" : "disabled");
+	}
+
+	public static void addListener(GameEventListener subscriber) {
+		checkNotNull(subscriber);
+		it.subscribers.add(subscriber);
+	}
+
+	public static void removeListener(GameEventListener subscriber) {
+		checkNotNull(subscriber);
+		it.subscribers.remove(subscriber);
+	}
+
+	public static void publishGameEvent(GameEvent event) {
+		checkNotNull(event);
+		Logger.trace("Publish game event: {}", event);
+		it.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
+	}
+
+	public static void publishGameEvent(byte type, Vector2i tile) {
+		checkNotNull(tile);
+		publishGameEvent(new GameEvent(it.game, type, tile));
+	}
+
+	public static void publishGameEventOfType(byte type) {
+		publishGameEvent(new GameEvent(it.game, type, null));
+	}
+
+	public static void publishSoundEvent(byte soundEventID) {
+		checkNotNull(soundEventID);
+		if (it.soundEventsEnabled) {
+			publishGameEvent(new SoundEvent(it.game, soundEventID));
 		}
 	}
 }

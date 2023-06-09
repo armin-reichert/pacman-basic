@@ -4,13 +4,11 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
-import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
-import static de.amr.games.pacman.event.GameEvents.publishSoundEvent;
-
 import java.util.List;
 
 import org.tinylog.Logger;
 
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.NavigationPoint;
@@ -103,7 +101,7 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = GameModel.BONUS_POINTS_SHOWN_TICKS;
 		jumpAnimation.stop();
 		Logger.info("Bonus eaten: {}", this);
-		publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
+		GameController.publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
 	}
 
 	public void setRoute(List<NavigationPoint> route) {
@@ -127,13 +125,13 @@ public class MovingBonus extends Creature implements Bonus {
 			if (sameTile(level().pac())) {
 				level().game().scorePoints(points());
 				eat();
-				publishSoundEvent(SoundEvent.BONUS_EATEN, level().game());
+				GameController.publishSoundEvent(SoundEvent.BONUS_EATEN);
 				return;
 			}
 			steering.steer(level(), this);
 			if (steering.isComplete()) {
 				Logger.trace("Bonus reached target: {}", this);
-				publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
+				GameController.publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
 			}
@@ -146,7 +144,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (--timer == 0) {
 				setInactive();
 				Logger.trace("Bonus expired: {}", this);
-				publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
+				GameController.publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
 			}
 			break;
 		}

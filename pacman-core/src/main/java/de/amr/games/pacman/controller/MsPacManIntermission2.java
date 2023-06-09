@@ -6,7 +6,6 @@ package de.amr.games.pacman.controller;
 
 import static de.amr.games.pacman.lib.Globals.TS;
 
-import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
@@ -66,7 +65,7 @@ public class MsPacManIntermission2 {
 
 	private void updateStateFlap() {
 		if (stateTimer.hasExpired()) {
-			GameEvents.publishSoundEvent(SoundEvent.START_INTERMISSION_2, gameController.game());
+			GameController.publishSoundEvent(SoundEvent.START_INTERMISSION_2);
 			enterStateChasing();
 		}
 	}

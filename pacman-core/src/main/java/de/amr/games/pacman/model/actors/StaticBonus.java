@@ -4,12 +4,10 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
-import static de.amr.games.pacman.event.GameEvents.publishGameEvent;
-
 import org.tinylog.Logger;
 
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
@@ -80,7 +78,7 @@ public class StaticBonus extends Entity implements Bonus {
 		timer = GameModel.BONUS_POINTS_SHOWN_TICKS;
 		state = Bonus.STATE_EATEN;
 		Logger.info("Bonus eaten: {}", this);
-		publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
+		GameController.publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
 	}
 
 	public void setLevel(GameLevel level) {
@@ -90,7 +88,7 @@ public class StaticBonus extends Entity implements Bonus {
 	private void expire() {
 		setInactive();
 		Logger.info("Bonus expired: {}", this);
-		publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
+		GameController.publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
 	}
 
 	@Override
@@ -106,7 +104,7 @@ public class StaticBonus extends Entity implements Bonus {
 				level.game().scorePoints(points());
 				Logger.info("Scored {} points for eating bonus {}", points(), this);
 				eat();
-				GameEvents.publishSoundEvent(SoundEvent.BONUS_EATEN, level.game());
+				GameController.publishSoundEvent(SoundEvent.BONUS_EATEN);
 			} else if (timer == 0) {
 				expire();
 			} else {

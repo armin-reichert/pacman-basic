@@ -32,9 +32,9 @@ import java.util.stream.Stream;
 
 import org.tinylog.Logger;
 
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
@@ -525,8 +525,8 @@ public class GameLevel {
 				game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 			}
 			ghostHouseManagement.update();
-			GameEvents.publishGameEvent(GameEvent.PAC_FINDS_FOOD, foodTile);
-			GameEvents.publishSoundEvent(SoundEvent.PACMAN_FOUND_FOOD, game);
+			GameController.publishGameEvent(GameEvent.PAC_FINDS_FOOD, foodTile);
+			GameController.publishSoundEvent(SoundEvent.PACMAN_FOUND_FOOD);
 		} else {
 			pac.starve();
 		}
@@ -547,10 +547,10 @@ public class GameLevel {
 			Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
-			GameEvents.publishGameEventOfType(GameEvent.PAC_GETS_POWER, game);
-			GameEvents.publishSoundEvent(SoundEvent.PACMAN_POWER_STARTS, game);
+			GameController.publishGameEventOfType(GameEvent.PAC_GETS_POWER);
+			GameController.publishSoundEvent(SoundEvent.PACMAN_POWER_STARTS);
 		} else if (memo.pacPowerFading) {
-			GameEvents.publishGameEventOfType(GameEvent.PAC_STARTS_LOSING_POWER, game);
+			GameController.publishGameEventOfType(GameEvent.PAC_STARTS_LOSING_POWER);
 		} else if (memo.pacPowerLost) {
 			Logger.info("{} power ends, timer: {}", pac.name(), pac.powerTimer());
 			huntingTimer.start();
@@ -558,8 +558,8 @@ public class GameLevel {
 			pac.powerTimer().stop();
 			pac.powerTimer().resetIndefinitely();
 			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-			GameEvents.publishGameEventOfType(GameEvent.PAC_LOSES_POWER, game);
-			GameEvents.publishSoundEvent(SoundEvent.PACMAN_POWER_ENDS, game);
+			GameController.publishGameEventOfType(GameEvent.PAC_LOSES_POWER);
+			GameController.publishSoundEvent(SoundEvent.PACMAN_POWER_ENDS);
 		}
 
 		// Cruise Elroy
