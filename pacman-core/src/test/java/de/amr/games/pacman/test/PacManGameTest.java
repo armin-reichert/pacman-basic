@@ -9,7 +9,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import de.amr.games.pacman.controller.GameController;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.amr.games.pacman.lib.Vector2f;
@@ -26,9 +28,14 @@ public class PacManGameTest {
 
 	private GameModel game;
 
+	@BeforeClass
+	public static void setUp() {
+		GameController.create(GameVariant.PACMAN);
+	}
+
 	@Before
-	public void setUp() {
-		game = new GameModel(GameVariant.PACMAN);
+	public void setUpTest() {
+		game = GameController.it().game();
 		game.enterLevel(1);
 	}
 
