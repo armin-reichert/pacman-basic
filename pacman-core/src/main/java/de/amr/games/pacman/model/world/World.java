@@ -31,7 +31,7 @@ import de.amr.games.pacman.model.actors.Entity;
  * 
  * @author Armin Reichert
  */
-public class World extends Entity {
+public class World {
 
 	//@formatter:off
 	public static final byte SPACE           = 0;
