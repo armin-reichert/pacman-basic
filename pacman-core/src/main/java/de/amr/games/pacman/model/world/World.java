@@ -198,13 +198,11 @@ public class World {
 		return portals.stream().anyMatch(portal -> portal.contains(tile));
 	}
 
-	/**
-	 * @param tile some tile (may be outside world bound)
-	 * @return the content at the given tile or empty space if outside world
-	 */
-	public byte contentOrSpace(Vector2i tile) {
-		// Note: content is stored row-wise, so use (y,x) to index content
-		return tileMap.content(tile.y(), tile.x(), SPACE);
+	private byte contentOrSpace(Vector2i tile) {
+		// Note: content is stored row-wise, so use (y,x) as coordinates
+		int row = tile.y();
+		int col = tile.x();
+		return insideBounds(row, col) ? tileMap.content(row, col) : SPACE;
 	}
 
 	public boolean isWall(Vector2i tile) {
@@ -256,8 +254,7 @@ public class World {
 	}
 
 	public void removeFood(Vector2i tile) {
-		checkTileNotNull(tile);
-		if (insideBounds(tile) && hasFoodAt(tile)) {
+		if (hasFoodAt(tile)) {
 			eaten.set(index(tile));
 			--uneatenFoodCount;
 		}
@@ -266,8 +263,8 @@ public class World {
 	public boolean hasFoodAt(Vector2i tile) {
 		checkTileNotNull(tile);
 		if (insideBounds(tile)) {
-			byte data = contentOrSpace(tile);
-			return (data == World.PELLET || data == World.ENERGIZER) && !eaten.get(index(tile));
+			byte data = tileMap.content(tile.y(), tile.x());
+			return (data == PELLET || data == ENERGIZER) && !eaten.get(index(tile));
 		}
 		return false;
 	}

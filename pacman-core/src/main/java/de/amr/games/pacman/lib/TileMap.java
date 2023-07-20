@@ -30,13 +30,6 @@ public class TileMap {
 		return content[row][col];
 	}
 
-	public byte content(int row, int col, byte defaultContent) {
-		if (!insideBounds(row, col)) {
-			return defaultContent;
-		}
-		return content[row][col];
-	}
-
 	private boolean insideBounds(int row, int col) {
 		return 0 <= row && row < numRows() && 0 <= col && col < numCols();
 	}
