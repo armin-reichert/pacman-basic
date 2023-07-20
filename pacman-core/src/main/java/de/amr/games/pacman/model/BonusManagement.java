@@ -131,9 +131,9 @@ public class BonusManagement {
 	public boolean isFirstBonusReached() {
 		switch (level.game().variant()) {
 		case MS_PACMAN:
-			return level.world().foodStorage().eatenCount() == 64;
+			return level.world().eatenFoodCount() == 64;
 		case PACMAN:
-			return level.world().foodStorage().eatenCount() == 70;
+			return level.world().eatenFoodCount() == 70;
 		default:
 			throw new IllegalGameVariantException(level.game().variant());
 		}
@@ -142,9 +142,9 @@ public class BonusManagement {
 	public boolean isSecondBonusReached() {
 		switch (level.game().variant()) {
 		case MS_PACMAN:
-			return level.world().foodStorage().eatenCount() == 176;
+			return level.world().eatenFoodCount() == 176;
 		case PACMAN:
-			return level.world().foodStorage().eatenCount() == 170;
+			return level.world().eatenFoodCount() == 170;
 		default:
 			throw new IllegalGameVariantException(level.game().variant());
 		}

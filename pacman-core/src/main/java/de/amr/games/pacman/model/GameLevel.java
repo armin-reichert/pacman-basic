@@ -487,7 +487,7 @@ public class GameLevel {
 	private void collectInformation() {
 		var pacTile = pac.tile();
 		memo.forgetEverything(); // Ich scholze jetzt
-		if (world.foodStorage().hasFoodAt(pacTile)) {
+		if (world.hasFoodAt(pacTile)) {
 			memo.foodFoundTile = Optional.of(pacTile);
 			memo.energizerFound = world.isEnergizerTile(pacTile);
 		}
@@ -507,7 +507,7 @@ public class GameLevel {
 		// Food
 		if (memo.foodFoundTile.isPresent()) {
 			var foodTile = memo.foodFoundTile.get();
-			world.foodStorage().removeFood(foodTile);
+			world.removeFood(foodTile);
 			pac.endStarving();
 			if (bonusManagement.isFirstBonusReached()) {
 				memo.bonusReachedIndex = 0;
@@ -563,9 +563,9 @@ public class GameLevel {
 		}
 
 		// Cruise Elroy
-		if (world.foodStorage().uneatenCount() == elroy1DotsLeft) {
+		if (world.uneatenFoodCount() == elroy1DotsLeft) {
 			setCruiseElroyState(1);
-		} else if (world.foodStorage().uneatenCount() == elroy2DotsLeft) {
+		} else if (world.uneatenFoodCount() == elroy2DotsLeft) {
 			setCruiseElroyState(2);
 		}
 
@@ -644,7 +644,7 @@ public class GameLevel {
 	}
 
 	public boolean isCompleted() {
-		return world.foodStorage().uneatenCount() == 0;
+		return world.uneatenFoodCount() == 0;
 	}
 
 	private void unlockGhost() {

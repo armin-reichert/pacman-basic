@@ -158,9 +158,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (game.isPlaying() && state() == GameState.HUNTING) {
 			game.level().ifPresent(level -> {
 				var world = level.world();
-				world.tiles().filter(Predicate.not(world::isEnergizerTile)).forEach(world.foodStorage()::removeFood);
+				world.tiles().filter(Predicate.not(world::isEnergizerTile)).forEach(world::removeFood);
 				publishGameEventOfType(GameEvent.PAC_FINDS_FOOD);
-				if (world.foodStorage().uneatenCount() == 0) {
+				if (world.uneatenFoodCount() == 0) {
 					changeState(GameState.LEVEL_COMPLETE);
 				}
 			});
@@ -180,7 +180,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (game.isPlaying() && state() == GameState.HUNTING) {
 			game.level().ifPresent(level -> {
 				var world = level.world();
-				world.tiles().forEach(world.foodStorage()::removeFood);
+				world.tiles().forEach(world::removeFood);
 				changeState(GameState.LEVEL_COMPLETE);
 			});
 		}

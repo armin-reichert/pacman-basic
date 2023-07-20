@@ -163,7 +163,7 @@ public class RuleBasedSteering extends Steering {
 			if (!pac.canAccessTile(ahead)) {
 				break;
 			}
-			if (level.world().isEnergizerTile(ahead) && !level.world().foodStorage().hasEatenFoodAt(ahead)) {
+			if (level.world().isEnergizerTile(ahead) && !level.world().hasEatenFoodAt(ahead)) {
 				energizerFound = true;
 			}
 			Vector2i aheadLeft = ahead.plus(pac.moveDir().succAntiClockwise().vector());
@@ -229,11 +229,11 @@ public class RuleBasedSteering extends Steering {
 		for (int x = 0; x < level.world().numCols(); ++x) {
 			for (int y = 0; y < level.world().numRows(); ++y) {
 				Vector2i tile = new Vector2i(x, y);
-				if (!level.world().isFoodTile(tile) || level.world().foodStorage().hasEatenFoodAt(tile)) {
+				if (!level.world().isFoodTile(tile) || level.world().hasEatenFoodAt(tile)) {
 					continue;
 				}
 				if (level.world().isEnergizerTile(tile) && pac.powerTimer().remaining() > 2 * 60
-						&& level.world().foodStorage().uneatenCount() > 1) {
+						&& level.world().uneatenFoodCount() > 1) {
 					continue;
 				}
 				float dist = pacManTile.manhattanDistance(tile);

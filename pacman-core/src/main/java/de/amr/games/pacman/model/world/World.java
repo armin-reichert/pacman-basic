@@ -12,8 +12,10 @@ import static de.amr.games.pacman.lib.Globals.v2f;
 import static de.amr.games.pacman.lib.Globals.v2i;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -21,7 +23,6 @@ import de.amr.games.pacman.lib.Pulse;
 import de.amr.games.pacman.lib.TileMap;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
-import de.amr.games.pacman.model.actors.Entity;
 
 /**
  * The tiled world used in the Arcade versions of Pac-Man and Ms. Pac-Man.
@@ -105,7 +106,10 @@ public class World {
 	}
 
 	private final TileMap tileMap;
-	private final FoodStorage foodStorage;
+	private final List<Vector2i> energizerTiles;
+	private final BitSet eaten;
+	private final long totalFoodCount;
+	private long uneatenFoodCount;
 	private final List<Portal> portals;
 	private final Pulse energizerBlinking;
 	private final Pulse mazeFlashing;
@@ -116,15 +120,15 @@ public class World {
 	public World(byte[][] tileMapData) {
 		tileMap = new TileMap(tileMapData);
 		portals = buildPortals(tileMap);
-		foodStorage = new FoodStorage(this);
+
+		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
+		eaten = new BitSet(numCols() * numRows());
+		totalFoodCount = tiles().filter(this::isFoodTile).count();
+		uneatenFoodCount = totalFoodCount;
 
 		// Animations
 		energizerBlinking = new Pulse(10, true);
 		mazeFlashing = new Pulse(10, false);
-	}
-
-	public FoodStorage foodStorage() {
-		return foodStorage;
 	}
 
 	public House house() {
@@ -144,6 +148,10 @@ public class World {
 	 */
 	public Stream<Vector2i> tiles() {
 		return IntStream.range(0, numCols() * numRows()).mapToObj(this::tile);
+	}
+
+	public Stream<Vector2i> energizerTiles() {
+		return energizerTiles.stream();
 	}
 
 	/**
@@ -167,6 +175,10 @@ public class World {
 	 */
 	public boolean insideBounds(double x, double y) {
 		return 0 <= x && x < numCols() * TS && 0 <= y && y < numRows() * TS;
+	}
+
+	private int index(Vector2i tile) {
+		return numCols() * tile.y() + tile.x();
 	}
 
 	public int numCols() {
@@ -228,5 +240,43 @@ public class World {
 		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
 		long numDoorNeighbors = tile.neighbors().filter(ARCADE_HOUSE.door()::occupies).count();
 		return numWallNeighbors + numDoorNeighbors < 2;
+	}
+
+
+	public long totalFoodCount() {
+		return totalFoodCount;
+	}
+
+	public long uneatenFoodCount() {
+		return uneatenFoodCount;
+	}
+
+	public long eatenFoodCount() {
+		return totalFoodCount - uneatenFoodCount;
+	}
+
+	public void removeFood(Vector2i tile) {
+		checkTileNotNull(tile);
+		if (insideBounds(tile) && hasFoodAt(tile)) {
+			eaten.set(index(tile));
+			--uneatenFoodCount;
+		}
+	}
+
+	public boolean hasFoodAt(Vector2i tile) {
+		checkTileNotNull(tile);
+		if (insideBounds(tile)) {
+			byte data = contentOrSpace(tile);
+			return (data == World.PELLET || data == World.ENERGIZER) && !eaten.get(index(tile));
+		}
+		return false;
+	}
+
+	public boolean hasEatenFoodAt(Vector2i tile) {
+		checkTileNotNull(tile);
+		if (insideBounds(tile)) {
+			return eaten.get(index(tile));
+		}
+		return false;
 	}
 }
