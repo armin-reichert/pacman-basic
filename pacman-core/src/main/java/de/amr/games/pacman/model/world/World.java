@@ -33,31 +33,21 @@ import de.amr.games.pacman.lib.Vector2i;
  */
 public class World {
 
-	//@formatter:off
 	public static final byte T_SPACE     = 0;
 	public static final byte T_WALL      = 1;
 	public static final byte T_TUNNEL    = 2;
 	public static final byte T_PELLET    = 3;
 	public static final byte T_ENERGIZER = 4;
-	//@formatter:on
 
-	/** World size in x-direction in tiles. */
-	public static final int TILES_X = 28;
+	public static final int ARCADE_TILES_X = 28;
+	public static final int ARCADE_TILES_Y = 36;
 
-	/** World size in y-direction in tiles. */
-	public static final int TILES_Y = 36;
-
-	/**
-	 * The ghost house as it looks in the Arcade version of Pac-Man and Ms. Pac-Man.
-	 */
-	//@formatter:off
 	private static final House ARCADE_HOUSE = new House(
 		v2i(10, 15), // top-left corner
 		v2i(8, 5),   // size in tiles
 		new Door(v2i(13, 15), v2i(14, 15)),
 		halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17)
 	);
-	//@formatter:on
 
 	/**
 	 * @param position a position
@@ -203,11 +193,11 @@ public class World {
 	}
 
 	public int numCols() {
-		return TILES_X;
+		return ARCADE_TILES_X;
 	}
 
 	public int numRows() {
-		return TILES_Y;
+		return ARCADE_TILES_Y;
 	}
 
 	public List<Portal> portals() {
