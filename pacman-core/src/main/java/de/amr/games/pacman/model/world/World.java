@@ -20,7 +20,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Pulse;
-import de.amr.games.pacman.lib.TileMap;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
 
@@ -35,11 +34,11 @@ import de.amr.games.pacman.lib.Vector2i;
 public class World {
 
 	//@formatter:off
-	public static final byte SPACE           = 0;
-	public static final byte WALL            = 1;
-	public static final byte TUNNEL          = 2;
-	public static final byte PELLET          = 3;
-	public static final byte ENERGIZER       = 4;
+	public static final byte T_SPACE     = 0;
+	public static final byte T_WALL      = 1;
+	public static final byte T_TUNNEL    = 2;
+	public static final byte T_PELLET    = 3;
+	public static final byte T_ENERGIZER = 4;
 	//@formatter:on
 
 	/** World size in x-direction in tiles. */
@@ -49,7 +48,7 @@ public class World {
 	public static final int TILES_Y = 36;
 
 	/**
-	 * The ghosthouse as it looks in the Arcade version of Pac-Man and Ms. Pac-Man.
+	 * The ghost house as it looks in the Arcade version of Pac-Man and Ms. Pac-Man.
 	 */
 	//@formatter:off
 	private static final House ARCADE_HOUSE = new House(
@@ -91,13 +90,15 @@ public class World {
 		return v2f(TS * tileX + HTS, TS * tileY + HTS);
 	}
 
-	private static List<Portal> buildPortals(TileMap tileMap) {
+	private static List<Portal> buildPortals(byte[][] tileMap) {
+		int numRows = tileMap.length;
+		int numCols = tileMap[0].length;
 		var portals = new ArrayList<Portal>();
-		int lastColumn = tileMap.numCols() - 1;
-		for (int row = 0; row < tileMap.numRows(); ++row) {
+		int lastColumn = numCols - 1;
+		for (int row = 0; row < numRows; ++row) {
 			var leftBorderTile = v2i(0, row);
 			var rightBorderTile = v2i(lastColumn, row);
-			if (tileMap.content(row, 0) == TUNNEL && tileMap.content(row, lastColumn) == TUNNEL) {
+			if (tileMap[row][0] == T_TUNNEL && tileMap[row][lastColumn] == T_TUNNEL) {
 				portals.add(new Portal(leftBorderTile, rightBorderTile, 2));
 			}
 		}
@@ -105,7 +106,27 @@ public class World {
 		return portals;
 	}
 
-	private final TileMap tileMap;
+	private static byte[][] validateTileMapData(byte[][] data) {
+		if (data == null) {
+			throw new IllegalArgumentException("Map data missing");
+		}
+		if (data.length == 0) {
+			throw new IllegalArgumentException("Map data empty");
+		}
+		var firstRow = data[0];
+		if (firstRow.length == 0) {
+			throw new IllegalArgumentException("Map data empty");
+		}
+		for (int i = 0; i < data.length; ++i) {
+			if (data[i].length != firstRow.length) {
+				throw new IllegalArgumentException("Map has differently sized rows");
+			}
+		}
+		return data;
+	}
+
+
+	private final byte[][] tileMap;
 	private final List<Vector2i> energizerTiles;
 	private final BitSet eaten;
 	private final long totalFoodCount;
@@ -118,7 +139,7 @@ public class World {
 	 * @param tileMapData byte-array of tile map data
 	 */
 	public World(byte[][] tileMapData) {
-		tileMap = new TileMap(tileMapData);
+		tileMap = validateTileMapData(tileMapData);
 		portals = buildPortals(tileMap);
 
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
@@ -199,31 +220,28 @@ public class World {
 	}
 
 	private byte contentOrSpace(Vector2i tile) {
-		// Note: content is stored row-wise, so use (y,x) as coordinates
-		int row = tile.y();
-		int col = tile.x();
-		return insideBounds(row, col) ? tileMap.content(row, col) : SPACE;
+		return insideBounds(tile) ? tileMap[tile.y()][tile.x()] : T_SPACE;
 	}
 
 	public boolean isWall(Vector2i tile) {
 		checkTileNotNull(tile);
-		return contentOrSpace(tile) == WALL;
+		return contentOrSpace(tile) == T_WALL;
 	}
 
 	public boolean isTunnel(Vector2i tile) {
 		checkTileNotNull(tile);
-		return contentOrSpace(tile) == TUNNEL;
+		return contentOrSpace(tile) == T_TUNNEL;
 	}
 
 	public boolean isFoodTile(Vector2i tile) {
 		checkTileNotNull(tile);
 		byte data = contentOrSpace(tile);
-		return data == PELLET || data == ENERGIZER;
+		return data == T_PELLET || data == T_ENERGIZER;
 	}
 
 	public boolean isEnergizerTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		return contentOrSpace(tile) == ENERGIZER;
+		return contentOrSpace(tile) == T_ENERGIZER;
 	}
 
 	public boolean isIntersection(Vector2i tile) {
@@ -263,8 +281,8 @@ public class World {
 	public boolean hasFoodAt(Vector2i tile) {
 		checkTileNotNull(tile);
 		if (insideBounds(tile)) {
-			byte data = tileMap.content(tile.y(), tile.x());
-			return (data == PELLET || data == ENERGIZER) && !eaten.get(index(tile));
+			byte data = tileMap[tile.y()][tile.x()];
+			return (data == T_PELLET || data == T_ENERGIZER) && !eaten.get(index(tile));
 		}
 		return false;
 	}
