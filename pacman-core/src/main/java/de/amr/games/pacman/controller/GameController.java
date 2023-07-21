@@ -47,18 +47,27 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private static GameController it;
 
 	/**
+	 * Creates the game controller singleton and sets the current game model to the given game variant.
+	 *
+	 * @param variant game variant to select
+	 */
+	public static void create(GameVariant variant) {
+		if (it != null) {
+			throw new IllegalStateException("Game controller already created");
+		}
+		checkGameVariant(variant);
+		it = new GameController(variant);
+		Logger.info("Game controller created, selected game variant: {}", it.game.variant());
+	}
+
+	/**
 	 * @return the game controller singleton
 	 */
 	public static GameController it() {
-		return it;
-	}
-
-	public static void create(GameVariant variant) {
 		if (it == null) {
-			it = new GameController(variant);
-		} else {
-			throw new IllegalStateException("Game controller already created");
+			throw new IllegalStateException("Game Controller cannot be accessed before it has been created");
 		}
+		return it;
 	}
 
 	private GameModel game;
@@ -68,12 +77,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	private GameController(GameVariant variant) {
 		super(GameState.values());
-		checkGameVariant(variant);
-		// map FSM state change events to "game state change" events
-		addStateChangeListener(
-				(oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
-		game = new GameModel(variant);
 		GameController.it = this;
+		game = new GameModel(variant);
+		// map FSM state change events to "game state change" events
+		addStateChangeListener((oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
 	}
 
 	@Override
