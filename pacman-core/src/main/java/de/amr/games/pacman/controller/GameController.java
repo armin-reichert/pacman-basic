@@ -46,6 +46,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	private static GameController it;
 
+	/**
+	 * @return the game controller singleton
+	 */
 	public static GameController it() {
 		return it;
 	}
@@ -66,9 +69,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private GameController(GameVariant variant) {
 		super(GameState.values());
 		checkGameVariant(variant);
-		for (var state : states) {
-			state.gc = this;
-		}
 		// map FSM state change events to "game state change" events
 		addStateChangeListener(
 				(oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
