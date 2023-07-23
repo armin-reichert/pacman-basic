@@ -51,7 +51,6 @@ public interface Bonus {
 	/**
 	 * Changes the bonus state to edible.
 	 * 
-	 * @param points earned when eating this bonus
 	 * @param ticks  time how long the bonus is edible
 	 */
 	void setEdible(long ticks);

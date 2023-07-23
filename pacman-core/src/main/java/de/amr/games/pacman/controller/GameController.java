@@ -31,7 +31,7 @@ import de.amr.games.pacman.model.GameVariant;
  * interface implementations.
  * <p>
  * <li>Exact level data for Ms. Pac-Man still not available. Any hints appreciated!
- * <li>Multiple players.</li>
+ * <li>Multiple players (1up, 2up) not implemented.</li>
  * </ul>
  * 
  * @author Armin Reichert

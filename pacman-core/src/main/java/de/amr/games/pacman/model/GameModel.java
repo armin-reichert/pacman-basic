@@ -409,7 +409,7 @@ public class GameModel {
 	public static final byte PACMAN_BELL            = 6;
 	public static final byte PACMAN_KEY             = 7;
 
-	public static final byte[] BONUS_VALUES_PACMAN = {1, 3, 5, 7, 10, 20, 30, 50 }; // * 100
+	public static final byte[] BONUS_VALUES_PACMAN = { 1, 3, 5, 7, 10, 20, 30, 50 }; // * 100
 	//@formatter:on
 
 	private final GameVariant variant;

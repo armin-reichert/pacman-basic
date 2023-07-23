@@ -4,12 +4,10 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-
 import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.IllegalGameVariantException;
+import de.amr.games.pacman.model.actors.StaticBonus;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,6 +18,8 @@ import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.GameVariant;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.Pac;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Armin Reichert
@@ -40,12 +40,20 @@ public class PacManGameTest {
 	}
 
 	@Test
+	public void testGameControllerCreated() {
+		assertNotNull(GameController.it());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testGameControllerCreatedTwice() {
+		GameController.create(GameVariant.MS_PACMAN);
+	}
+
+	@Test
 	public void testLevelInitialized() {
 		assertTrue(game.level().isPresent());
 		var level = game.level().get();
 		assertEquals(1, level.number());
-//		assertTrue(level.bonus() instanceof Bonus);
-//		assertEquals(Bonus.STATE_INACTIVE, level.bonus().state());
 		assertEquals(0, level.numGhostsKilledInLevel());
 		assertEquals(0, level.numGhostsKilledByEnergizer());
 		assertEquals(0, level.cruiseElroyState());
@@ -130,80 +138,18 @@ public class PacManGameTest {
 		assertEquals(0.0, pac.velocity().length(), Vector2f.EPSILON);
 	}
 
-//	@Test
-//	public void testPacManGameBonus() {
-//		game.enterLevel(1);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(100, level.bonus().points());
-//		});
-//
-//		game.enterLevel(2);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(300, level.bonus().points());
-//		});
-//
-//		game.enterLevel(3);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(500, level.bonus().points());
-//		});
-//
-//		game.enterLevel(4);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(500, level.bonus().points());
-//		});
-//
-//		game.enterLevel(5);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(700, level.bonus().points());
-//		});
-//
-//		game.enterLevel(6);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(700, level.bonus().points());
-//		});
-//
-//		game.enterLevel(7);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(1000, level.bonus().points());
-//		});
-//
-//		game.enterLevel(8);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(1000, level.bonus().points());
-//		});
-//
-//		game.enterLevel(9);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(2000, level.bonus().points());
-//		});
-//
-//		game.enterLevel(10);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(2000, level.bonus().points());
-//		});
-//
-//		game.enterLevel(11);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(3000, level.bonus().points());
-//		});
-//
-//		game.enterLevel(12);
-//		game.level().ifPresent(level -> {
-//			assertTrue(level.bonus() instanceof StaticBonus);
-//			assertEquals(3000, level.bonus().points());
-//		});
-//	}
+	@Test
+	public void testPacManGameBonus() {
+		for (int levelNumber = 1; levelNumber <= 21; ++levelNumber) {
+			game.enterLevel(levelNumber);
+			game.level().ifPresent(level -> {
+				level.bonusManagement().handleBonusReached(0);
+				var bonus = level.bonusManagement().getBonus().get();
+				assertTrue(bonus instanceof StaticBonus);
+				assertEquals(GameModel.BONUS_VALUES_PACMAN[bonus.symbol()] * 100, bonus.points());
+			});
+		}
+	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testScoreNegativePoints() {
