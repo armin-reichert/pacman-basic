@@ -107,7 +107,6 @@ public class BonusManagement {
 	 */
 	private byte nextMsPacManBonusInfo() {
 		switch (level.number()) {
-		//@formatter:off
 			case 1: return GameModel.MS_PACMAN_CHERRIES;
 			case 2: return GameModel.MS_PACMAN_STRAWBERRY;
 			case 3: return GameModel.MS_PACMAN_ORANGE;
@@ -124,7 +123,6 @@ public class BonusManagement {
 				if (random < 240) return GameModel.MS_PACMAN_APPLE;
 				if (random < 280) return GameModel.MS_PACMAN_PEAR;
 				else              return GameModel.MS_PACMAN_BANANA;
-		//@formatter:on
 		}
 	}
 
@@ -171,7 +169,7 @@ public class BonusManagement {
 	}
 
 	/**
-	 * Handles bonus achievment (public access only for level state test).
+	 * Handles bonus achievement (public access for unit test).
 	 * 
 	 * @param bonusIndex achieved bonus index (0 or 1).
 	 */
@@ -182,14 +180,15 @@ public class BonusManagement {
 				Logger.info("First bonus still active, skip second one");
 				return;
 			}
-			bonus = createMovingBonus(bonusIndex);
+			byte symbol = bonusSymbols[bonusIndex];
+			bonus = createMovingBonus(symbol, GameModel.BONUS_VALUES_MS_PACMAN[symbol] * 100);
 			bonus.setEdible(TickTimer.INDEFINITE);
-			Logger.info("Moving bonus activated");
 			GameController.publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
 			break;
 		}
 		case PACMAN: {
-			bonus = createStaticBonus(bonusIndex);
+			byte symbol = bonusSymbols[bonusIndex];
+			bonus = createStaticBonus(symbol, GameModel.BONUS_VALUES_PACMAN[symbol] * 100);
 			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 			bonus.setEdible(ticks);
 			GameController.publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
@@ -200,8 +199,8 @@ public class BonusManagement {
 		}
 	}
 
-	private Bonus createStaticBonus(int bonusIndex) {
-		var staticBonus = new StaticBonus(bonusSymbols[bonusIndex]);
+	private Bonus createStaticBonus(byte symbol, int points) {
+		var staticBonus = new StaticBonus(symbol, points);
 		staticBonus.entity().setPosition(halfTileRightOf(13, 20));
 		staticBonus.setLevel(level);
 		return staticBonus;
@@ -213,16 +212,20 @@ public class BonusManagement {
 	 * <p>
 	 * TODO this is not exactly the behavior from the original game, yes I know.
 	 **/
-	private Bonus createMovingBonus(int bonusIndex) {
-		var portals = level.world().portals();
-		var leftToRight = RND.nextBoolean();
-		var entryPortal = portals.get(RND.nextInt(portals.size()));
-		var exitPortal = portals.get(RND.nextInt(portals.size()));
-		var startPoint = leftToRight ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
-		var exitPoint = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
-				: np(exitPortal.leftTunnelEnd().minus(1, 0));
-		var houseEntryTile = World.tileAt(level.world().house().door().entryPosition());
+	private Bonus createMovingBonus(byte symbol, int points) {
+		boolean leftToRight = RND.nextBoolean();
 		int houseHeight = level.world().house().size().y();
+		var houseEntryTile = World.tileAt(level.world().house().door().entryPosition());
+		var portals = level.world().portals();
+
+		var entryPortal = portals.get(RND.nextInt(portals.size()));
+		var exitPortal  = portals.get(RND.nextInt(portals.size()));
+		var startPoint  = leftToRight
+				? np(entryPortal.leftTunnelEnd())
+				: np(entryPortal.rightTunnelEnd());
+		var exitPoint   = leftToRight
+				? np(exitPortal.rightTunnelEnd().plus(1, 0))
+				: np(exitPortal.leftTunnelEnd().minus(1, 0));
 
 		var route = new ArrayList<NavigationPoint>();
 		route.add(np(houseEntryTile));
@@ -231,14 +234,12 @@ public class BonusManagement {
 		route.add(exitPoint);
 		route.trimToSize();
 
-		byte symbol = bonusSymbols[bonusIndex];
-		var movingBonus = new MovingBonus(symbol,GameModel.BONUS_VALUES_MS_PACMAN[symbol] * 100);
+		var movingBonus = new MovingBonus(symbol,points);
 		movingBonus.setLevel(level);
 		movingBonus.setRoute(route);
 		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
 		movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
 		Logger.info("Moving bonus created, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
-
 		return movingBonus;
 	}
 }

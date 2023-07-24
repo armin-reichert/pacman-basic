@@ -13,19 +13,21 @@ import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 
 /**
- * Bonus that appears at a static position.
+ * Bonus that appears for some time at a fixed position before it gets eaten or vanishes.
  * 
  * @author Armin Reichert
  */
 public class StaticBonus extends Entity implements Bonus {
 
 	private final byte symbol;
+	private final int points;
 	private long timer;
 	private byte state;
 	private GameLevel level;
 
-	public StaticBonus(byte symbol) {
+	public StaticBonus(byte symbol, int points) {
 		this.symbol = symbol;
+		this.points = points;
 		this.timer = 0;
 		this.state = Bonus.STATE_INACTIVE;
 	}
@@ -37,8 +39,8 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public String toString() {
-		return String.format("[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]", symbol, points(), state,
-				position, timer);
+		return String.format("[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]",
+				symbol, points, state, position, timer);
 	}
 
 	@Override
@@ -53,7 +55,7 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public int points() {
-		return GameModel.BONUS_VALUES_PACMAN[symbol] * 100;
+		return points;
 	}
 
 	@Override

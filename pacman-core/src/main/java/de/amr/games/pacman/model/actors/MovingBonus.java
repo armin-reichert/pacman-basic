@@ -87,7 +87,6 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public void setEdible(long ticks) {
 		state = Bonus.STATE_EDIBLE;
-		eatenTimer = ticks;
 		jumpAnimation.restart();
 		show();
 		setPixelSpeed(0.5f); // how fast in the original game?
