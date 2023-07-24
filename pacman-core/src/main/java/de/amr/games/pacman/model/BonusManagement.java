@@ -164,7 +164,7 @@ public class BonusManagement {
 
 	public void updateBonus() {
 		if (bonus != null) {
-			bonus.update();
+			bonus.update(level);
 		}
 	}
 
@@ -188,7 +188,8 @@ public class BonusManagement {
 		}
 		case PACMAN: {
 			byte symbol = bonusSymbols[bonusIndex];
-			bonus = createStaticBonus(symbol, GameModel.BONUS_VALUES_PACMAN[symbol] * 100);
+			bonus = new StaticBonus(symbol, GameModel.BONUS_VALUES_PACMAN[symbol] * 100);
+			bonus.entity().setPosition(halfTileRightOf(13, 20));
 			int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 			bonus.setEdible(ticks);
 			GameController.publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
@@ -199,18 +200,11 @@ public class BonusManagement {
 		}
 	}
 
-	private Bonus createStaticBonus(byte symbol, int points) {
-		var staticBonus = new StaticBonus(symbol, points);
-		staticBonus.entity().setPosition(halfTileRightOf(13, 20));
-		staticBonus.setLevel(level);
-		return staticBonus;
-	}
-
 	/**
 	 * The moving bonus enters the world at a random portal, walks to the house entry, takes a tour around the house and
 	 * finally leaves the world through a random portal on the opposite side of the world.
 	 * <p>
-	 * TODO this is not exactly the behavior from the original game, yes I know.
+	 * TODO: this is not exactly the behavior from the original game, yes I know.
 	 **/
 	private Bonus createMovingBonus(byte symbol, int points) {
 		boolean leftToRight = RND.nextBoolean();

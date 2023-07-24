@@ -6,6 +6,7 @@ package de.amr.games.pacman.model.actors;
 
 import java.util.List;
 
+import de.amr.games.pacman.model.GameLevel;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.GameController;
@@ -114,28 +115,28 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void update() {
+	public void update(GameLevel level) {
 		switch (state) {
 		case STATE_INACTIVE:
 			// nothing to do
 			break;
 		case STATE_EDIBLE: {
-			if (sameTile(level().pac())) {
-				level().game().scorePoints(points());
+			if (sameTile(level.pac())) {
+				level.game().scorePoints(points());
 				eat();
 				GameController.publishSoundEvent(SoundEvent.BONUS_EATEN);
 				return;
 			}
-			steering.steer(level(), this);
+			steering.steer(level, this);
 			if (steering.isComplete()) {
+				setInactive();
 				Logger.trace("Bonus reached target: {}", this);
 				GameController.publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
-				setInactive();
-				return;
+			} else {
+				navigateTowardsTarget();
+				tryMoving();
+				jumpAnimation.tick();
 			}
-			navigateTowardsTarget();
-			tryMoving();
-			jumpAnimation.tick();
 			break;
 		}
 		case STATE_EATEN: {
