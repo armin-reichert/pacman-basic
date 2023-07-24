@@ -27,23 +27,22 @@ import de.amr.games.pacman.model.GameModel;
  */
 public class MovingBonus extends Creature implements Bonus {
 
-	private final byte symbol;
-	private long timer;
-	private byte state;
-
 	private final Pulse jumpAnimation;
 	private final RouteBasedSteering steering = new RouteBasedSteering();
+	private final byte symbol;
+	private final int points;
+	private long eatenTimer;
+	private byte state;
 
-	public MovingBonus(byte symbol) {
-		super(String.format("MovingBonus-%d", symbol));
-		super.reset(); // TODO check this
-
+	public MovingBonus(byte symbol, int points) {
+		super("MovingBonus-" + symbol);
+		reset();
 		this.symbol = symbol;
-		this.canTeleport = false; // override setting from reset()
-		this.timer = 0;
-		this.state = Bonus.STATE_INACTIVE;
-
+		this.points = points;
 		jumpAnimation = new Pulse(10, false);
+		canTeleport = false; // override default from Creature
+		eatenTimer = 0;
+		state = Bonus.STATE_INACTIVE;
 	}
 
 	@Override
@@ -58,8 +57,8 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public String toString() {
-		return String.format("[MovingBonus state=%s symbol=%d value=%d timer=%d tile=%s]", state, symbol(), points(), timer,
-				tile());
+		return String.format("[MovingBonus state=%s symbol=%d value=%d eatenTimer=%d tile=%s]",
+				state, symbol(), points, eatenTimer, tile());
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public int points() {
-		return GameModel.BONUS_VALUES_MS_PACMAN[symbol] * 100;
+		return points;
 	}
 
 	@Override
@@ -88,7 +87,7 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public void setEdible(long ticks) {
 		state = Bonus.STATE_EDIBLE;
-		timer = ticks;
+		eatenTimer = ticks;
 		jumpAnimation.restart();
 		show();
 		setPixelSpeed(0.5f); // how fast in the original game?
@@ -98,7 +97,7 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public void eat() {
 		state = Bonus.STATE_EATEN;
-		timer = GameModel.BONUS_POINTS_SHOWN_TICKS;
+		eatenTimer = GameModel.BONUS_POINTS_SHOWN_TICKS;
 		jumpAnimation.stop();
 		Logger.info("Bonus eaten: {}", this);
 		GameController.publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
@@ -141,7 +140,7 @@ public class MovingBonus extends Creature implements Bonus {
 			break;
 		}
 		case STATE_EATEN: {
-			if (--timer == 0) {
+			if (--eatenTimer == 0) {
 				setInactive();
 				Logger.trace("Bonus expired: {}", this);
 				GameController.publishGameEvent(GameEvent.BONUS_EXPIRES, tile());

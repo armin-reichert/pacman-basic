@@ -231,7 +231,8 @@ public class BonusManagement {
 		route.add(exitPoint);
 		route.trimToSize();
 
-		var movingBonus = new MovingBonus(bonusSymbols[bonusIndex]);
+		byte symbol = bonusSymbols[bonusIndex];
+		var movingBonus = new MovingBonus(symbol,GameModel.BONUS_VALUES_MS_PACMAN[symbol] * 100);
 		movingBonus.setLevel(level);
 		movingBonus.setRoute(route);
 		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
