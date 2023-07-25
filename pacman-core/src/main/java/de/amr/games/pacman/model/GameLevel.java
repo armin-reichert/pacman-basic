@@ -820,6 +820,7 @@ public class GameLevel {
 				: np(exitPortal.leftTunnelEnd().minus(1, 0));
 
 		var route = new ArrayList<NavigationPoint>();
+		route.add(startPoint);
 		route.add(np(houseEntryTile));
 		route.add(np(houseEntryTile.plus(0, houseHeight + 1)));
 		route.add(np(houseEntryTile));
@@ -828,10 +829,9 @@ public class GameLevel {
 
 		var movingBonus = new MovingBonus(symbol, points);
 		movingBonus.setLevel(this);
-		movingBonus.setRoute(route);
-		movingBonus.entity().placeAtTile(startPoint.tile(), 0, 0);
-		movingBonus.entity().setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
-		Logger.info("Moving bonus created, route: {} ({})", route, (leftToRight ? "left to right" : "right to left"));
+		movingBonus.setRoute(route, leftToRight);
+		Logger.info("Moving bonus created, route: {} ({})",
+				route, (leftToRight ? "left to right" : "right to left"));
 		return movingBonus;
 	}
 }

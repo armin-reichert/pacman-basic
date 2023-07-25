@@ -11,9 +11,9 @@ import de.amr.games.pacman.model.GameLevel;
  */
 public interface Bonus {
 
-	public static byte STATE_INACTIVE = 0;
-	public static byte STATE_EDIBLE = 1;
-	public static byte STATE_EATEN = 2;
+	byte STATE_INACTIVE = 0;
+	byte STATE_EDIBLE   = 1;
+	byte STATE_EATEN    = 2;
 
 	/**
 	 * @return Entity representing this bonus in the world.
@@ -26,7 +26,7 @@ public interface Bonus {
 	byte symbol();
 
 	/**
-	 * @return points earned when eating this bonus
+	 * @return points earned for eating this bonus
 	 */
 	int points();
 
@@ -37,23 +37,27 @@ public interface Bonus {
 
 	/**
 	 * Updates the bonus state.
+	 *
+	 * @param level current game level
 	 */
 	void update(GameLevel level);
 
 	/**
-	 * Changes the bonus state to inactive.
+	 * Changes the bonus state to STATE_INACTIVE.
 	 */
 	void setInactive();
 
 	/**
-	 * Consume the bonus.
+	 * Changes the bonus state to STATE_EATEN.
+	 *
+	 * @param ticks how long the bonus stays in eaten state
 	 */
-	void eat();
+	void setEaten(long ticks);
 
 	/**
-	 * Changes the bonus state to edible.
+	 * Changes the bonus state to STATE_EDIBLE.
 	 * 
-	 * @param ticks  time how long the bonus is edible
+	 * @param ticks how long the bonus stays in edible state
 	 */
 	void setEdible(long ticks);
 }

@@ -367,12 +367,12 @@ public enum GameState implements FsmState<GameModel> {
 					} else if (timer.atSecond(1.5)) {
 						level.handleBonusReached(0);
 					} else if (timer.atSecond(2.5)) {
-						level.getBonus().ifPresent(Bonus::eat);
+						level.getBonus().ifPresent(bonus -> bonus.setEaten(120));
 						GameController.publishSoundEvent(SoundEvent.BONUS_EATEN);
 					} else if (timer.atSecond(4.5)) {
 						level.handleBonusReached(1);
 					} else if (timer.atSecond(5.5)) {
-						level.getBonus().ifPresent(Bonus::eat);
+						level.getBonus().ifPresent(bonus -> bonus.setEaten(60));
 						level.guys().forEach(Creature::hide);
 					} else if (timer.atSecond(6.5)) {
 						var flashing = level.world().mazeFlashing();

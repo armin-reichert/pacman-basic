@@ -32,7 +32,7 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public Entity entity() {
+	public StaticBonus entity() {
 		return this;
 	}
 
@@ -75,8 +75,11 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public void eat() {
-		timer = GameModel.BONUS_POINTS_SHOWN_TICKS;
+	public void setEaten(long ticks) {
+		if (ticks <= 0) {
+			throw new IllegalArgumentException("Bonus edible time must be larger than zero");
+		}
+		timer = ticks;
 		state = Bonus.STATE_EATEN;
 		Logger.info("Bonus eaten: {}", this);
 		GameController.publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
@@ -99,8 +102,8 @@ public class StaticBonus extends Entity implements Bonus {
 			// TODO does this belong here? I doubt it.
 			if (sameTile(level.pac())) {
 				level.game().scorePoints(points());
+				setEaten(GameModel.BONUS_POINTS_SHOWN_TICKS);
 				Logger.info("Scored {} points for eating bonus {}", points(), this);
-				eat();
 				GameController.publishSoundEvent(SoundEvent.BONUS_EATEN);
 			} else if (timer == 0) {
 				expire();

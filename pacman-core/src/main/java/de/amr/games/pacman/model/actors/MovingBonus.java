@@ -6,6 +6,7 @@ package de.amr.games.pacman.model.actors;
 
 import java.util.List;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.GameLevel;
 import org.tinylog.Logger;
 
@@ -52,7 +53,7 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public Creature entity() {
+	public MovingBonus entity() {
 		return this;
 	}
 
@@ -95,15 +96,18 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void eat() {
+	public void setEaten(long ticks) {
 		state = Bonus.STATE_EATEN;
-		eatenTimer = GameModel.BONUS_POINTS_SHOWN_TICKS;
+		eatenTimer = ticks;
 		jumpAnimation.stop();
 		Logger.info("Bonus eaten: {}", this);
 		GameController.publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
 	}
 
-	public void setRoute(List<NavigationPoint> route) {
+	public void setRoute(List<NavigationPoint> route, boolean leftToRight) {
+		placeAtTile(route.get(0).tile(), 0, 0);
+		setMoveAndWishDir(leftToRight ? Direction.RIGHT : Direction.LEFT);
+		route.remove(0);
 		steering.setRoute(route);
 	}
 
@@ -120,10 +124,11 @@ public class MovingBonus extends Creature implements Bonus {
 		case STATE_INACTIVE:
 			// nothing to do
 			break;
+
 		case STATE_EDIBLE: {
 			if (sameTile(level.pac())) {
 				level.game().scorePoints(points());
-				eat();
+				setEaten(GameModel.BONUS_POINTS_SHOWN_TICKS);
 				GameController.publishSoundEvent(SoundEvent.BONUS_EATEN);
 				return;
 			}
@@ -139,6 +144,7 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 			break;
 		}
+
 		case STATE_EATEN: {
 			if (--eatenTimer == 0) {
 				setInactive();
