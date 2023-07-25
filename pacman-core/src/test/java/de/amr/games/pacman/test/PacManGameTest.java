@@ -143,10 +143,12 @@ public class PacManGameTest {
 		for (int levelNumber = 1; levelNumber <= 21; ++levelNumber) {
 			game.enterLevel(levelNumber);
 			game.level().ifPresent(level -> {
-				level.bonusManagement().handleBonusReached(0);
-				var bonus = level.bonusManagement().getBonus().get();
-				assertTrue(bonus instanceof StaticBonus);
-				assertEquals(GameModel.BONUS_VALUES_PACMAN[bonus.symbol()] * 100, bonus.points());
+				level.handleBonusReached(0);
+				assertTrue(level.getBonus().isPresent());
+				level.getBonus().ifPresent(bonus -> {
+					assertTrue(bonus instanceof StaticBonus);
+					assertEquals(GameModel.BONUS_VALUES_PACMAN[bonus.symbol()] * 100, bonus.points());
+				});
 			});
 		}
 	}

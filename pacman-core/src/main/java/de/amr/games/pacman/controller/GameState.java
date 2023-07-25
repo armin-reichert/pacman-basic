@@ -295,7 +295,7 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onExit(GameModel context) {
-			context.level().ifPresent(level -> level.bonusManagement().deactivateBonus());
+			context.level().ifPresent(level -> level.deactivateBonus());
 		}
 	},
 
@@ -365,14 +365,14 @@ public enum GameState implements FsmState<GameModel> {
 					if (timer.atSecond(0.5)) {
 						level.guys().forEach(Creature::show);
 					} else if (timer.atSecond(1.5)) {
-						level.bonusManagement().handleBonusReached(0);
+						level.handleBonusReached(0);
 					} else if (timer.atSecond(2.5)) {
-						level.bonusManagement().getBonus().ifPresent(Bonus::eat);
+						level.getBonus().ifPresent(Bonus::eat);
 						GameController.publishSoundEvent(SoundEvent.BONUS_EATEN);
 					} else if (timer.atSecond(4.5)) {
-						level.bonusManagement().handleBonusReached(1);
+						level.handleBonusReached(1);
 					} else if (timer.atSecond(5.5)) {
-						level.bonusManagement().getBonus().ifPresent(Bonus::eat);
+						level.getBonus().ifPresent(Bonus::eat);
 						level.guys().forEach(Creature::hide);
 					} else if (timer.atSecond(6.5)) {
 						var flashing = level.world().mazeFlashing();
@@ -386,7 +386,7 @@ public enum GameState implements FsmState<GameModel> {
 					level.world().energizerBlinking().tick();
 					level.world().mazeFlashing().tick();
 					level.ghosts().forEach(Ghost::update);
-					level.bonusManagement().updateBonus();
+					level.updateBonus();
 				} else {
 					GameController.it().restart(GameState.BOOT);
 				}
