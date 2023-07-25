@@ -38,13 +38,13 @@ public abstract class Creature extends Entity implements AnimationDirector {
 
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
+	protected GameLevel level;
+
 	private Direction moveDir;
 	private Direction wishDir;
 	private Vector2i targetTile;
 
-	protected GameLevel level;
-
-	private MoveResult moveResult;
+	protected final MoveResult moveResult = new MoveResult();
 	protected boolean newTileEntered; // TODO put this into move result but currently it has another lifetime
 	protected boolean gotReverseCommand;
 	protected boolean canTeleport;
@@ -67,11 +67,10 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		wishDir = RIGHT;
 		targetTile = null;
 
+		moveResult.clear();
+		newTileEntered = true;
 		gotReverseCommand = false;
 		canTeleport = true;
-
-		moveResult = null;
-		newTileEntered = true;
 	}
 
 	public void setAnimations(Animations<?, ?> animations) {
@@ -88,7 +87,11 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		return level;
 	}
 
-	protected World world() {
+	public GameModel game() {
+		return level.game();
+	}
+
+	public World world() {
 		return level.world();
 	}
 
@@ -98,10 +101,6 @@ public abstract class Creature extends Entity implements AnimationDirector {
 
 	public boolean insideHouse() {
 		return house().contains(tile());
-	}
-
-	protected GameModel game() {
-		return level.game();
 	}
 
 	/**
@@ -139,7 +138,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	}
 
 	/**
-	 * Sets the tile this creature tries to reach. May be an unreachable tile or <code>null</code>.
+	 * Sets the tile this creature tries to reach (can be an unreachable tile or <code>null</code>).
 	 * 
 	 * @param tile some tile or <code>null</code>
 	 */
@@ -207,7 +206,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	}
 
 	/**
-	 * @param tile some tile inside or outside of the world
+	 * @param tile some tile inside or outside the world
 	 * @return if this creature can access the given tile
 	 */
 	public boolean canAccessTile(Vector2i tile) {
@@ -227,8 +226,8 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		checkDirectionNotNull(dir);
 		if (moveDir != dir) {
 			moveDir = dir;
-			Logger.trace("{}: New moveDir: {}. {}", name, moveDir, this);
 			velocity = moveDir.vector().toFloatVec().scaled(velocity.length());
+			Logger.trace("{}: New moveDir: {}. {}", name, moveDir, this);
 		}
 	}
 
@@ -335,15 +334,15 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	}
 
 	public boolean moved() {
-		return moveResult != null && moveResult.moved;
+		return moveResult.moved;
 	}
 
 	public boolean teleported() {
-		return moveResult != null && moveResult.teleported;
+		return moveResult.teleported;
 	}
 
 	public boolean enteredTunnel() {
-		return moveResult != null && moveResult.tunnelEntered;
+		return moveResult.tunnelEntered;
 	}
 
 	/**
@@ -353,7 +352,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	 * possible, it keeps moving to its current move direction.
 	 */
 	public void tryMoving() {
-		moveResult = new MoveResult();
+		moveResult.clear();
 		tryTeleport(world().portals());
 		if (!moveResult.teleported) {
 			checkReverseCommand();
@@ -394,11 +393,11 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		if (tile.y() == portal.leftTunnelEnd().y() && position.x() < (portal.leftTunnelEnd().x() - portal.depth()) * TS) {
 			placeAtTile(portal.rightTunnelEnd());
 			moveResult.teleported = true;
-			moveResult.messages.add(String.format("%s: Teleported from %s to %s", name, oldPosition, position));
+			moveResult.addMessage(String.format("%s: Teleported from %s to %s", name, oldPosition, position));
 		} else if (tile.equals(portal.rightTunnelEnd().plus(portal.depth(), 0))) {
 			placeAtTile(portal.leftTunnelEnd().minus(portal.depth(), 0));
 			moveResult.teleported = true;
-			moveResult.messages.add(String.format("%s: Teleported from %s to %s", name, oldPosition, position));
+			moveResult.addMessage(String.format("%s: Teleported from %s to %s", name, oldPosition, position));
 		}
 	}
 
@@ -414,7 +413,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 			if (!aroundCorner) {
 				placeAtTile(tile()); // adjust if blocked and moving forward
 			}
-			moveResult.messages.add(String.format("Cannot move %s into tile %s", dir, touchedTile));
+			moveResult.addMessage(String.format("Cannot move %s into tile %s", dir, touchedTile));
 			return;
 		}
 
@@ -424,7 +423,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 			if (atTurnPosition) {
 				placeAtTile(tile()); // adjust if moving around corner
 			} else {
-				moveResult.messages.add(String.format("Wants to take corner towards %s but not at turn position", dir));
+				moveResult.addMessage(String.format("Wants to take corner towards %s but not at turn position", dir));
 				return;
 			}
 		}
@@ -442,6 +441,6 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		newTileEntered = !tileBeforeMove.equals(tile());
 		moveResult.moved = true;
 		moveResult.tunnelEntered = !world().isTunnel(tileBeforeMove) && world().isTunnel(tile());
-		moveResult.messages.add(String.format("%5s (%.2f pixels)", dir, newVelocity.length()));
+		moveResult.addMessage(String.format("%5s (%.2f pixels)", dir, newVelocity.length()));
 	}
 }

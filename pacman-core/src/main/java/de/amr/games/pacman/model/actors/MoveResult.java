@@ -12,13 +12,17 @@ public class MoveResult {
 	public boolean moved;
 	public boolean tunnelEntered;
 	public boolean teleported;
-	public final List<String> messages;
+	private final List<String> messages = new ArrayList<>(3);
 
-	public MoveResult() {
+	public void clear() {
 		moved = false;
 		tunnelEntered = false;
 		teleported = false;
-		messages = new ArrayList<>(3);
+		messages.clear();
+	}
+
+	public void addMessage(String message) {
+		messages.add(message);
 	}
 
 	public String summary() {
