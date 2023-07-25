@@ -87,20 +87,8 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		return level;
 	}
 
-	public GameModel game() {
-		return level.game();
-	}
-
-	public World world() {
-		return level.world();
-	}
-
-	public House house() {
-		return world().house();
-	}
-
 	public boolean insideHouse() {
-		return house().contains(tile());
+		return level().world().house().contains(tile());
 	}
 
 	/**
@@ -211,10 +199,11 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	 */
 	public boolean canAccessTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		if (world().insideBounds(tile)) {
-			return !world().isWall(tile) && !house().door().occupies(tile);
+		var world = level.world();
+		if (world.insideBounds(tile)) {
+			return !world.isWall(tile) && !world.house().door().occupies(tile);
 		}
-		return world().belongsToPortal(tile);
+		return world.belongsToPortal(tile);
 	}
 
 	/**
@@ -307,7 +296,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		if (targetTile == null) {
 			return;
 		}
-		if (world().belongsToPortal(tile())) {
+		if (level.world().belongsToPortal(tile())) {
 			return; // inside portal, no navigation happens
 		}
 		computeTargetDirection().ifPresent(this::setWishDir);
@@ -353,7 +342,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	 */
 	public void tryMoving() {
 		moveResult.clear();
-		tryTeleport(world().portals());
+		tryTeleport(level.world().portals());
 		if (!moveResult.teleported) {
 			checkReverseCommand();
 			tryMoving(wishDir);
@@ -440,7 +429,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 
 		newTileEntered = !tileBeforeMove.equals(tile());
 		moveResult.moved = true;
-		moveResult.tunnelEntered = !world().isTunnel(tileBeforeMove) && world().isTunnel(tile());
+		moveResult.tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
 		moveResult.addMessage(String.format("%5s (%.2f pixels)", dir, newVelocity.length()));
 	}
 }

@@ -140,13 +140,13 @@ public class Ghost extends Creature {
 		checkTileNotNull(targetTile);
 		var currentTile = tile();
 		for (var dir : Direction.values()) {
-			if (targetTile.equals(currentTile.plus(dir.vector())) && !level().isSteeringAllowed(this, dir)) {
+			if (targetTile.equals(currentTile.plus(dir.vector())) && !level.isSteeringAllowed(this, dir)) {
 				Logger.trace("{} cannot access tile {} because he cannot move to %s at {}", name(), targetTile, dir,
 						currentTile);
 				return false;
 			}
 		}
-		if (house().door().occupies(targetTile)) {
+		if (level.world().house().door().occupies(targetTile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(targetTile);
@@ -269,7 +269,7 @@ public class Ghost extends Creature {
 	}
 
 	private boolean killable() {
-		return level().pac().powerTimer().isRunning() && killedIndex == -1;
+		return level.pac().powerTimer().isRunning() && killedIndex == -1;
 	}
 
 	// --- LEAVING_HOUSE ---
@@ -293,7 +293,7 @@ public class Ghost extends Creature {
 		} else {
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
-		var outOfHouse = leaveHouse();
+		var outOfHouse = leaveHouse(level.world().house());
 		if (outOfHouse) {
 			setMoveAndWishDir(LEFT);
 			newTileEntered = false; // keep moving left until new tile is entered
@@ -309,13 +309,13 @@ public class Ghost extends Creature {
 	/**
 	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
 	 */
-	private boolean leaveHouse() {
-		var endPosition = house().door().entryPosition();
+	private boolean leaveHouse(House house) {
+		var endPosition = house.door().entryPosition();
 		if (position().y() <= endPosition.y()) {
 			setPosition(endPosition); // valign at house entry
 			return true;
 		}
-		float houseCenterX = house().center().x();
+		float houseCenterX = house.center().x();
 		float speed = GameModel.SPEED_PX_INSIDE_HOUSE;
 		if (differsAtMost(0.5 * speed, center().x(), houseCenterX)) {
 			// valign and raise
@@ -370,8 +370,8 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateHuntingPac() {
-		setRelSpeed(level().huntingSpeed(this));
-		level().doGhostHuntingAction(this);
+		setRelSpeed(level.huntingSpeed(this));
+		level.doGhostHuntingAction(this);
 	}
 
 	// --- FRIGHTENED ---
@@ -388,7 +388,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateFrightened() {
-		var speed = world().isTunnel(tile()) ? level().ghostSpeedTunnel : level().ghostSpeedFrightened;
+		var speed = level.world().isTunnel(tile()) ? level.ghostSpeedTunnel : level.ghostSpeedFrightened;
 		setRelSpeed(speed);
 		roam();
 		selectFrightenedAnimation();
@@ -414,17 +414,15 @@ public class Ghost extends Creature {
 	/**
 	 * After the short time being displayed by his value, the eaten ghost is displayed by his eyes only and returns to the
 	 * ghost house to be revived. Hallelujah!
-	 * 
-	 * @param level the game level
 	 */
 	public void enterStateReturningToHouse() {
 		state = RETURNING_TO_HOUSE;
-		setTargetTile(house().door().leftWing());
+		setTargetTile(level.world().house().door().leftWing());
 		selectAnimation(GhostAnimations.GHOST_EYES);
 	}
 
 	private void updateStateReturningToHouse() {
-		var houseEntry = house().door().entryPosition();
+		var houseEntry = level.world().house().door().entryPosition();
 		// TODO should this check for difference by speed instead of 1?
 		if (position().almostEquals(houseEntry, 1, 0)) {
 			setPosition(houseEntry);
@@ -441,19 +439,15 @@ public class Ghost extends Creature {
 	/**
 	 * When an eaten ghost reaches the ghost house, he enters and moves (is lead) to his revival position. Because the
 	 * exact route from the house entry to the revival tile is house-specific, this logic is in the house implementation.
-	 * 
-	 * @param level the game level
 	 */
 	public void enterStateEnteringHouse() {
 		state = ENTERING_HOUSE;
 		setTargetTile(null);
 		setPixelSpeed(GameModel.SPEED_PX_ENTERING_HOUSE);
-		// TODO is this event needed/handled at all?
-//		GameController.publishGameEvent(new GhostEvent(level().game(), GameEvent.GHOST_ENTERS_HOUSE, this));
 	}
 
 	private void updateStateEnteringHouse() {
-		boolean atRevivalPosition = moveInsideHouse(house(), revivalPosition);
+		boolean atRevivalPosition = moveInsideHouse(level.world().house(), revivalPosition);
 		if (atRevivalPosition) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();
@@ -461,7 +455,7 @@ public class Ghost extends Creature {
 	}
 
 	private void selectFrightenedAnimation() {
-		var timer = level().pac().powerTimer();
+		var timer = level.pac().powerTimer();
 		if (timer.remaining() == GameModel.PAC_POWER_FADES_TICKS
 				|| timer.duration() < GameModel.PAC_POWER_FADES_TICKS && timer.tick() == 1) {
 			selectAnimation(GhostAnimations.GHOST_FLASHING);
