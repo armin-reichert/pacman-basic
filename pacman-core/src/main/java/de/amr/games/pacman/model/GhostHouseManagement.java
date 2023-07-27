@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.actors.Ghost;
 /**
  * @author Armin Reichert
  * 
- * @see PacManDossier
+ * @see <a href="https://pacman.holenet.info/">Pac-Man Dossier by Jamey Pittman</a>
  */
 public class GhostHouseManagement {
 
@@ -100,33 +100,33 @@ public class GhostHouseManagement {
 	}
 
 	public Optional<GhostUnlockResult> checkIfNextGhostCanLeaveHouse() {
-		// Ensure unlock order of ghosts is RED, PINK, CYAN, ORANGE.
-		// The current level implementation guarantees it but...
-		var ghost = Stream.of(RED_GHOST, PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(level::ghost).filter(g -> g.is(LOCKED))
+		var unlockedGhost = Stream.of(RED_GHOST, PINK_GHOST, CYAN_GHOST, ORANGE_GHOST)
+				.map(level::ghost)
+				.filter(ghost -> ghost.is(LOCKED))
 				.findFirst().orElse(null);
 
-		if (ghost == null) {
+		if (unlockedGhost == null) {
 			return Optional.empty();
 		}
 
-		if (!ghost.insideHouse()) {
-			return unlockResult(ghost, "Already outside house");
+		if (!unlockedGhost.insideHouse()) {
+			return unlockResult(unlockedGhost, "Already outside house");
 		}
-		var id = ghost.id();
-		// check private dot counter
+		var id = unlockedGhost.id();
+		// check private dot counter first (if enabled)
 		if (!globalDotCounterEnabled && ghostDotCounters[id] >= privateGhostDotLimits[id]) {
-			return unlockResult(ghost, "Private dot counter at limit (%d)", privateGhostDotLimits[id]);
+			return unlockResult(unlockedGhost, "Private dot counter at limit (%d)", privateGhostDotLimits[id]);
 		}
 		// check global dot counter
 		var globalDotLimit = globalGhostDotLimits[id] == -1 ? Integer.MAX_VALUE : globalGhostDotLimits[id];
 		if (globalDotCounter >= globalDotLimit) {
-			return unlockResult(ghost, "Global dot counter at limit (%d)", globalDotLimit);
+			return unlockResult(unlockedGhost, "Global dot counter at limit (%d)", globalDotLimit);
 		}
 		// check Pac-Man starving time
 		if (level.pac().starvingTicks() >= pacStarvingTicksLimit) {
 			level.pac().endStarving(); // TODO change pac state here?
 			Logger.trace("Pac-Man starving timer reset to 0");
-			return unlockResult(ghost, "%s reached starving limit (%d ticks)", level.pac().name(), pacStarvingTicksLimit);
+			return unlockResult(unlockedGhost, "%s reached starving limit (%d ticks)", level.pac().name(), pacStarvingTicksLimit);
 		}
 		return Optional.empty();
 	}
