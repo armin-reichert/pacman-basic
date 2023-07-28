@@ -427,18 +427,6 @@ public class GameModel {
 		initialLives = 3;
 	}
 
-	/**
-	 * Starts the game. Credit, immunity and scores remain unchanged.
-	 */
-	public void start() {
-		level = null;
-		lives = initialLives;
-		playing = false;
-		scoringEnabled = true;
-		oneLessLifeDisplayed = false; // @remove
-		Logger.trace("Game model ({}) initialized", variant());
-	}
-
 	public int getInitialLives() {
 		return initialLives;
 	}
@@ -467,12 +455,31 @@ public class GameModel {
 	}
 
 	/**
+	 * Resets the game. Credit, immunity and scores remain unchanged.
+	 */
+	private void reset() {
+		level = null;
+		lives = initialLives;
+		playing = false;
+		scoringEnabled = true;
+		oneLessLifeDisplayed = false; // @remove
+		Logger.info("Game model ({}) reset", variant());
+	}
+
+	/**
 	 * Creates and "enters" the level with the given number.
 	 * 
 	 * @param levelNumber level number (starting at 1)
+	 * @param reset if game is reset when entering level
 	 */
-	public void enterLevel(int levelNumber) {
+	public void enterLevel(int levelNumber, boolean reset) {
 		checkLevelNumber(levelNumber);
+
+		if (reset) {
+			reset();
+		}
+
+		Logger.info("Enter game level {}", levelNumber);
 
 		World world;
 		if (variant == GameVariant.MS_PACMAN) {
@@ -486,8 +493,6 @@ public class GameModel {
 
 		level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
 		GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
-
-		level.letsGetReadyToRumbleAndShowGuys(false);
 
 		if (levelNumber == 1) {
 			levelCounter.clear();
@@ -504,12 +509,16 @@ public class GameModel {
 		if (score != null) {
 			score.setLevelNumber(levelNumber);
 		}
+
+		level.letsGetReadyToRumbleAndShowGuys(false);
 	}
 
 	/**
 	 * Enters the demo game level ("attract mode").
 	 */
 	public void enterDemoLevel() {
+		reset();
+
 		GameController.setSoundEventsEnabled(false);
 		scoringEnabled = false;
 		switch (variant) {
@@ -539,7 +548,7 @@ public class GameModel {
 		if (level == null) {
 			throw new IllegalStateException("Cannot enter next level, no current level exists");
 		}
-		enterLevel(level.number() + 1);
+		enterLevel(level.number() + 1, false);
 	}
 
 	public void removeLevel() {
