@@ -649,7 +649,7 @@ public class GameLevel {
 	private Bonus bonus;
 
 	private byte nextBonusSymbol() {
-		if (game().variant() == GameVariant.MS_PACMAN) {
+		if (game.variant() == GameVariant.MS_PACMAN) {
 			return nextMsPacManBonusSymbol();
 		}
 		// In the Pac-Man game, each level has a single bonus symbol appearing twice
@@ -726,24 +726,24 @@ public class GameLevel {
 	}
 
 	public boolean isFirstBonusReached() {
-		switch (game().variant()) {
+		switch (game.variant()) {
 			case MS_PACMAN:
 				return world().eatenFoodCount() == 64;
 			case PACMAN:
 				return world().eatenFoodCount() == 70;
 			default:
-				throw new IllegalGameVariantException(game().variant());
+				throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
 	public boolean isSecondBonusReached() {
-		switch (game().variant()) {
+		switch (game.variant()) {
 			case MS_PACMAN:
 				return world().eatenFoodCount() == 176;
 			case PACMAN:
 				return world().eatenFoodCount() == 170;
 			default:
-				throw new IllegalGameVariantException(game().variant());
+				throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
@@ -768,12 +768,12 @@ public class GameLevel {
 	}
 
 	/**
-	 * Handles bonus achievement (public access for unit test).
+	 * Handles bonus achievement (public accessor for unit tests and level test).
 	 *
-	 * @param bonusIndex achieved bonus index (0 or 1).
+	 * @param bonusIndex bonus index (0 or 1).
 	 */
 	public void handleBonusReached(int bonusIndex) {
-		switch (game().variant()) {
+		switch (game.variant()) {
 			case MS_PACMAN: {
 				if (bonusIndex == 1 && bonus != null && bonus.state() != Bonus.STATE_INACTIVE) {
 					Logger.info("First bonus still active, skip second one");
@@ -788,14 +788,14 @@ public class GameLevel {
 			case PACMAN: {
 				byte symbol = bonusSymbols[bonusIndex];
 				bonus = new StaticBonus(symbol, GameModel.BONUS_VALUES_PACMAN[symbol] * 100);
-				bonus.entity().setPosition(halfTileRightOf(13, 20));
+				bonus.entity().setPosition(GameModel.BONUS_POSITION_PACMAN);
 				int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 				bonus.setEdible(ticks);
 				GameController.publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
 				break;
 			}
 			default:
-				throw new IllegalGameVariantException(game().variant());
+				throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
@@ -803,7 +803,7 @@ public class GameLevel {
 	 * The moving bonus enters the world at a random portal, walks to the house entry, takes a tour around the house and
 	 * finally leaves the world through a random portal on the opposite side of the world.
 	 * <p>
-	 * TODO: this is not exactly the behavior from the original game, yes I know.
+	 * TODO: This is not the exact behavior as in the original Arcade game.
 	 **/
 	private Bonus createMovingBonus(byte symbol, int points) {
 		var leftToRight     = RND.nextBoolean();
@@ -812,12 +812,9 @@ public class GameLevel {
 		var portals         = world.portals();
 		var entryPortal     = portals.get(RND.nextInt(portals.size()));
 		var exitPortal      = portals.get(RND.nextInt(portals.size()));
-		var startPoint      = leftToRight
-				? np(entryPortal.leftTunnelEnd())
-				: np(entryPortal.rightTunnelEnd());
-		var exitPoint       = leftToRight
-				? np(exitPortal.rightTunnelEnd().plus(1, 0))
-				: np(exitPortal.leftTunnelEnd().minus(1, 0));
+		var startPoint      = leftToRight	? np(entryPortal.leftTunnelEnd())	: np(entryPortal.rightTunnelEnd());
+		var exitPoint       = leftToRight	? np(exitPortal.rightTunnelEnd().plus(1, 0))
+				                              : np(exitPortal.leftTunnelEnd().minus(1, 0));
 
 		var route = new ArrayList<NavigationPoint>();
 		route.add(startPoint);

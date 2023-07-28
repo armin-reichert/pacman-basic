@@ -4,8 +4,7 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.lib.Globals.checkLevelNumber;
-import static de.amr.games.pacman.lib.Globals.v2i;
+import static de.amr.games.pacman.lib.Globals.*;
 import static de.amr.games.pacman.lib.NavigationPoint.np;
 
 import java.io.File;
@@ -19,17 +18,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import de.amr.games.pacman.lib.*;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.SoundEvent;
-import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.NavigationPoint;
-import de.amr.games.pacman.lib.RouteBasedSteering;
-import de.amr.games.pacman.lib.RuleBasedSteering;
-import de.amr.games.pacman.lib.Score;
-import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.world.World;
 
 /**
@@ -389,7 +383,6 @@ public class GameModel {
 
 	// Ms. Pac-Man bonus #3 is an orange, not a peach! (Found in official Arcade machine manual)
 
-	//@formatter:off
 	public static final byte MS_PACMAN_CHERRIES     = 0;
 	public static final byte MS_PACMAN_STRAWBERRY   = 1;
 	public static final byte MS_PACMAN_ORANGE       = 2;
@@ -410,7 +403,7 @@ public class GameModel {
 	public static final byte PACMAN_KEY             = 7;
 
 	public static final byte[] BONUS_VALUES_PACMAN = { 1, 3, 5, 7, 10, 20, 30, 50 }; // * 100
-	//@formatter:on
+	public static final Vector2f BONUS_POSITION_PACMAN = World.halfTileRightOf(13, 20);
 
 	private final GameVariant variant;
 	private GameLevel level;
