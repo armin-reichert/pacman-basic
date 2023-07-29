@@ -9,8 +9,7 @@ import static de.amr.games.pacman.lib.Globals.TS;
 import static de.amr.games.pacman.lib.Globals.checkNotNull;
 import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
@@ -22,22 +21,18 @@ public final class House {
 	private final Vector2i minTile;
 	private final Vector2i size;
 	private final Door door;
-	private final List<Vector2f> seatPositions;
+	private final Map<String, Vector2f> seatPositions = new HashMap<>(3);
 	private final Vector2f center;
 
 	/**
 	 * @param minTile       top-left tile
 	 * @param size          size in tiles
 	 * @param door          door of this house
-	 * @param seatPositions left-upper corners of the seats (each seat is supposed as single-tile square)
 	 */
-	public House(Vector2i minTile, Vector2i size, Door door, Vector2f seat1, Vector2f seat2, Vector2f seat3) {
+	public House(Vector2i minTile, Vector2i size, Door door) {
 		checkTileNotNull(minTile);
 		checkNotNull(size);
 		checkNotNull(door);
-		checkNotNull(seat1);
-		checkNotNull(seat2);
-		checkNotNull(seat3);
 		if (size.x() < 1 || size.y() < 1) {
 			throw new IllegalArgumentException("House size must be larger than one square tile but is: " + size);
 		}
@@ -45,7 +40,6 @@ public final class House {
 		this.size = size;
 		this.center = minTile.toFloatVec().scaled(TS).plus(size.toFloatVec().scaled(HTS));
 		this.door = door;
-		this.seatPositions = Arrays.asList(seat1, seat2, seat3);
 	}
 
 	public Vector2i topLeftTile() {
@@ -60,16 +54,16 @@ public final class House {
 		return door;
 	}
 
-	public List<Vector2f> seatPositions() {
-		return seatPositions;
+	public void setSeat(String id, Vector2f position) {
+		seatPositions.put(id, position);
+	}
+
+	public Vector2f getSeat(String id) {
+		return seatPositions.get(id);
 	}
 
 	public Vector2f center() {
 		return center;
-	}
-
-	public Vector2f seatPosition(int i) {
-		return seatPositions.get(i);
 	}
 
 	/**

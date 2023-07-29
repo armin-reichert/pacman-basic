@@ -42,12 +42,18 @@ public class World {
 	public static final int ARCADE_TILES_X = 28;
 	public static final int ARCADE_TILES_Y = 36;
 
-	private static final House ARCADE_HOUSE = new House(
-		v2i(10, 15), // top-left corner
-		v2i(8, 5),   // size in tiles
-		new Door(v2i(13, 15), v2i(14, 15)),
-		halfTileRightOf(11, 17), halfTileRightOf(13, 17), halfTileRightOf(15, 17)
-	);
+	public static final House ARCADE_HOUSE;
+
+	static {
+		ARCADE_HOUSE= new House(
+			v2i(10, 15), // top-left corner tile
+			v2i(8, 5),   // size in tiles
+			new Door(v2i(13, 15), v2i(14, 15))
+		);
+		ARCADE_HOUSE.setSeat("left", halfTileRightOf(11, 17));
+		ARCADE_HOUSE.setSeat("middle", halfTileRightOf(13, 17));
+		ARCADE_HOUSE.setSeat("right", halfTileRightOf(15, 17));
+	}
 
 	/**
 	 * @param position a position

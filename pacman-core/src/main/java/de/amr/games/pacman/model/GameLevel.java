@@ -144,28 +144,28 @@ public class GameLevel {
 		// Blinky: attacks Pac-Man directly
 		ghosts[RED_GHOST].setInitialDirection(Direction.LEFT);
 		ghosts[RED_GHOST].setInitialPosition(house.door().entryPosition());
-		ghosts[RED_GHOST].setRevivalPosition(house.seatPosition(1));
+		ghosts[RED_GHOST].setRevivalPosition(house.getSeat("middle"));
 		ghosts[RED_GHOST].setScatterTile(v2i(25, 0));
 		ghosts[RED_GHOST].setChasingTarget(pac::tile);
 
 		// Pinky: ambushes Pac-Man
 		ghosts[PINK_GHOST].setInitialDirection(Direction.DOWN);
-		ghosts[PINK_GHOST].setInitialPosition(house.seatPosition(1));
-		ghosts[PINK_GHOST].setRevivalPosition(house.seatPosition(1));
+		ghosts[PINK_GHOST].setInitialPosition(house.getSeat("middle"));
+		ghosts[PINK_GHOST].setRevivalPosition(house.getSeat("middle"));
 		ghosts[PINK_GHOST].setScatterTile(v2i(2, 0));
 		ghosts[PINK_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(4));
 
 		// Inky: attacks from opposite side as Blinky
 		ghosts[CYAN_GHOST].setInitialDirection(Direction.UP);
-		ghosts[CYAN_GHOST].setInitialPosition(house.seatPosition(0));
-		ghosts[CYAN_GHOST].setRevivalPosition(house.seatPosition(0));
+		ghosts[CYAN_GHOST].setInitialPosition(house.getSeat("left"));
+		ghosts[CYAN_GHOST].setRevivalPosition(house.getSeat("left"));
 		ghosts[CYAN_GHOST].setScatterTile(v2i(27, 34));
 		ghosts[CYAN_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(2).scaled(2).minus(ghosts[RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
 		ghosts[ORANGE_GHOST].setInitialDirection(Direction.UP);
-		ghosts[ORANGE_GHOST].setInitialPosition(house.seatPosition(2));
-		ghosts[ORANGE_GHOST].setRevivalPosition(house.seatPosition(2));
+		ghosts[ORANGE_GHOST].setInitialPosition(house.getSeat("right"));
+		ghosts[ORANGE_GHOST].setRevivalPosition(house.getSeat("right"));
 		ghosts[ORANGE_GHOST].setScatterTile(v2i(0, 34));
 		ghosts[ORANGE_GHOST].setChasingTarget(() -> ghosts[ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8 //
 				? ghosts[ORANGE_GHOST].scatterTile()
