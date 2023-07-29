@@ -42,17 +42,16 @@ public class World {
 	public static final int ARCADE_TILES_X = 28;
 	public static final int ARCADE_TILES_Y = 36;
 
-	public static final House ARCADE_HOUSE;
-
-	static {
-		ARCADE_HOUSE= new House(
+	public static final House createArcadeHouse() {
+		var arcadeHouse = new House(
 			v2i(10, 15), // top-left corner tile
 			v2i(8, 5),   // size in tiles
 			new Door(v2i(13, 15), v2i(14, 15))
 		);
-		ARCADE_HOUSE.setSeat("left", halfTileRightOf(11, 17));
-		ARCADE_HOUSE.setSeat("middle", halfTileRightOf(13, 17));
-		ARCADE_HOUSE.setSeat("right", halfTileRightOf(15, 17));
+		arcadeHouse.setSeat("left",   halfTileRightOf(11, 17));
+		arcadeHouse.setSeat("middle", halfTileRightOf(13, 17));
+		arcadeHouse.setSeat("right",  halfTileRightOf(15, 17));
+		return arcadeHouse;
 	}
 
 	/**
@@ -128,6 +127,7 @@ public class World {
 	private final long totalFoodCount;
 	private long uneatenFoodCount;
 	private final List<Portal> portals;
+	private final House house;
 	private final Pulse energizerBlinking;
 	private final Pulse mazeFlashing;
 
@@ -137,6 +137,7 @@ public class World {
 	public World(byte[][] tileMapData) {
 		tileMap = validateTileMapData(tileMapData);
 		portals = buildPortals(tileMap);
+		house = createArcadeHouse();
 
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
 		eaten = new BitSet(numCols() * numRows());
@@ -149,7 +150,7 @@ public class World {
 	}
 
 	public House house() {
-		return ARCADE_HOUSE;
+		return house;
 	}
 
 	public Pulse energizerBlinking() {
@@ -246,11 +247,11 @@ public class World {
 		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
 			return false; // exclude portal entries and tiles outside of the map
 		}
-		if (ARCADE_HOUSE.contains(tile)) {
+		if (house.contains(tile)) {
 			return false;
 		}
 		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
-		long numDoorNeighbors = tile.neighbors().filter(ARCADE_HOUSE.door()::occupies).count();
+		long numDoorNeighbors = tile.neighbors().filter(house.door()::occupies).count();
 		return numWallNeighbors + numDoorNeighbors < 2;
 	}
 
