@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 import de.amr.games.pacman.lib.*;
+import de.amr.games.pacman.model.world.ArcadeWorld;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.GameController;
@@ -484,9 +485,9 @@ public class GameModel {
 		World world;
 		if (variant == GameVariant.MS_PACMAN) {
 			int mapIndex = mapNumberMsPacMan(levelNumber) - 1;
-			world = new World(MS_PACMAN_MAPS[mapIndex]);
+			world = new ArcadeWorld(MS_PACMAN_MAPS[mapIndex]);
 		} else if (variant == GameVariant.PACMAN) {
-			world = new World(PACMAN_MAP);
+			world = new ArcadeWorld(PACMAN_MAP);
 		} else {
 			throw new IllegalGameVariantException(variant);
 		}
@@ -523,14 +524,14 @@ public class GameModel {
 		scoringEnabled = false;
 		switch (variant) {
 		case MS_PACMAN:
-			level = new GameLevel(this, new World(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
+			level = new GameLevel(this, new ArcadeWorld(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RuleBasedSteering()); // TODO check which route Ms. Pac-Man takes in demo level
 			GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
 			level.letsGetReadyToRumbleAndShowGuys(true);
 			Logger.info("Ms. Pac-Man demo level entered");
 			break;
 		case PACMAN:
-			level = new GameLevel(this, new World(PACMAN_MAP), 1, LEVEL_DATA[0], true);
+			level = new GameLevel(this, new ArcadeWorld(PACMAN_MAP), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE));
 			GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
 			level.letsGetReadyToRumbleAndShowGuys(true);

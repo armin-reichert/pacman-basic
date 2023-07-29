@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import de.amr.games.pacman.model.world.ArcadeWorld;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.model.GameModel;
@@ -38,11 +39,11 @@ public class FloorPlanGeneration {
 			DIR.mkdir();
 		}
 		List.of(8, 4, 2, 1).forEach(res -> {
-			createFloorPlan(new World(GameModel.PACMAN_MAP), file(PACMAN_PATTERN, 1, res), res);
-			createFloorPlan(new World(GameModel.MS_PACMAN_MAPS[0]), file(MS_PACMAN_PATTERN, 1, res), res);
-			createFloorPlan(new World(GameModel.MS_PACMAN_MAPS[1]), file(MS_PACMAN_PATTERN, 2, res), res);
-			createFloorPlan(new World(GameModel.MS_PACMAN_MAPS[2]), file(MS_PACMAN_PATTERN, 3, res), res);
-			createFloorPlan(new World(GameModel.MS_PACMAN_MAPS[3]), file(MS_PACMAN_PATTERN, 4, res), res);
+			createFloorPlan(new ArcadeWorld(GameModel.PACMAN_MAP), file(PACMAN_PATTERN, 1, res), res);
+			createFloorPlan(new ArcadeWorld(GameModel.MS_PACMAN_MAPS[0]), file(MS_PACMAN_PATTERN, 1, res), res);
+			createFloorPlan(new ArcadeWorld(GameModel.MS_PACMAN_MAPS[1]), file(MS_PACMAN_PATTERN, 2, res), res);
+			createFloorPlan(new ArcadeWorld(GameModel.MS_PACMAN_MAPS[2]), file(MS_PACMAN_PATTERN, 3, res), res);
+			createFloorPlan(new ArcadeWorld(GameModel.MS_PACMAN_MAPS[3]), file(MS_PACMAN_PATTERN, 4, res), res);
 		});
 		List.of(8, 4, 2, 1).forEach(res -> {
 			assertTrue(file(PACMAN_PATTERN, 1, res).exists());

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Globals;
 import de.amr.games.pacman.lib.Pulse;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
@@ -42,17 +43,6 @@ public class World {
 	public static final int ARCADE_TILES_X = 28;
 	public static final int ARCADE_TILES_Y = 36;
 
-	public static final House createArcadeHouse() {
-		var arcadeHouse = new House(
-			v2i(10, 15), // top-left corner tile
-			v2i(8, 5),   // size in tiles
-			new Door(v2i(13, 15), v2i(14, 15))
-		);
-		arcadeHouse.setSeat("left",   halfTileRightOf(11, 17));
-		arcadeHouse.setSeat("middle", halfTileRightOf(13, 17));
-		arcadeHouse.setSeat("right",  halfTileRightOf(15, 17));
-		return arcadeHouse;
-	}
 
 	/**
 	 * @param position a position
@@ -133,11 +123,14 @@ public class World {
 
 	/**
 	 * @param tileMapData byte-array of tile map data
+	 * @param house the ghost house
 	 */
-	public World(byte[][] tileMapData) {
+	public World(byte[][] tileMapData, House house) {
+		Globals.checkNotNull(house);
+
 		tileMap = validateTileMapData(tileMapData);
 		portals = buildPortals(tileMap);
-		house = createArcadeHouse();
+		this.house = house;
 
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
 		eaten = new BitSet(numCols() * numRows());

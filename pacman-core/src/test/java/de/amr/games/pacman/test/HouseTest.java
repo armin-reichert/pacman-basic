@@ -9,6 +9,7 @@ import static de.amr.games.pacman.model.world.World.halfTileRightOf;
 
 import java.util.List;
 
+import de.amr.games.pacman.model.world.ArcadeWorld;
 import de.amr.games.pacman.model.world.World;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class HouseTest {
 
 	@Test
 	public void testHouseProperties() {
-		var house = World.createArcadeHouse();
+		var house = ArcadeWorld.createArcadeHouse();
 		Assert.assertEquals(POSITION, house.topLeftTile());
 		Assert.assertEquals(SIZE, house.size());
 		Assert.assertEquals(DOOR, house.door());
