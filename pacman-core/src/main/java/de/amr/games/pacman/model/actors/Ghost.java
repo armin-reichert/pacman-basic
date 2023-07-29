@@ -24,6 +24,7 @@ import static de.amr.games.pacman.model.actors.GhostState.RETURNING_TO_HOUSE;
 
 import java.util.function.Supplier;
 
+import de.amr.games.pacman.lib.Globals;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.lib.Direction;
@@ -176,17 +177,34 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * While frightened, a ghost walks randomly through the maze.
+	 * Frightened ghosts choose a "random" direction when they enter a new tile. If the chosen direction
+	 * can be taken, it is stored and taken as soon as possible.
+	 * Otherwise, the remaining directions are checked in clockwise order.
+	 *
+	 * @see <a href="https://www.youtube.com/watch?v=eFP0_rkjwlY">YouTube: How Frightened Ghosts Decide Where to Go</a>
 	 */
 	public void roam() {
-		if (isNewTileEntered() || !moved()) {
-			Direction.shuffled().stream() //
-					.filter(dir -> dir != moveDir().opposite()) //
-					.filter(dir -> canAccessTile(tile().plus(dir.vector()))) //
-					.findAny() //
-					.ifPresent(this::setWishDir);
+		if (!level.world().belongsToPortal(tile()) && (isNewTileEntered() || !moved())) {
+			setWishDir(chooseFrightenedDirection());
 		}
 		tryMoving();
+	}
+
+	private Direction chooseFrightenedDirection() {
+		Direction opposite = moveDir().opposite();
+		Direction dir = pseudoRandomDirection();
+		while (dir == opposite || !canAccessTile(tile().plus(dir.vector()))) {
+			dir = dir.succClockwise();
+		}
+		return dir;
+	}
+
+	private Direction pseudoRandomDirection() {
+		float rnd = Globals.randomFloat(0, 100);
+		if (rnd < 16.3) return UP;
+		if (rnd < 16.3 + 25.2) return RIGHT;
+		if (rnd < 16.3 + 25.2 + 28.5) return DOWN;
+		return LEFT;
 	}
 
 	// Here begins the state machine part
