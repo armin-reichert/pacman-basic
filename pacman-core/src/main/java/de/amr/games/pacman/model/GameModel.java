@@ -34,7 +34,6 @@ import de.amr.games.pacman.model.world.World;
  */
 public class GameModel {
 
-	//@formatter:off
 	public static final byte[][] PACMAN_MAP = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -339,8 +338,7 @@ public class GameModel {
 	/*20*/ {100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0, 0},
 	/*21*/ { 90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0, 0},
 	};
-	
-	
+
 	private static int dataRow(int levelNumber) {
 		return (levelNumber - 1) < LEVEL_DATA.length ? (levelNumber - 1) : (LEVEL_DATA.length - 1); 
 	}
@@ -362,8 +360,6 @@ public class GameModel {
 		{ 7 * FPS,   20 * FPS,   1,   1037 * FPS,   1,   1037 * FPS,   1,   -1 }, // levels 1-4
 		{ 5 * FPS,   20 * FPS,   1,   1037 * FPS,   1,   1037 * FPS,   1,   -1 }, // levels 5+
 	};
-	
-	//@formatter:on
 
 	public int[] huntingDurations(int levelNumber) {
 		checkLevelNumber(levelNumber);
@@ -384,24 +380,24 @@ public class GameModel {
 
 	// Ms. Pac-Man bonus #3 is an orange, not a peach! (Found in official Arcade machine manual)
 
-	public static final byte MS_PACMAN_CHERRIES     = 0;
-	public static final byte MS_PACMAN_STRAWBERRY   = 1;
-	public static final byte MS_PACMAN_ORANGE       = 2;
-	public static final byte MS_PACMAN_PRETZEL      = 3;
-	public static final byte MS_PACMAN_APPLE        = 4;
-	public static final byte MS_PACMAN_PEAR         = 5;
-	public static final byte MS_PACMAN_BANANA       = 6;
+	public static final byte MS_PACMAN_CHERRIES   = 0;
+	public static final byte MS_PACMAN_STRAWBERRY = 1;
+	public static final byte MS_PACMAN_ORANGE     = 2;
+	public static final byte MS_PACMAN_PRETZEL    = 3;
+	public static final byte MS_PACMAN_APPLE      = 4;
+	public static final byte MS_PACMAN_PEAR       = 5;
+	public static final byte MS_PACMAN_BANANA     = 6;
 
-	public static final byte[] BONUS_VALUES_MS_PACMAN = {1, 2, 5, 7, 10, 20, 50}; // * 100
+	public static final byte[] BONUS_VALUES_MS_PACMAN = { 1, 2, 5, 7, 10, 20, 50 }; // * 100
 
-	public static final byte PACMAN_CHERRIES        = 0;
-	public static final byte PACMAN_STRAWBERRY      = 1;
-	public static final byte PACMAN_PEACH           = 2;
-	public static final byte PACMAN_APPLE           = 3;
-	public static final byte PACMAN_GRAPES          = 4;
-	public static final byte PACMAN_GALAXIAN        = 5;
-	public static final byte PACMAN_BELL            = 6;
-	public static final byte PACMAN_KEY             = 7;
+	public static final byte PACMAN_CHERRIES      = 0;
+	public static final byte PACMAN_STRAWBERRY    = 1;
+	public static final byte PACMAN_PEACH         = 2;
+	public static final byte PACMAN_APPLE         = 3;
+	public static final byte PACMAN_GRAPES        = 4;
+	public static final byte PACMAN_GALAXIAN      = 5;
+	public static final byte PACMAN_BELL          = 6;
+	public static final byte PACMAN_KEY           = 7;
 
 	public static final byte[] BONUS_VALUES_PACMAN = { 1, 3, 5, 7, 10, 20, 30, 50 }; // * 100
 	public static final Vector2f BONUS_POSITION_PACMAN = World.halfTileRightOf(13, 20);
@@ -422,6 +418,7 @@ public class GameModel {
 	public int intermissionTestNumber; // intermission test mode
 
 	public GameModel(GameVariant variant) {
+		Globals.checkGameVariant(variant);
 		this.variant = variant;
 		this.score = new Score();
 		this.highScore = new Score();
@@ -471,36 +468,38 @@ public class GameModel {
 	 * Creates and "enters" the level with the given number.
 	 * 
 	 * @param levelNumber level number (starting at 1)
-	 * @param reset if game is reset when entering level
+	 * @param resetGame if game is reset when entering level
 	 */
-	public void enterLevel(int levelNumber, boolean reset) {
+	public void enterLevel(int levelNumber, boolean resetGame) {
 		checkLevelNumber(levelNumber);
 
-		if (reset) {
+		if (resetGame) {
 			reset();
 		}
 
-		Logger.info("Enter game level {}", levelNumber);
-
-		World world;
-		if (variant == GameVariant.MS_PACMAN) {
-			int mapIndex = mapNumberMsPacMan(levelNumber) - 1;
-			world = new ArcadeWorld(MS_PACMAN_MAPS[mapIndex]);
-		} else if (variant == GameVariant.PACMAN) {
-			world = new ArcadeWorld(PACMAN_MAP);
-		} else {
-			throw new IllegalGameVariantException(variant);
-		}
-
-		level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
-		GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
+		switch (variant) {
+			case MS_PACMAN: {
+				int mapIndex = mapNumberMsPacMan(levelNumber) - 1;
+				var world = new ArcadeWorld(MS_PACMAN_MAPS[mapIndex]);
+				level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
+				GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
+				break;
+			}
+			case PACMAN: {
+				var world = new ArcadeWorld(PACMAN_MAP);
+				level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
+				GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
+				break;
+			}
+			default: throw new IllegalGameVariantException(variant);
+		};
 
 		if (levelNumber == 1) {
 			levelCounter.clear();
 		}
 		if (variant == GameVariant.PACMAN || levelNumber <= 7) {
 			// In Ms. Pac-Man, the level counter stays fixed from level 8 on and bonus symbols are created randomly
-			// (also inside the same level) whenever a bonus is earned . That's what I was told.
+			// (also inside the same level) whenever a bonus is earned. That's what I was told.
 			levelCounter.add(level.bonusSymbol(0));
 			if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
 				levelCounter.remove(0);
@@ -512,6 +511,7 @@ public class GameModel {
 		}
 
 		level.letsGetReadyToRumbleAndShowGuys(false);
+		Logger.info("Entered game level {}", levelNumber);
 	}
 
 	/**
@@ -519,27 +519,25 @@ public class GameModel {
 	 */
 	public void enterDemoLevel() {
 		reset();
-
 		GameController.setSoundEventsEnabled(false);
 		scoringEnabled = false;
+
 		switch (variant) {
 		case MS_PACMAN:
 			level = new GameLevel(this, new ArcadeWorld(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
-			level.setPacSteering(new RuleBasedSteering()); // TODO check which route Ms. Pac-Man takes in demo level
-			GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
-			level.letsGetReadyToRumbleAndShowGuys(true);
-			Logger.info("Ms. Pac-Man demo level entered");
+			// TODO this is not the behavior from the Arcade game
+			level.setPacSteering(new RuleBasedSteering());
 			break;
 		case PACMAN:
 			level = new GameLevel(this, new ArcadeWorld(PACMAN_MAP), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RouteBasedSteering(PACMAN_DEMOLEVEL_ROUTE));
-			GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
-			level.letsGetReadyToRumbleAndShowGuys(true);
-			Logger.info("Pac-Man demo level entered");
 			break;
 		default:
 			throw new IllegalGameVariantException(variant);
 		}
+		GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
+		level.letsGetReadyToRumbleAndShowGuys(true);
+		Logger.info("Demo level entered ({})", variant);
 	}
 
 	/**
