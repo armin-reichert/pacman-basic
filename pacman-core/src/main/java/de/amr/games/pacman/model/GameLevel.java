@@ -611,7 +611,7 @@ public class GameLevel {
 
 	// Pac-Man
 
-	public boolean pacKilled() {
+	public boolean isPacKilled() {
 		return memo.pacKilled;
 	}
 

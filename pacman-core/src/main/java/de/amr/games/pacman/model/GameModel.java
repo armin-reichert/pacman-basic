@@ -492,7 +492,7 @@ public class GameModel {
 				break;
 			}
 			default: throw new IllegalGameVariantException(variant);
-		};
+		}
 
 		if (levelNumber == 1) {
 			levelCounter.clear();

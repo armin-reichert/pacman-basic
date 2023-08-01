@@ -149,7 +149,7 @@ public enum GameState implements FsmState<GameModel> {
 				level.world().energizerBlinking().tick();
 				if (level.isCompleted()) {
 					GameController.it().changeState(LEVEL_COMPLETE);
-				} else if (level.pacKilled()) {
+				} else if (level.isPacKilled()) {
 					GameController.it().changeState(PACMAN_DYING);
 				} else if (level.memo().edibleGhostsExist()) {
 					level.killEdibleGhosts();
