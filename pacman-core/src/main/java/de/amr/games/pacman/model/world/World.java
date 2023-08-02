@@ -102,8 +102,8 @@ public class World {
 		if (firstRow.length == 0) {
 			throw new IllegalArgumentException("Map data empty");
 		}
-		for (int i = 0; i < data.length; ++i) {
-			if (data[i].length != firstRow.length) {
+		for (var row : data) {
+			if (row.length != firstRow.length) {
 				throw new IllegalArgumentException("Map has differently sized rows");
 			}
 		}
