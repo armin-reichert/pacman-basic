@@ -40,10 +40,6 @@ public class World {
 	public static final byte T_PELLET    = 3;
 	public static final byte T_ENERGIZER = 4;
 
-	public static final int ARCADE_TILES_X = 28;
-	public static final int ARCADE_TILES_Y = 36;
-
-
 	/**
 	 * @param position a position
 	 * @return tile containing given position
@@ -193,11 +189,11 @@ public class World {
 	}
 
 	public int numCols() {
-		return ARCADE_TILES_X;
+		return tileMap[0].length;
 	}
 
 	public int numRows() {
-		return ARCADE_TILES_Y;
+		return tileMap.length;
 	}
 
 	public List<Portal> portals() {

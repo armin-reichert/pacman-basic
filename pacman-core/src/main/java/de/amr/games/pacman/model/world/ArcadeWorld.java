@@ -7,6 +7,9 @@ import static de.amr.games.pacman.lib.Globals.v2i;
  */
 public class ArcadeWorld extends World {
 
+    public static final int TILES_X = 28;
+    public static final int TILES_Y = 36;
+
     public static final House createArcadeHouse() {
         var arcadeHouse = new House(
                 v2i(10, 15), // top-left corner tile
