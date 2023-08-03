@@ -159,7 +159,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 * 
 	 * @param variant Pac-Man or Ms. Pac-Man
 	 */
-	public void selectGameVariant(GameVariant variant) {
+	public void startNewGame(GameVariant variant) {
 		game = new GameModel(variant);
 		restart(GameState.BOOT);
 	}
