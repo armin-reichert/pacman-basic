@@ -411,9 +411,7 @@ public class GameModel {
 	private int lives;
 	private boolean playing;
 	private boolean scoringEnabled;
-
 	private boolean oneLessLifeDisplayed; // TODO get rid of this
-	public int intermissionTestNumber; // intermission test mode
 
 	public GameModel(GameVariant variant) {
 		checkGameVariant(variant);

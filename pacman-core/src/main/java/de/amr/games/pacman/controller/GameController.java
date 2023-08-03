@@ -76,6 +76,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private int credit;
 	private boolean autoControlled = false;
 	private boolean immune = false; // extra feature
+	public int intermissionTestNumber; // used in intermission test mode
 
 	private GameController(GameVariant variant) {
 		super(GameState.values());
@@ -186,7 +187,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void startCutscenesTest(int cutSceneNumber) {
 		if (state() == GameState.INTRO) {
-			game.intermissionTestNumber = cutSceneNumber;
+			intermissionTestNumber = cutSceneNumber;
 			changeState(GameState.INTERMISSION_TEST);
 		}
 	}

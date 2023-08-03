@@ -405,12 +405,12 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				if (game.intermissionTestNumber < 3) {
-					++game.intermissionTestNumber;
+				if (GameController.it().intermissionTestNumber < 3) {
+					++GameController.it().intermissionTestNumber;
 					timer.restartIndefinitely();
 					GameController.publishGameEventOfType(GameEvent.UNSPECIFIED_CHANGE);
 				} else {
-					game.intermissionTestNumber = 1;
+					GameController.it().intermissionTestNumber = 1;
 					GameController.it().changeState(INTRO);
 				}
 			}
