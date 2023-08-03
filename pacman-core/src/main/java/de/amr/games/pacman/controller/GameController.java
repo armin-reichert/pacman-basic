@@ -73,7 +73,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private GameModel game;
 	private Steering autopilot = new RuleBasedSteering();
 	private Steering manualPacSteering = Steering.NONE;
-	private boolean autoControlled;
+	private int credit;
+	private boolean autoControlled = false;
+	private boolean immune = false; // extra feature
 
 	private GameController(GameVariant variant) {
 		super(GameState.values());
@@ -92,6 +94,27 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game;
 	}
 
+	/** @return number of coins inserted. */
+	public int credit() {
+		return credit;
+	}
+
+	public boolean setCredit(int credit) {
+		if (0 <= credit && credit <= GameModel.MAX_CREDIT) {
+			this.credit = credit;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean changeCredit(int delta) {
+		return setCredit(credit + delta);
+	}
+
+	public boolean hasCredit() {
+		return credit > 0;
+	}
+
 	public boolean isAutoControlled() {
 		return autoControlled;
 	}
@@ -102,6 +125,17 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void toggleAutoControlled() {
 		autoControlled = !autoControlled;
+	}
+
+	/**
+	 * @return tells if Pac-Man can get killed by ghosts
+	 */
+	public boolean isImmune() {
+		return immune;
+	}
+
+	public void setImmune(boolean immune) {
+		this.immune = immune;
 	}
 
 	public Steering steering() {
@@ -125,11 +159,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 * @param variant Pac-Man or Ms. Pac-Man
 	 */
 	public void selectGameVariant(GameVariant variant) {
-		boolean immune = game.isImmune();
-		int credit = game.credit();
 		game = new GameModel(variant);
-		game.setImmune(immune);
-		game.setCredit(credit);
 		restart(GameState.BOOT);
 	}
 
@@ -138,7 +168,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	 */
 	public void addCredit() {
 		if (!game.isPlaying()) {
-			boolean added = game.changeCredit(1);
+			boolean added = changeCredit(1);
 			if (added) {
 				publishSoundEvent(SoundEvent.CREDIT_ADDED);
 			}
@@ -149,7 +179,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void startPlaying() {
-		if ((state() == GameState.INTRO || state() == GameState.CREDIT) && game.hasCredit()) {
+		if ((state() == GameState.INTRO || state() == GameState.CREDIT) && hasCredit()) {
 			changeState(GameState.READY);
 		}
 	}

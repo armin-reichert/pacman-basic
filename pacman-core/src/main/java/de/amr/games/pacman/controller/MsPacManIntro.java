@@ -165,7 +165,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			@Override
 			public void onUpdate(MsPacManIntro.Context ctx) {
 				ctx.marqueeTimer.advance();
-				if (timer.atSecond(2.0) && !GameController.it().game().hasCredit()) {
+				if (timer.atSecond(2.0) && !GameController.it().hasCredit()) {
 					GameController.it().changeState(GameState.READY);
 					// go into demo mode
 				} else if (timer.atSecond(5)) {

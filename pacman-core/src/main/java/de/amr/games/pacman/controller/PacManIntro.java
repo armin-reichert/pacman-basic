@@ -227,7 +227,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(0.75)) {
 					ctx.ghostInfo[3].ghost.hide();
-					if (!GameController.it().game().hasCredit()) {
+					if (!GameController.it().hasCredit()) {
 						GameController.it().changeState(GameState.READY);
 						return;
 					}

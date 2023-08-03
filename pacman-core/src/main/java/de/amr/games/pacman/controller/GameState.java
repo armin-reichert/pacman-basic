@@ -64,7 +64,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			GameController.it().getManualPacSteering().setEnabled(false);
 			GameController.publishSoundEvent(SoundEvent.STOP_ALL_SOUNDS);
-			if (!game.hasCredit()) {
+			if (!GameController.it().hasCredit()) {
 				game.enterDemoLevel();
 				GameController.publishGameEventOfType(GameEvent.LEVEL_STARTED);
 			} else if (game.isPlaying()) {
@@ -82,7 +82,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			final int showGuysTick = 120; // not sure
 			game.level().ifPresent(level -> {
-				if (game.hasCredit() && !game.isPlaying()) {
+				if (GameController.it().hasCredit() && !game.isPlaying()) {
 					// start new game
 					if (timer.tick() == showGuysTick) {
 						level.guys().forEach(Creature::show);
@@ -172,7 +172,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
 				if (timer.hasExpired()) {
-					if (!game.hasCredit()) {
+					if (!GameController.it().hasCredit()) {
 						GameController.it().changeState(INTRO);
 						// attract mode -> back to intro scene
 					} else if (level.intermissionNumber > 0) {
@@ -277,7 +277,7 @@ public enum GameState implements FsmState<GameModel> {
 						game.setOneLessLifeDisplayed(false);
 					}
 				} else if (timer.hasExpired()) {
-					if (!game.hasCredit()) {
+					if (!GameController.it().hasCredit()) {
 						// end of demo level
 						GameController.setSoundEventsEnabled(true);
 						GameController.it().changeState(INTRO);
@@ -302,7 +302,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			GameController.it().getManualPacSteering().setEnabled(false);
 			timer.restartSeconds(1.2);
-			game.changeCredit(-1);
+			GameController.it().changeCredit(-1);
 			game.saveNewHighscore();
 			GameController.publishSoundEvent(SoundEvent.STOP_ALL_SOUNDS);
 		}
@@ -310,7 +310,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				GameController.it().changeState(game.hasCredit() ? CREDIT : INTRO);
+				GameController.it().changeState(GameController.it().hasCredit() ? CREDIT : INTRO);
 			}
 		}
 
@@ -330,7 +330,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				GameController.it().changeState(game.hasCredit() && game.isPlaying() ? CHANGING_TO_NEXT_LEVEL : INTRO);
+				GameController.it().changeState(GameController.it().hasCredit() && game.isPlaying() ? CHANGING_TO_NEXT_LEVEL : INTRO);
 			}
 		}
 	},

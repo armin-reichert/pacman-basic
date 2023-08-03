@@ -407,18 +407,16 @@ public class GameModel {
 	private final List<Byte> levelCounter = new LinkedList<>();
 	private final Score score;
 	private final Score highScore;
-	private int credit;
 	private int initialLives;
 	private int lives;
 	private boolean playing;
 	private boolean scoringEnabled;
 
-	private boolean immune; // extra feature
 	private boolean oneLessLifeDisplayed; // TODO get rid of this
 	public int intermissionTestNumber; // intermission test mode
 
 	public GameModel(GameVariant variant) {
-		Globals.checkGameVariant(variant);
+		checkGameVariant(variant);
 		this.variant = variant;
 		this.score = new Score();
 		this.highScore = new Score();
@@ -563,17 +561,6 @@ public class GameModel {
 		this.playing = playing;
 	}
 
-	/**
-	 * @return tells if Pac-Man can get killed by ghosts
-	 */
-	public boolean isImmune() {
-		return immune;
-	}
-
-	public void setImmune(boolean immune) {
-		this.immune = immune;
-	}
-
 	public int lives() {
 		return lives;
 	}
@@ -675,27 +662,6 @@ public class GameModel {
 				Logger.error("Highscore could not be saved to '{}': {}", file, x.getMessage());
 			}
 		}
-	}
-
-	/** @return number of coins inserted. */
-	public int credit() {
-		return credit;
-	}
-
-	public boolean setCredit(int credit) {
-		if (0 <= credit && credit <= MAX_CREDIT) {
-			this.credit = credit;
-			return true;
-		}
-		return false;
-	}
-
-	public boolean changeCredit(int delta) {
-		return setCredit(credit + delta);
-	}
-
-	public boolean hasCredit() {
-		return credit > 0;
 	}
 
 	// TODO: get rid of this:

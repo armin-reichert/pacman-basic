@@ -160,11 +160,11 @@ public class PacManGameTest {
 
 	@Test
 	public void testChangeCredit() {
-		assertEquals(0, game.credit());
-		game.changeCredit(2);
-		assertEquals(2, game.credit());
-		game.changeCredit(-2);
-		assertEquals(0, game.credit());
+		assertEquals(0, GameController.it().credit());
+		GameController.it().changeCredit(2);
+		assertEquals(2, GameController.it().credit());
+		GameController.it().changeCredit(-2);
+		assertEquals(0, GameController.it().credit());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
