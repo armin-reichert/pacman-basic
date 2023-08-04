@@ -90,7 +90,7 @@ public class MsPacManIntermission1 {
 
 	private void updateStateFlap() {
 		if (stateTimer.atSecond(1)) {
-			GameController.publishSoundEvent(SoundEvent.START_INTERMISSION_1);
+			GameController.it().publishSoundEvent(SoundEvent.START_INTERMISSION_1);
 		} else if (stateTimer.hasExpired()) {
 			enterStateChasedByGhosts();
 		}

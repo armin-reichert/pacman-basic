@@ -75,7 +75,7 @@ public class MsPacManIntermission3 {
 
 	private void updateStateFlap() {
 		if (stateTimer.atSecond(1)) {
-			GameController.publishSoundEvent(SoundEvent.START_INTERMISSION_3);
+			GameController.it().publishSoundEvent(SoundEvent.START_INTERMISSION_3);
 		} else if (stateTimer.atSecond(3)) {
 			enterStateDeliverJunior();
 		}

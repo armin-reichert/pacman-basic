@@ -63,7 +63,7 @@ public class MsPacManIntermission2 {
 
 	private void updateStateFlap() {
 		if (stateTimer.hasExpired()) {
-			GameController.publishSoundEvent(SoundEvent.START_INTERMISSION_2);
+			GameController.it().publishSoundEvent(SoundEvent.START_INTERMISSION_2);
 			enterStateChasing();
 		}
 	}

@@ -229,37 +229,37 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private final Collection<GameEventListener> subscribers = new ArrayList<>();
 	private boolean soundEventsEnabled = true;
 
-	public static void setSoundEventsEnabled(boolean enabled) {
+	public void setSoundEventsEnabled(boolean enabled) {
 		it.soundEventsEnabled = enabled;
 		Logger.info("Sound events {}", enabled ? "enabled" : "disabled");
 	}
 
-	public static void addListener(GameEventListener subscriber) {
+	public void addListener(GameEventListener subscriber) {
 		checkNotNull(subscriber);
 		it.subscribers.add(subscriber);
 	}
 
-	public static void removeListener(GameEventListener subscriber) {
+	public void removeListener(GameEventListener subscriber) {
 		checkNotNull(subscriber);
 		it.subscribers.remove(subscriber);
 	}
 
-	public static void publishGameEvent(GameEvent event) {
+	public void publishGameEvent(GameEvent event) {
 		checkNotNull(event);
 		Logger.trace("Publish game event: {}", event);
 		it.subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 
-	public static void publishGameEvent(byte type, Vector2i tile) {
+	public void publishGameEvent(byte type, Vector2i tile) {
 		checkNotNull(tile);
 		publishGameEvent(new GameEvent(it.game, type, tile));
 	}
 
-	public static void publishGameEventOfType(byte type) {
+	public void publishGameEventOfType(byte type) {
 		publishGameEvent(new GameEvent(it.game, type, null));
 	}
 
-	public static void publishSoundEvent(byte soundEventID) {
+	public void publishSoundEvent(byte soundEventID) {
 		checkNotNull(soundEventID);
 		if (it.soundEventsEnabled) {
 			publishGameEvent(new SoundEvent(it.game, soundEventID));

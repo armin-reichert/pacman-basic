@@ -82,13 +82,13 @@ public class StaticBonus extends Entity implements Bonus {
 		timer = ticks;
 		state = Bonus.STATE_EATEN;
 		Logger.info("Bonus eaten: {}", this);
-		GameController.publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
+		GameController.it().publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
 	}
 
 	private void expire() {
 		setInactive();
 		Logger.info("Bonus expired: {}", this);
-		GameController.publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
+		GameController.it().publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class StaticBonus extends Entity implements Bonus {
 				level.game().scorePoints(points());
 				setEaten(GameModel.BONUS_POINTS_SHOWN_TICKS);
 				Logger.info("Scored {} points for eating bonus {}", points(), this);
-				GameController.publishSoundEvent(SoundEvent.BONUS_EATEN);
+				GameController.it().publishSoundEvent(SoundEvent.BONUS_EATEN);
 			} else if (timer == 0) {
 				expire();
 			} else {

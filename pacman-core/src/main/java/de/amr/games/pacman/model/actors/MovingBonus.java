@@ -101,7 +101,7 @@ public class MovingBonus extends Creature implements Bonus {
 		eatenTimer = ticks;
 		jumpAnimation.stop();
 		Logger.info("Bonus eaten: {}", this);
-		GameController.publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
+		GameController.it().publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
 	}
 
 	public void setRoute(List<NavigationPoint> route, boolean leftToRight) {
@@ -129,14 +129,14 @@ public class MovingBonus extends Creature implements Bonus {
 			if (sameTile(level.pac())) {
 				level.game().scorePoints(points());
 				setEaten(GameModel.BONUS_POINTS_SHOWN_TICKS);
-				GameController.publishSoundEvent(SoundEvent.BONUS_EATEN);
+				GameController.it().publishSoundEvent(SoundEvent.BONUS_EATEN);
 				return;
 			}
 			steering.steer(level, this);
 			if (steering.isComplete()) {
 				setInactive();
 				Logger.trace("Bonus reached target: {}", this);
-				GameController.publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
+				GameController.it().publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
 			} else {
 				navigateTowardsTarget();
 				tryMoving();
@@ -149,7 +149,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (--eatenTimer == 0) {
 				setInactive();
 				Logger.trace("Bonus expired: {}", this);
-				GameController.publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
+				GameController.it().publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
 			}
 			break;
 		}

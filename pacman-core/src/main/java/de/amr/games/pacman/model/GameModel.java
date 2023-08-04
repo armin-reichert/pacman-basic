@@ -478,13 +478,13 @@ public class GameModel {
 				int mapIndex = mapNumberMsPacMan(levelNumber) - 1;
 				var world = new ArcadeWorld(MS_PACMAN_MAPS[mapIndex]);
 				level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
-				GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
+				GameController.it().publishGameEventOfType(GameEvent.LEVEL_CREATED);
 				break;
 			}
 			case PACMAN: {
 				var world = new ArcadeWorld(PACMAN_MAP);
 				level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
-				GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
+				GameController.it().publishGameEventOfType(GameEvent.LEVEL_CREATED);
 				break;
 			}
 			default: throw new IllegalGameVariantException(variant);
@@ -515,7 +515,7 @@ public class GameModel {
 	 */
 	public void enterDemoLevel() {
 		reset();
-		GameController.setSoundEventsEnabled(false);
+		GameController.it().setSoundEventsEnabled(false);
 		scoringEnabled = false;
 
 		switch (variant) {
@@ -531,7 +531,7 @@ public class GameModel {
 		default:
 			throw new IllegalGameVariantException(variant);
 		}
-		GameController.publishGameEventOfType(GameEvent.LEVEL_CREATED);
+		GameController.it().publishGameEventOfType(GameEvent.LEVEL_CREATED);
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		Logger.info("Demo level entered ({})", variant);
 	}
@@ -607,7 +607,7 @@ public class GameModel {
 		}
 		if (oldScore < SCORE_EXTRA_LIFE && newScore >= SCORE_EXTRA_LIFE) {
 			lives += 1;
-			GameController.publishSoundEvent(SoundEvent.EXTRA_LIFE);
+			GameController.it().publishSoundEvent(SoundEvent.EXTRA_LIFE);
 		}
 	}
 

@@ -504,8 +504,8 @@ public class GameLevel {
 				game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 			}
 			ghostHouseManagement.update();
-			GameController.publishGameEvent(GameEvent.PAC_FINDS_FOOD, foodTile);
-			GameController.publishSoundEvent(SoundEvent.PACMAN_FOUND_FOOD);
+			GameController.it().publishGameEvent(GameEvent.PAC_FINDS_FOOD, foodTile);
+			GameController.it().publishSoundEvent(SoundEvent.PACMAN_FOUND_FOOD);
 		} else {
 			pac.starve();
 		}
@@ -526,10 +526,10 @@ public class GameLevel {
 			Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
 			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
-			GameController.publishGameEventOfType(GameEvent.PAC_GETS_POWER);
-			GameController.publishSoundEvent(SoundEvent.PACMAN_POWER_STARTS);
+			GameController.it().publishGameEventOfType(GameEvent.PAC_GETS_POWER);
+			GameController.it().publishSoundEvent(SoundEvent.PACMAN_POWER_STARTS);
 		} else if (memo.pacPowerFading) {
-			GameController.publishGameEventOfType(GameEvent.PAC_STARTS_LOSING_POWER);
+			GameController.it().publishGameEventOfType(GameEvent.PAC_STARTS_LOSING_POWER);
 		} else if (memo.pacPowerLost) {
 			Logger.info("{} power ends, timer: {}", pac.name(), pac.powerTimer());
 			pac.powerTimer().stop();
@@ -537,8 +537,8 @@ public class GameLevel {
 			huntingTimer.start();
 			Logger.info("Hunting timer restarted");
 			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-			GameController.publishGameEventOfType(GameEvent.PAC_LOSES_POWER);
-			GameController.publishSoundEvent(SoundEvent.PACMAN_POWER_ENDS);
+			GameController.it().publishGameEventOfType(GameEvent.PAC_LOSES_POWER);
+			GameController.it().publishSoundEvent(SoundEvent.PACMAN_POWER_ENDS);
 		}
 
 		// Cruise Elroy
@@ -782,7 +782,7 @@ public class GameLevel {
 				byte symbol = bonusSymbols[bonusIndex];
 				bonus = createMovingBonus(symbol, GameModel.BONUS_VALUES_MS_PACMAN[symbol] * 100);
 				bonus.setEdible(TickTimer.INDEFINITE);
-				GameController.publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
+				GameController.it().publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
 				break;
 			}
 			case PACMAN: {
@@ -791,7 +791,7 @@ public class GameLevel {
 				bonus.entity().setPosition(GameModel.BONUS_POSITION_PACMAN);
 				int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 				bonus.setEdible(ticks);
-				GameController.publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
+				GameController.it().publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
 				break;
 			}
 			default:
