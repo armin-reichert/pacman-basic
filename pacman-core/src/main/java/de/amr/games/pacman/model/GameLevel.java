@@ -480,36 +480,65 @@ public class GameLevel {
 		}
 	}
 
+	private void handleFoodFound(Vector2i foodTile) {
+		world.removeFood(foodTile);
+		if (isFirstBonusReached()) {
+			memo.bonusReachedIndex = 0;
+		} else if (isSecondBonusReached()) {
+			memo.bonusReachedIndex = 1;
+		}
+		if (memo.energizerFound) {
+			numGhostsKilledByEnergizer = 0;
+			pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
+			int points = GameModel.POINTS_ENERGIZER;
+			game.scorePoints(points);
+			Logger.info("Scored {} points for eating energizer", points);
+		} else {
+			pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
+			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
+		}
+		ghostHouseManagement.update();
+		if (world.uneatenFoodCount() == elroy1DotsLeft) {
+			setCruiseElroyState(1);
+		} else if (world.uneatenFoodCount() == elroy2DotsLeft) {
+			setCruiseElroyState(2);
+		}
+		GameController.it().publishGameEvent(GameEvent.PAC_FINDS_FOOD, foodTile);
+		GameController.it().publishSoundEvent(SoundEvent.PACMAN_FOUND_FOOD);
+	}
+
+	private void handlePacPowerStarts() {
+		pac.powerTimer().restartSeconds(pacPowerSeconds);
+		Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
+		ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
+		ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
+		GameController.it().publishGameEventOfType(GameEvent.PAC_GETS_POWER);
+		GameController.it().publishSoundEvent(SoundEvent.PACMAN_POWER_STARTS);
+	}
+
+	private void handlePacPowerLost() {
+		Logger.info("{} power ends, timer: {}", pac.name(), pac.powerTimer());
+		pac.powerTimer().stop();
+		pac.powerTimer().resetIndefinitely();
+		huntingTimer.start();
+		Logger.info("Hunting timer restarted");
+		ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
+		GameController.it().publishGameEventOfType(GameEvent.PAC_LOSES_POWER);
+		GameController.it().publishSoundEvent(SoundEvent.PACMAN_POWER_ENDS);
+	}
+
 	public void update() {
 		collectInformation();
 
-		// Food
+		// Food found?
 		if (memo.foodFoundTile.isPresent()) {
-			var foodTile = memo.foodFoundTile.get();
-			world.removeFood(foodTile);
 			pac.endStarving();
-			if (isFirstBonusReached()) {
-				memo.bonusReachedIndex = 0;
-			} else if (isSecondBonusReached()) {
-				memo.bonusReachedIndex = 1;
-			}
-			if (memo.energizerFound) {
-				numGhostsKilledByEnergizer = 0;
-				pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
-				int points = GameModel.POINTS_ENERGIZER;
-				game.scorePoints(points);
-				Logger.info("Scored {} points for eating energizer", points);
-			} else {
-				pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
-				game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
-			}
-			ghostHouseManagement.update();
-			GameController.it().publishGameEvent(GameEvent.PAC_FINDS_FOOD, foodTile);
-			GameController.it().publishSoundEvent(SoundEvent.PACMAN_FOUND_FOOD);
+			handleFoodFound(memo.foodFoundTile.get());
 		} else {
 			pac.starve();
 		}
 
+		// Level complete?
 		if (isCompleted()) {
 			logMemo();
 			return;
@@ -520,32 +549,13 @@ public class GameLevel {
 			handleBonusReached(memo.bonusReachedIndex);
 		}
 
-		// Pac power state changes
+		// Pac power state changed?
 		if (memo.pacPowerStarts) {
-			pac.powerTimer().restartSeconds(pacPowerSeconds);
-			Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
-			ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
-			ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
-			GameController.it().publishGameEventOfType(GameEvent.PAC_GETS_POWER);
-			GameController.it().publishSoundEvent(SoundEvent.PACMAN_POWER_STARTS);
+			handlePacPowerStarts();
 		} else if (memo.pacPowerFading) {
 			GameController.it().publishGameEventOfType(GameEvent.PAC_STARTS_LOSING_POWER);
 		} else if (memo.pacPowerLost) {
-			Logger.info("{} power ends, timer: {}", pac.name(), pac.powerTimer());
-			pac.powerTimer().stop();
-			pac.powerTimer().resetIndefinitely();
-			huntingTimer.start();
-			Logger.info("Hunting timer restarted");
-			ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-			GameController.it().publishGameEventOfType(GameEvent.PAC_LOSES_POWER);
-			GameController.it().publishSoundEvent(SoundEvent.PACMAN_POWER_ENDS);
-		}
-
-		// Cruise Elroy
-		if (world.uneatenFoodCount() == elroy1DotsLeft) {
-			setCruiseElroyState(1);
-		} else if (world.uneatenFoodCount() == elroy2DotsLeft) {
-			setCruiseElroyState(2);
+			handlePacPowerLost();
 		}
 
 		// Who must die?
@@ -554,8 +564,8 @@ public class GameLevel {
 
 		// Update world and guys
 		world.mazeFlashing().tick();
-		pac.update();
 		unlockGhost();
+		pac.update();
 		ghosts().forEach(Ghost::update);
 		updateBonus();
 

@@ -102,7 +102,7 @@ public class Pac extends Creature {
 		restingTicks = ticks;
 	}
 
-	/* Number of ticks since Pac has has eaten a pellet or energizer. */
+	/* Number of ticks since Pac has eaten a pellet or energizer. */
 	public long starvingTicks() {
 		return starvingTicks;
 	}
