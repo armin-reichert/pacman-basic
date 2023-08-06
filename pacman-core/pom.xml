@@ -12,12 +12,26 @@
 		<vs.java>11</vs.java>
 		<vs.junit>4.13.2</vs.junit>
 		<vs.maven-compiler-plugin>3.10.1</vs.maven-compiler-plugin>
+		<vs.maven-source-plugin>3.3.0</vs.maven-source-plugin>
 		<vs.tinylog>2.6.1</vs.tinylog>
 	</properties>
 
 	<build>
 		<plugins>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${vs.maven-source-plugin}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
