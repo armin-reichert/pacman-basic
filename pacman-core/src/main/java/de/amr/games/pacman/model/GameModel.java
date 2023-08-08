@@ -73,7 +73,9 @@ public class GameModel {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
 	
-	public static final List<Vector2i> PACMAN_RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
+	public static final List<Vector2i> PACMAN_RED_ZONE = List.of(
+			v2i(12, 14), v2i(15, 14),
+			v2i(12, 26), v2i(15, 26));
 
 	public static final byte[][][] MS_PACMAN_MAPS =  {
 		{
@@ -250,20 +252,18 @@ public class GameModel {
 	 */
 	public static int mazeNumberMsPacMan(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		if (levelNumber <= 2) {
-			return 1;
+		switch (levelNumber) {
+			case 1: case 2:
+				return 1;
+			case 3: case 4: case 5:
+				return 2;
+			case 6: case 7: case 8: case 9:
+				return 3;
+			case 10: case 11: case 12: case 13:
+				return 4;
+			default: // alternate between maze #5 and #6 every 4th level
+				return (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		}
-		if (levelNumber <= 5) {
-			return 2;
-		}
-		if (levelNumber <= 9) {
-			return 3;
-		}
-		if (levelNumber <= 13) {
-			return 4;
-		}
-		// alternate between maze #5 and #6 every 4th level
-		return (levelNumber - 14) % 8 < 4 ? 5 : 6;
 	}
 	
 	private static int mapNumberMsPacMan(int levelNumber) {
