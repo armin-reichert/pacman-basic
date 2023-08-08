@@ -442,6 +442,7 @@ public class GameLevel {
 			ghost.resetAnimation();
 		});
 		world.mazeFlashing().reset();
+		world.energizerBlinking().reset();
 	}
 
 	/**

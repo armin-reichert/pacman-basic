@@ -472,13 +472,11 @@ public class GameModel {
 				int mapIndex = mapNumberMsPacMan(levelNumber) - 1;
 				var world = new ArcadeWorld(MS_PACMAN_MAPS[mapIndex]);
 				level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
-				GameController.it().publishGameEventOfType(GameEvent.LEVEL_CREATED);
 				break;
 			}
 			case PACMAN: {
 				var world = new ArcadeWorld(PACMAN_MAP);
 				level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
-				GameController.it().publishGameEventOfType(GameEvent.LEVEL_CREATED);
 				break;
 			}
 			default: throw new IllegalGameVariantException(variant);
@@ -500,8 +498,10 @@ public class GameModel {
 			score.setLevelNumber(levelNumber);
 		}
 
+		Logger.info("Game level {} created", levelNumber);
+		GameController.it().publishGameEventOfType(GameEvent.LEVEL_CREATED);
+		// TODO Check why this has to be done *after* the event:
 		level.letsGetReadyToRumbleAndShowGuys(false);
-		Logger.info("Entered game level {}", levelNumber);
 	}
 
 	/**
