@@ -462,25 +462,15 @@ public class GameModel {
 	 */
 	public void enterLevel(int levelNumber, boolean resetGame) {
 		checkLevelNumber(levelNumber);
+		checkGameVariant(variant);
 
 		if (resetGame) {
 			reset();
 		}
 
-		switch (variant) {
-			case MS_PACMAN: {
-				int mapIndex = mapNumberMsPacMan(levelNumber) - 1;
-				var world = new ArcadeWorld(MS_PACMAN_MAPS[mapIndex]);
-				level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
-				break;
-			}
-			case PACMAN: {
-				var world = new ArcadeWorld(PACMAN_MAP);
-				level = new GameLevel(this, world, levelNumber, LEVEL_DATA[dataRow(levelNumber)], false);
-				break;
-			}
-			default: throw new IllegalGameVariantException(variant);
-		}
+		var map = variant == GameVariant.MS_PACMAN ? MS_PACMAN_MAPS[mapNumberMsPacMan(levelNumber) - 1] : PACMAN_MAP;
+		var levelData = LEVEL_DATA[dataRow(levelNumber)];
+		level = new GameLevel(this, new ArcadeWorld(map), levelNumber, levelData, false);
 
 		if (levelNumber == 1) {
 			levelCounter.clear();
