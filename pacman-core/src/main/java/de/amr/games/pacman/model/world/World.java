@@ -110,12 +110,12 @@ public class World {
 	private final byte[][] tileMap;
 	private final List<Vector2i> energizerTiles;
 	private final BitSet eaten;
-	private final long totalFoodCount;
-	private long uneatenFoodCount;
 	private final List<Portal> portals;
 	private final House house;
 	private final Pulse energizerBlinking;
 	private final Pulse mazeFlashing;
+	private final int totalFoodCount;
+	private int uneatenFoodCount;
 
 	/**
 	 * @param tileMapData byte-array of tile map data
@@ -130,7 +130,7 @@ public class World {
 
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
 		eaten = new BitSet(numCols() * numRows());
-		totalFoodCount = tiles().filter(this::isFoodTile).count();
+		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		uneatenFoodCount = totalFoodCount;
 
 		// Animations
@@ -245,15 +245,15 @@ public class World {
 	}
 
 
-	public long totalFoodCount() {
+	public int totalFoodCount() {
 		return totalFoodCount;
 	}
 
-	public long uneatenFoodCount() {
+	public int uneatenFoodCount() {
 		return uneatenFoodCount;
 	}
 
-	public long eatenFoodCount() {
+	public int eatenFoodCount() {
 		return totalFoodCount - uneatenFoodCount;
 	}
 
@@ -275,9 +275,6 @@ public class World {
 
 	public boolean hasEatenFoodAt(Vector2i tile) {
 		checkTileNotNull(tile);
-		if (insideBounds(tile)) {
-			return eaten.get(index(tile));
-		}
-		return false;
+		return insideBounds(tile) && eaten.get(index(tile));
 	}
 }
