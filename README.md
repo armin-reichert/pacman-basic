@@ -14,7 +14,7 @@ The implementation follows the Model-View-Controller design pattern:
 The MVC design allows to implement different user interfaces for Pac-Man and Ms. Pac-Man without having to recreate the details of the game logic. 
 
 As proof of concept I implemented the following two UI variants: 
-- A Swing UI implementation, see repository [pacman-ui-swing](https://github.com/armin-reichert/pacman-ui-swing).
+- A Swing UI implementation, see repository [pacman-ui-swing](https://github.com/armin-reichert/pacman-ui-swing) (OUTDATED! Must be adapted to core changes).
 - A JavaFX UI implementation with play scenes in 2D and 3D, see repository [pacman-javafx](https://github.com/armin-reichert/pacman-javafx).
 
 YouTube:
