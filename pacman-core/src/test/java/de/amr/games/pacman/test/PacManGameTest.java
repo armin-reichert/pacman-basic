@@ -176,21 +176,21 @@ public class PacManGameTest {
 	@Test
 	public void testLegalCruiseElroyState() {
 		var level = game.level().get();
-		level.setCruiseElroyState(-2);
+		level.setCruiseElroyState((byte) -2);
 		assertEquals(-2, level.cruiseElroyState());
-		level.setCruiseElroyState(-1);
+		level.setCruiseElroyState((byte) -1);
 		assertEquals(-1, level.cruiseElroyState());
-		level.setCruiseElroyState(0);
+		level.setCruiseElroyState((byte) 0);
 		assertEquals(0, level.cruiseElroyState());
-		level.setCruiseElroyState(1);
+		level.setCruiseElroyState((byte) 1);
 		assertEquals(1, level.cruiseElroyState());
-		level.setCruiseElroyState(2);
+		level.setCruiseElroyState((byte) 2);
 		assertEquals(2, level.cruiseElroyState());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIllegalCruiseElroyState() {
 		var level = game.level().get();
-		level.setCruiseElroyState(42);
+		level.setCruiseElroyState((byte) 42);
 	}
 }

@@ -38,25 +38,25 @@ import de.amr.games.pacman.model.world.World;
  */
 public class GameLevel {
 
-	/** Relative Pac-Man speed in this level. */
+	/** Relative Pac-Man speed (percentage of base speed). */
 	public final float pacSpeed;
 
-	/** Relative ghost speed in this level. */
+	/** Relative ghost speed when hunting or scattering. */
 	public final float ghostSpeed;
 
-	/** Relative ghost speed when inside tunnel in this level. */
+	/** Relative ghost speed inside tunnel. */
 	public final float ghostSpeedTunnel;
 
-	/** Number of pellets left before player becomes "Cruise Elroy" with severity 1. */
-	public final int elroy1DotsLeft;
+	/** Number of pellets left when Blinky becomes "Cruise Elroy" grade 1. */
+	public final byte elroy1DotsLeft;
 
-	/** Relative speed of player being "Cruise Elroy" at severity 1. */
+	/** Relative speed of Blinky being "Cruise Elroy" grade 1. */
 	public final float elroy1Speed;
 
-	/** Number of pellets left before player becomes "Cruise Elroy" with severity 2. */
-	public final int elroy2DotsLeft;
+	/** Number of pellets left when Blinky becomes "Cruise Elroy" grade 2. */
+	public final byte elroy2DotsLeft;
 
-	/** Relative speed of player being "Cruise Elroy" with severity 2. */
+	/** Relative speed of Blinky being "Cruise Elroy" grade 2. */
 	public final float elroy2Speed;
 
 	/** Relative speed of Pac-Man in power mode. */
@@ -65,14 +65,14 @@ public class GameLevel {
 	/** Relative speed of frightened ghost. */
 	public final float ghostSpeedFrightened;
 
-	/** Number of seconds Pac-Man gets power int this level. */
-	public final int pacPowerSeconds;
+	/** Number of seconds Pac-Man gets power. */
+	public final byte pacPowerSeconds;
 
 	/** Number of maze flashes at end of this level. */
-	public final int numFlashes;
+	public final byte numFlashes;
 
 	/** Number of intermission scene played after this level (1, 2, 3, 0 = no intermission). */
-	public final int intermissionNumber;
+	public final byte intermissionNumber;
 
 	private final GameModel game;
 
@@ -267,12 +267,12 @@ public class GameLevel {
 	/**
 	 * @param cruiseElroyState Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled).
 	 */
-	public void setCruiseElroyState(int cruiseElroyState) {
+	public void setCruiseElroyState(byte cruiseElroyState) {
 		if (cruiseElroyState < -2 || cruiseElroyState > 2) {
 			throw new IllegalArgumentException(
 					"Cruise Elroy state must be one of -2, -1, 0, 1, 2, but is " + cruiseElroyState);
 		}
-		this.cruiseElroyState = (byte) cruiseElroyState;
+		this.cruiseElroyState = cruiseElroyState;
 		Logger.trace("Cruise Elroy state set to {}", cruiseElroyState);
 	}
 
@@ -500,9 +500,9 @@ public class GameLevel {
 		}
 		ghostHouseManagement.update(this);
 		if (world.uneatenFoodCount() == elroy1DotsLeft) {
-			setCruiseElroyState(1);
+			setCruiseElroyState((byte) 1);
 		} else if (world.uneatenFoodCount() == elroy2DotsLeft) {
-			setCruiseElroyState(2);
+			setCruiseElroyState((byte) 2);
 		}
 		GameController.it().publishGameEvent(GameEvent.PAC_FINDS_FOOD, foodTile);
 		GameController.it().publishSoundEvent(SoundEvent.PACMAN_FOUND_FOOD);
