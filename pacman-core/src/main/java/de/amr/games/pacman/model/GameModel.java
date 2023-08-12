@@ -273,15 +273,15 @@ public class GameModel {
 	}
 	
 	private static final NavigationPoint[] PACMAN_DEMOLEVEL_ROUTE = {
-			np(12, 26), np(9, 26),  np(12, 32), np(15, 32), np(24, 29), np(21, 23),
-			np(18, 23), np(18, 20), np(18, 17), np(15, 14), np(12, 14), np(9, 17),
-			np(6, 17),  np(6, 11),  np(6, 8),   np(6, 4),   np(1, 8),   np(6, 8),
-			np(9, 8),   np(12, 8),  np(6, 4),   np(6, 8),   np(6, 11),  np(1, 8),
-			np(6, 8),   np(9, 8),   np(12, 14), np(9, 17),  np(6, 17),  np(0, 17),
-			np(21, 17), np(21, 23), np(21, 26), np(24, 29), /* avoid moving up: */ np(26, 29),
-			np(15, 32),	np(12, 32), np(3, 29),  np(6, 23),  np(9, 23),  np(12, 26),
-			np(15, 26), np(18, 23), np(21, 23), np(24, 29), /* avoid moving up: */ np(26, 29),
-			np(15, 32),	np(12, 32), np(3, 29),  np(6, 23)
+		np(12, 26), np(9, 26),  np(12, 32), np(15, 32), np(24, 29), np(21, 23),
+		np(18, 23), np(18, 20), np(18, 17), np(15, 14), np(12, 14), np(9, 17),
+		np(6, 17),  np(6, 11),  np(6, 8),   np(6, 4),   np(1, 8),   np(6, 8),
+		np(9, 8),   np(12, 8),  np(6, 4),   np(6, 8),   np(6, 11),  np(1, 8),
+		np(6, 8),   np(9, 8),   np(12, 14), np(9, 17),  np(6, 17),  np(0, 17),
+		np(21, 17), np(21, 23), np(21, 26), np(24, 29), /* avoid moving up: */ np(26, 29),
+		np(15, 32),	np(12, 32), np(3, 29),  np(6, 23),  np(9, 23),  np(12, 26),
+		np(15, 26), np(18, 23), np(21, 23), np(24, 29), /* avoid moving up: */ np(26, 29),
+		np(15, 32),	np(12, 32), np(3, 29),  np(6, 23)
 	};
 
 	public static final byte RED_GHOST    = 0;
@@ -339,9 +339,9 @@ public class GameModel {
 	
 	// Hunting duration (in ticks) of chase and scatter phases. See Pac-Man dossier.
 	private static final int[][] HUNTING_DURATIONS_PACMAN = {
-		{ 7 * FPS,   20 * FPS,   7 * FPS,   20 * FPS,   5 * FPS,     20 * FPS,   5 * FPS,   -1 }, // level 1
-		{ 7 * FPS,   20 * FPS,   7 * FPS,   20 * FPS,   5 * FPS,   1033 * FPS,         1,   -1 }, // levels 2-4
-		{ 5 * FPS,   20 * FPS,   5 * FPS,   20 * FPS,   5 * FPS,   1037 * FPS,         1,   -1 }, // levels 5+
+		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS,   20 * FPS, 5 * FPS, -1 }, // Level 1
+		{ 7 * FPS, 20 * FPS, 7 * FPS, 20 * FPS, 5 * FPS, 1033 * FPS, 1,       -1 }, // Level 2-4
+		{ 5 * FPS, 20 * FPS, 5 * FPS, 20 * FPS, 5 * FPS, 1037 * FPS, 1,       -1 }, // Level 5+
 	};
 
 	/** 
@@ -351,8 +351,8 @@ public class GameModel {
 	 * @see <a href=" https://github.com/armin-reichert/pacman-basic/blob/main/doc/mspacman-details-reddit-user-damselindis.md">GitHub</a>
 	 */
 	private static final int[][] HUNTING_DURATIONS_MS_PACMAN = {
-		{ 7 * FPS,   20 * FPS,   1,   1037 * FPS,   1,   1037 * FPS,   1,   -1 }, // levels 1-4
-		{ 5 * FPS,   20 * FPS,   1,   1037 * FPS,   1,   1037 * FPS,   1,   -1 }, // levels 5+
+		{ 7 * FPS, 20 * FPS, 1, 1037 * FPS, 1, 1037 * FPS, 1, -1 }, // Levels 1-4
+		{ 5 * FPS, 20 * FPS, 1, 1037 * FPS, 1, 1037 * FPS, 1, -1 }, // Levels 5+
 	};
 
 	public int[] huntingDurations(int levelNumber) {
@@ -394,13 +394,14 @@ public class GameModel {
 	public static final byte PACMAN_KEY           = 7;
 
 	public static final byte[] BONUS_VALUES_PACMAN = { 1, 3, 5, 7, 10, 20, 30, 50 }; // * 100
+
 	public static final Vector2f BONUS_POSITION_PACMAN = World.halfTileRightOf(13, 20);
 
 	private final GameVariant variant;
-	private GameLevel level;
-	private final List<Byte> levelCounter = new LinkedList<>();
+	private final List<Byte> levelCounter;
 	private final Score score;
 	private final Score highScore;
+	private GameLevel level;
 	private int initialLives;
 	private int lives;
 	private boolean playing;
@@ -410,36 +411,10 @@ public class GameModel {
 	public GameModel(GameVariant variant) {
 		checkGameVariant(variant);
 		this.variant = variant;
+		this.levelCounter = new LinkedList<>();
 		this.score = new Score();
 		this.highScore = new Score();
 		initialLives = 3;
-	}
-
-	public int getInitialLives() {
-		return initialLives;
-	}
-
-	public void setInitialLives(int initialLives) {
-		this.initialLives = initialLives;
-	}
-
-	/**
-	 * @return the game variant realized by this model
-	 */
-	public GameVariant variant() {
-		return variant;
-	}
-
-	/**
-	 * @return number of maze (not map) used in this level, 1-based.
-	 */
-	public int mazeNumber(int levelNumber) {
-		return variant == GameVariant.MS_PACMAN ? mazeNumberMsPacMan(levelNumber) : 1;
-	}
-
-	/** @return (optional) current game level. */
-	public Optional<GameLevel> level() {
-		return Optional.ofNullable(level);
 	}
 
 	/**
@@ -451,7 +426,7 @@ public class GameModel {
 		playing = false;
 		scoringEnabled = true;
 		oneLessLifeDisplayed = false; // @remove
-		Logger.info("Game model ({}) reset", variant());
+		Logger.info("Game model ({}) reset", variant);
 	}
 
 	/**
@@ -520,9 +495,6 @@ public class GameModel {
 		Logger.info("Demo level entered ({})", variant);
 	}
 
-	/**
-	 * Enters the next game level.
-	 */
 	public void nextLevel() {
 		if (level == null) {
 			throw new IllegalStateException("Cannot enter next level, no current level exists");
@@ -534,13 +506,35 @@ public class GameModel {
 		level = null;
 	}
 
-	/** @return tells if the game play is running. */
+	public Optional<GameLevel> level() {
+		return Optional.ofNullable(level);
+	}
+
+	public GameVariant variant() {
+		return variant;
+	}
+
+	/**
+	 * @return number of maze (not map) used in this level, 1-based.
+	 */
+	public int mazeNumber(int levelNumber) {
+		return variant == GameVariant.MS_PACMAN ? mazeNumberMsPacMan(levelNumber) : 1;
+	}
+
 	public boolean isPlaying() {
 		return playing;
 	}
 
 	public void setPlaying(boolean playing) {
 		this.playing = playing;
+	}
+
+	public int getInitialLives() {
+		return initialLives;
+	}
+
+	public void setInitialLives(int initialLives) {
+		this.initialLives = initialLives;
 	}
 
 	public int lives() {
@@ -554,7 +548,6 @@ public class GameModel {
 		this.lives = lives;
 	}
 
-	/** @return collected level symbols. */
 	public List<Byte> levelCounter() {
 		return Collections.unmodifiableList(levelCounter);
 	}
