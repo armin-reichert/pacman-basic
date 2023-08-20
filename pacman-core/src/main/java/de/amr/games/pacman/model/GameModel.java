@@ -357,19 +357,20 @@ public class GameModel {
 
 	public int[] huntingDurations(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		if (variant == GameVariant.MS_PACMAN) {
-			return HUNTING_DURATIONS_MS_PACMAN[levelNumber <= 4 ? 0 : 1];
+		switch (variant) {
+			case MS_PACMAN:
+				return HUNTING_DURATIONS_MS_PACMAN[levelNumber <= 4 ? 0 : 1];
+			case PACMAN:
+				if (levelNumber == 1) {
+					return HUNTING_DURATIONS_PACMAN[0];
+				} else if (levelNumber <= 4) {
+					return HUNTING_DURATIONS_PACMAN[1];
+				} else {
+					return HUNTING_DURATIONS_PACMAN[2];
+				}
+			default:
+				throw new IllegalGameVariantException(variant);
 		}
-		if (variant == GameVariant.PACMAN) {
-			if (levelNumber == 1) {
-				return HUNTING_DURATIONS_PACMAN[0];
-			}
-			if (levelNumber <= 4) {
-				return HUNTING_DURATIONS_PACMAN[1];
-			}
-			return HUNTING_DURATIONS_PACMAN[2];
-		}
-		throw new IllegalGameVariantException(variant);
 	}
 
 	// Ms. Pac-Man bonus #3 is an orange, not a peach! (Found in official Arcade machine manual)
