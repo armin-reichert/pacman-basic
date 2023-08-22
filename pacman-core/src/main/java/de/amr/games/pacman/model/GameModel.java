@@ -587,7 +587,7 @@ public class GameModel {
 		}
 	}
 
-	private static File highscoreFile(GameVariant variant) {
+	private File highscoreFile() {
 		switch (variant) {
 		case PACMAN:
 			return new File(System.getProperty("user.home"), "highscore-pacman.xml");
@@ -600,27 +600,27 @@ public class GameModel {
 
 	private static void loadHighscore(Score score, File file) {
 		try (var in = new FileInputStream(file)) {
-			var props = new Properties();
-			props.loadFromXML(in);
-			var points = Integer.parseInt(props.getProperty("points"));
-			var levelNumber = Integer.parseInt(props.getProperty("level"));
-			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
+			var p = new Properties();
+			p.loadFromXML(in);
+			var points = Integer.parseInt(p.getProperty("points"));
+			var levelNumber = Integer.parseInt(p.getProperty("level"));
+			var date = LocalDate.parse(p.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
 			score.setPoints(points);
 			score.setLevelNumber(levelNumber);
 			score.setDate(date);
 			Logger.info("Highscore loaded. File: '{}' Points: {} Level: {}", file.getAbsolutePath(), score.points(),
 					score.levelNumber());
 		} catch (Exception x) {
-			Logger.info("Highscore could not be loaded. File '{}' Reason: {}", file, x.getMessage());
+			Logger.error("Highscore could not be loaded. File '{}' Reason: {}", file, x.getMessage());
 		}
 	}
 
 	public void loadHighscore() {
-		loadHighscore(highScore, highscoreFile(variant()));
+		loadHighscore(highScore, highscoreFile());
 	}
 
 	public void saveNewHighscore() {
-		var file = highscoreFile(variant());
+		var file = highscoreFile();
 		var savedHiscore = new Score();
 		loadHighscore(savedHiscore, file);
 		if (highScore.points() > savedHiscore.points()) {
@@ -629,8 +629,8 @@ public class GameModel {
 			p.setProperty("level", String.valueOf(highScore.levelNumber()));
 			p.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
 			try (var out = new FileOutputStream(file)) {
-				p.storeToXML(out, String.format("%s Hiscore", variant()));
-				Logger.info("Highscore saved to '{}' Points: {} Level: {}", file.getAbsolutePath(), highScore.points(),
+				p.storeToXML(out, String.format("%s Hiscore", variant));
+				Logger.info("Highscore saved to '{}' Points: {} Level: {}", file, highScore.points(),
 						highScore.levelNumber());
 			} catch (Exception x) {
 				Logger.error("Highscore could not be saved to '{}': {}", file, x.getMessage());
