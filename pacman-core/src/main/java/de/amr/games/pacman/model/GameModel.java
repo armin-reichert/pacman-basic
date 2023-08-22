@@ -435,7 +435,7 @@ public class GameModel {
 	 * @param levelNumber level number (starting at 1)
 	 * @param resetGame if game is reset when entering level
 	 */
-	public void enterLevel(int levelNumber, boolean resetGame) {
+	public void createLevel(int levelNumber, boolean resetGame) {
 		checkLevelNumber(levelNumber);
 		checkGameVariant(variant);
 
@@ -463,16 +463,14 @@ public class GameModel {
 			score.setLevelNumber(levelNumber);
 		}
 
-		Logger.info("Game level {} created", levelNumber);
+		Logger.info("Level {} created", levelNumber);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_CREATED);
-		// TODO Check why this has to be done *after* the event:
-		level.letsGetReadyToRumbleAndShowGuys(false);
 	}
 
 	/**
 	 * Enters the demo game level ("attract mode").
 	 */
-	public void enterDemoLevel() {
+	public void createDemoLevel() {
 		reset();
 		scoringEnabled = false;
 
@@ -489,16 +487,22 @@ public class GameModel {
 		default:
 			throw new IllegalGameVariantException(variant);
 		}
+		Logger.info("Demo level created ({})", variant);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_CREATED);
+	}
+
+	public void startLevel() {
 		level.letsGetReadyToRumbleAndShowGuys(true);
-		Logger.info("Demo level entered ({})", variant);
+		Logger.info("{} {} started ({})", level.isDemoLevel() ? "Demo level" : "Level", level.number(), variant);
+		GameController.it().publishGameEvent(GameEventType.LEVEL_STARTED);
 	}
 
 	public void nextLevel() {
 		if (level == null) {
 			throw new IllegalStateException("Cannot enter next level, no current level exists");
 		}
-		enterLevel(level.number() + 1, false);
+		createLevel(level.number() + 1, false);
+		startLevel();
 	}
 
 	public void removeLevel() {
