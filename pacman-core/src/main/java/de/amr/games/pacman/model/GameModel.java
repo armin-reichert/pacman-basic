@@ -18,13 +18,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.*;
 import de.amr.games.pacman.model.world.ArcadeWorld;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.model.world.World;
 
 /**
@@ -465,7 +464,7 @@ public class GameModel {
 		}
 
 		Logger.info("Game level {} created", levelNumber);
-		GameController.it().publishGameEventOfType(GameEvent.LEVEL_CREATED);
+		GameController.it().publishGameEvent(GameEventType.LEVEL_CREATED);
 		// TODO Check why this has to be done *after* the event:
 		level.letsGetReadyToRumbleAndShowGuys(false);
 	}
@@ -475,7 +474,6 @@ public class GameModel {
 	 */
 	public void enterDemoLevel() {
 		reset();
-		GameController.it().setSoundEventsEnabled(false);
 		scoringEnabled = false;
 
 		switch (variant) {
@@ -491,7 +489,7 @@ public class GameModel {
 		default:
 			throw new IllegalGameVariantException(variant);
 		}
-		GameController.it().publishGameEventOfType(GameEvent.LEVEL_CREATED);
+		GameController.it().publishGameEvent(GameEventType.LEVEL_CREATED);
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		Logger.info("Demo level entered ({})", variant);
 	}
@@ -585,7 +583,7 @@ public class GameModel {
 		}
 		if (oldScore < SCORE_EXTRA_LIFE && newScore >= SCORE_EXTRA_LIFE) {
 			lives += 1;
-			GameController.it().publishSoundEvent(SoundEvent.EXTRA_LIFE);
+			GameController.it().publishGameEvent(GameEventType.EXTRA_LIFE_WON);
 		}
 	}
 

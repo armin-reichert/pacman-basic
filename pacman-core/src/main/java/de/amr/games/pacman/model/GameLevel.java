@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.*;
 import de.amr.games.pacman.model.actors.*;
 import de.amr.games.pacman.model.world.House;
@@ -29,8 +30,6 @@ import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.Steering;
-import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.model.world.World;
 
 /**
@@ -504,8 +503,7 @@ public class GameLevel {
 		} else if (world.uneatenFoodCount() == elroy2DotsLeft) {
 			setCruiseElroyState((byte) 2);
 		}
-		GameController.it().publishGameEvent(GameEvent.PAC_FINDS_FOOD, foodTile);
-		GameController.it().publishSoundEvent(SoundEvent.PACMAN_FOUND_FOOD);
+		GameController.it().publishGameEvent(GameEventType.PAC_FOUND_FOOD, foodTile);
 	}
 
 	private void handlePacPowerStarts() {
@@ -513,8 +511,7 @@ public class GameLevel {
 		Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
 		ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 		ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
-		GameController.it().publishGameEventOfType(GameEvent.PAC_GETS_POWER);
-		GameController.it().publishSoundEvent(SoundEvent.PACMAN_POWER_STARTS);
+		GameController.it().publishGameEvent(GameEventType.PAC_GETS_POWER);
 	}
 
 	private void handlePacPowerLost() {
@@ -524,8 +521,7 @@ public class GameLevel {
 		huntingTimer.start();
 		Logger.info("Hunting timer restarted");
 		ghosts(FRIGHTENED).forEach(Ghost::enterStateHuntingPac);
-		GameController.it().publishGameEventOfType(GameEvent.PAC_LOSES_POWER);
-		GameController.it().publishSoundEvent(SoundEvent.PACMAN_POWER_ENDS);
+		GameController.it().publishGameEvent(GameEventType.PAC_LOST_POWER);
 	}
 
 	public void update() {
@@ -554,7 +550,7 @@ public class GameLevel {
 		if (memo.pacPowerStarts) {
 			handlePacPowerStarts();
 		} else if (memo.pacPowerFading) {
-			GameController.it().publishGameEventOfType(GameEvent.PAC_STARTS_LOSING_POWER);
+			GameController.it().publishGameEvent(GameEventType.PAC_STARTS_LOSING_POWER);
 		} else if (memo.pacPowerLost) {
 			handlePacPowerLost();
 		}
@@ -793,7 +789,7 @@ public class GameLevel {
 				byte symbol = bonusSymbols[bonusIndex];
 				bonus = createMovingBonus(symbol, GameModel.BONUS_VALUES_MS_PACMAN[symbol] * 100);
 				bonus.setEdible(TickTimer.INDEFINITE);
-				GameController.it().publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
+				GameController.it().publishGameEvent(GameEventType.BONUS_ACTIVATED, bonus.entity().tile());
 				break;
 			}
 			case PACMAN: {
@@ -802,7 +798,7 @@ public class GameLevel {
 				bonus.entity().setPosition(GameModel.BONUS_POSITION_PACMAN);
 				int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
 				bonus.setEdible(ticks);
-				GameController.it().publishGameEvent(GameEvent.BONUS_GETS_ACTIVE, bonus.entity().tile());
+				GameController.it().publishGameEvent(GameEventType.BONUS_ACTIVATED, bonus.entity().tile());
 				break;
 			}
 			default:

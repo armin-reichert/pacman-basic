@@ -11,12 +11,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Predicate;
 
+import de.amr.games.pacman.event.GameEventType;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventListener;
-import de.amr.games.pacman.event.GameStateChangeEvent;
-import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.RuleBasedSteering;
 import de.amr.games.pacman.lib.Vector2i;
@@ -82,8 +81,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		super(GameState.values());
 		GameController.it = this;
 		game = new GameModel(variant);
-		// map FSM state change events to "game state change" events
-		addStateChangeListener((oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
+		// map FSM state change events to game events
+		addStateChangeListener((oldState, newState) -> publish(GameEvent.of(game, oldState, newState)));
 	}
 
 	@Override
@@ -171,7 +170,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (!game.isPlaying()) {
 			boolean added = changeCredit(1);
 			if (added) {
-				publishSoundEvent(SoundEvent.CREDIT_ADDED);
+				publishGameEvent(GameEventType.CREDIT_ADDED);
 			}
 			if (state() != GameState.CREDIT) {
 				changeState(GameState.CREDIT);
@@ -197,10 +196,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			game.level().ifPresent(level -> {
 				var world = level.world();
 				world.tiles().filter(Predicate.not(world::isEnergizerTile)).forEach(world::removeFood);
-				publishGameEventOfType(GameEvent.PAC_FINDS_FOOD);
-//				if (world.uneatenFoodCount() == 0) {
-//					changeState(GameState.LEVEL_COMPLETE);
-//				}
+				publishGameEvent(GameEventType.PAC_FOUND_FOOD);
 			});
 		}
 	}
@@ -227,12 +223,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	// Events
 
 	private final Collection<GameEventListener> subscribers = new ArrayList<>();
-	private boolean soundEventsEnabled = true;
-
-	public void setSoundEventsEnabled(boolean enabled) {
-		soundEventsEnabled = enabled;
-		Logger.info("Sound events {}", enabled ? "enabled" : "disabled");
-	}
 
 	public void addListener(GameEventListener subscriber) {
 		checkNotNull(subscriber);
@@ -244,24 +234,17 @@ public class GameController extends Fsm<GameState, GameModel> {
 		subscribers.remove(subscriber);
 	}
 
-	public void publishGameEvent(GameEvent event) {
-		checkNotNull(event);
+	public void publishGameEvent(GameEventType type) {
+		publish(GameEvent.of(type, game, null));
+	}
+
+	public void publishGameEvent(GameEventType type, Vector2i tile) {
+		publish(GameEvent.of(type, game, tile));
+	}
+
+	private void publish(GameEvent event) {
 		Logger.trace("Publish game event: {}", event);
 		subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 
-	public void publishGameEvent(byte type, Vector2i tile) {
-		checkNotNull(tile);
-		publishGameEvent(new GameEvent(game, type, tile));
-	}
-
-	public void publishGameEventOfType(byte type) {
-		publishGameEvent(new GameEvent(game, type, null));
-	}
-
-	public void publishSoundEvent(byte soundEventID) {
-		if (soundEventsEnabled) {
-			publishGameEvent(new SoundEvent(game, soundEventID));
-		}
-	}
 }

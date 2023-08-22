@@ -6,13 +6,12 @@ package de.amr.games.pacman.model.actors;
 
 import java.util.List;
 
+import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.GameLevel;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.SoundEvent;
 import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.Pulse;
 import de.amr.games.pacman.lib.RouteBasedSteering;
@@ -101,7 +100,7 @@ public class MovingBonus extends Creature implements Bonus {
 		eatenTimer = ticks;
 		jumpAnimation.stop();
 		Logger.info("Bonus eaten: {}", this);
-		GameController.it().publishGameEvent(GameEvent.BONUS_GETS_EATEN, tile());
+		GameController.it().publishGameEvent(GameEventType.BONUS_EATEN, tile());
 	}
 
 	public void setRoute(List<NavigationPoint> route, boolean leftToRight) {
@@ -129,14 +128,14 @@ public class MovingBonus extends Creature implements Bonus {
 			if (sameTile(level.pac())) {
 				level.game().scorePoints(points());
 				setEaten(GameModel.BONUS_POINTS_SHOWN_TICKS);
-				GameController.it().publishSoundEvent(SoundEvent.BONUS_EATEN);
+				GameController.it().publishGameEvent(GameEventType.BONUS_EATEN);
 				return;
 			}
 			steering.steer(level, this);
 			if (steering.isComplete()) {
 				setInactive();
 				Logger.trace("Bonus reached target: {}", this);
-				GameController.it().publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
+				GameController.it().publishGameEvent(GameEventType.BONUS_EXPIRED, tile());
 			} else {
 				navigateTowardsTarget();
 				tryMoving();
@@ -149,7 +148,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (--eatenTimer == 0) {
 				setInactive();
 				Logger.trace("Bonus expired: {}", this);
-				GameController.it().publishGameEvent(GameEvent.BONUS_EXPIRES, tile());
+				GameController.it().publishGameEvent(GameEventType.BONUS_EXPIRED, tile());
 			}
 			break;
 		}
