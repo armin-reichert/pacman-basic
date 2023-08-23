@@ -19,32 +19,28 @@ import de.amr.games.pacman.model.GameModel;
 public class GameEvent {
 
 	public final GameEventType type;
-
-	public GameModel game;
-	public Vector2i tile;
-	public GameState oldState;
-	public GameState newState;
+	public final GameModel     game;
+	public final Vector2i      tile;
+	public final GameState     oldState;
+	public final GameState     newState;
 
 	public static GameEvent of(GameEventType type, GameModel game, Vector2i tile) {
 		checkNotNull(type);
 		checkGameNotNull(game);
-		var event = new GameEvent(type);
-		event.game = game;
-		event.tile = tile;
-		return event;
+		return new GameEvent(type, game, tile,null, null);
 	}
 
 	public static GameEvent of(GameModel game, GameState oldState, GameState newState) {
 		checkGameNotNull(game);
-		var event = new GameEvent(GameEventType.GAME_STATE_CHANGED);
-		event.game = game;
-		event.oldState = oldState;
-		event.newState = newState;
-		return event;
+		return new GameEvent(GameEventType.GAME_STATE_CHANGED, game, null, oldState, newState);
 	}
 
-	private GameEvent(GameEventType type)  {
+	private GameEvent(GameEventType type, GameModel game, Vector2i tile, GameState oldState, GameState newState)  {
 		this.type = type;
+		this.game = game;
+		this.tile = tile;
+		this.oldState = oldState;
+		this.newState = newState;
 	}
 
 	public Optional<Vector2i> tile() {
