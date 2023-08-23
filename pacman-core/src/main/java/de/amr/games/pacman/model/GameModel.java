@@ -438,31 +438,12 @@ public class GameModel {
 	public void createLevel(int levelNumber, boolean resetGame) {
 		checkLevelNumber(levelNumber);
 		checkGameVariant(variant);
-
 		if (resetGame) {
 			reset();
 		}
-
 		var map = variant == GameVariant.MS_PACMAN ? MS_PACMAN_MAPS[mapNumberMsPacMan(levelNumber) - 1] : PACMAN_MAP;
 		var levelData = LEVEL_DATA[dataRow(levelNumber)];
 		level = new GameLevel(this, new ArcadeWorld(map), levelNumber, levelData, false);
-
-		if (levelNumber == 1) {
-			levelCounter.clear();
-		}
-		if (variant == GameVariant.PACMAN || levelNumber <= 7) {
-			// In Ms. Pac-Man, the level counter stays fixed from level 8 on and bonus symbols are created randomly
-			// (also inside the same level) whenever a bonus is earned. That's what I was told.
-			levelCounter.add(level.bonusSymbol(0));
-			if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
-				levelCounter.remove(0);
-			}
-		}
-
-		if (score != null) {
-			score.setLevelNumber(levelNumber);
-		}
-
 		Logger.info("Level {} created", levelNumber);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_CREATED);
 	}
@@ -473,7 +454,6 @@ public class GameModel {
 	public void createDemoLevel() {
 		reset();
 		scoringEnabled = false;
-
 		switch (variant) {
 		case MS_PACMAN:
 			level = new GameLevel(this, new ArcadeWorld(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
@@ -492,6 +472,20 @@ public class GameModel {
 	}
 
 	public void startLevel() {
+		if (level.number() == 1) {
+			levelCounter.clear();
+		}
+		// In Ms. Pac-Man, the level counter stays fixed from level 8 on and bonus symbols are created randomly
+		// (also inside the same level) whenever a bonus is earned. That's what I was told.
+		if (variant == GameVariant.PACMAN || level.number() <= 7) {
+			levelCounter.add(level.bonusSymbol(0));
+			if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
+				levelCounter.remove(0);
+			}
+		}
+		if (score != null) {
+			score.setLevelNumber(level.number());
+		}
 		level.letsGetReadyToRumbleAndShowGuys(true);
 		Logger.info("{} {} started ({})", level.isDemoLevel() ? "Demo level" : "Level", level.number(), variant);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_STARTED);
