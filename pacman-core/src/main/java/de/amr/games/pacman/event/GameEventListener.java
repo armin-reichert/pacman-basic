@@ -45,17 +45,8 @@ public interface GameEventListener {
       case GHOST_STARTS_RETURNING_HOME:
         onGhostStartsReturningHome(event);
         break;
-      case HUNTING_PHASE_0_STARTED:
-        onHuntingPhase0Started(event);
-        break;
-      case HUNTING_PHASE_2_STARTED:
-        onHuntingPhase2Started(event);
-        break;
-      case HUNTING_PHASE_4_STARTED:
-        onHuntingPhase4Started(event);
-        break;
-      case HUNTING_PHASE_6_STARTED:
-        onHuntingPhase6Started(event);
+      case HUNTING_PHASE_STARTED:
+        onHuntingPhaseStarted(event);
         break;
       case LEVEL_CREATED:
         onLevelCreated(event);
@@ -128,16 +119,7 @@ public interface GameEventListener {
   default void onGhostStartsReturningHome(GameEvent e) {
   }
 
-  default void onHuntingPhase0Started(GameEvent e) {
-  }
-
-  default void onHuntingPhase2Started(GameEvent e) {
-  }
-
-  default void onHuntingPhase4Started(GameEvent e) {
-  }
-
-  default void onHuntingPhase6Started(GameEvent e) {
+  default void onHuntingPhaseStarted(GameEvent e) {
   }
 
   default void onLevelCreated(GameEvent e) {

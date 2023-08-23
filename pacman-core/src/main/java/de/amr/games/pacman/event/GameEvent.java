@@ -30,7 +30,12 @@ public class GameEvent {
 		return new GameEvent(type, game, tile,null, null);
 	}
 
-	public static GameEvent of(GameModel game, GameState oldState, GameState newState) {
+	public static GameEvent huntingPhaseStart(GameModel game) {
+		checkGameNotNull(game);
+		return new GameEvent(GameEventType.HUNTING_PHASE_STARTED, game, null,null, null);
+	}
+
+	public static GameEvent gameStateChange(GameModel game, GameState oldState, GameState newState) {
 		checkGameNotNull(game);
 		return new GameEvent(GameEventType.GAME_STATE_CHANGED, game, null, oldState, newState);
 	}

@@ -82,7 +82,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		GameController.it = this;
 		game = new GameModel(variant);
 		// map FSM state change events to game events
-		addStateChangeListener((oldState, newState) -> publish(GameEvent.of(game, oldState, newState)));
+		addStateChangeListener((oldState, newState) -> publishGameEvent(GameEvent.gameStateChange(game, oldState, newState)));
 	}
 
 	@Override
@@ -235,16 +235,15 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void publishGameEvent(GameEventType type) {
-		publish(GameEvent.of(type, game, null));
+		publishGameEvent(GameEvent.of(type, game, null));
 	}
 
 	public void publishGameEvent(GameEventType type, Vector2i tile) {
-		publish(GameEvent.of(type, game, tile));
+		publishGameEvent(GameEvent.of(type, game, tile));
 	}
 
-	private void publish(GameEvent event) {
+	public void publishGameEvent(GameEvent event) {
 		Logger.trace("Publish game event: {}", event);
 		subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
-
 }

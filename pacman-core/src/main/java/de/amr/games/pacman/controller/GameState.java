@@ -4,6 +4,7 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.controller;
 
+import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
@@ -116,25 +117,10 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			game.level().ifPresent(level -> {
 				GameController.it().getManualPacSteering().setEnabled(true);
-				switch (level.huntingPhase()) {
-				case 0:
-					GameController.it().publishGameEvent(GameEventType.HUNTING_PHASE_0_STARTED);
-					break;
-				case 2:
-					GameController.it().publishGameEvent(GameEventType.HUNTING_PHASE_2_STARTED);
-					break;
-				case 4:
-					GameController.it().publishGameEvent(GameEventType.HUNTING_PHASE_4_STARTED);
-					break;
-				case 6:
-					GameController.it().publishGameEvent(GameEventType.HUNTING_PHASE_6_STARTED);
-					break;
-				default:
-					break;
-				}
 				level.pac().startAnimation();
 				level.ghosts().forEach(Ghost::startAnimation);
 				level.world().energizerBlinking().restart();
+				GameController.it().publishGameEvent(GameEvent.huntingPhaseStart(game));
 			});
 		}
 
