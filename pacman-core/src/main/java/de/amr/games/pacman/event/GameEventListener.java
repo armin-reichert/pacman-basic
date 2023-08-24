@@ -72,14 +72,8 @@ public interface GameEventListener {
       case READY_TO_PLAY:
         onReadyToPlay(event);
         break;
-      case INTERMISSION_1_STARTS:
-        onIntermission1Starts(event);
-        break;
-      case INTERMISSION_2_STARTS:
-        onIntermission2Starts(event);
-        break;
-      case INTERMISSION_3_STARTS:
-        onIntermission3Starts(event);
+      case INTERMISSION_STARTED:
+        onIntermissionStarted(event);
         break;
       case STOP_ALL_SOUNDS:
         onStopAllSounds(event);
@@ -122,6 +116,9 @@ public interface GameEventListener {
   default void onHuntingPhaseStarted(GameEvent e) {
   }
 
+  default void onIntermissionStarted(GameEvent e) {
+  }
+
   default void onLevelCreated(GameEvent e) {
   }
 
@@ -146,19 +143,10 @@ public interface GameEventListener {
   default void onPacStartsLosingPower(GameEvent e) {
   }
 
-  default void onReadyToPlay(GameEvent event) {
+  default void onReadyToPlay(GameEvent e) {
   }
 
-  default void onIntermission1Starts(GameEvent event) {
-  }
-
-  default void onIntermission2Starts(GameEvent event) {
-  }
-
-  default void onIntermission3Starts(GameEvent event) {
-  }
-
-  default void onStopAllSounds(GameEvent event) {
+  default void onStopAllSounds(GameEvent e) {
   }
 
   default void onUnspecifiedChange(GameEvent e) {
