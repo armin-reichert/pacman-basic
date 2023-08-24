@@ -15,20 +15,20 @@ import de.amr.games.pacman.lib.TickTimer.State;
  * A finite-state machine.
  * <p>
  * The states must be provided by an enumeration type that implements the {@link FsmState} interface. The data type
- * passed to the state lifecycle methods is specified by the CONTEXT type parameter.
+ * passed to the state lifecycle methods is specified by the second type parameter.
  * <p>
  * State transitions are defined dynamically via the {@link #changeState} method calls. Each state change triggers an
  * event.
  * 
- * @param <S> Enumeration type providing the states of this FSM
- * @param <C> Type of the data provided to the state lifecycle methods {@link FsmState#onEnter},
+ * @param <S> "State". Enumeration type providing the states of this FSM.
+ * @param <C> "Context". Type of the data provided to the state lifecycle methods {@link FsmState#onEnter},
  *            {@link FsmState#onUpdate} and {@link FsmState#onExit}
  * 
  * @author Armin Reichert
  */
 public abstract class Fsm<S extends FsmState<C>, C> {
 
-	private final List<FsmStateChangeListener<S>> subscribers = new ArrayList<>();
+	protected final ArrayList<FsmStateChangeListener<S>> subscribers = new ArrayList<>(5);
 	protected final S[] states;
 	protected S currentState;
 	protected S prevState;
@@ -158,7 +158,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	/**
 	 * Updates this FSM's current state.
 	 * <p>
-	 * Runs the {@link State#onUpdate} hook method (if defined) of the current state and advances the state timer.
+	 * Runs the {@link FsmState#onUpdate} hook method (if defined) of the current state and advances the state timer.
 	 */
 	public void update() {
 		try {
