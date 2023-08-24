@@ -430,10 +430,10 @@ public class GameModel {
 	}
 
 	/**
-	 * Creates and "enters" the level with the given number.
+	 * Creates the level with the given number.
 	 * 
 	 * @param levelNumber level number (starting at 1)
-	 * @param resetGame if game is reset when entering level
+	 * @param resetGame if game is reset when creating level
 	 */
 	public void createLevel(int levelNumber, boolean resetGame) {
 		checkLevelNumber(levelNumber);
