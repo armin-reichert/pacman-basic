@@ -179,8 +179,8 @@ public class GameLevel {
 		Logger.trace("Game level {} created. ({})", number, game.variant());
 	}
 
-	public void exit() {
-		Logger.trace("Exit level {} ({})", number, game.variant());
+	public void end() {
+		Logger.trace("Level {} ({}) ends", number, game.variant());
 		pac.rest(Pac.REST_FOREVER);
 		pac.selectAnimation(PacAnimations.MUNCHING);
 		ghosts().forEach(Ghost::hide);

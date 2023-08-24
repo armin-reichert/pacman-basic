@@ -149,7 +149,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			GameController.it().getManualPacSteering().setEnabled(false);
 			timer.restartSeconds(4);
-			game.level().ifPresent(GameLevel::exit);
+			game.level().ifPresent(GameLevel::end);
 			GameController.it().publishGameEvent(GameEventType.STOP_ALL_SOUNDS);
 		}
 
@@ -359,7 +359,7 @@ public enum GameState implements FsmState<GameModel> {
 						var flashing = level.world().mazeFlashing();
 						flashing.restart(2 * level.numFlashes);
 					} else if (timer.atSecond(12.0)) {
-						level.exit();
+						level.end();
 						game.nextLevel();
 						timer.restartIndefinitely();
 						GameController.it().publishGameEvent(GameEventType.LEVEL_STARTED);
