@@ -267,13 +267,12 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateLocked() {
-		var base = initialPosition.y();
-		var bounceAbove = base - HTS;
-		var bounceBelow = base + HTS;
 		if (insideHouse()) {
-			if (position.y() <= bounceAbove) {
+			var minY = initialPosition.y() - HTS;
+			var maxY = initialPosition.y() + HTS;
+			if (position.y() <= minY) {
 				setMoveAndWishDir(DOWN);
-			} else if (position.y() >= bounceBelow) {
+			} else if (position.y() >= maxY) {
 				setMoveAndWishDir(UP);
 			}
 			setPixelSpeed(GameModel.SPEED_PX_INSIDE_HOUSE);
