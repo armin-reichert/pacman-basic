@@ -28,12 +28,7 @@ public class GameEvent {
 		return new GameEvent(type, game, tile);
 	}
 
-	public static GameEvent huntingPhaseStart(GameModel game) {
-		checkGameNotNull(game);
-		return new GameEvent(GameEventType.HUNTING_PHASE_STARTED, game, null);
-	}
-
-	protected GameEvent(GameEventType type, GameModel game, Vector2i tile)  {
+	public GameEvent(GameEventType type, GameModel game, Vector2i tile)  {
 		this.type = type;
 		this.game = game;
 		this.tile = tile;
