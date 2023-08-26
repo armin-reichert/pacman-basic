@@ -4,6 +4,7 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.controller;
 
+import static de.amr.games.pacman.lib.Globals.HTS;
 import static de.amr.games.pacman.lib.Globals.TS;
 
 import java.util.stream.Stream;
@@ -21,7 +22,7 @@ import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.actors.PacAnimations;
 
 /**
- * Intro scene of the PacMan game.
+ * Controls the intro scene of the Pac-Man game.
  * <p>
  * The ghosts are presented one after another, then Pac-Man is chased by the ghosts, turns the card and hunts the ghosts
  * himself.
@@ -55,10 +56,10 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 		public long ghostKilledTime;
 
 		public Context() {
-			ghostInfo[0] = new GhostInfo(GameModel.RED_GHOST, "BLINKY", "SHADOW");
-			ghostInfo[1] = new GhostInfo(GameModel.PINK_GHOST, "PINKY", "SPEEDY");
-			ghostInfo[2] = new GhostInfo(GameModel.CYAN_GHOST, "INKY", "BASHFUL");
-			ghostInfo[3] = new GhostInfo(GameModel.ORANGE_GHOST, "CLYDE", "POKEY");
+			ghostInfo[0] = new GhostInfo(GameModel.RED_GHOST,   "BLINKY","SHADOW");
+			ghostInfo[1] = new GhostInfo(GameModel.PINK_GHOST,  "PINKY", "SPEEDY");
+			ghostInfo[2] = new GhostInfo(GameModel.CYAN_GHOST,  "INKY",  "BASHFUL");
+			ghostInfo[3] = new GhostInfo(GameModel.ORANGE_GHOST,"CLYDE", "POKEY");
 		}
 
 		public Ghost ghost(int id) {
@@ -122,7 +123,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			@Override
 			public void onEnter(Context ctx) {
 				timer.restartIndefinitely();
-				ctx.pacMan.setPosition(TS * (36), TS * (20));
+				ctx.pacMan.setPosition(TS * 36, TS * 20);
 				ctx.pacMan.setMoveDir(Direction.LEFT);
 				ctx.pacMan.setPixelSpeed(ctx.chaseSpeed);
 				ctx.pacMan.show();
@@ -141,12 +142,15 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 
 			@Override
 			public void onUpdate(Context ctx) {
-				// Pac-Man reaches the energizer
-				if (ctx.pacMan.position().x() <= TS * (ctx.leftTileX)) {
+				if (timer.atSecond(1)) {
+					ctx.blinking.start();
+				}
+				// Pac-Man reaches the energizer at the left and turns
+				if (ctx.pacMan.position().x() <= TS * ctx.leftTileX) {
 					controller.changeState(State.CHASING_GHOSTS);
 				}
-				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
-				else if (ctx.pacMan.position().x() <= TS * (ctx.leftTileX) + 4) {
+				// Ghosts already reverse direction before Pac-Man eats the energizer and turns!
+				else if (ctx.pacMan.position().x() <= TS * ctx.leftTileX + HTS) {
 					ctx.ghosts().forEach(ghost -> {
 						ghost.enterStateFrightened();
 						ghost.selectAnimation(GhostAnimations.GHOST_FRIGHTENED);
@@ -156,12 +160,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 					});
 					ctx.pacMan.move();
 				}
-				// keep moving
-				else {
-					// wait 1 sec before blinking
-					if (timer.atSecond(1)) {
-						ctx.blinking.start();
-					}
+				else { // keep moving
 					ctx.blinking.tick();
 					ctx.pacMan.move();
 					ctx.ghosts().forEach(Ghost::move);
@@ -170,7 +169,6 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 		},
 
 		CHASING_GHOSTS {
-
 			@Override
 			public void onEnter(Context ctx) {
 				timer.restartIndefinitely();
@@ -232,7 +230,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 						return;
 					}
 				}
-				if (timer.atSecond(5)) {
+				else if (timer.atSecond(5)) {
 					GameController.it().changeState(GameState.CREDIT);
 				}
 			}
