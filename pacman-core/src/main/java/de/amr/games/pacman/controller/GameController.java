@@ -236,11 +236,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void publishGameEvent(GameEventType type) {
-		publishGameEvent(GameEvent.of(type, game, null));
+		publishGameEvent(new GameEvent(type, game, null));
 	}
 
 	public void publishGameEvent(GameEventType type, Vector2i tile) {
-		publishGameEvent(GameEvent.of(type, game, tile));
+		publishGameEvent(new GameEvent(type, game, tile));
 	}
 
 	public void publishGameEvent(GameEvent event) {

@@ -22,13 +22,9 @@ public class GameEvent {
 	public final GameModel     game;
 	public final Vector2i      tile;
 
-	public static GameEvent of(GameEventType type, GameModel game, Vector2i tile) {
+	public GameEvent(GameEventType type, GameModel game, Vector2i tile)  {
 		checkNotNull(type);
 		checkGameNotNull(game);
-		return new GameEvent(type, game, tile);
-	}
-
-	public GameEvent(GameEventType type, GameModel game, Vector2i tile)  {
 		this.type = type;
 		this.game = game;
 		this.tile = tile;
