@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameStateChangeEvent;
 import org.tinylog.Logger;
 
 import de.amr.games.pacman.event.GameEvent;
@@ -82,7 +83,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		GameController.it = this;
 		game = new GameModel(variant);
 		// map FSM state change events to game events
-		addStateChangeListener((oldState, newState) -> publishGameEvent(GameEvent.gameStateChange(game, oldState, newState)));
+		addStateChangeListener((oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
 	}
 
 	@Override

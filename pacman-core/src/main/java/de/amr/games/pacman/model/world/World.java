@@ -230,7 +230,7 @@ public class World {
 		checkTileNotNull(tile);
 
 		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
-			return false; // exclude portal entries and tiles outside of the map
+			return false; // exclude portal entries and tiles outside the map
 		}
 		if (house.contains(tile)) {
 			return false;

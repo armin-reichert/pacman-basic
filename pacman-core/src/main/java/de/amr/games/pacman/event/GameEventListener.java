@@ -34,7 +34,7 @@ public interface GameEventListener {
         onExtraLifeWon(event);
         break;
       case GAME_STATE_CHANGED:
-        onGameStateChange(event);
+        onGameStateChange((GameStateChangeEvent)event);
         break;
       case GHOST_EATEN:
         onGhostEaten(event);
@@ -101,7 +101,7 @@ public interface GameEventListener {
   default void onBonusExpired(GameEvent e) {
   }
 
-  default void onGameStateChange(GameEvent e) {
+  default void onGameStateChange(GameStateChangeEvent e) {
   }
 
   default void onGhostEaten(GameEvent e) {

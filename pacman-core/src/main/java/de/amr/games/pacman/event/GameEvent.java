@@ -21,31 +21,22 @@ public class GameEvent {
 	public final GameEventType type;
 	public final GameModel     game;
 	public final Vector2i      tile;
-	public final GameState     oldState;
-	public final GameState     newState;
 
 	public static GameEvent of(GameEventType type, GameModel game, Vector2i tile) {
 		checkNotNull(type);
 		checkGameNotNull(game);
-		return new GameEvent(type, game, tile,null, null);
+		return new GameEvent(type, game, tile);
 	}
 
 	public static GameEvent huntingPhaseStart(GameModel game) {
 		checkGameNotNull(game);
-		return new GameEvent(GameEventType.HUNTING_PHASE_STARTED, game, null,null, null);
+		return new GameEvent(GameEventType.HUNTING_PHASE_STARTED, game, null);
 	}
 
-	public static GameEvent gameStateChange(GameModel game, GameState oldState, GameState newState) {
-		checkGameNotNull(game);
-		return new GameEvent(GameEventType.GAME_STATE_CHANGED, game, null, oldState, newState);
-	}
-
-	private GameEvent(GameEventType type, GameModel game, Vector2i tile, GameState oldState, GameState newState)  {
+	protected GameEvent(GameEventType type, GameModel game, Vector2i tile)  {
 		this.type = type;
 		this.game = game;
 		this.tile = tile;
-		this.oldState = oldState;
-		this.newState = newState;
 	}
 
 	public Optional<Vector2i> tile() {
