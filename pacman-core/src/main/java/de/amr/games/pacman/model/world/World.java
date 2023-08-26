@@ -25,11 +25,6 @@ import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
 
 /**
- * The tiled world used in the Arcade versions of Pac-Man and Ms. Pac-Man.
- * <p>
- * Maze structure varies, but ghost house, ghost starting positions/directions and Pac-Man starting position/direction
- * are the same for each level/world.
- * 
  * @author Armin Reichert
  */
 public class World {

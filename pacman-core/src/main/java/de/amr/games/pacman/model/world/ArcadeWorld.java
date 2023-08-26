@@ -24,6 +24,12 @@ public class ArcadeWorld extends World {
 
     public ArcadeWorld(byte[][] tileMapData) {
         super(tileMapData);
+        if (numCols() != TILES_X) {
+            throw new IllegalArgumentException("Arcade world map must have 28 columns");
+        }
+        if (numRows() != TILES_Y) {
+            throw new IllegalArgumentException("Arcade world map must have 36 rows");
+        }
         setHouse(createArcadeHouse());
     }
 }
