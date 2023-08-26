@@ -34,7 +34,6 @@ import de.amr.games.pacman.model.actors.PacAnimations;
 public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Context> {
 
 	public static class Context {
-		//@formatter:off
 		public float          speed                = 1.1f;
 		public int            stopY                = TS * 11 + 1;
 		public int            stopX                = TS * 6 - 4; 
@@ -45,14 +44,13 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 		public int            numBulbs             = 96;
 		public int            bulbOnDistance       = 16;
 		public Pac            msPacMan             = new Pac("Ms. Pac-Man");
-		public List<Ghost>    ghosts               = List.of(
-			                                             new Ghost(GameModel.RED_GHOST,    "Blinky"),
-			                                             new Ghost(GameModel.PINK_GHOST,   "Pinky"),
-			                                             new Ghost(GameModel.CYAN_GHOST,   "Inky"),
-			                                             new Ghost(GameModel.ORANGE_GHOST, "Sue")
-			                                           );
+		public Ghost[]        ghosts               = {
+				new Ghost(GameModel.RED_GHOST,   "Blinky"),
+				new Ghost(GameModel.PINK_GHOST,  "Pinky"),
+				new Ghost(GameModel.CYAN_GHOST,  "Inky"),
+				new Ghost(GameModel.ORANGE_GHOST,"Sue")
+		};
 		public int ghostIndex = 0;
-		//@formatter:on
 
 		/**
 		 * In the Arcade game, 6 of the 96 bulbs are switched-on every frame, shifting every tick. The bulbs in the leftmost
@@ -86,13 +84,13 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 				ctx.msPacMan.setPixelSpeed(ctx.speed);
 				ctx.msPacMan.selectAnimation(PacAnimations.MUNCHING);
 				ctx.msPacMan.startAnimation();
-				ctx.ghosts.forEach(ghost -> {
+				for (var ghost : ctx.ghosts) {
 					ghost.setPosition(TS * 33.5f, TS * 20);
 					ghost.setMoveAndWishDir(Direction.LEFT);
 					ghost.setPixelSpeed(ctx.speed);
 					ghost.enterStateHuntingPac();
 					ghost.startAnimation();
-				});
+				};
 				ctx.ghostIndex = 0;
 			}
 
@@ -109,7 +107,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			@Override
 			public void onUpdate(MsPacManIntro.Context ctx) {
 				ctx.marqueeTimer.advance();
-				var ghost = ctx.ghosts.get(ctx.ghostIndex);
+				var ghost = ctx.ghosts[ctx.ghostIndex];
 				ghost.show();
 
 				if (ghost.moveDir() == Direction.LEFT) {
