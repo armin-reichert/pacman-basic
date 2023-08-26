@@ -111,22 +111,18 @@ public class World {
 	private final List<Vector2i> energizerTiles;
 	private final BitSet eaten;
 	private final List<Portal> portals;
-	private final House house;
 	private final Pulse energizerBlinking;
 	private final Pulse mazeFlashing;
 	private final int totalFoodCount;
+	private House house;
 	private int uneatenFoodCount;
 
 	/**
 	 * @param tileMapData byte-array of tile map data
-	 * @param house the ghost house
 	 */
-	public World(byte[][] tileMapData, House house) {
-		Globals.checkNotNull(house);
-
+	public World(byte[][] tileMapData) {
 		tileMap = validateTileMapData(tileMapData);
 		portals = buildPortals(tileMap);
-		this.house = house;
 
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
 		eaten = new BitSet(numCols() * numRows());
@@ -140,6 +136,11 @@ public class World {
 
 	public House house() {
 		return house;
+	}
+
+	public void setHouse(House house) {
+		checkNotNull(house);
+		this.house = house;
 	}
 
 	public Pulse energizerBlinking() {

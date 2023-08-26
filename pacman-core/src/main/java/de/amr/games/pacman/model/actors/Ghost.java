@@ -94,6 +94,7 @@ public class Ghost extends Creature {
 	}
 
 	public void setInitialPosition(Vector2f pos) {
+		checkNotNull(pos);
 		this.initialPosition = pos;
 	}
 
@@ -102,6 +103,7 @@ public class Ghost extends Creature {
 	}
 
 	public void setRevivalPosition(Vector2f pos) {
+		checkNotNull(pos);
 		this.revivalPosition = pos;
 	}
 
@@ -109,8 +111,9 @@ public class Ghost extends Creature {
 		return scatterTile;
 	}
 
-	public void setScatterTile(Vector2i pos) {
-		this.scatterTile = pos;
+	public void setScatterTile(Vector2i tile) {
+		checkNotNull(tile);
+		this.scatterTile = tile;
 	}
 
 	public Direction initialDirection() {
@@ -118,6 +121,7 @@ public class Ghost extends Creature {
 	}
 
 	public void setInitialDirection(Direction dir) {
+		checkNotNull(dir);
 		this.initialDirection = dir;
 	}
 

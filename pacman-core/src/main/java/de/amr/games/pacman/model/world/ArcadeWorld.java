@@ -10,20 +10,20 @@ public class ArcadeWorld extends World {
     public static final int TILES_X = 28;
     public static final int TILES_Y = 36;
 
-    public static final House createArcadeHouse() {
-        var arcadeHouse = new House(
+    public static House createArcadeHouse() {
+        var house = new House(
                 v2i(10, 15), // top-left corner tile
                 v2i(8, 5),   // size in tiles
                 new Door(v2i(13, 15), v2i(14, 15))
         );
-        arcadeHouse.setSeat("left",   halfTileRightOf(11, 17));
-        arcadeHouse.setSeat("middle", halfTileRightOf(13, 17));
-        arcadeHouse.setSeat("right",  halfTileRightOf(15, 17));
-        return arcadeHouse;
+        house.setSeat("left",   halfTileRightOf(11, 17));
+        house.setSeat("middle", halfTileRightOf(13, 17));
+        house.setSeat("right",  halfTileRightOf(15, 17));
+        return house;
     }
 
     public ArcadeWorld(byte[][] tileMapData) {
-        super(tileMapData, createArcadeHouse());
+        super(tileMapData);
+        setHouse(createArcadeHouse());
     }
-
 }
