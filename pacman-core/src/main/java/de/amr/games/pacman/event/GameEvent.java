@@ -4,14 +4,13 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.event;
 
-import static de.amr.games.pacman.lib.Globals.checkGameNotNull;
-import static de.amr.games.pacman.lib.Globals.checkNotNull;
+import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.model.GameModel;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.controller.GameState;
-import de.amr.games.pacman.lib.Vector2i;
-import de.amr.games.pacman.model.GameModel;
+import static de.amr.games.pacman.lib.Globals.checkGameNotNull;
+import static de.amr.games.pacman.lib.Globals.checkNotNull;
 
 /**
  * @author Armin Reichert

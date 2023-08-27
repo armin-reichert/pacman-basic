@@ -4,34 +4,19 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.Globals.HTS;
-import static de.amr.games.pacman.lib.Globals.checkGhostID;
-import static de.amr.games.pacman.lib.Globals.checkNotNull;
-import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
-import static de.amr.games.pacman.lib.Globals.differsAtMost;
-import static de.amr.games.pacman.lib.Globals.oneOf;
-import static de.amr.games.pacman.model.actors.GhostState.EATEN;
-import static de.amr.games.pacman.model.actors.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.actors.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.actors.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.actors.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
-import static de.amr.games.pacman.model.actors.GhostState.RETURNING_TO_HOUSE;
-
-import java.util.function.Supplier;
-
-import de.amr.games.pacman.lib.Globals;
-import org.tinylog.Logger;
-
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Globals;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.House;
+import org.tinylog.Logger;
+
+import java.util.function.Supplier;
+
+import static de.amr.games.pacman.lib.Direction.*;
+import static de.amr.games.pacman.lib.Globals.*;
+import static de.amr.games.pacman.model.actors.GhostState.*;
 
 /**
  * There are 4 ghosts with different "personalities".

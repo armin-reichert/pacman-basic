@@ -4,19 +4,14 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.lib.Globals.v2i;
-import static de.amr.games.pacman.model.world.World.halfTileRightOf;
-
-import java.util.List;
-
+import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.world.ArcadeWorld;
-import de.amr.games.pacman.model.world.World;
+import de.amr.games.pacman.model.world.Door;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.amr.games.pacman.lib.Vector2i;
-import de.amr.games.pacman.model.world.Door;
-import de.amr.games.pacman.model.world.House;
+import static de.amr.games.pacman.lib.Globals.v2i;
+import static de.amr.games.pacman.model.world.World.halfTileRightOf;
 
 /**
  * @author Armin Reichert

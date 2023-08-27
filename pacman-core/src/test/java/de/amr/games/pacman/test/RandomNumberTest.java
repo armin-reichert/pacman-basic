@@ -4,11 +4,11 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.test;
 
-import static de.amr.games.pacman.lib.Globals.randomFloat;
-import static de.amr.games.pacman.lib.Globals.randomInt;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import static de.amr.games.pacman.lib.Globals.randomFloat;
+import static de.amr.games.pacman.lib.Globals.randomInt;
 
 /**
  * @author Armin Reichert

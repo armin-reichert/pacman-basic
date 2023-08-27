@@ -4,12 +4,10 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.lib;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import de.amr.games.pacman.lib.TickTimer.State;
 import org.tinylog.Logger;
 
-import de.amr.games.pacman.lib.TickTimer.State;
+import java.util.ArrayList;
 
 /**
  * A finite-state machine.

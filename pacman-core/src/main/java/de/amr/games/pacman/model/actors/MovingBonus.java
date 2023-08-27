@@ -4,18 +4,17 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
-import java.util.List;
-
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.GameLevel;
-import org.tinylog.Logger;
-
-import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.Pulse;
 import de.amr.games.pacman.lib.RouteBasedSteering;
+import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
+import org.tinylog.Logger;
+
+import java.util.List;
 
 /**
  * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving

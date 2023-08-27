@@ -4,17 +4,12 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.lib;
 
+import de.amr.games.pacman.model.*;
+
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Stream;
-
-import de.amr.games.pacman.model.GameLevel;
-import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.GameVariant;
-import de.amr.games.pacman.model.IllegalGameVariantException;
-import de.amr.games.pacman.model.IllegalGhostIDException;
-import de.amr.games.pacman.model.IllegalLevelNumberException;
 
 /**
  * @author Armin Reichert

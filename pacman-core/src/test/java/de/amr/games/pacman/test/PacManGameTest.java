@@ -5,19 +5,16 @@ See file LICENSE in repository root directory for details.
 package de.amr.games.pacman.test;
 
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.model.GameLevel;
-import de.amr.games.pacman.model.IllegalGameVariantException;
-import de.amr.games.pacman.model.actors.StaticBonus;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.GameVariant;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.Pac;
+import de.amr.games.pacman.model.actors.StaticBonus;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 

@@ -4,18 +4,14 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.lib;
 
-import static de.amr.games.pacman.lib.TickTimer.State.EXPIRED;
-import static de.amr.games.pacman.lib.TickTimer.State.READY;
-import static de.amr.games.pacman.lib.TickTimer.State.RUNNING;
-import static de.amr.games.pacman.lib.TickTimer.State.STOPPED;
+import de.amr.games.pacman.lib.TickTimerEvent.Type;
+import org.tinylog.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.tinylog.Logger;
-
-import de.amr.games.pacman.lib.TickTimerEvent.Type;
+import static de.amr.games.pacman.lib.TickTimer.State.*;
 
 /**
  * A simple, but useful, passive timer counting ticks.

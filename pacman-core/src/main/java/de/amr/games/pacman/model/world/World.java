@@ -4,12 +4,9 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.world;
 
-import static de.amr.games.pacman.lib.Globals.HTS;
-import static de.amr.games.pacman.lib.Globals.TS;
-import static de.amr.games.pacman.lib.Globals.checkNotNull;
-import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
-import static de.amr.games.pacman.lib.Globals.v2f;
-import static de.amr.games.pacman.lib.Globals.v2i;
+import de.amr.games.pacman.lib.Pulse;
+import de.amr.games.pacman.lib.Vector2f;
+import de.amr.games.pacman.lib.Vector2i;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -19,10 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.Globals;
-import de.amr.games.pacman.lib.Pulse;
-import de.amr.games.pacman.lib.Vector2f;
-import de.amr.games.pacman.lib.Vector2i;
+import static de.amr.games.pacman.lib.Globals.*;
 
 /**
  * @author Armin Reichert

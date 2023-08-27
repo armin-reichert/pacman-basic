@@ -4,12 +4,11 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
-import de.amr.games.pacman.event.GameEventType;
-import org.tinylog.Logger;
-
 import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
+import org.tinylog.Logger;
 
 /**
  * Bonus that appears for some time at a fixed position before it gets eaten or vanishes.

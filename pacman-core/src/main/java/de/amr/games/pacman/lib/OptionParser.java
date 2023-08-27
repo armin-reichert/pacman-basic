@@ -4,12 +4,12 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.lib;
 
+import org.tinylog.Logger;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.tinylog.Logger;
 
 /**
  * @author Armin Reichert

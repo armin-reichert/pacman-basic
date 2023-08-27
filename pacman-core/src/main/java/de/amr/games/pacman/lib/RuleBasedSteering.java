@@ -4,22 +4,17 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.lib;
 
+import de.amr.games.pacman.controller.Steering;
+import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.actors.*;
+import de.amr.games.pacman.model.world.World;
+import org.tinylog.Logger;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.tinylog.Logger;
-
-import de.amr.games.pacman.controller.Steering;
-import de.amr.games.pacman.model.GameLevel;
-import de.amr.games.pacman.model.actors.Bonus;
-import de.amr.games.pacman.model.actors.Creature;
-import de.amr.games.pacman.model.actors.Ghost;
-import de.amr.games.pacman.model.actors.GhostState;
-import de.amr.games.pacman.model.actors.Pac;
-import de.amr.games.pacman.model.world.World;
 
 /**
  * Pac-Man steering based on a set of rules.

@@ -4,22 +4,14 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.lib.Globals.HTS;
-import static de.amr.games.pacman.lib.Globals.TS;
+import de.amr.games.pacman.lib.*;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.actors.*;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Fsm;
-import de.amr.games.pacman.lib.FsmState;
-import de.amr.games.pacman.lib.Pulse;
-import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.actors.Ghost;
-import de.amr.games.pacman.model.actors.GhostAnimations;
-import de.amr.games.pacman.model.actors.GhostState;
-import de.amr.games.pacman.model.actors.Pac;
-import de.amr.games.pacman.model.actors.PacAnimations;
+import static de.amr.games.pacman.lib.Globals.HTS;
+import static de.amr.games.pacman.lib.Globals.TS;
 
 /**
  * Controls the intro scene of the Pac-Man game.

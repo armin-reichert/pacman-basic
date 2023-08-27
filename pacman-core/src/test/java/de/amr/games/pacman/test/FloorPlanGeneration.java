@@ -4,7 +4,11 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.test;
 
-import static org.junit.Assert.assertTrue;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.world.ArcadeWorld;
+import de.amr.games.pacman.model.world.FloorPlan;
+import de.amr.games.pacman.model.world.World;
+import org.tinylog.Logger;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,12 +16,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import de.amr.games.pacman.model.world.ArcadeWorld;
-import org.tinylog.Logger;
-
-import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.world.FloorPlan;
-import de.amr.games.pacman.model.world.World;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test for floor plan generation.

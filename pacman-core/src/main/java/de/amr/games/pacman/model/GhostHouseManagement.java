@@ -4,19 +4,15 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.model.GameModel.CYAN_GHOST;
-import static de.amr.games.pacman.model.GameModel.ORANGE_GHOST;
-import static de.amr.games.pacman.model.GameModel.PINK_GHOST;
-import static de.amr.games.pacman.model.GameModel.RED_GHOST;
-import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
+import de.amr.games.pacman.model.actors.Creature;
+import de.amr.games.pacman.model.actors.Ghost;
+import org.tinylog.Logger;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.actors.Creature;
-import org.tinylog.Logger;
-
-import de.amr.games.pacman.model.actors.Ghost;
+import static de.amr.games.pacman.model.GameModel.*;
+import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
 
 /**
  * @author Armin Reichert

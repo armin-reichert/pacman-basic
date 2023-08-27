@@ -4,24 +4,23 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.lib.Globals.checkGameVariant;
-import static de.amr.games.pacman.lib.Globals.checkNotNull;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.function.Predicate;
-
-import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameStateChangeEvent;
-import org.tinylog.Logger;
-
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventListener;
+import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.RuleBasedSteering;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.GameVariant;
+import org.tinylog.Logger;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.Predicate;
+
+import static de.amr.games.pacman.lib.Globals.checkGameVariant;
+import static de.amr.games.pacman.lib.Globals.checkNotNull;
 
 /**
  * Controller (in the sense of MVC) for both (Pac-Man, Ms. Pac-Man) game variants.

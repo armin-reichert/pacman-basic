@@ -4,13 +4,13 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.lib.Globals.TS;
-
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.actors.PacAnimations;
+
+import static de.amr.games.pacman.lib.Globals.TS;
 
 /**
  * Intermission scene 2: "The chase".

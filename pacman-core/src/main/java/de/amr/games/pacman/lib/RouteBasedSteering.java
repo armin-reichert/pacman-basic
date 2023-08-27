@@ -4,13 +4,12 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.lib;
 
-import java.util.List;
-
-import org.tinylog.Logger;
-
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.actors.Creature;
+import org.tinylog.Logger;
+
+import java.util.List;
 
 /**
  * Steering of a creature based on a route.

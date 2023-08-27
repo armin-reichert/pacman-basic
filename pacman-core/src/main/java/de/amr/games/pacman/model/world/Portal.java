@@ -4,9 +4,9 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.world;
 
-import java.util.Objects;
-
 import de.amr.games.pacman.lib.Vector2i;
+
+import java.util.Objects;
 
 /**
  * A portal connects two tunnel ends leading out of the map.

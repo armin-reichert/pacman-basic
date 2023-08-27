@@ -4,12 +4,12 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.world;
 
-import static de.amr.games.pacman.lib.Globals.v2i;
+import de.amr.games.pacman.lib.Vector2i;
 
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import de.amr.games.pacman.lib.Vector2i;
+import static de.amr.games.pacman.lib.Globals.v2i;
 
 /**
  * Provides information about rooms, walls, doors etc. Used to construct 3D representation of a world from simple 2D

@@ -4,9 +4,9 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.lib;
 
-import static de.amr.games.pacman.lib.Globals.differsAtMost;
-
 import java.util.Objects;
+
+import static de.amr.games.pacman.lib.Globals.differsAtMost;
 
 /**
  * Immutable 2D vector with float precision. Component values are treated as equal if they differ less than

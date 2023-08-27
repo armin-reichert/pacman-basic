@@ -4,9 +4,9 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.lib;
 
-import java.util.function.Function;
-
 import org.tinylog.Logger;
+
+import java.util.function.Function;
 
 /**
  * @author Armin Reichert

@@ -4,33 +4,25 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Globals.*;
-import static de.amr.games.pacman.lib.Globals.RND;
-import static de.amr.games.pacman.lib.NavigationPoint.np;
-import static de.amr.games.pacman.model.GameModel.CYAN_GHOST;
-import static de.amr.games.pacman.model.GameModel.ORANGE_GHOST;
-import static de.amr.games.pacman.model.GameModel.PINK_GHOST;
-import static de.amr.games.pacman.model.GameModel.RED_GHOST;
-import static de.amr.games.pacman.model.actors.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.actors.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.actors.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
-import static de.amr.games.pacman.model.world.World.halfTileRightOf;
+import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.controller.Steering;
+import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.lib.*;
+import de.amr.games.pacman.model.actors.*;
+import de.amr.games.pacman.model.world.House;
+import de.amr.games.pacman.model.world.World;
+import org.tinylog.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.lib.*;
-import de.amr.games.pacman.model.actors.*;
-import de.amr.games.pacman.model.world.House;
-import org.tinylog.Logger;
-
-import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.Steering;
-import de.amr.games.pacman.model.world.World;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Globals.*;
+import static de.amr.games.pacman.lib.NavigationPoint.np;
+import static de.amr.games.pacman.model.GameModel.*;
+import static de.amr.games.pacman.model.actors.GhostState.*;
+import static de.amr.games.pacman.model.world.World.halfTileRightOf;
 
 /**
  * @author Armin Reichert

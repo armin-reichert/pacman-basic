@@ -4,27 +4,22 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.lib.Globals.*;
-import static de.amr.games.pacman.lib.NavigationPoint.np;
+import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.lib.*;
+import de.amr.games.pacman.model.world.ArcadeWorld;
+import de.amr.games.pacman.model.world.World;
+import org.tinylog.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
-import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.lib.*;
-import de.amr.games.pacman.model.world.ArcadeWorld;
-import org.tinylog.Logger;
-
-import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.model.world.World;
+import static de.amr.games.pacman.lib.Globals.*;
+import static de.amr.games.pacman.lib.NavigationPoint.np;
 
 /**
  * Pac-Man / Ms. Pac-Man game model.

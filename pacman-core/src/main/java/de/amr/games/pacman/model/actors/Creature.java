@@ -4,30 +4,20 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.Globals.HTS;
-import static de.amr.games.pacman.lib.Globals.TS;
-import static de.amr.games.pacman.lib.Globals.checkDirectionNotNull;
-import static de.amr.games.pacman.lib.Globals.checkLevelNotNull;
-import static de.amr.games.pacman.lib.Globals.checkTileNotNull;
-import static de.amr.games.pacman.model.world.World.tileAt;
-
-import java.util.List;
-import java.util.Optional;
-
-import org.tinylog.Logger;
-
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.Portal;
-import de.amr.games.pacman.model.world.World;
+import org.tinylog.Logger;
+
+import java.util.List;
+import java.util.Optional;
+
+import static de.amr.games.pacman.lib.Direction.*;
+import static de.amr.games.pacman.lib.Globals.*;
+import static de.amr.games.pacman.model.world.World.tileAt;
 
 /**
  * Base class for all creatures which can move through a level's world.

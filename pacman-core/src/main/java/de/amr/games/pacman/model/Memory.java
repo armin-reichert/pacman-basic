@@ -4,13 +4,13 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model;
 
+import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.model.actors.Ghost;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import de.amr.games.pacman.lib.Vector2i;
-import de.amr.games.pacman.model.actors.Ghost;
 
 /**
  * @author Armin Reichert

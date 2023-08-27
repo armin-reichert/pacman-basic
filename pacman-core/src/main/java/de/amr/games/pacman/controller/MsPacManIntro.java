@@ -4,25 +4,17 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.lib.Globals.TS;
-import static de.amr.games.pacman.lib.Globals.isOdd;
-import static de.amr.games.pacman.lib.Globals.v2i;
-
-import java.util.BitSet;
-import java.util.List;
-
-import org.tinylog.Logger;
-
-import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Fsm;
-import de.amr.games.pacman.lib.FsmState;
-import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.lib.*;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Animations;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.actors.Pac;
 import de.amr.games.pacman.model.actors.PacAnimations;
+import org.tinylog.Logger;
+
+import java.util.BitSet;
+
+import static de.amr.games.pacman.lib.Globals.*;
 
 /**
  * Intro scene of the Ms. Pac-Man game.

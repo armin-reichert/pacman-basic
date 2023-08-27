@@ -4,14 +4,11 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
-import static de.amr.games.pacman.lib.Globals.HTS;
-import static de.amr.games.pacman.lib.Globals.TS;
-import static de.amr.games.pacman.lib.Globals.checkNotNull;
-import static de.amr.games.pacman.lib.Globals.v2f;
-import static de.amr.games.pacman.model.world.World.tileAt;
-
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
+
+import static de.amr.games.pacman.lib.Globals.*;
+import static de.amr.games.pacman.model.world.World.tileAt;
 
 /**
  * Base class for all "entities" used inside the game, e.g. creatures and bonus entities.
