@@ -256,7 +256,7 @@ public enum GameState implements FsmState<GameModel> {
 					GameController.it().publishGameEvent(GameEventType.PAC_DIED);
 				} else if (timer.atSecond(3.0)) {
 					level.pac().hide();
-					game.setLives(game.lives() - 1);
+					game.loseLive();
 					if (game.lives() == 0) {
 						level.world().mazeFlashing().stop();
 						game.setOneLessLifeDisplayed(false);

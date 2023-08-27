@@ -299,7 +299,6 @@ public class GameModel {
 	public static final byte    POINTS_ENERGIZER = 50;
 	public static final short   POINTS_ALL_GHOSTS_KILLED_IN_LEVEL = 12_000;
 	public static final short[] POINTS_GHOSTS_SEQUENCE = { 200, 400, 800, 1600 };
-	public static final short   SCORE_EXTRA_LIFE = 10_000;
 	public static final short   BONUS_POINTS_SHOWN_TICKS = 2 * FPS; // unsure
 	public static final short   PAC_POWER_FADES_TICKS = 2 * FPS - 1; // unsure
 
@@ -397,8 +396,9 @@ public class GameModel {
 	private final Score score;
 	private final Score highScore;
 	private GameLevel level;
-	private int initialLives;
-	private int lives;
+	private short initialLives;
+	private short lives;
+	private short extraLifeScore;
 	private boolean playing;
 	private boolean scoringEnabled;
 	private boolean oneLessLifeDisplayed; // TODO get rid of this
@@ -406,10 +406,11 @@ public class GameModel {
 	public GameModel(GameVariant variant) {
 		checkGameVariant(variant);
 		this.variant = variant;
-		this.levelCounter = new LinkedList<>();
-		this.score = new Score();
-		this.highScore = new Score();
+		levelCounter = new LinkedList<>();
+		score = new Score();
+		highScore = new Score();
 		initialLives = 3;
+		extraLifeScore = 10000;
 	}
 
 	/**
@@ -420,7 +421,7 @@ public class GameModel {
 		lives = initialLives;
 		playing = false;
 		scoringEnabled = true;
-		oneLessLifeDisplayed = false; // @remove
+		oneLessLifeDisplayed = false; // TODO remove
 		Logger.info("Game model ({}) reset", variant);
 	}
 
@@ -525,19 +526,23 @@ public class GameModel {
 		return initialLives;
 	}
 
-	public void setInitialLives(int initialLives) {
+	public void setInitialLives(short initialLives) {
 		this.initialLives = initialLives;
 	}
 
-	public int lives() {
+	public short lives() {
 		return lives;
 	}
 
-	public void setLives(int lives) {
-		if (lives < 0) {
-			throw new IllegalArgumentException("Lives must not be negative but is: " + lives);
+	public void addLives(short lives) {
+		this.lives += lives;
+	}
+
+	public void loseLive() {
+		if (lives == 0) {
+			throw new IllegalArgumentException("No life left to loose :-(");
 		}
-		this.lives = lives;
+		--lives;
 	}
 
 	public List<Byte> levelCounter() {
@@ -574,7 +579,7 @@ public class GameModel {
 			highScore.setLevelNumber(level.number());
 			highScore.setDate(LocalDate.now());
 		}
-		if (oldScore < SCORE_EXTRA_LIFE && newScore >= SCORE_EXTRA_LIFE) {
+		if (oldScore < extraLifeScore && newScore >= extraLifeScore) {
 			lives += 1;
 			GameController.it().publishGameEvent(GameEventType.EXTRA_LIFE_WON);
 		}
@@ -622,7 +627,7 @@ public class GameModel {
 			p.setProperty("level", String.valueOf(highScore.levelNumber()));
 			p.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
 			try (var out = new FileOutputStream(file)) {
-				p.storeToXML(out, String.format("%s Hiscore", variant));
+				p.storeToXML(out, String.format("%s Highscore", variant));
 				Logger.info("Highscore saved to '{}' Points: {} Level: {}", file, highScore.points(),
 						highScore.levelNumber());
 			} catch (Exception x) {
