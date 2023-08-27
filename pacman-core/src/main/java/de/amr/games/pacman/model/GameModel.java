@@ -414,7 +414,7 @@ public class GameModel {
 	}
 
 	/**
-	 * Resets the game. Credit, immunity and scores remain unchanged.
+	 * Resets the game and deletes the current level. Credit, immunity and scores remain unchanged.
 	 */
 	private void reset() {
 		level = null;
@@ -445,7 +445,7 @@ public class GameModel {
 	}
 
 	/**
-	 * Enters the demo game level ("attract mode").
+	 * Creates the demo game level ("attract mode").
 	 */
 	public void createDemoLevel() {
 		reset();
@@ -453,12 +453,13 @@ public class GameModel {
 		switch (variant) {
 		case MS_PACMAN:
 			level = new GameLevel(this, new ArcadeWorld(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
-			// TODO this is not the behavior from the Arcade game
 			level.setPacSteering(new RuleBasedSteering());
+			// TODO this is not the exact behavior from the Arcade game
 			break;
 		case PACMAN:
 			level = new GameLevel(this, new ArcadeWorld(PACMAN_MAP), 1, LEVEL_DATA[0], true);
 			level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMOLEVEL_ROUTE)));
+			// TODO this is not the exact behavior from the Arcade game
 			break;
 		default:
 			throw new IllegalGameVariantException(variant);
