@@ -80,29 +80,32 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			final int showGuysTick = 120; // not sure
 			game.level().ifPresent(level -> {
+				final short showGuysTick = 120; // not sure
+				final short showGuysDemoLevelTick = 130; // not sure
+				final short startGameTick = 240; // not sure
+				final short resumeGameTick = 90; // not sure
 				if (GameController.it().hasCredit() && !game.isPlaying()) {
 					// start new game
 					if (timer.tick() == showGuysTick) {
 						level.guys().forEach(Creature::show);
 						game.setOneLessLifeDisplayed(true);
-					} else if (timer.tick() == showGuysTick + 120) {
-						// start playing
+					} else if (timer.tick() == startGameTick) {
+						// start game play
 						game.setPlaying(true);
 						level.startHunting(0);
 						GameController.it().changeState(GameState.HUNTING);
 					}
 				} else if (game.isPlaying()) {
-					// game already running
-					if (timer.tick() == 90) {
+					// resume game play
+					if (timer.tick() == resumeGameTick) {
 						level.guys().forEach(Creature::show);
 						level.startHunting(0);
 						GameController.it().changeState(GameState.HUNTING);
 					}
 				} else {
-					// demo level running
-					if (timer.tick() == 130) {
+					// demo level
+					if (timer.tick() == showGuysDemoLevelTick) {
 						level.guys().forEach(Creature::show);
 						level.startHunting(0);
 						GameController.it().changeState(GameState.HUNTING);

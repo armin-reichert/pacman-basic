@@ -483,7 +483,7 @@ public class GameModel {
 		if (score != null) {
 			score.setLevelNumber(level.number());
 		}
-		level.letsGetReadyToRumbleAndShowGuys(true);
+		level.letsGetReadyToRumbleAndShowGuys(level.isDemoLevel());
 		Logger.info("{} {} started ({})", level.isDemoLevel() ? "Demo level" : "Level", level.number(), variant);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_STARTED);
 	}
