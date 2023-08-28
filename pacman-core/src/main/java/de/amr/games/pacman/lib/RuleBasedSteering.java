@@ -128,7 +128,7 @@ public class RuleBasedSteering extends Steering {
 			pac.setTargetTile(prey.tile());
 		} else if (isEdibleBonusNearPac(level, pac)) {
 			Logger.trace("Detected active bonus");
-			level.getBonus().ifPresent(bonus -> {
+			level.bonus().ifPresent(bonus -> {
 				pac.setTargetTile(World.tileAt(bonus.entity().position()));
 			});
 		} else {
@@ -139,7 +139,7 @@ public class RuleBasedSteering extends Steering {
 	}
 
 	private boolean isEdibleBonusNearPac(GameLevel level, Pac pac) {
-		var optBonus = level.getBonus();
+		var optBonus = level.bonus();
 		if (optBonus.isPresent()) {
 			var bonus = optBonus.get();
 			var tile = World.tileAt(bonus.entity().position());

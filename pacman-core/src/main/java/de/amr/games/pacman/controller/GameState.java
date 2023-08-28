@@ -350,12 +350,12 @@ public enum GameState implements FsmState<GameModel> {
 					} else if (timer.atSecond(1.5)) {
 						level.handleBonusReached(0);
 					} else if (timer.atSecond(2.5)) {
-						level.getBonus().ifPresent(bonus -> bonus.setEaten(120));
+						level.bonus().ifPresent(bonus -> bonus.setEaten(120));
 						GameController.it().publishGameEvent(GameEventType.BONUS_EATEN);
 					} else if (timer.atSecond(4.5)) {
 						level.handleBonusReached(1);
 					} else if (timer.atSecond(5.5)) {
-						level.getBonus().ifPresent(bonus -> bonus.setEaten(60));
+						level.bonus().ifPresent(bonus -> bonus.setEaten(60));
 						level.guys().forEach(Creature::hide);
 					} else if (timer.atSecond(6.5)) {
 						var flashing = level.world().mazeFlashing();
@@ -369,7 +369,7 @@ public enum GameState implements FsmState<GameModel> {
 					level.world().energizerBlinking().tick();
 					level.world().mazeFlashing().tick();
 					level.ghosts().forEach(Ghost::update);
-					level.updateBonus();
+					level.bonus().ifPresent(bonus -> bonus.update(level));
 				} else {
 					GameController.it().restart(GameState.BOOT);
 				}

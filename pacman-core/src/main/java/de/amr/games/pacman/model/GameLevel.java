@@ -555,7 +555,9 @@ public class GameLevel {
 		unlockGhost();
 		pac.update();
 		ghosts().forEach(Ghost::update);
-		updateBonus();
+		if (bonus != null) {
+			bonus.update(this);
+		}
 
 		// Update hunting timer
 		if (memo.pacPowerStarts || memo.pacKilled) {
@@ -745,7 +747,7 @@ public class GameLevel {
 		}
 	}
 
-	public Optional<Bonus> getBonus() {
+	public Optional<Bonus> bonus() {
 		return Optional.ofNullable(bonus);
 	}
 
@@ -756,12 +758,6 @@ public class GameLevel {
 	public void deactivateBonus() {
 		if (bonus != null) {
 			bonus.setInactive();
-		}
-	}
-
-	public void updateBonus() {
-		if (bonus != null) {
-			bonus.update(this);
 		}
 	}
 
