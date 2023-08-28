@@ -711,7 +711,7 @@ public class GameLevel {
 			case 6: return GameModel.MS_PACMAN_PEAR;
 			case 7: return GameModel.MS_PACMAN_BANANA;
 			default:
-				int random = Globals.randomInt(0, 320);
+				int random = randomInt(0, 320);
 				if (random < 50)  return GameModel.MS_PACMAN_CHERRIES;
 				if (random < 100) return GameModel.MS_PACMAN_STRAWBERRY;
 				if (random < 150) return GameModel.MS_PACMAN_ORANGE;
@@ -765,7 +765,7 @@ public class GameLevel {
 	}
 
 	/**
-	 * Handles bonus achievement (public accessor for unit tests and level test).
+	 * Handles bonus achievement (public access for unit tests and level test).
 	 *
 	 * @param bonusIndex bonus index (0 or 1).
 	 */
@@ -786,7 +786,7 @@ public class GameLevel {
 				byte symbol = bonusSymbols[bonusIndex];
 				bonus = new StaticBonus(symbol, GameModel.BONUS_VALUES_PACMAN[symbol] * 100);
 				bonus.entity().setPosition(GameModel.BONUS_POSITION_PACMAN);
-				int ticks = 10 * GameModel.FPS - RND.nextInt(GameModel.FPS); // between 9 and 10 seconds
+				int ticks = randomInt(9 * FPS, 10 * FPS); // between 9 and 10 seconds
 				bonus.setEdible(ticks);
 				GameController.it().publishGameEvent(GameEventType.BONUS_ACTIVATED, bonus.entity().tile());
 				break;
