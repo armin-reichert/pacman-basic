@@ -23,6 +23,7 @@ import static de.amr.games.pacman.lib.NavigationPoint.np;
 import static de.amr.games.pacman.model.GameModel.*;
 import static de.amr.games.pacman.model.actors.GhostState.*;
 import static de.amr.games.pacman.model.world.World.halfTileRightOf;
+import static de.amr.games.pacman.model.world.World.tileAt;
 
 /**
  * @author Armin Reichert
@@ -777,7 +778,7 @@ public class GameLevel {
 					return;
 				}
 				byte symbol = bonusSymbols[bonusIndex];
-				bonus = createMovingBonus(symbol, GameModel.BONUS_VALUES_MS_PACMAN[symbol] * 100);
+				bonus = createMovingBonus(symbol, GameModel.BONUS_VALUES_MS_PACMAN[symbol] * 100, RND.nextBoolean());
 				bonus.setEdible(TickTimer.INDEFINITE);
 				GameController.it().publishGameEvent(GameEventType.BONUS_ACTIVATED, bonus.entity().tile());
 				break;
@@ -802,16 +803,16 @@ public class GameLevel {
 	 * <p>
 	 * TODO: This is not the exact behavior as in the original Arcade game.
 	 **/
-	private Bonus createMovingBonus(byte symbol, int points) {
-		var leftToRight     = RND.nextBoolean();
-		var houseHeight     = world.house().size().y();
-		var houseEntryTile  = World.tileAt(world.house().door().entryPosition());
-		var portals         = world.portals();
-		var entryPortal     = portals.get(RND.nextInt(portals.size()));
-		var exitPortal      = portals.get(RND.nextInt(portals.size()));
-		var startPoint      = leftToRight	? np(entryPortal.leftTunnelEnd())	: np(entryPortal.rightTunnelEnd());
-		var exitPoint       = leftToRight	? np(exitPortal.rightTunnelEnd().plus(1, 0))
-				                              : np(exitPortal.leftTunnelEnd().minus(1, 0));
+	private Bonus createMovingBonus(byte symbol, int points, boolean leftToRight) {
+		var houseHeight    = world.house().size().y();
+		var houseEntryTile = tileAt(world.house().door().entryPosition());
+		var portals        = world.portals();
+		var entryPortal    = portals.get(RND.nextInt(portals.size()));
+		var exitPortal     = portals.get(RND.nextInt(portals.size()));
+		var startPoint     = leftToRight ? np(entryPortal.leftTunnelEnd())
+				                             : np(entryPortal.rightTunnelEnd());
+		var exitPoint      = leftToRight ? np(exitPortal.rightTunnelEnd().plus(1, 0))
+				                             : np(exitPortal.leftTunnelEnd().minus(1, 0));
 
 		var route = new ArrayList<NavigationPoint>();
 		route.add(startPoint);
@@ -824,8 +825,7 @@ public class GameLevel {
 		var movingBonus = new MovingBonus(symbol, points);
 		movingBonus.setLevel(this);
 		movingBonus.setRoute(route, leftToRight);
-		Logger.info("Moving bonus created, route: {} ({})",
-				route, (leftToRight ? "left to right" : "right to left"));
+		Logger.info("Moving bonus created, route: {} ({})",	route, leftToRight ? "left to right" : "right to left");
 		return movingBonus;
 	}
 }
