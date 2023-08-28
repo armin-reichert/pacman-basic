@@ -541,7 +541,7 @@ public class GameModel {
 		this.lives += lives;
 	}
 
-	public void loseLive() {
+	public void loseLife() {
 		if (lives == 0) {
 			throw new IllegalArgumentException("No life left to loose :-(");
 		}
