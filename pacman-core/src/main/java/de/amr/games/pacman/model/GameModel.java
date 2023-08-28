@@ -638,15 +638,4 @@ public class GameModel {
 			}
 		}
 	}
-
-	// TODO: get rid of this:
-
-	/** If one less life is displayed in the lives counter. */
-	public boolean isOneLessLifeDisplayed() {
-		return oneLessLifeDisplayed;
-	}
-
-	public void setOneLessLifeDisplayed(boolean value) {
-		this.oneLessLifeDisplayed = value;
-	}
 }

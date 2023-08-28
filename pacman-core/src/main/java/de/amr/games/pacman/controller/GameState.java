@@ -90,7 +90,6 @@ public enum GameState implements FsmState<GameModel> {
 					// start new game
 					if (timer.tick() == showGuysTick) {
 						level.guys().forEach(Creature::show);
-						game.setOneLessLifeDisplayed(true);
 					} else if (timer.tick() == startGameTick) {
 						// start game play
 						game.setPlaying(true);
@@ -263,7 +262,6 @@ public enum GameState implements FsmState<GameModel> {
 					game.loseLife();
 					if (game.lives() == 0) {
 						level.world().mazeFlashing().stop();
-						game.setOneLessLifeDisplayed(false);
 					}
 				} else if (timer.hasExpired()) {
 					if (!GameController.it().hasCredit()) {
