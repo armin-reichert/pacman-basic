@@ -483,7 +483,9 @@ public class GameModel {
 		if (score != null) {
 			score.setLevelNumber(level.number());
 		}
-		level.letsGetReadyToRumbleAndShowGuys(level.isDemoLevel());
+		level.letsGetReadyToRumble();
+		// Demo level shows guys immediately, otherwise they get shown after some ticks, see game state
+		level.guys().forEach(guy -> guy.setVisible(level.isDemoLevel()));
 		Logger.info("{} {} started ({})", level.isDemoLevel() ? "Demo level" : "Level", level.number(), variant);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_STARTED);
 	}
