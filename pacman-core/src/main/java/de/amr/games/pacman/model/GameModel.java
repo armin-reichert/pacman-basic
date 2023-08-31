@@ -469,15 +469,17 @@ public class GameModel {
 	}
 
 	public void startLevel() {
-		if (level.number() == 1) {
-			levelCounter.clear();
-		}
-		// In Ms. Pac-Man, the level counter stays fixed from level 8 on and bonus symbols are created randomly
-		// (also inside the same level) whenever a bonus is earned. That's what I was told.
-		if (variant == GameVariant.PACMAN || level.number() <= 7) {
-			levelCounter.add(level.bonusSymbol(0));
-			if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
-				levelCounter.remove(0);
+		if (!level.isDemoLevel()) {
+			if (level.number() == 1) {
+				levelCounter.clear();
+			}
+			// In Ms. Pac-Man, the level counter stays fixed from level 8 on and bonus symbols are created randomly
+			// (also inside the same level) whenever a bonus is earned. That's what I was told.
+			if (variant == GameVariant.PACMAN || level.number() <= 7) {
+				levelCounter.add(level.bonusSymbol(0));
+				if (levelCounter.size() > LEVEL_COUNTER_MAX_SYMBOLS) {
+					levelCounter.remove(0);
+				}
 			}
 		}
 		if (score != null) {
