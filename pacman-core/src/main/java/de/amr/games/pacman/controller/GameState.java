@@ -25,7 +25,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.restartIndefinitely();
 			game.clearLevelCounter();
 			game.score().reset();
-			game.loadHighscore();
+			game.loadHighScore();
 		}
 
 		@Override
@@ -289,7 +289,7 @@ public enum GameState implements FsmState<GameModel> {
 			GameController.it().getManualPacSteering().setEnabled(false);
 			timer.restartSeconds(1.2);
 			GameController.it().changeCredit(-1);
-			game.saveNewHighscore();
+			game.saveNewHighScore();
 			GameController.it().publishGameEvent(GameEventType.STOP_ALL_SOUNDS);
 		}
 

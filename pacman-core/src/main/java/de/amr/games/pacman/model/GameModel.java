@@ -71,7 +71,7 @@ public class GameModel {
 			v2i(12, 14), v2i(15, 14),
 			v2i(12, 26), v2i(15, 26));
 
-	public static final byte[][][] MS_PACMAN_MAPS =  {
+	public static final byte[][][] MS_PACMAN_MAPS = {
 		{
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -401,7 +401,6 @@ public class GameModel {
 	private short extraLifeScore;
 	private boolean playing;
 	private boolean scoringEnabled;
-	private boolean oneLessLifeDisplayed; // TODO get rid of this
 
 	public GameModel(GameVariant variant) {
 		checkGameVariant(variant);
@@ -421,7 +420,6 @@ public class GameModel {
 		lives = initialLives;
 		playing = false;
 		scoringEnabled = true;
-		oneLessLifeDisplayed = false; // TODO remove
 		Logger.info("Game model ({}) reset", variant);
 	}
 
@@ -513,7 +511,7 @@ public class GameModel {
 	}
 
 	/**
-	 * @return number of maze (not map) used in this level, 1-based.
+	 * @return number of maze (not map) used in level, 1-based.
 	 */
 	public int mazeNumber(int levelNumber) {
 		return variant == GameVariant.MS_PACMAN ? mazeNumberMsPacMan(levelNumber) : 1;
@@ -527,7 +525,7 @@ public class GameModel {
 		this.playing = playing;
 	}
 
-	public int getInitialLives() {
+	public short initialLives() {
 		return initialLives;
 	}
 
@@ -571,13 +569,13 @@ public class GameModel {
 			throw new IllegalArgumentException("Scored points value must not be negative but is: " + points);
 		}
 		if (level == null) {
-			throw new IllegalStateException("Cannot score points: No game level selected");
+			throw new IllegalStateException("Cannot score points: No game level exists");
 		}
 		if (!scoringEnabled) {
 			return;
 		}
-		final int oldScore = score.points();
-		final int newScore = oldScore + points;
+		var oldScore = score.points();
+		var newScore = oldScore + points;
 		score.setPoints(newScore);
 		if (newScore > highScore.points()) {
 			highScore.setPoints(newScore);
@@ -590,7 +588,7 @@ public class GameModel {
 		}
 	}
 
-	private File highscoreFile() {
+	private File highScoreFile() {
 		switch (variant) {
 		case PACMAN:
 			return new File(System.getProperty("user.home"), "highscore-pacman.xml");
@@ -601,7 +599,7 @@ public class GameModel {
 		}
 	}
 
-	private static void loadHighscore(Score score, File file) {
+	private static void loadHighScore(Score score, File file) {
 		try (var in = new FileInputStream(file)) {
 			var p = new Properties();
 			p.loadFromXML(in);
@@ -618,25 +616,24 @@ public class GameModel {
 		}
 	}
 
-	public void loadHighscore() {
-		loadHighscore(highScore, highscoreFile());
+	public void loadHighScore() {
+		loadHighScore(highScore, highScoreFile());
 	}
 
-	public void saveNewHighscore() {
-		var file = highscoreFile();
+	public void saveNewHighScore() {
+		var file = highScoreFile();
 		var savedHiscore = new Score();
-		loadHighscore(savedHiscore, file);
+		loadHighScore(savedHiscore, file);
 		if (highScore.points() > savedHiscore.points()) {
 			var p = new Properties();
 			p.setProperty("points", String.valueOf(highScore.points()));
-			p.setProperty("level", String.valueOf(highScore.levelNumber()));
-			p.setProperty("date", highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
+			p.setProperty("level",  String.valueOf(highScore.levelNumber()));
+			p.setProperty("date",   highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
 			try (var out = new FileOutputStream(file)) {
-				p.storeToXML(out, String.format("%s Highscore", variant));
-				Logger.info("Highscore saved to '{}' Points: {} Level: {}", file, highScore.points(),
-						highScore.levelNumber());
+				p.storeToXML(out, String.format("%s High Score", variant));
+				Logger.info("High Score saved to '{}' Points: {} Level: {}", file, highScore.points(), highScore.levelNumber());
 			} catch (Exception x) {
-				Logger.error("Highscore could not be saved to '{}': {}", file, x.getMessage());
+				Logger.error("High Score could not be saved to '{}': {}", file, x.getMessage());
 			}
 		}
 	}
