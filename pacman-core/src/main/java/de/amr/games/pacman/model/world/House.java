@@ -15,28 +15,26 @@ import static de.amr.games.pacman.lib.Globals.*;
 /**
  * @author Armin Reichert
  */
-public final class House {
-	private final Vector2i minTile;
-	private final Vector2i size;
-	private final Door door;
-	private final Map<String, Vector2f> seatPositions = new HashMap<>(3);
-	private final Vector2f center;
+public abstract class House {
+	private Vector2i minTile;
+	private Vector2i size;
+	private Door door;
 
-	/**
-	 * @param minTile       top-left tile
-	 * @param size          size in tiles
-	 * @param door          door of this house
-	 */
-	public House(Vector2i minTile, Vector2i size, Door door) {
+	public void setMinTile(Vector2i minTile) {
 		checkTileNotNull(minTile);
+		this.minTile = minTile;
+	}
+
+	public void setSize(Vector2i size) {
 		checkNotNull(size);
-		checkNotNull(door);
 		if (size.x() < 1 || size.y() < 1) {
 			throw new IllegalArgumentException("House size must be larger than one square tile but is: " + size);
 		}
-		this.minTile = minTile;
 		this.size = size;
-		this.center = minTile.toFloatVec().scaled(TS).plus(size.toFloatVec().scaled(HTS));
+	}
+
+	public void setDoor(Door door) {
+		checkNotNull(door);
 		this.door = door;
 	}
 
@@ -52,16 +50,10 @@ public final class House {
 		return door;
 	}
 
-	public void setSeat(String id, Vector2f position) {
-		seatPositions.put(id, position);
-	}
-
-	public Vector2f getSeat(String id) {
-		return seatPositions.get(id);
-	}
+	public abstract Vector2f getSeat(String id);
 
 	public Vector2f center() {
-		return center;
+		return minTile.toFloatVec().scaled(TS).plus(size.toFloatVec().scaled(HTS));
 	}
 
 	/**

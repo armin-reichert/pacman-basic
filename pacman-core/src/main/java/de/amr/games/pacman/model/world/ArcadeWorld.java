@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.world;
 
+import de.amr.games.pacman.lib.Vector2f;
+
 import static de.amr.games.pacman.lib.Globals.v2i;
 
 /**
@@ -7,20 +9,29 @@ import static de.amr.games.pacman.lib.Globals.v2i;
  */
 public class ArcadeWorld extends World {
 
+    public static class ArcadeHouse extends House {
+
+        public ArcadeHouse() {
+            setMinTile(v2i(10, 15));
+            setSize(v2i(8, 5));
+            setDoor(new Door(v2i(13, 15), v2i(14, 15)));
+        }
+
+        @Override
+        public Vector2f getSeat(String id) {
+            switch (id) {
+                case "left":   return halfTileRightOf(11, 17);
+                case "middle": return halfTileRightOf(13, 17);
+                case "right":  return halfTileRightOf(15, 17);
+                default: throw new IllegalArgumentException("Illegal seat ID: " + id);
+            }
+        }
+    }
+
     public static final int TILES_X = 28;
     public static final int TILES_Y = 36;
 
-    public static House createArcadeHouse() {
-        var house = new House(
-                v2i(10, 15), // top-left corner tile
-                v2i(8, 5),   // size in tiles
-                new Door(v2i(13, 15), v2i(14, 15))
-        );
-        house.setSeat("left",   halfTileRightOf(11, 17));
-        house.setSeat("middle", halfTileRightOf(13, 17));
-        house.setSeat("right",  halfTileRightOf(15, 17));
-        return house;
-    }
+    public static final House ARCADE_HOUSE = new ArcadeHouse();
 
     public ArcadeWorld(byte[][] tileMapData) {
         super(tileMapData);
@@ -30,6 +41,6 @@ public class ArcadeWorld extends World {
         if (numRows() != TILES_Y) {
             throw new IllegalArgumentException("Arcade world map must have 36 rows");
         }
-        setHouse(createArcadeHouse());
+        setHouse(ARCADE_HOUSE);
     }
 }

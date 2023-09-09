@@ -469,6 +469,9 @@ public class GameLevel {
 			memo.pacPowerLost   = pac.powerTimer().hasExpired();
 			memo.pacPowerActive = pac.powerTimer().isRunning();
 		}
+		// Who must die?
+		memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).collect(Collectors.toList());
+		memo.pacKilled = !GameController.it().isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	private void handleFoodFound(Vector2i foodTile) {
@@ -545,10 +548,6 @@ public class GameLevel {
 		} else if (memo.pacPowerLost) {
 			handlePacPowerLost();
 		}
-
-		// Who must die?
-		memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).collect(Collectors.toList());
-		memo.pacKilled = !GameController.it().isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 
 		// Update world and guys
 		world.mazeFlashing().tick();
