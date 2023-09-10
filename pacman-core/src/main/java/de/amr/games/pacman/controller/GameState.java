@@ -134,8 +134,7 @@ public enum GameState implements FsmState<GameModel> {
 				var steering = level.pacSteering().orElse(GameController.it().steering());
 				steering.steer(level, level.pac());
 				level.update();
-				level.world().energizerBlinking().tick();
-				if (level.isCompleted()) {
+				if (level.world().uneatenFoodCount() == 0) {
 					GameController.it().changeState(LEVEL_COMPLETE);
 				} else if (level.isPacKilled()) {
 					GameController.it().changeState(PACMAN_DYING);

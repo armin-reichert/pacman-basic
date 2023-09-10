@@ -469,9 +469,6 @@ public class GameLevel {
 			memo.pacPowerLost   = pac.powerTimer().hasExpired();
 			memo.pacPowerActive = pac.powerTimer().isRunning();
 		}
-		// Who must die?
-		memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).collect(Collectors.toList());
-		memo.pacKilled = !GameController.it().isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	private void handleFoodFound(Vector2i foodTile) {
@@ -530,7 +527,7 @@ public class GameLevel {
 		}
 
 		// Level complete?
-		if (isCompleted()) {
+		if (world.uneatenFoodCount() == 0) {
 			logMemo();
 			return;
 		}
@@ -549,8 +546,12 @@ public class GameLevel {
 			handlePacPowerLost();
 		}
 
+		memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).collect(Collectors.toList());
+		memo.pacKilled = !GameController.it().isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+
 		// Update world and guys
 		world.mazeFlashing().tick();
+		world.energizerBlinking().tick();
 		unlockGhost();
 		pac.update();
 		ghosts().forEach(Ghost::update);
@@ -621,10 +622,6 @@ public class GameLevel {
 		Logger.info("{} died at tile {}", pac.name(), pac.tile());
 	}
 
-	public boolean isCompleted() {
-		return world.uneatenFoodCount() == 0;
-	}
-
 	private void unlockGhost() {
 		ghostHouseManagement.checkIfNextGhostCanLeaveHouse(this).ifPresent(unlocked -> {
 			var ghost = unlocked.ghost();
@@ -670,36 +667,37 @@ public class GameLevel {
 	}
 
 	/**
-	 * (From Reddit user <em>damselindis</em>, see
+	 * (Got this info from Reddit user <b>damselindis</b>, see
 	 * <a href="https://www.reddit.com/r/Pacman/comments/12q4ny3/is_anyone_able_to_explain_the_ai_behind_the/">Reddit</a>)
 	 * <p>
+	 * <cite>
 	 * The exact fruit mechanics are as follows: After 64 dots are consumed, the game spawns the first fruit of the level.
 	 * After 176 dots are consumed, the game attempts to spawn the second fruit of the level. If the first fruit is still
 	 * present in the level when (or eaten very shortly before) the 176th dot is consumed, the second fruit will not
 	 * spawn. Dying while a fruit is on screen causes it to immediately disappear and never return.
-	 * <p>
 	 * The type of fruit is determined by the level count - levels 1-7 will always have two cherries, two strawberries,
 	 * etc. until two bananas on level 7. On level 8 and beyond, the fruit type is randomly selected using the weights in
 	 * the following table:
-	 *
+	 * </cite>
+	 * </p>
 	 * <table>
 	 * <tr>
-	 * <th>Cherry
-	 * <th>Strawberry
-	 * <th>Peach
-	 * <th>Pretzel
-	 * <th>Apple
-	 * <th>Pear
-	 * <th>Banana
+	 *   <th>Cherry</th>
+	 *   <th>Strawberry</th>
+	 *   <th>Peach</th>
+	 *   <th>Pretzel</th>
+	 *   <th>Apple</th>
+	 *   <th>Pear</th>
+	 *   <th>Banana</th>
 	 * </tr>
-	 * <tr>
-	 * <td>5/32
-	 * <td>5/32
-	 * <td>5/32
-	 * <td>5/32
-	 * <td>4/32
-	 * <td>4/32
-	 * <td>4/32
+	 * <tr align="right">
+	 *   <td>5/32</td>
+	 *   <td>5/32</td>
+	 *   <td>5/32</td>
+	 *   <td>5/32</td>
+	 *   <td>4/32</td>
+	 *   <td>4/32</td>
+	 *   <td>4/32</td>
 	 * </tr>
 	 * </table>
 	 */
@@ -726,23 +724,17 @@ public class GameLevel {
 
 	public boolean isFirstBonusReached() {
 		switch (game.variant()) {
-			case MS_PACMAN:
-				return world().eatenFoodCount() == 64;
-			case PACMAN:
-				return world().eatenFoodCount() == 70;
-			default:
-				throw new IllegalGameVariantException(game.variant());
+			case MS_PACMAN: return world().eatenFoodCount() == 64;
+			case PACMAN:		return world().eatenFoodCount() == 70;
+			default:  			throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
 	public boolean isSecondBonusReached() {
 		switch (game.variant()) {
-			case MS_PACMAN:
-				return world().eatenFoodCount() == 176;
-			case PACMAN:
-				return world().eatenFoodCount() == 170;
-			default:
-				throw new IllegalGameVariantException(game.variant());
+			case MS_PACMAN:	return world().eatenFoodCount() == 176;
+			case PACMAN:		return world().eatenFoodCount() == 170;
+			default:   			throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
@@ -787,8 +779,7 @@ public class GameLevel {
 				GameController.it().publishGameEvent(GameEventType.BONUS_ACTIVATED, bonus.entity().tile());
 				break;
 			}
-			default:
-				throw new IllegalGameVariantException(game.variant());
+			default: throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
