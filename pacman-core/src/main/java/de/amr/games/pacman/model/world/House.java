@@ -7,9 +7,6 @@ package de.amr.games.pacman.model.world;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static de.amr.games.pacman.lib.Globals.*;
 
 /**
@@ -50,7 +47,7 @@ public abstract class House {
 		return door;
 	}
 
-	public abstract Vector2f getSeat(String id);
+	public abstract Vector2f seat(String id);
 
 	public Vector2f center() {
 		return minTile.toFloatVec().scaled(TS).plus(size.toFloatVec().scaled(HTS));

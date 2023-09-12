@@ -70,7 +70,7 @@ public class GhostHouseManagement {
 		globalDotCounterEnabled = false;
 	}
 
-	public void update(GameLevel level) {
+	public void onFoodFound(GameLevel level) {
 		if (globalDotCounterEnabled) {
 			if (level.ghost(ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
 				Logger.trace("{} inside house when counter reached 32", level.ghost(ORANGE_GHOST).name());

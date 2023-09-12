@@ -38,8 +38,8 @@ public class HouseTest {
 		Assert.assertEquals(POSITION, house.topLeftTile());
 		Assert.assertEquals(SIZE, house.size());
 		Assert.assertEquals(DOOR, house.door());
-		Assert.assertEquals(halfTileRightOf(11, 17), house.getSeat("left"));
-		Assert.assertEquals(halfTileRightOf(13, 17), house.getSeat("middle"));
-		Assert.assertEquals(halfTileRightOf(15, 17), house.getSeat("right"));
+		Assert.assertEquals(halfTileRightOf(11, 17), house.seat("left"));
+		Assert.assertEquals(halfTileRightOf(13, 17), house.seat("middle"));
+		Assert.assertEquals(halfTileRightOf(15, 17), house.seat("right"));
 	}
 }

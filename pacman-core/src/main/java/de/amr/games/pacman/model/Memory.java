@@ -16,9 +16,10 @@ import java.util.Optional;
  * @author Armin Reichert
  */
 public class Memory {
-	public Optional<Vector2i> foodFoundTile;
+	Vector2i foodFoundTile;
 	public boolean energizerFound;
 	public int bonusReachedIndex; // 0=first, 1=second, -1=no bonus
+	public boolean levelCompleted;
 	public boolean pacKilled;
 	public boolean pacPowerActive;
 	public boolean pacPowerStarts;
@@ -32,8 +33,9 @@ public class Memory {
 	}
 
 	public void forgetEverything() {
-		foodFoundTile = Optional.empty();
+		foodFoundTile = null;
 		energizerFound = false;
+		levelCompleted = false;
 		bonusReachedIndex = -1;
 		pacKilled = false;
 		pacPowerActive = false;
@@ -44,12 +46,18 @@ public class Memory {
 		killedGhosts.clear();
 	}
 
+	public Optional<Vector2i> foodFoundTile() {
+		return Optional.of(foodFoundTile);
+	}
+
 	@Override
 	public String toString() {
 
+		var levelCompletedText = levelCompleted ? "Level completed" : "";
+
 		var foodText = "";
-		if (foodFoundTile.isPresent()) {
-			foodText = String.format("%s at %s", energizerFound ? "Energizer" : "Pellet", foodFoundTile.get());
+		if (foodFoundTile != null) {
+			foodText = String.format("%s at %s", energizerFound ? "Energizer" : "Pellet", foodFoundTile);
 		}
 
 		var bonusText = "";
@@ -71,7 +79,7 @@ public class Memory {
 			powerText += " lost";
 		}
 		if (!powerText.isEmpty()) {
-			powerText = "Pac power: " + powerText;
+			powerText = "Pac power:" + powerText;
 		}
 
 		var pacKilledText = pacKilled ? "Pac killed" : "";
@@ -83,10 +91,7 @@ public class Memory {
 
 		var killedGhostsText = killedGhosts.isEmpty() ? "" : killedGhosts.toString();
 
-		return String.format("%s%s%s%s%s%s", foodText, bonusText, powerText, pacKilledText, preyText, killedGhostsText);
-	}
-
-	public boolean edibleGhostsExist() {
-		return !pacPrey.isEmpty();
+		return String.format("%s %s %s %s %s %s %s", levelCompletedText, foodText, bonusText, powerText,
+				pacKilledText, preyText, killedGhostsText);
 	}
 }

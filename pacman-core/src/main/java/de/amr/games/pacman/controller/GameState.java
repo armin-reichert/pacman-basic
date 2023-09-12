@@ -130,15 +130,12 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.level().ifPresent(level -> {
-				// TODO this looks ugly
-				var steering = level.pacSteering().orElse(GameController.it().steering());
-				steering.steer(level, level.pac());
 				level.update();
-				if (level.world().uneatenFoodCount() == 0) {
+				if (level.memo().levelCompleted) {
 					GameController.it().changeState(LEVEL_COMPLETE);
-				} else if (level.isPacKilled()) {
+				} else if (level.memo().pacKilled) {
 					GameController.it().changeState(PACMAN_DYING);
-				} else if (level.memo().edibleGhostsExist()) {
+				} else if (level.memo().pacPrey.size() > 0) {
 					level.killEdibleGhosts();
 					GameController.it().changeState(GHOST_DYING);
 				}

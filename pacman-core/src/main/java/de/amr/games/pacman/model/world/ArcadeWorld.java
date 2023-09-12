@@ -18,7 +18,7 @@ public class ArcadeWorld extends World {
         }
 
         @Override
-        public Vector2f getSeat(String id) {
+        public Vector2f seat(String id) {
             switch (id) {
                 case "left":   return halfTileRightOf(11, 17);
                 case "middle": return halfTileRightOf(13, 17);

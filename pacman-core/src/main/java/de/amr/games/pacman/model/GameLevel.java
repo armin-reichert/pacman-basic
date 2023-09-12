@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Globals.*;
 import static de.amr.games.pacman.lib.NavigationPoint.np;
 import static de.amr.games.pacman.model.GameModel.*;
@@ -63,7 +64,7 @@ public class GameLevel {
 	/** Number of maze flashes at end of this level. */
 	public final byte numFlashes;
 
-	/** Number of intermission scene played after this level (1, 2, 3, 0 = no intermission). */
+	/** Number of intermission scene played after this level (1-3. 0 = no intermission). */
 	public final byte intermissionNumber;
 
 	private final GameModel game;
@@ -71,7 +72,7 @@ public class GameLevel {
 	private final GhostHouseManagement ghostHouseManagement;
 
 	/** 1-based level number. */
-	private final int number;
+	private final int levelNumber;
 
 	private final boolean demoLevel;
 
@@ -88,7 +89,7 @@ public class GameLevel {
 
 	private Steering pacSteering;
 
-	private int huntingPhase;
+	private byte huntingPhase;
 
 	private int numGhostsKilledInLevel;
 
@@ -102,10 +103,10 @@ public class GameLevel {
 		checkLevelNumber(number);
 		checkNotNull(data);
 
-		this.game      = game;
-		this.world     = world;
-		this.number    = number;
-		this.demoLevel = demoLevel;
+		this.game        = game;
+		this.world       = world;
+		this.levelNumber = number;
+		this.demoLevel   = demoLevel;
 
 		pacSpeed             = percent(data[0]);
 		ghostSpeed           = percent(data[1]);
@@ -136,30 +137,30 @@ public class GameLevel {
 		// Blinky: attacks Pac-Man directly
 		ghosts[RED_GHOST].setInitialDirection(Direction.LEFT);
 		ghosts[RED_GHOST].setInitialPosition(house.door().entryPosition());
-		ghosts[RED_GHOST].setRevivalPosition(house.getSeat("middle"));
+		ghosts[RED_GHOST].setRevivalPosition(house.seat("middle"));
 		ghosts[RED_GHOST].setScatterTile(v2i(25, 0));
 		ghosts[RED_GHOST].setChasingTarget(pac::tile);
 
 		// Pinky: ambushes Pac-Man
 		ghosts[PINK_GHOST].setInitialDirection(Direction.DOWN);
-		ghosts[PINK_GHOST].setInitialPosition(house.getSeat("middle"));
-		ghosts[PINK_GHOST].setRevivalPosition(house.getSeat("middle"));
+		ghosts[PINK_GHOST].setInitialPosition(house.seat("middle"));
+		ghosts[PINK_GHOST].setRevivalPosition(house.seat("middle"));
 		ghosts[PINK_GHOST].setScatterTile(v2i(2, 0));
 		ghosts[PINK_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(4));
 
 		// Inky: attacks from opposite side as Blinky
 		ghosts[CYAN_GHOST].setInitialDirection(Direction.UP);
-		ghosts[CYAN_GHOST].setInitialPosition(house.getSeat("left"));
-		ghosts[CYAN_GHOST].setRevivalPosition(house.getSeat("left"));
+		ghosts[CYAN_GHOST].setInitialPosition(house.seat("left"));
+		ghosts[CYAN_GHOST].setRevivalPosition(house.seat("left"));
 		ghosts[CYAN_GHOST].setScatterTile(v2i(27, 34));
 		ghosts[CYAN_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(2).scaled(2).minus(ghosts[RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
 		ghosts[ORANGE_GHOST].setInitialDirection(Direction.UP);
-		ghosts[ORANGE_GHOST].setInitialPosition(house.getSeat("right"));
-		ghosts[ORANGE_GHOST].setRevivalPosition(house.getSeat("right"));
+		ghosts[ORANGE_GHOST].setInitialPosition(house.seat("right"));
+		ghosts[ORANGE_GHOST].setRevivalPosition(house.seat("right"));
 		ghosts[ORANGE_GHOST].setScatterTile(v2i(0, 34));
-		ghosts[ORANGE_GHOST].setChasingTarget(() -> ghosts[ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8 //
+		ghosts[ORANGE_GHOST].setChasingTarget(() -> ghosts[ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8
 				? ghosts[ORANGE_GHOST].scatterTile()
 				: pac.tile());
 
@@ -169,17 +170,17 @@ public class GameLevel {
 
 		ghostHouseManagement = new GhostHouseManagement(number);
 
-		Logger.trace("Game level {} created. ({})", number, game.variant());
+		Logger.trace("Game level {} ({}) created.", levelNumber, game.variant());
 	}
 
 	public void end() {
-		Logger.trace("Level {} ({}) ends", number, game.variant());
 		pac.rest(Pac.REST_FOREVER);
 		pac.selectAnimation(PacAnimations.MUNCHING);
 		ghosts().forEach(Ghost::hide);
 		deactivateBonus();
 		world.mazeFlashing().reset();
 		stopHuntingTimer();
+		Logger.trace("Game level {} ({}) ended.", levelNumber, game.variant());
 	}
 
 	public GameModel game() {
@@ -196,7 +197,7 @@ public class GameLevel {
 
 	/** @return level number, starting with 1. */
 	public int number() {
-		return number;
+		return levelNumber;
 	}
 
 	public World world() {
@@ -296,17 +297,14 @@ public class GameLevel {
 		}
 		// In the Pac-Man game, hunting ghosts cannot move upwards at specific tiles
 		boolean upwardsBlocked = upwardsBlockedTiles().contains(ghost.tile());
-		return dir != Direction.UP || !ghost.is(HUNTING_PAC) || !upwardsBlocked;
+		return !(upwardsBlocked && dir == UP && ghost.is(HUNTING_PAC));
 	}
 
 	public List<Vector2i> upwardsBlockedTiles() {
 		switch (game.variant()) {
-		case MS_PACMAN:
-			return Collections.emptyList();
-		case PACMAN:
-			return GameModel.PACMAN_RED_ZONE;
-		default:
-			throw new IllegalGameVariantException(game.variant());
+		case MS_PACMAN:	return Collections.emptyList();
+		case PACMAN:		return GameModel.PACMAN_RED_ZONE;
+		default:  			throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
@@ -321,13 +319,14 @@ public class GameLevel {
 		if (phase < 0 || phase > 7) {
 			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
 		}
-		this.huntingPhase = phase;
-		var durations = game.huntingDurations(number);
+		huntingPhase = (byte) phase;
+		var durations = game.huntingDurations(levelNumber);
 		var ticks = durations[phase] == -1 ? TickTimer.INDEFINITE : durations[phase];
 		huntingTimer.reset(ticks);
 		huntingTimer.start();
-		Logger.info("Hunting phase {} ({}, {} ticks / {} seconds) started. {}", phase, currentHuntingPhaseName(),
-				huntingTimer.duration(), (float) huntingTimer.duration() / GameModel.FPS, huntingTimer);
+		Logger.info("Hunting phase {} ({}, {} ticks / {} seconds) started. {}",
+				phase, currentHuntingPhaseName(), huntingTimer.duration(),
+				(float) huntingTimer.duration() / GameModel.FPS, huntingTimer);
 	}
 
 	private void stopHuntingTimer() {
@@ -360,12 +359,12 @@ public class GameLevel {
 	/**
 	 * Specifies the hunting behavior of the given ghost.
 	 * 
-	 * @param ghost one of the guys
+	 * @param ghost one of the ghosts
 	 */
 	public void doGhostHuntingAction(Ghost ghost) {
 		boolean cruiseElroy = ghost.id() == RED_GHOST && cruiseElroyState > 0;
 		switch (game.variant()) {
-		case MS_PACMAN: {
+		case MS_PACMAN:
 			/*
 			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* hunting/scatter phase. Some say, the original
 			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
@@ -379,29 +378,26 @@ public class GameLevel {
 				ghost.scatter();
 			}
 			break;
-		}
-		case PACMAN: {
+		case PACMAN:
 			if (chasingPhase().isPresent() || cruiseElroy) {
 				ghost.chase();
 			} else {
 				ghost.scatter();
 			}
 			break;
-		}
-		default:
-			throw new IllegalGameVariantException(game.variant());
+		default: throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
 	/**
-	 * @return (optional) number of current scattering phase <code>(0-3)</code>
+	 * @return (optional) index of current scattering phase <code>(0-3)</code>
 	 */
 	public OptionalInt scatterPhase() {
 		return isEven(huntingPhase) ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
 	}
 
 	/**
-	 * @return (optional) number of current chasing phase <code>(0-3)</code>
+	 * @return (optional) index of current chasing phase <code>(0-3)</code>
 	 */
 	public OptionalInt chasingPhase() {
 		return isOdd(huntingPhase) ? OptionalInt.of(huntingPhase / 2) : OptionalInt.empty();
@@ -455,10 +451,10 @@ public class GameLevel {
 	/* --- Here comes the main logic of the game. --- */
 
 	private void collectInformation() {
-		memo.forgetEverything(); // Ich scholze jetzt
+		memo.forgetEverything(); // Ich scholze jetzt!
 		var pacTile = pac.tile();
 		if (world.hasFoodAt(pacTile)) {
-			memo.foodFoundTile  = Optional.of(pacTile);
+			memo.foodFoundTile  = pacTile;
 			memo.energizerFound = world.isEnergizerTile(pacTile);
 		}
 		if (memo.energizerFound && pacPowerSeconds > 0) {
@@ -473,6 +469,9 @@ public class GameLevel {
 
 	private void handleFoodFound(Vector2i foodTile) {
 		world.removeFood(foodTile);
+		if (world.uneatenFoodCount() == 0) {
+			memo.levelCompleted = true;
+		}
 		if (isFirstBonusReached()) {
 			memo.bonusReachedIndex = 0;
 		} else if (isSecondBonusReached()) {
@@ -488,7 +487,7 @@ public class GameLevel {
 			pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
 			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 		}
-		ghostHouseManagement.update(this);
+		ghostHouseManagement.onFoodFound(this);
 		if (world.uneatenFoodCount() == elroy1DotsLeft) {
 			setCruiseElroyState((byte) 1);
 		} else if (world.uneatenFoodCount() == elroy2DotsLeft) {
@@ -519,15 +518,15 @@ public class GameLevel {
 		collectInformation();
 
 		// Food found?
-		if (memo.foodFoundTile.isPresent()) {
+		if (memo.foodFoundTile != null) {
 			pac.endStarving();
-			handleFoodFound(memo.foodFoundTile.get());
+			handleFoodFound(memo.foodFoundTile);
 		} else {
 			pac.starve();
 		}
 
 		// Level complete?
-		if (world.uneatenFoodCount() == 0) {
+		if (memo.levelCompleted) {
 			logMemo();
 			return;
 		}
@@ -546,15 +545,22 @@ public class GameLevel {
 			handlePacPowerLost();
 		}
 
+		// Now check who gets killed
 		memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).collect(Collectors.toList());
 		memo.pacKilled = !GameController.it().isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 
-		// Update world and guys
+		// Update world
 		world.mazeFlashing().tick();
 		world.energizerBlinking().tick();
+
+		// Update guys
 		unlockGhost();
+		var steering = pacSteering().orElse(GameController.it().steering());
+		steering.steer(this, pac);
 		pac.update();
 		ghosts().forEach(Ghost::update);
+
+		// Update bonus
 		if (bonus != null) {
 			bonus.update(this);
 		}
@@ -568,13 +574,14 @@ public class GameLevel {
 				ghosts(HUNTING_PAC, LOCKED, LEAVING_HOUSE).forEach(Ghost::reverseAsSoonAsPossible);
 			}
 		}
+
 		logMemo();
 	}
 
 	private void logMemo() {
 		var memoText = memo.toString();
 		if (!memoText.isBlank()) {
-			Logger.trace(memo);
+			Logger.trace(memoText);
 		}
 	}
 
@@ -594,7 +601,7 @@ public class GameLevel {
 			if (numGhostsKilledInLevel == 16) {
 				int points = GameModel.POINTS_ALL_GHOSTS_KILLED_IN_LEVEL;
 				game.scorePoints(points);
-				Logger.info("Scored {} points for killing all ghosts at level {}", points, number);
+				Logger.info("Scored {} points for killing all ghosts at level {}", points, levelNumber);
 			}
 		}
 	}
@@ -610,10 +617,6 @@ public class GameLevel {
 	}
 
 	// Pac-Man
-
-	public boolean isPacKilled() {
-		return memo.pacKilled;
-	}
 
 	public void onPacKilled() {
 		pac.killed();
@@ -649,7 +652,7 @@ public class GameLevel {
 			return nextMsPacManBonusSymbol();
 		}
 		// In the Pac-Man game, each level has a single bonus symbol appearing twice
-		switch (number) {
+		switch (levelNumber) {
 			case 1:  return GameModel.PACMAN_CHERRIES;
 			case 2:  return GameModel.PACMAN_STRAWBERRY;
 			case 3:
@@ -702,7 +705,7 @@ public class GameLevel {
 	 * </table>
 	 */
 	private byte nextMsPacManBonusSymbol() {
-		switch (number) {
+		switch (levelNumber) {
 			case 1: return GameModel.MS_PACMAN_CHERRIES;
 			case 2: return GameModel.MS_PACMAN_STRAWBERRY;
 			case 3: return GameModel.MS_PACMAN_ORANGE;
