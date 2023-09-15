@@ -480,9 +480,7 @@ public class GameModel {
 				}
 			}
 		}
-		if (score != null) {
-			score.setLevelNumber(level.number());
-		}
+		score.setLevelNumber(level.number());
 		level.letsGetReadyToRumble();
 		// Demo level shows guys immediately, otherwise they get shown after some ticks, see game state
 		level.guys().forEach(guy -> guy.setVisible(level.isDemoLevel()));
