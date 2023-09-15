@@ -590,16 +590,13 @@ public class GameModel {
 
 	private File highScoreFile() {
 		switch (variant) {
-		case PACMAN:
-			return new File(System.getProperty("user.home"), "highscore-pacman.xml");
-		case MS_PACMAN:
-			return new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
-		default:
-			throw new IllegalGameVariantException(variant);
+		case PACMAN:	  return new File(System.getProperty("user.home"), "highscore-pacman.xml");
+		case MS_PACMAN:	return new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
+		default:  			throw new IllegalGameVariantException(variant);
 		}
 	}
 
-	private static void loadHighScore(Score score, File file) {
+	private static void loadScore(Score score, File file) {
 		try (var in = new FileInputStream(file)) {
 			var p = new Properties();
 			p.loadFromXML(in);
@@ -609,26 +606,27 @@ public class GameModel {
 			score.setPoints(points);
 			score.setLevelNumber(levelNumber);
 			score.setDate(date);
-			Logger.info("Highscore loaded. File: '{}' Points: {} Level: {}", file.getAbsolutePath(), score.points(),
+			Logger.info("Score loaded. File: '{}' Points: {} Level: {}", file.getAbsolutePath(), score.points(),
 					score.levelNumber());
 		} catch (Exception x) {
-			Logger.error("Highscore could not be loaded. File '{}' Reason: {}", file, x.getMessage());
+			Logger.error("Score could not be loaded. File '{}' Reason: {}", file, x.getMessage());
 		}
 	}
 
 	public void loadHighScore() {
-		loadHighScore(highScore, highScoreFile());
+		loadScore(highScore, highScoreFile());
 	}
 
 	public void saveNewHighScore() {
 		var file = highScoreFile();
 		var savedHiscore = new Score();
-		loadHighScore(savedHiscore, file);
+		loadScore(savedHiscore, file);
 		if (highScore.points() > savedHiscore.points()) {
 			var p = new Properties();
 			p.setProperty("points", String.valueOf(highScore.points()));
 			p.setProperty("level",  String.valueOf(highScore.levelNumber()));
 			p.setProperty("date",   highScore.date().format(DateTimeFormatter.ISO_LOCAL_DATE));
+			p.setProperty("url",    "https://github.com/armin-reichert/pacman-basic");
 			try (var out = new FileOutputStream(file)) {
 				p.storeToXML(out, String.format("%s High Score", variant));
 				Logger.info("High Score saved to '{}' Points: {} Level: {}", file, highScore.points(), highScore.levelNumber());
