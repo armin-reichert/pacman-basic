@@ -431,7 +431,6 @@ public class GameModel {
 	 */
 	public void createLevel(int levelNumber, boolean resetGame) {
 		checkLevelNumber(levelNumber);
-		checkGameVariant(variant);
 		if (resetGame) {
 			reset();
 		}
