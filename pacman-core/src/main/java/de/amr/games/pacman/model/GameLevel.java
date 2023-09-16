@@ -79,7 +79,7 @@ public class GameLevel {
 	private final TickTimer huntingTimer = new TickTimer("HuntingTimer");
 
 	/** Memorizes what happens during a frame. */
-	private final Memory memo = new Memory();
+	private final Memory thisFrame = new Memory();
 
 	private final World world;
 
@@ -248,8 +248,8 @@ public class GameLevel {
 	/**
 	 * @return information about what happened during the current simulation step
 	 */
-	public Memory memo() {
-		return memo;
+	public Memory thisFrame() {
+		return thisFrame;
 	}
 
 	/** @return Blinky's "cruise elroy" state. Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled). */
@@ -451,31 +451,31 @@ public class GameLevel {
 	/* --- Here comes the main logic of the game. --- */
 
 	private void collectInformation() {
-		memo.forgetEverything(); // Ich scholze jetzt!
+		thisFrame.forgetEverything(); // Ich scholze jetzt!
 		var pacTile = pac.tile();
 		if (world.hasFoodAt(pacTile)) {
-			memo.foodFoundTile  = pacTile;
-			memo.energizerFound = world.isEnergizerTile(pacTile);
+			thisFrame.foodFoundTile  = pacTile;
+			thisFrame.energizerFound = world.isEnergizerTile(pacTile);
 		}
-		if (memo.energizerFound && pacPowerSeconds > 0) {
-			memo.pacPowerStarts = true;
-			memo.pacPowerActive = true;
+		if (thisFrame.energizerFound && pacPowerSeconds > 0) {
+			thisFrame.pacPowerStarts = true;
+			thisFrame.pacPowerActive = true;
 		} else {
-			memo.pacPowerFading = pac.powerTimer().remaining() == GameModel.PAC_POWER_FADES_TICKS;
-			memo.pacPowerLost   = pac.powerTimer().hasExpired();
-			memo.pacPowerActive = pac.powerTimer().isRunning();
+			thisFrame.pacPowerFading = pac.powerTimer().remaining() == GameModel.PAC_POWER_FADES_TICKS;
+			thisFrame.pacPowerLost   = pac.powerTimer().hasExpired();
+			thisFrame.pacPowerActive = pac.powerTimer().isRunning();
 		}
 	}
 
 	private void handleFoodFound(Vector2i foodTile) {
 		world.removeFood(foodTile);
 		if (world.uneatenFoodCount() == 0) {
-			memo.levelCompleted = true;
+			thisFrame.levelCompleted = true;
 		}
 		if (isBonusReached()) {
-			memo.bonusReachedIndex += 1;
+			thisFrame.bonusReachedIndex += 1;
 		}
-		if (memo.energizerFound) {
+		if (thisFrame.energizerFound) {
 			numGhostsKilledByEnergizer = 0;
 			pac.rest(GameModel.RESTING_TICKS_ENERGIZER);
 			int points = GameModel.POINTS_ENERGIZER;
@@ -512,40 +512,40 @@ public class GameLevel {
 		GameController.it().publishGameEvent(GameEventType.PAC_LOST_POWER);
 	}
 
-	public void update() {
+	public void simulateOneFrame() {
 		collectInformation();
 
 		// Food found?
-		if (memo.foodFoundTile != null) {
+		if (thisFrame.foodFoundTile != null) {
 			pac.endStarving();
-			handleFoodFound(memo.foodFoundTile);
+			handleFoodFound(thisFrame.foodFoundTile);
 		} else {
 			pac.starve();
 		}
 
 		// Level complete?
-		if (memo.levelCompleted) {
+		if (thisFrame.levelCompleted) {
 			logMemo();
 			return;
 		}
 
 		// Bonus?
-		if (memo.bonusReachedIndex != -1) {
-			handleBonusReached(memo.bonusReachedIndex);
+		if (thisFrame.bonusReachedIndex != -1) {
+			handleBonusReached(thisFrame.bonusReachedIndex);
 		}
 
 		// Pac power state changed?
-		if (memo.pacPowerStarts) {
+		if (thisFrame.pacPowerStarts) {
 			handlePacPowerStarts();
-		} else if (memo.pacPowerFading) {
+		} else if (thisFrame.pacPowerFading) {
 			GameController.it().publishGameEvent(GameEventType.PAC_STARTS_LOSING_POWER);
-		} else if (memo.pacPowerLost) {
+		} else if (thisFrame.pacPowerLost) {
 			handlePacPowerLost();
 		}
 
 		// Now check who gets killed
-		memo.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).collect(Collectors.toList());
-		memo.pacKilled = !GameController.it().isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
+		thisFrame.pacPrey = ghosts(FRIGHTENED).filter(pac::sameTile).collect(Collectors.toList());
+		thisFrame.pacKilled = !GameController.it().isImmune() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 
 		// Update world
 		world.mazeFlashing().tick();
@@ -564,7 +564,7 @@ public class GameLevel {
 		}
 
 		// Update hunting timer
-		if (memo.pacPowerStarts || memo.pacKilled) {
+		if (thisFrame.pacPowerStarts || thisFrame.pacKilled) {
 			stopHuntingTimer();
 		} else {
 			boolean huntingPhaseChange = updateHuntingTimer();
@@ -577,7 +577,7 @@ public class GameLevel {
 	}
 
 	private void logMemo() {
-		var memoText = memo.toString();
+		var memoText = thisFrame.toString();
 		if (!memoText.isBlank()) {
 			Logger.trace(memoText);
 		}
@@ -587,15 +587,15 @@ public class GameLevel {
 	 * Called by cheat action only.
 	 */
 	public void killAllHuntingAndFrightenedGhosts() {
-		memo.pacPrey = ghosts(HUNTING_PAC, FRIGHTENED).collect(Collectors.toList());
+		thisFrame.pacPrey = ghosts(HUNTING_PAC, FRIGHTENED).collect(Collectors.toList());
 		numGhostsKilledByEnergizer = 0;
 		killEdibleGhosts();
 	}
 
 	public void killEdibleGhosts() {
-		if (!memo.pacPrey.isEmpty()) {
-			memo.pacPrey.forEach(this::killGhost);
-			numGhostsKilledInLevel += memo.pacPrey.size();
+		if (!thisFrame.pacPrey.isEmpty()) {
+			thisFrame.pacPrey.forEach(this::killGhost);
+			numGhostsKilledInLevel += thisFrame.pacPrey.size();
 			if (numGhostsKilledInLevel == 16) {
 				int points = GameModel.POINTS_ALL_GHOSTS_KILLED_IN_LEVEL;
 				game.scorePoints(points);
@@ -608,7 +608,7 @@ public class GameLevel {
 		ghost.setKilledIndex(numGhostsKilledByEnergizer);
 		ghost.enterStateEaten();
 		numGhostsKilledByEnergizer += 1;
-		memo.killedGhosts.add(ghost);
+		thisFrame.killedGhosts.add(ghost);
 		int points = GameModel.POINTS_GHOSTS_SEQUENCE[ghost.killedIndex()];
 		game.scorePoints(points);
 		Logger.info("Scored {} points for killing {} at tile {}", points, ghost.name(), ghost.tile());
