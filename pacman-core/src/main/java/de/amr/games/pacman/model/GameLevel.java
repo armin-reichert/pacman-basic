@@ -525,7 +525,7 @@ public class GameLevel {
 
 		// Level complete?
 		if (thisFrame.levelCompleted) {
-			logMemo();
+			logWhatHappenedThisFrame();
 			return;
 		}
 
@@ -573,10 +573,10 @@ public class GameLevel {
 			}
 		}
 
-		logMemo();
+		logWhatHappenedThisFrame();
 	}
 
-	private void logMemo() {
+	private void logWhatHappenedThisFrame() {
 		var memoText = thisFrame.toString();
 		if (!memoText.isBlank()) {
 			Logger.trace(memoText);
