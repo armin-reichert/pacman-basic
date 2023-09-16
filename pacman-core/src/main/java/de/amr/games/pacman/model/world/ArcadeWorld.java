@@ -36,10 +36,10 @@ public class ArcadeWorld extends World {
     public ArcadeWorld(byte[][] tileMapData) {
         super(tileMapData);
         if (numCols() != TILES_X) {
-            throw new IllegalArgumentException("Arcade world map must have 28 columns");
+            throw new IllegalArgumentException(String.format("Arcade world map must have %d columns", TILES_X));
         }
         if (numRows() != TILES_Y) {
-            throw new IllegalArgumentException("Arcade world map must have 36 rows");
+            throw new IllegalArgumentException(String.format("Arcade world map must have %d rows", TILES_Y));
         }
         setHouse(ARCADE_HOUSE);
     }

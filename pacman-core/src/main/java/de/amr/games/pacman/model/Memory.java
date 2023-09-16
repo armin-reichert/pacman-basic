@@ -18,7 +18,7 @@ import java.util.Optional;
 public class Memory {
 	Vector2i foodFoundTile;
 	public boolean energizerFound;
-	public int bonusReachedIndex; // 0=first, 1=second, -1=no bonus
+	public byte bonusReachedIndex; // 0=first, 1=second, -1=no bonus
 	public boolean levelCompleted;
 	public boolean pacKilled;
 	public boolean pacPowerActive;

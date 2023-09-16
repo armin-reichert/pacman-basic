@@ -472,10 +472,8 @@ public class GameLevel {
 		if (world.uneatenFoodCount() == 0) {
 			memo.levelCompleted = true;
 		}
-		if (isFirstBonusReached()) {
-			memo.bonusReachedIndex = 0;
-		} else if (isSecondBonusReached()) {
-			memo.bonusReachedIndex = 1;
+		if (isBonusReached()) {
+			memo.bonusReachedIndex += 1;
 		}
 		if (memo.energizerFound) {
 			numGhostsKilledByEnergizer = 0;
@@ -725,19 +723,11 @@ public class GameLevel {
 		}
 	}
 
-	public boolean isFirstBonusReached() {
+	public boolean isBonusReached() {
 		switch (game.variant()) {
-			case MS_PACMAN: return world().eatenFoodCount() == 64;
-			case PACMAN:		return world().eatenFoodCount() == 70;
+			case MS_PACMAN: return world().eatenFoodCount() == 64 || world().eatenFoodCount() == 176;
+			case PACMAN:		return world().eatenFoodCount() == 70 || world().eatenFoodCount() == 170;
 			default:  			throw new IllegalGameVariantException(game.variant());
-		}
-	}
-
-	public boolean isSecondBonusReached() {
-		switch (game.variant()) {
-			case MS_PACMAN:	return world().eatenFoodCount() == 176;
-			case PACMAN:		return world().eatenFoodCount() == 170;
-			default:   			throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
