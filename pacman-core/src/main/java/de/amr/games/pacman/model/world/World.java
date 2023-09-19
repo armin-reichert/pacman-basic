@@ -50,7 +50,7 @@ public class World {
 	private final byte[][] tileMap;
 	private final List<Vector2i> energizerTiles;
 	private final BitSet eaten;
-	private final ArrayList<Portal> portals;
+	private final List<Portal> portals;
 	private final Pulse energizerBlinking;
 	private final Pulse mazeFlashing;
 	private final int totalFoodCount;
@@ -64,16 +64,17 @@ public class World {
 		tileMap = validateTileMapData(tileMapData);
 
 		// build portals
-		portals = new ArrayList<>();
+		var portalList = new ArrayList<Portal>();
 		int lastColumn = numCols() - 1;
 		for (int row = 0; row < numRows(); ++row) {
 			var leftBorderTile = v2i(0, row);
 			var rightBorderTile = v2i(lastColumn, row);
 			if (tileMap[row][0] == T_TUNNEL && tileMap[row][lastColumn] == T_TUNNEL) {
-				portals.add(new Portal(leftBorderTile, rightBorderTile, 2));
+				portalList.add(new Portal(leftBorderTile, rightBorderTile, 2));
 			}
 		}
-		portals.trimToSize();
+		portalList.trimToSize();
+		portals = Collections.unmodifiableList(portalList);
 
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
 		eaten = new BitSet(numCols() * numRows());
@@ -149,7 +150,7 @@ public class World {
 	}
 
 	public List<Portal> portals() {
-		return Collections.unmodifiableList(portals);
+		return portals;
 	}
 
 	public boolean belongsToPortal(Vector2i tile) {
