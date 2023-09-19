@@ -29,7 +29,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	protected GameLevel level;
-
+	protected String name;
 	private Direction moveDir;
 	private Direction wishDir;
 	private Vector2i targetTile;
@@ -43,7 +43,13 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	private Animations<?, ?> animations;
 
 	protected Creature(String name) {
-		super(name);
+		checkNotNull(name, "Name of creature must not be null");
+		this.name = name;
+	}
+
+	/** Readable name, for display and logging purposes. */
+	public String name() {
+		return name;
 	}
 
 	public void reset() {

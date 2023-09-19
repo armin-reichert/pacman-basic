@@ -17,29 +17,15 @@ import static de.amr.games.pacman.model.world.World.tileAt;
  */
 public class Entity {
 
-	protected String name;
 	protected boolean visible = false;
 	protected Vector2f position = Vector2f.ZERO;
 	protected Vector2f velocity = Vector2f.ZERO;
 	protected Vector2f acceleration = Vector2f.ZERO;
 
-	public Entity(String name) {
-		this.name = name;
-	}
-
-	public Entity() {
-		this.name = getClass().getSimpleName() + "@" + hashCode();
-	}
-
 	@Override
 	public String toString() {
-		return "Entity [name=" + name + ", visible=" + visible + ", position=" + position + ", velocity=" + velocity
+		return "Entity[visible=" + visible + ", position=" + position + ", velocity=" + velocity
 				+ ", acceleration=" + acceleration + "]";
-	}
-
-	/** Readable name, for display and logging purposes. */
-	public String name() {
-		return name;
 	}
 
 	public boolean isVisible() {
