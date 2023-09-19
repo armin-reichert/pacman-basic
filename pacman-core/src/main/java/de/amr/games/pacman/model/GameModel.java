@@ -19,7 +19,6 @@ import java.util.*;
 
 import static de.amr.games.pacman.lib.Globals.*;
 import static de.amr.games.pacman.lib.NavigationPoint.np;
-import static de.amr.games.pacman.model.world.World.halfTileRightOf;
 
 /**
  * Pac-Man / Ms. Pac-Man game model.

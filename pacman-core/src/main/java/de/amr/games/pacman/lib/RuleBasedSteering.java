@@ -7,7 +7,6 @@ package de.amr.games.pacman.lib;
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.actors.*;
-import de.amr.games.pacman.model.world.World;
 import org.tinylog.Logger;
 
 import java.util.ArrayList;
@@ -15,6 +14,8 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static de.amr.games.pacman.lib.Globals.tileAt;
 
 /**
  * Pac-Man steering based on a set of rules.
@@ -129,7 +130,7 @@ public class RuleBasedSteering extends Steering {
 		} else if (isEdibleBonusNearPac(level, pac)) {
 			Logger.trace("Detected active bonus");
 			level.bonus().ifPresent(bonus -> {
-				pac.setTargetTile(World.tileAt(bonus.entity().position()));
+				pac.setTargetTile(tileAt(bonus.entity().position()));
 			});
 		} else {
 			Vector2i foodTile = findTileFarestFromGhosts(level, findNearestFoodTiles(level));
@@ -142,7 +143,7 @@ public class RuleBasedSteering extends Steering {
 		var optBonus = level.bonus();
 		if (optBonus.isPresent()) {
 			var bonus = optBonus.get();
-			var tile = World.tileAt(bonus.entity().position());
+			var tile = tileAt(bonus.entity().position());
 			return bonus.state() == Bonus.STATE_EDIBLE
 					&& tile.manhattanDistance(pac.tile()) <= CollectedData.MAX_BONUS_HARVEST_DIST;
 		}

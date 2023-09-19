@@ -4,6 +4,7 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.test;
 
+import de.amr.games.pacman.lib.Globals;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
@@ -40,15 +41,15 @@ public class WorldTest {
 	@Test
 	public void testTileCoordinates() {
 		Vector2f pos = v2f(0, 0);
-		assertEquals(Vector2i.ZERO, World.tileAt(pos));
+		assertEquals(Vector2i.ZERO, tileAt(pos));
 		pos = v2f(7.9f, 7.9f);
-		assertEquals(v2i(0, 0), World.tileAt(pos));
+		assertEquals(v2i(0, 0), tileAt(pos));
 		pos = v2f(8.0f, 7.9f);
-		assertEquals(v2i(1, 0), World.tileAt(pos));
+		assertEquals(v2i(1, 0), tileAt(pos));
 		pos = v2f(8.0f, 0.0f);
-		assertEquals(v2i(1, 0), World.tileAt(pos));
+		assertEquals(v2i(1, 0), tileAt(pos));
 		pos = v2f(0.0f, 8.0f);
-		assertEquals(v2i(0, 1), World.tileAt(pos));
+		assertEquals(v2i(0, 1), tileAt(pos));
 
 		var guy = new Ghost(GameModel.RED_GHOST, "Guy");
 

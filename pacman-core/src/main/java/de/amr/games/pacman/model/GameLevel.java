@@ -26,8 +26,6 @@ import static de.amr.games.pacman.lib.Globals.*;
 import static de.amr.games.pacman.lib.NavigationPoint.np;
 import static de.amr.games.pacman.model.GameModel.*;
 import static de.amr.games.pacman.model.actors.GhostState.*;
-import static de.amr.games.pacman.model.world.World.halfTileRightOf;
-import static de.amr.games.pacman.model.world.World.tileAt;
 
 /**
  * @author Armin Reichert

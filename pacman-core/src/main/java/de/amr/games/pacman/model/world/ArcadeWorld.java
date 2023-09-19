@@ -2,8 +2,7 @@ package de.amr.games.pacman.model.world;
 
 import de.amr.games.pacman.lib.Vector2f;
 
-import static de.amr.games.pacman.lib.Globals.checkNotNull;
-import static de.amr.games.pacman.lib.Globals.v2i;
+import static de.amr.games.pacman.lib.Globals.*;
 
 /**
  * @author Armin Reichert

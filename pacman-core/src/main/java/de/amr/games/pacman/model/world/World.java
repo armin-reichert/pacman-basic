@@ -5,7 +5,6 @@ See file LICENSE in repository root directory for details.
 package de.amr.games.pacman.model.world;
 
 import de.amr.games.pacman.lib.Pulse;
-import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
 
 import java.util.ArrayList;
@@ -28,37 +27,6 @@ public class World {
 	public static final byte T_TUNNEL    = 2;
 	public static final byte T_PELLET    = 3;
 	public static final byte T_ENERGIZER = 4;
-
-	/**
-	 * @param position a position
-	 * @return tile containing given position
-	 */
-	public static Vector2i tileAt(Vector2f position) {
-		checkNotNull(position);
-		return tileAt(position.x(), position.y());
-	}
-
-	/**
-	 * @param x x position
-	 * @param y y position
-	 * @return tile containing given position
-	 */
-	public static Vector2i tileAt(float x, float y) {
-		return v2i((int) (x / TS), (int) (y / TS));
-	}
-
-	/**
-	 * @param tileX tile x coordinate
-	 * @param tileY tile y coordinate
-	 * @return position half tile right of tile origin
-	 */
-	public static Vector2f halfTileRightOf(int tileX, int tileY) {
-		return v2f(TS * tileX + HTS, TS * tileY);
-	}
-
-	public static Vector2f centerOfTile(int tileX, int tileY) {
-		return v2f(TS * tileX + HTS, TS * tileY + HTS);
-	}
 
 	private static List<Portal> buildPortals(byte[][] tileMap) {
 		int numRows = tileMap.length;

@@ -37,6 +37,37 @@ public class Globals {
 		return new Vector2f((float) x, (float) y);
 	}
 
+	/**
+	 * @param position a position
+	 * @return tile containing given position
+	 */
+	public static Vector2i tileAt(Vector2f position) {
+		checkNotNull(position);
+		return tileAt(position.x(), position.y());
+	}
+
+	/**
+	 * @param x x position
+	 * @param y y position
+	 * @return tile containing given position
+	 */
+	public static Vector2i tileAt(float x, float y) {
+		return v2i((int) (x / TS), (int) (y / TS));
+	}
+
+	/**
+	 * @param tileX tile x coordinate
+	 * @param tileY tile y coordinate
+	 * @return position half tile right of tile origin
+	 */
+	public static Vector2f halfTileRightOf(int tileX, int tileY) {
+		return v2f(TS * tileX + HTS, TS * tileY);
+	}
+
+	public static Vector2f centerOfTile(int tileX, int tileY) {
+		return v2f(TS * tileX + HTS, TS * tileY + HTS);
+	}
+
 	public static void checkNotNull(Object value) {
 		Objects.requireNonNull(value, "");
 	}

@@ -10,8 +10,8 @@ import de.amr.games.pacman.model.world.Door;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static de.amr.games.pacman.lib.Globals.halfTileRightOf;
 import static de.amr.games.pacman.lib.Globals.v2i;
-import static de.amr.games.pacman.model.world.World.halfTileRightOf;
 
 /**
  * @author Armin Reichert
