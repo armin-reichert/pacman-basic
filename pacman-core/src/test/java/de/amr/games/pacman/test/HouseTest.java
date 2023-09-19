@@ -5,7 +5,7 @@ See file LICENSE in repository root directory for details.
 package de.amr.games.pacman.test;
 
 import de.amr.games.pacman.lib.Vector2i;
-import de.amr.games.pacman.model.world.ArcadeWorld;
+import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.Door;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class HouseTest {
 
 	@Test
 	public void testHouseProperties() {
-		var house = ArcadeWorld.ARCADE_HOUSE;
+		var house = new GameModel.ArcadeHouse();
 		Assert.assertEquals(POSITION, house.topLeftTile());
 		Assert.assertEquals(SIZE, house.size());
 		Assert.assertEquals(DOOR, house.door());

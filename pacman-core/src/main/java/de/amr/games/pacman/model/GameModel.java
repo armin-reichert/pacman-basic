@@ -7,7 +7,9 @@ package de.amr.games.pacman.model;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.*;
-import de.amr.games.pacman.model.world.ArcadeWorld;
+import de.amr.games.pacman.model.world.Door;
+import de.amr.games.pacman.model.world.House;
+import de.amr.games.pacman.model.world.World;
 import org.tinylog.Logger;
 
 import java.io.File;
@@ -26,6 +28,9 @@ import static de.amr.games.pacman.lib.NavigationPoint.np;
  * @author Armin Reichert
  */
 public class GameModel {
+
+	public static final int TILES_X = 28;
+	public static final int TILES_Y = 36;
 
 	public static final byte[][] PACMAN_MAP = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -227,6 +232,37 @@ public class GameModel {
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		}
 	};
+
+	public static class ArcadeHouse extends House {
+
+		private static final Vector2f SEAT_LEFT   = halfTileRightOf(11, 17);
+		private static final Vector2f SEAT_MIDDLE = halfTileRightOf(13, 17);
+		private static final Vector2f SEAT_RIGHT  = halfTileRightOf(15, 17);
+
+		public ArcadeHouse() {
+			setMinTile(v2i(10, 15));
+			setSize(v2i(8, 5));
+			setDoor(new Door(v2i(13, 15), v2i(14, 15)));
+		}
+
+		@Override
+		public Vector2f seat(String id) {
+			checkNotNull(id);
+			switch (id) {
+				case "left":   return SEAT_LEFT;
+				case "middle": return SEAT_MIDDLE;
+				case "right":  return SEAT_RIGHT;
+				default: throw new IllegalArgumentException("Illegal seat ID: " + id);
+			}
+		}
+	}
+
+
+	public static World createArcadeWorld(byte[][] tileMapData) {
+		var world = new World(tileMapData);
+		world.setHouse(new ArcadeHouse());
+		return world;
+	}
 	
 	/**
 	 * In Ms. Pac-Man, there are 4 maps used by the 6 mazes. Up to level 13, the mazes are:
@@ -439,7 +475,8 @@ public class GameModel {
 		}
 		var map = variant == GameVariant.MS_PACMAN ? MS_PACMAN_MAPS[mapNumberMsPacMan(levelNumber) - 1] : PACMAN_MAP;
 		var levelData = LEVEL_DATA[dataRow(levelNumber)];
-		level = new GameLevel(this, new ArcadeWorld(map), levelNumber, levelData, false);
+		var world = GameModel.createArcadeWorld(map);
+		level = new GameLevel(this, world, levelNumber, levelData, false);
 		Logger.info("Level {} created", levelNumber);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_CREATED);
 	}
@@ -451,16 +488,20 @@ public class GameModel {
 		reset();
 		scoringEnabled = false;
 		switch (variant) {
-			case MS_PACMAN:
-				level = new GameLevel(this, new ArcadeWorld(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
+			case MS_PACMAN: {
+				var world = GameModel.createArcadeWorld(MS_PACMAN_MAPS[0]);
+				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
 				level.setPacSteering(new RuleBasedSteering());
 				// TODO this is not the exact behavior from the Arcade game
 				break;
-			case PACMAN:
-				level = new GameLevel(this, new ArcadeWorld(PACMAN_MAP), 1, LEVEL_DATA[0], true);
+			}
+			case PACMAN: {
+				var world = GameModel.createArcadeWorld(PACMAN_MAP);
+				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
 				level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMOLEVEL_ROUTE)));
 				// TODO this is not the exact behavior from the Arcade game
 				break;
+			}
 			default:
 				throw new IllegalGameVariantException(variant);
 		}
