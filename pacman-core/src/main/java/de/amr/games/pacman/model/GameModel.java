@@ -20,6 +20,7 @@ import java.util.*;
 
 import static de.amr.games.pacman.lib.Globals.*;
 import static de.amr.games.pacman.lib.NavigationPoint.np;
+import static de.amr.games.pacman.model.world.World.halfTileRightOf;
 
 /**
  * Pac-Man / Ms. Pac-Man game model.
@@ -389,7 +390,11 @@ public class GameModel {
 
 	public static final byte[] BONUS_VALUES_PACMAN = { 1, 3, 5, 7, 10, 20, 30, 50 }; // * 100
 
-	public static final Vector2f BONUS_POSITION_PACMAN = World.halfTileRightOf(13, 20);
+	public static final Vector2f BONUS_POSITION_PACMAN = halfTileRightOf(13, 20);
+
+	private static final File HIGHSCORE_FILE_PACMAN    = new File(System.getProperty("user.home"), "highscore-pacman.xml");
+	private static final File HIGHSCORE_FILE_MS_PACMAN = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
+
 
 	private final GameVariant variant;
 	private final List<Byte> levelCounter;
@@ -448,18 +453,18 @@ public class GameModel {
 		reset();
 		scoringEnabled = false;
 		switch (variant) {
-		case MS_PACMAN:
-			level = new GameLevel(this, new ArcadeWorld(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
-			level.setPacSteering(new RuleBasedSteering());
-			// TODO this is not the exact behavior from the Arcade game
-			break;
-		case PACMAN:
-			level = new GameLevel(this, new ArcadeWorld(PACMAN_MAP), 1, LEVEL_DATA[0], true);
-			level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMOLEVEL_ROUTE)));
-			// TODO this is not the exact behavior from the Arcade game
-			break;
-		default:
-			throw new IllegalGameVariantException(variant);
+			case MS_PACMAN:
+				level = new GameLevel(this, new ArcadeWorld(MS_PACMAN_MAPS[0]), 1, LEVEL_DATA[0], true);
+				level.setPacSteering(new RuleBasedSteering());
+				// TODO this is not the exact behavior from the Arcade game
+				break;
+			case PACMAN:
+				level = new GameLevel(this, new ArcadeWorld(PACMAN_MAP), 1, LEVEL_DATA[0], true);
+				level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMOLEVEL_ROUTE)));
+				// TODO this is not the exact behavior from the Arcade game
+				break;
+			default:
+				throw new IllegalGameVariantException(variant);
 		}
 		Logger.info("Demo level created ({})", variant);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_CREATED);
@@ -587,9 +592,9 @@ public class GameModel {
 
 	private File highScoreFile() {
 		switch (variant) {
-		case PACMAN:	  return new File(System.getProperty("user.home"), "highscore-pacman.xml");
-		case MS_PACMAN:	return new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
-		default:  			throw new IllegalGameVariantException(variant);
+			case MS_PACMAN:	return HIGHSCORE_FILE_MS_PACMAN;
+			case PACMAN:	  return HIGHSCORE_FILE_PACMAN;
+			default:  			throw new IllegalGameVariantException(variant);
 		}
 	}
 
