@@ -8,6 +8,7 @@ import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Ghost;
+import de.amr.games.pacman.model.world.World;
 import org.junit.Test;
 
 import static de.amr.games.pacman.lib.Globals.*;
@@ -131,5 +132,11 @@ public class WorldTest {
 		assertEquals(4, copy[1][1]);
 		copy[1][1] = (byte) 42;
 		assertNotEquals(map[1][1], copy[1][1]);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testIllegalMapData() {
+		byte[][] map = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } };
+		var world = new World(map);
 	}
 }

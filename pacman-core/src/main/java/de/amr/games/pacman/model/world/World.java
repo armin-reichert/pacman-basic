@@ -44,6 +44,14 @@ public class World {
 				throw new IllegalArgumentException("Map has differently sized rows");
 			}
 		}
+		for (int row = 0; row < data.length; ++row) {
+			for (int col = 0 ; col < data[row].length; ++col) {
+				byte d = data[row][col];
+				if (d < T_SPACE || d > T_ENERGIZER) {
+					throw new IllegalArgumentException(String.format("Map data at row=%d, col=%d are illegal: %d", row, col, d));
+				}
+			}
+		}
 		return data;
 	}
 
