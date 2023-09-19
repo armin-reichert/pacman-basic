@@ -8,7 +8,6 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.*;
 import de.amr.games.pacman.model.world.ArcadeWorld;
-import de.amr.games.pacman.model.world.World;
 import org.tinylog.Logger;
 
 import java.io.File;
