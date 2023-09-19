@@ -233,35 +233,21 @@ public class GameModel {
 		}
 	};
 
-	public static class ArcadeHouse extends House {
-
-		private static final Vector2f SEAT_LEFT   = halfTileRightOf(11, 17);
-		private static final Vector2f SEAT_MIDDLE = halfTileRightOf(13, 17);
-		private static final Vector2f SEAT_RIGHT  = halfTileRightOf(15, 17);
-
-		public ArcadeHouse() {
-			setMinTile(v2i(10, 15));
-			setSize(v2i(8, 5));
-			setDoor(new Door(v2i(13, 15), v2i(14, 15)));
-		}
-
-		@Override
-		public Vector2f seat(String id) {
-			checkNotNull(id);
-			switch (id) {
-				case "left":   return SEAT_LEFT;
-				case "middle": return SEAT_MIDDLE;
-				case "right":  return SEAT_RIGHT;
-				default: throw new IllegalArgumentException("Illegal seat ID: " + id);
-			}
-		}
-	}
-
-
 	public static World createArcadeWorld(byte[][] tileMapData) {
 		var world = new World(tileMapData);
-		world.setHouse(new ArcadeHouse());
+		world.setHouse(createArcadeHouse());
 		return world;
+	}
+
+	public static House createArcadeHouse() {
+		var house = new House();
+		house.setMinTile(v2i(10, 15));
+		house.setSize(v2i(8, 5));
+		house.setDoor(new Door(v2i(13, 15), v2i(14, 15)));
+		house.addSeat("left",   halfTileRightOf(11, 17));
+		house.addSeat("middle", halfTileRightOf(13, 17));
+		house.addSeat("right",  halfTileRightOf(15, 17));
+		return house;
 	}
 	
 	/**

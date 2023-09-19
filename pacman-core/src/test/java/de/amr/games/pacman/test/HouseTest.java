@@ -34,7 +34,7 @@ public class HouseTest {
 
 	@Test
 	public void testHouseProperties() {
-		var house = new GameModel.ArcadeHouse();
+		var house = GameModel.createArcadeHouse();
 		Assert.assertEquals(POSITION, house.topLeftTile());
 		Assert.assertEquals(SIZE, house.size());
 		Assert.assertEquals(DOOR, house.door());
