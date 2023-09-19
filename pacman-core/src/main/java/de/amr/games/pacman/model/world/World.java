@@ -28,22 +28,6 @@ public class World {
 	public static final byte T_PELLET    = 3;
 	public static final byte T_ENERGIZER = 4;
 
-	private static List<Portal> buildPortals(byte[][] tileMap) {
-		int numRows = tileMap.length;
-		int numCols = tileMap[0].length;
-		var portals = new ArrayList<Portal>();
-		int lastColumn = numCols - 1;
-		for (int row = 0; row < numRows; ++row) {
-			var leftBorderTile = v2i(0, row);
-			var rightBorderTile = v2i(lastColumn, row);
-			if (tileMap[row][0] == T_TUNNEL && tileMap[row][lastColumn] == T_TUNNEL) {
-				portals.add(new Portal(leftBorderTile, rightBorderTile, 2));
-			}
-		}
-		portals.trimToSize();
-		return portals;
-	}
-
 	private static byte[][] validateTileMapData(byte[][] data) {
 		if (data == null) {
 			throw new IllegalArgumentException("Map data missing");
@@ -63,11 +47,10 @@ public class World {
 		return data;
 	}
 
-
 	private final byte[][] tileMap;
 	private final List<Vector2i> energizerTiles;
 	private final BitSet eaten;
-	private final List<Portal> portals;
+	private final ArrayList<Portal> portals;
 	private final Pulse energizerBlinking;
 	private final Pulse mazeFlashing;
 	private final int totalFoodCount;
@@ -79,7 +62,18 @@ public class World {
 	 */
 	public World(byte[][] tileMapData) {
 		tileMap = validateTileMapData(tileMapData);
-		portals = buildPortals(tileMap);
+
+		// build portals
+		portals = new ArrayList<>();
+		int lastColumn = numCols() - 1;
+		for (int row = 0; row < numRows(); ++row) {
+			var leftBorderTile = v2i(0, row);
+			var rightBorderTile = v2i(lastColumn, row);
+			if (tileMap[row][0] == T_TUNNEL && tileMap[row][lastColumn] == T_TUNNEL) {
+				portals.add(new Portal(leftBorderTile, rightBorderTile, 2));
+			}
+		}
+		portals.trimToSize();
 
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
 		eaten = new BitSet(numCols() * numRows());
