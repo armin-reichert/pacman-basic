@@ -29,8 +29,8 @@ import static de.amr.games.pacman.lib.NavigationPoint.np;
  */
 public class GameModel {
 
-	public static final int TILES_X = 28;
-	public static final int TILES_Y = 36;
+	public static final byte TILES_X = 28;
+	public static final byte TILES_Y = 36;
 
 	public static final byte[][] PACMAN_MAP = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -461,7 +461,7 @@ public class GameModel {
 		}
 		var map = variant == GameVariant.MS_PACMAN ? MS_PACMAN_MAPS[mapNumberMsPacMan(levelNumber) - 1] : PACMAN_MAP;
 		var levelData = LEVEL_DATA[dataRow(levelNumber)];
-		var world = GameModel.createArcadeWorld(map);
+		var world = createArcadeWorld(map);
 		level = new GameLevel(this, world, levelNumber, levelData, false);
 		Logger.info("Level {} created", levelNumber);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_CREATED);
@@ -475,14 +475,14 @@ public class GameModel {
 		scoringEnabled = false;
 		switch (variant) {
 			case MS_PACMAN: {
-				var world = GameModel.createArcadeWorld(MS_PACMAN_MAPS[0]);
+				var world = createArcadeWorld(MS_PACMAN_MAPS[0]);
 				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
 				level.setPacSteering(new RuleBasedSteering());
 				// TODO this is not the exact behavior from the Arcade game
 				break;
 			}
 			case PACMAN: {
-				var world = GameModel.createArcadeWorld(PACMAN_MAP);
+				var world = createArcadeWorld(PACMAN_MAP);
 				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
 				level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMOLEVEL_ROUTE)));
 				// TODO this is not the exact behavior from the Arcade game
