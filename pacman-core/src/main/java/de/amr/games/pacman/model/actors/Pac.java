@@ -31,7 +31,7 @@ public class Pac extends Creature {
 	public String toString() {
 		return "Pac [powerTimer=" + powerTimer + ", dead=" + dead + ", restingTicks=" + restingTicks + ", starvingTicks="
 				+ starvingTicks + ", newTileEntered=" + newTileEntered + ", gotReverseCommand=" + gotReverseCommand
-				+ ", canTeleport=" + canTeleport + ", corneringSpeedUp=" + corneringSpeedUp + ", name=" + name + ", visible="
+				+ ", canTeleport=" + canTeleport + ", corneringSpeedUp=" + corneringSpeedUp + ", name=" + name() + ", visible="
 				+ visible + ", position=" + position + ", velocity=" + velocity + ", acceleration=" + acceleration + "]";
 	}
 

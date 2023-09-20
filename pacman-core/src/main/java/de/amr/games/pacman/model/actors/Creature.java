@@ -27,12 +27,11 @@ public abstract class Creature extends Entity implements AnimationDirector {
 
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
-	protected GameLevel level;
-	protected String name;
+	private final String name;
 	private Direction moveDir;
 	private Direction wishDir;
 	private Vector2i targetTile;
-
+	protected GameLevel level;
 	protected final MoveResult moveResult = new MoveResult();
 	protected boolean newTileEntered; // TODO put this into move result but currently it has another lifetime
 	protected boolean gotReverseCommand;

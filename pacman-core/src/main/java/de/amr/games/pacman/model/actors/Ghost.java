@@ -46,7 +46,7 @@ public class Ghost extends Creature {
 		return "Ghost [id=" + id + ", state=" + state + ", initialPosition=" + initialPosition + ", revivalPosition="
 				+ revivalPosition + ", scatterTile=" + scatterTile + ", initialDirection=" + initialDirection + ", killedIndex="
 				+ killedIndex + ", newTileEntered=" + newTileEntered + ", gotReverseCommand=" + gotReverseCommand
-				+ ", canTeleport=" + canTeleport + ", corneringSpeedUp=" + corneringSpeedUp + ", name=" + name + ", visible="
+				+ ", canTeleport=" + canTeleport + ", corneringSpeedUp=" + corneringSpeedUp + ", name=" + name() + ", visible="
 				+ visible + ", position=" + position + ", velocity=" + velocity + ", acceleration=" + acceleration + "]";
 	}
 
