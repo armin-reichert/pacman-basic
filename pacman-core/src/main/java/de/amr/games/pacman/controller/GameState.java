@@ -282,10 +282,10 @@ public enum GameState implements FsmState<GameModel> {
 	GAME_OVER {
 		@Override
 		public void onEnter(GameModel game) {
+			timer.restartSeconds(1.2); //TODO not sure about exact duration
+			game.updateHighScore();
 			GameController.it().getManualPacSteering().setEnabled(false);
-			timer.restartSeconds(1.2);
 			GameController.it().changeCredit(-1);
-			game.saveNewHighScore();
 			GameController.it().publishGameEvent(GameEventType.STOP_ALL_SOUNDS);
 		}
 

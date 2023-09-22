@@ -644,7 +644,7 @@ public class GameModel {
 		loadScore(highScore, highScoreFile());
 	}
 
-	public void saveNewHighScore() {
+	public void updateHighScore() {
 		var file = highScoreFile();
 		var savedHiscore = new Score();
 		loadScore(savedHiscore, file);
