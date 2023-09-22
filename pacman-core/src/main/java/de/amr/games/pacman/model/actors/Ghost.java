@@ -281,10 +281,9 @@ public class Ghost extends Creature {
 	// --- LEAVING_HOUSE ---
 
 	/**
-	 * When a ghost leaves the house, he follows a specific route from his home/revival position to the house exit. This
-	 * logic is house-specific, so it is placed in the house implementation. In the Arcade versions of Pac-Man and Ms.
-	 * Pac-Man, the ghost first moves towards the vertical center of the house and then raises up until he has passed the
-	 * door on top of the house.
+	 * When a ghost leaves the house, he follows a specific route from his home/revival position to the house exit.
+	 * In the Arcade versions of Pac-Man and Ms.Pac-Man, the ghost first moves towards the vertical center of the house
+	 * and then raises up until he has passed the door on top of the house.
 	 * <p>
 	 * The ghost speed is slower than outside, but I do not know the exact value.
 	 */

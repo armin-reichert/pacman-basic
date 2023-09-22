@@ -166,34 +166,33 @@ public class World {
 		return portals.stream().anyMatch(portal -> portal.contains(tile));
 	}
 
-	private byte contentOrSpace(Vector2i tile) {
+	private byte content(Vector2i tile) {
 		return insideBounds(tile) ? tileMap[tile.y()][tile.x()] : T_SPACE;
 	}
 
 	public boolean isWall(Vector2i tile) {
 		checkTileNotNull(tile);
-		return contentOrSpace(tile) == T_WALL;
+		return content(tile) == T_WALL;
 	}
 
 	public boolean isTunnel(Vector2i tile) {
 		checkTileNotNull(tile);
-		return contentOrSpace(tile) == T_TUNNEL;
+		return content(tile) == T_TUNNEL;
 	}
 
 	public boolean isFoodTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		byte data = contentOrSpace(tile);
+		byte data = content(tile);
 		return data == T_PELLET || data == T_ENERGIZER;
 	}
 
 	public boolean isEnergizerTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		return contentOrSpace(tile) == T_ENERGIZER;
+		return content(tile) == T_ENERGIZER;
 	}
 
 	public boolean isIntersection(Vector2i tile) {
 		checkTileNotNull(tile);
-
 		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
 			return false; // exclude portal entries and tiles outside the map
 		}

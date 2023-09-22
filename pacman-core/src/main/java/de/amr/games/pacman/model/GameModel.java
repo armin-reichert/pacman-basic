@@ -233,8 +233,8 @@ public class GameModel {
 		}
 	};
 
-	public static World createArcadeWorld(byte[][] tileMapData) {
-		var world = new World(tileMapData);
+	public static World createArcadeWorld(byte[][] map) {
+		var world = new World(map);
 		world.setHouse(createArcadeHouse());
 		return world;
 	}
