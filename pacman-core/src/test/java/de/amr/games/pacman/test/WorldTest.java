@@ -9,31 +9,31 @@ import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.world.World;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static de.amr.games.pacman.lib.Globals.*;
 import static java.util.function.Predicate.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author Armin Reichert
  */
 public class WorldTest {
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNullTileArg() {
 		var world = GameModel.createArcadeWorld(GameModel.PACMAN_MAP);
-		world.insideBounds(null);
-		world.belongsToPortal(null);
-		world.isIntersection(null);
-		world.isWall(null);
-		world.isTunnel(null);
-		world.isFoodTile(null);
-		world.isEnergizerTile(null);
-		world.removeFood(null);
-		world.hasFoodAt(null);
-		world.hasEatenFoodAt(null);
+		assertThrows(NullPointerException.class, () -> world.insideBounds(null));
+		assertThrows(NullPointerException.class, () -> world.belongsToPortal(null));
+		assertThrows(NullPointerException.class, () -> world.isIntersection(null));
+		assertThrows(NullPointerException.class, () -> world.isWall(null));
+		assertThrows(NullPointerException.class, () -> world.isTunnel(null));
+		assertThrows(NullPointerException.class, () -> world.isFoodTile(null));
+		assertThrows(NullPointerException.class, () -> world.isEnergizerTile(null));
+		assertThrows(NullPointerException.class, () -> world.removeFood(null));
+		assertThrows(NullPointerException.class, () -> world.hasFoodAt(null));
+		assertThrows(NullPointerException.class, () -> world.hasEatenFoodAt(null));
 	}
 
 	@Test
@@ -134,9 +134,9 @@ public class WorldTest {
 		assertNotEquals(map[1][1], copy[1][1]);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testIllegalMapData() {
 		byte[][] map = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } };
-		var world = new World(map);
+		assertThrows(IllegalArgumentException.class, () -> new World(map));
 	}
 }
