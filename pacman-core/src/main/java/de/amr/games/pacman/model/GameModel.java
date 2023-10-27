@@ -239,14 +239,21 @@ public class GameModel {
 		return world;
 	}
 
+	public static final Vector2i ARCADE_HOUSE_POSITION = v2i(10, 15);
+	public static final Vector2i ARCADE_HOUSE_SIZE = v2i(8, 5);
+	public static final Vector2f ARCADE_HOUSE_SEAT_LEFT = halfTileRightOf(11, 17);
+	public static final Vector2f ARCADE_HOUSE_SEAT_MIDDLE = halfTileRightOf(13, 17);
+	public static final Vector2f ARCADE_HOUSE_SEAT_RIGHT = halfTileRightOf(15, 17);
+	public static final Door ARCADE_HOUSE_DOOR = new Door(v2i(13, 15), v2i(14, 15));
+
 	public static House createArcadeHouse() {
 		var house = new House();
-		house.setMinTile(v2i(10, 15));
-		house.setSize(v2i(8, 5));
-		house.setDoor(new Door(v2i(13, 15), v2i(14, 15)));
-		house.addSeat("left",   halfTileRightOf(11, 17));
-		house.addSeat("middle", halfTileRightOf(13, 17));
-		house.addSeat("right",  halfTileRightOf(15, 17));
+		house.setMinTile(ARCADE_HOUSE_POSITION);
+		house.setSize(ARCADE_HOUSE_SIZE);
+		house.setDoor(ARCADE_HOUSE_DOOR);
+		house.addSeat("left",   ARCADE_HOUSE_SEAT_LEFT);
+		house.addSeat("middle", ARCADE_HOUSE_SEAT_MIDDLE);
+		house.addSeat("right",  ARCADE_HOUSE_SEAT_RIGHT);
 		return house;
 	}
 	
