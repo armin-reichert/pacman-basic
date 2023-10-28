@@ -23,7 +23,7 @@ public class WorldTest {
 
 	@Test
 	public void testNullTileArg() {
-		var world = GameModel.createArcadeWorld(GameModel.PACMAN_MAP);
+		var world = GameModel.createPacManWorld();
 		assertThrows(NullPointerException.class, () -> world.insideBounds(null));
 		assertThrows(NullPointerException.class, () -> world.belongsToPortal(null));
 		assertThrows(NullPointerException.class, () -> world.isIntersection(null));
@@ -62,7 +62,7 @@ public class WorldTest {
 
 	@Test
 	public void testPacManWorld() {
-		var world = GameModel.createArcadeWorld(GameModel.PACMAN_MAP);
+		var world = GameModel.createPacManWorld();
 		assertEquals(GameModel.TILES_Y, world.numRows());
 		assertEquals(GameModel.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -73,7 +73,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld1() {
-		var world = GameModel.createArcadeWorld(GameModel.MS_PACMAN_MAPS[0]);
+		var world = GameModel.createMsPacManWorld(1);
 		assertEquals(GameModel.TILES_Y, world.numRows());
 		assertEquals(GameModel.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -84,7 +84,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld2() {
-		var world = GameModel.createArcadeWorld(GameModel.MS_PACMAN_MAPS[1]);
+		var world = GameModel.createMsPacManWorld(2);
 		assertEquals(GameModel.TILES_Y, world.numRows());
 		assertEquals(GameModel.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -95,7 +95,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld3() {
-		var world = GameModel.createArcadeWorld(GameModel.MS_PACMAN_MAPS[2]);
+		var world = GameModel.createMsPacManWorld(3);
 		assertEquals(GameModel.TILES_Y, world.numRows());
 		assertEquals(GameModel.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -106,7 +106,7 @@ public class WorldTest {
 
 	@Test
 	public void testMsPacManWorld4() {
-		var world = GameModel.createArcadeWorld(GameModel.MS_PACMAN_MAPS[3]);
+		var world = GameModel.createMsPacManWorld(4);
 		assertEquals(GameModel.TILES_Y, world.numRows());
 		assertEquals(GameModel.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());

@@ -32,7 +32,7 @@ public class GameModel {
 	public static final byte TILES_X = 28;
 	public static final byte TILES_Y = 36;
 
-	public static final byte[][] PACMAN_MAP = {
+	private static final byte[][] PACMAN_MAP = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -75,7 +75,7 @@ public class GameModel {
 			v2i(12, 14), v2i(15, 14),
 			v2i(12, 26), v2i(15, 26));
 
-	public static final byte[][][] MS_PACMAN_MAPS = {
+	private static final byte[][][] MS_PACMAN_MAPS = {
 		{
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -232,6 +232,17 @@ public class GameModel {
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		}
 	};
+
+	public static World createPacManWorld() {
+		return createArcadeWorld(PACMAN_MAP);
+	}
+
+	public static World createMsPacManWorld(int number) {
+		if (number >= 1 && number <= 4) {
+			return createArcadeWorld(MS_PACMAN_MAPS[number - 1]);
+		}
+		throw new IllegalArgumentException("Ms. Pac-Man world number must be 1..4 but is " + number);
+	}
 
 	public static World createArcadeWorld(byte[][] map) {
 		var world = new World(map);

@@ -14,6 +14,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertTrue;
 
@@ -36,14 +38,14 @@ public class FloorPlanGeneration {
 		if (!DIR.exists()) {
 			DIR.mkdir();
 		}
-		List.of(8, 4, 2, 1).forEach(res -> {
-			createFloorPlan(GameModel.createArcadeWorld(GameModel.PACMAN_MAP), file(PACMAN_PATTERN, 1, res), res);
-			createFloorPlan(GameModel.createArcadeWorld(GameModel.MS_PACMAN_MAPS[0]), file(MS_PACMAN_PATTERN, 1, res), res);
-			createFloorPlan(GameModel.createArcadeWorld(GameModel.MS_PACMAN_MAPS[1]), file(MS_PACMAN_PATTERN, 2, res), res);
-			createFloorPlan(GameModel.createArcadeWorld(GameModel.MS_PACMAN_MAPS[2]), file(MS_PACMAN_PATTERN, 3, res), res);
-			createFloorPlan(GameModel.createArcadeWorld(GameModel.MS_PACMAN_MAPS[3]), file(MS_PACMAN_PATTERN, 4, res), res);
+		Stream.of(8, 4, 2, 1).forEach(res -> {
+			createFloorPlan(GameModel.createPacManWorld(),    file(PACMAN_PATTERN,    1, res), res);
+			createFloorPlan(GameModel.createMsPacManWorld(1), file(MS_PACMAN_PATTERN, 1, res), res);
+			createFloorPlan(GameModel.createMsPacManWorld(2), file(MS_PACMAN_PATTERN, 2, res), res);
+			createFloorPlan(GameModel.createMsPacManWorld(3), file(MS_PACMAN_PATTERN, 3, res), res);
+			createFloorPlan(GameModel.createMsPacManWorld(4), file(MS_PACMAN_PATTERN, 4, res), res);
 		});
-		List.of(8, 4, 2, 1).forEach(res -> {
+		Stream.of(8, 4, 2, 1).forEach(res -> {
 			assertTrue(file(PACMAN_PATTERN, 1, res).exists());
 			assertTrue(file(MS_PACMAN_PATTERN, 1, res).exists());
 			assertTrue(file(MS_PACMAN_PATTERN, 2, res).exists());
