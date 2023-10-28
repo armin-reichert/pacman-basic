@@ -65,11 +65,14 @@ public enum GameState implements FsmState<GameModel> {
 			GameController.it().getManualPacSteering().setEnabled(false);
 			GameController.it().publishGameEvent(GameEventType.STOP_ALL_SOUNDS);
 			if (!GameController.it().hasCredit()) {
+				game.reset();
 				game.createDemoLevel();
 				game.startLevel();
 			} else if (game.isPlaying()) {
-				game.level().get().letsGetReadyToRumble();
-				game.level().get().guys().forEach(Entity::show);
+				game.level().ifPresent(level -> {
+					level.letsGetReadyToRumble();
+					level.guys().forEach(Entity::show);
+				});
 			} else {
 				game.score().reset();
 				game.clearLevelCounter();
