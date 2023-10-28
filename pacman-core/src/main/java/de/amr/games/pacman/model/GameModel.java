@@ -463,7 +463,7 @@ public class GameModel {
 	/**
 	 * Resets the game and deletes the current level. Credit, immunity and scores remain unchanged.
 	 */
-	private void reset() {
+	public void reset() {
 		level = null;
 		lives = initialLives;
 		playing = false;
@@ -475,13 +475,9 @@ public class GameModel {
 	 * Creates the level with the given number.
 	 * 
 	 * @param levelNumber level number (starting at 1)
-	 * @param resetGame if game is reset when creating level
 	 */
-	public void createLevel(int levelNumber, boolean resetGame) {
+	public void createLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		if (resetGame) {
-			reset();
-		}
 		var map = variant == GameVariant.MS_PACMAN ? MS_PACMAN_MAPS[mapNumberMsPacMan(levelNumber) - 1] : PACMAN_MAP;
 		var levelData = LEVEL_DATA[dataRow(levelNumber)];
 		var world = createArcadeWorld(map);
@@ -544,7 +540,7 @@ public class GameModel {
 		if (level == null) {
 			throw new IllegalStateException("Cannot enter next level, no current level exists");
 		}
-		createLevel(level.number() + 1, false);
+		createLevel(level.number() + 1);
 		startLevel();
 	}
 

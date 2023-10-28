@@ -33,7 +33,8 @@ public class PacManGameTest {
 	@Before
 	public void setUpTest() {
 		game = GameController.it().game();
-		game.createLevel(1, true);
+		game.reset();
+		game.createLevel(1);
 		game.startLevel();
 	}
 
@@ -139,7 +140,7 @@ public class PacManGameTest {
 	@Test
 	public void testPacManGameBonus() {
 		for (int levelNumber = 1; levelNumber <= 21; ++levelNumber) {
-			game.createLevel(levelNumber, false);
+			game.createLevel(levelNumber);
 			game.startLevel();
 			game.level().ifPresent(level -> {
 				level.handleBonusReached(0);
