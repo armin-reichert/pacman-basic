@@ -139,4 +139,10 @@ public class WorldTest {
 		byte[][] map = { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 } };
 		assertThrows(IllegalArgumentException.class, () -> new World(map));
 	}
+
+	@Test
+	public void testIllegalArcadeMapSize() {
+		byte[][] map = { { 0, 1, 2 }, { 1, 1, 1 }, { 2, 2, 2 } };
+		assertThrows(IllegalArgumentException.class, () -> GameModel.createArcadeWorld(map));
+	}
 }

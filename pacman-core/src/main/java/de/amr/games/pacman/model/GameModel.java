@@ -235,6 +235,11 @@ public class GameModel {
 
 	public static World createArcadeWorld(byte[][] map) {
 		var world = new World(map);
+		if (world.numCols() != TILES_X || world.numRows() != TILES_Y) {
+			throw new IllegalArgumentException(
+					String.format("Arcade map must have %d columns and %d rows but has %d columns and %d rows",
+					TILES_X, TILES_Y, world.numCols(), world.numRows()));
+		}
 		world.setHouse(createArcadeHouse());
 		return world;
 	}
