@@ -493,14 +493,14 @@ public class GameModel {
 		scoringEnabled = false;
 		switch (variant) {
 			case MS_PACMAN: {
-				var world = createArcadeWorld(MS_PACMAN_MAPS[0]);
+				var world = createMsPacManWorld(1);
 				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
 				level.setPacSteering(new RuleBasedSteering());
 				// TODO this is not the exact behavior from the Arcade game
 				break;
 			}
 			case PACMAN: {
-				var world = createArcadeWorld(PACMAN_MAP);
+				var world = createPacManWorld();
 				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
 				level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMOLEVEL_ROUTE)));
 				// TODO this is not the exact behavior from the Arcade game
