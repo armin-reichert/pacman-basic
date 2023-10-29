@@ -478,9 +478,12 @@ public class GameModel {
 	 */
 	public void createLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		var map = variant == GameVariant.MS_PACMAN ? MS_PACMAN_MAPS[mapNumberMsPacMan(levelNumber) - 1] : PACMAN_MAP;
+		var world = switch (variant) {
+			case MS_PACMAN -> createMsPacManWorld(mapNumberMsPacMan(levelNumber));
+			case PACMAN -> createPacManWorld();
+			default -> throw new IllegalGameVariantException(variant);
+		};
 		var levelData = LEVEL_DATA[dataRow(levelNumber)];
-		var world = createArcadeWorld(map);
 		level = new GameLevel(this, world, levelNumber, levelData, false);
 		Logger.info("Level {} created", levelNumber);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_CREATED);
