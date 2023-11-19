@@ -255,12 +255,12 @@ public class GameModel {
 		return world;
 	}
 
-	public static final Vector2i ARCADE_HOUSE_POSITION = v2i(10, 15);
-	public static final Vector2i ARCADE_HOUSE_SIZE = v2i(8, 5);
-	public static final Vector2f ARCADE_HOUSE_SEAT_LEFT = halfTileRightOf(11, 17);
+	public static final Vector2i ARCADE_HOUSE_POSITION    = v2i(10, 15);
+	public static final Vector2i ARCADE_HOUSE_SIZE        = v2i(8, 5);
+	public static final Vector2f ARCADE_HOUSE_SEAT_LEFT   = halfTileRightOf(11, 17);
 	public static final Vector2f ARCADE_HOUSE_SEAT_MIDDLE = halfTileRightOf(13, 17);
-	public static final Vector2f ARCADE_HOUSE_SEAT_RIGHT = halfTileRightOf(15, 17);
-	public static final Door ARCADE_HOUSE_DOOR = new Door(v2i(13, 15), v2i(14, 15));
+	public static final Vector2f ARCADE_HOUSE_SEAT_RIGHT  = halfTileRightOf(15, 17);
+	public static final Door     ARCADE_HOUSE_DOOR        = new Door(v2i(13, 15), v2i(14, 15));
 
 	public static House createArcadeHouse() {
 		var house = new House();
