@@ -305,7 +305,7 @@ public class GameModel {
 		return levelNumber <= 13 ? mazeNumberMsPacMan(levelNumber) : mazeNumberMsPacMan(levelNumber) - 2;
 	}
 	
-	private static final NavigationPoint[] PACMAN_DEMOLEVEL_ROUTE = {
+	private static final NavigationPoint[] PACMAN_DEMO_LEVEL_ROUTE = {
 		np(12, 26), np(9, 26),  np(12, 32), np(15, 32), np(24, 29), np(21, 23),
 		np(18, 23), np(18, 20), np(18, 17), np(15, 14), np(12, 14), np(9, 17),
 		np(6, 17),  np(6, 11),  np(6, 8),   np(6, 4),   np(1, 8),   np(6, 8),
@@ -499,7 +499,7 @@ public class GameModel {
 			case PACMAN: {
 				var world = createPacManWorld();
 				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
-				level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMOLEVEL_ROUTE)));
+				level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMO_LEVEL_ROUTE)));
 				// TODO this is not the exact behavior from the Arcade game
 				break;
 			}
