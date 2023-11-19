@@ -290,18 +290,13 @@ public class GameModel {
 	 */
 	public static int mazeNumberMsPacMan(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		switch (levelNumber) {
-			case 1: case 2:
-				return 1;
-			case 3: case 4: case 5:
-				return 2;
-			case 6: case 7: case 8: case 9:
-				return 3;
-			case 10: case 11: case 12: case 13:
-				return 4;
-			default: // alternate between maze #5 and #6 every 4th level
-				return (levelNumber - 14) % 8 < 4 ? 5 : 6;
-		}
+		return switch (levelNumber) {
+			case 1, 2           -> 1;
+			case 3, 4, 5        -> 2;
+			case 6, 7, 8, 9     -> 3;
+			case 10, 11, 12, 13 -> 4;
+			default             -> (levelNumber - 14) % 8 < 4 ? 5 : 6;  // alternate between maze #5 and #6 every 4th level
+		};
 	}
 	
 	private static int mapNumberMsPacMan(int levelNumber) {
@@ -443,10 +438,10 @@ public class GameModel {
 	private final List<Byte> levelCounter;
 	private final Score score;
 	private final Score highScore;
+	private final short extraLifeScore;
 	private GameLevel level;
 	private short initialLives;
 	private short lives;
-	private short extraLifeScore;
 	private boolean playing;
 	private boolean scoringEnabled;
 
@@ -481,7 +476,6 @@ public class GameModel {
 		var world = switch (variant) {
 			case MS_PACMAN -> createMsPacManWorld(mapNumberMsPacMan(levelNumber));
 			case PACMAN -> createPacManWorld();
-			default -> throw new IllegalGameVariantException(variant);
 		};
 		var levelData = LEVEL_DATA[dataRow(levelNumber)];
 		level = new GameLevel(this, world, levelNumber, levelData, false);
@@ -638,11 +632,10 @@ public class GameModel {
 	}
 
 	private File highScoreFile() {
-		switch (variant) {
-			case MS_PACMAN:	return HIGHSCORE_FILE_MS_PACMAN;
-			case PACMAN:	  return HIGHSCORE_FILE_PACMAN;
-			default:  			throw new IllegalGameVariantException(variant);
-		}
+		return switch (variant) {
+			case MS_PACMAN -> HIGHSCORE_FILE_MS_PACMAN;
+			case PACMAN    -> HIGHSCORE_FILE_PACMAN;
+		};
 	}
 
 	private static void loadScore(Score score, File file) {
