@@ -476,7 +476,7 @@ public class GameModel {
 	 * 
 	 * @param levelNumber level number (starting at 1)
 	 */
-	public void createLevel(int levelNumber) {
+	public void setLevel(int levelNumber) {
 		checkLevelNumber(levelNumber);
 		var world = switch (variant) {
 			case MS_PACMAN -> createMsPacManWorld(mapNumberMsPacMan(levelNumber));
@@ -539,11 +539,12 @@ public class GameModel {
 	}
 
 	public void nextLevel() {
-		if (level == null) {
-			throw new IllegalStateException("Cannot enter next level, no current level exists");
+		if (level != null) {
+			setLevel(level.number() + 1);
+			startLevel();
+		} else {
+			throw new IllegalStateException("Cannot enter next level, no current level is set");
 		}
-		createLevel(level.number() + 1);
-		startLevel();
 	}
 
 	public void removeLevel() {

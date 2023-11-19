@@ -9,7 +9,6 @@ import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.Ghost;
 import de.amr.games.pacman.model.world.World;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static de.amr.games.pacman.lib.Globals.*;

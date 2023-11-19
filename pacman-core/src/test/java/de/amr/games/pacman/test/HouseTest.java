@@ -4,12 +4,10 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.test;
 
-import de.amr.games.pacman.lib.Vector2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.Door;
 import org.junit.Test;
 
-import static de.amr.games.pacman.lib.Globals.halfTileRightOf;
 import static de.amr.games.pacman.lib.Globals.v2i;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
