@@ -19,7 +19,7 @@ import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
  * 
  * @see <a href="https://pacman.holenet.info/">Pac-Man Dossier by Jamey Pittman</a>
  */
-public class GhostHouseManagement {
+class GhostHouseManagement {
 
 	public static class GhostUnlockInfo {
 
@@ -44,17 +44,19 @@ public class GhostHouseManagement {
 		}
 	}
 
-	private final long   pacStarvingTicksLimit;
-	private final byte[] globalGhostDotLimits;
-	private final byte[] privateGhostDotLimits;
-	private final int[]  ghostDotCounters;
-	private int          globalDotCounter;
-	private boolean      globalDotCounterEnabled;
+	private final GameLevel level;
+	private final long      pacStarvingTicksLimit;
+	private final byte[]    globalGhostDotLimits;
+	private final byte[]    privateGhostDotLimits;
+	private final int[]     ghostDotCounters;
+	private int             globalDotCounter;
+	private boolean         globalDotCounterEnabled;
 
-	public GhostHouseManagement(int levelNumber) {
-		pacStarvingTicksLimit = levelNumber < 5 ? 4 * GameModel.FPS : 3 * GameModel.FPS;
+	public GhostHouseManagement(GameLevel level) {
+		this.level = level;
+		pacStarvingTicksLimit = level.number() < 5 ? 4 * GameModel.FPS : 3 * GameModel.FPS;
 		globalGhostDotLimits = new byte[] { -1, 7, 17, -1 };
-		switch (levelNumber) {
+		switch (level.number()) {
 		case 1:
 			privateGhostDotLimits = new byte[] { 0, 0, 30, 60 };
 			break;
@@ -70,7 +72,7 @@ public class GhostHouseManagement {
 		globalDotCounterEnabled = false;
 	}
 
-	public void onFoodFound(GameLevel level) {
+	public void onFoodFound() {
 		if (globalDotCounterEnabled) {
 			if (level.ghost(ORANGE_GHOST).is(LOCKED) && globalDotCounter == 32) {
 				Logger.trace("{} inside house when counter reached 32", level.ghost(ORANGE_GHOST).name());
@@ -99,7 +101,7 @@ public class GhostHouseManagement {
 		Logger.trace("{} dot counter = {}", ghost.name(), ghostDotCounters[ghost.id()]);
 	}
 
-	public Optional<GhostUnlockInfo> checkIfNextGhostCanLeaveHouse(GameLevel level) {
+	public Optional<GhostUnlockInfo> checkIfNextGhostCanLeaveHouse() {
 		var unlockedGhost = Stream.of(RED_GHOST, PINK_GHOST, CYAN_GHOST, ORANGE_GHOST)
 				.map(level::ghost)
 				.filter(ghost -> ghost.is(LOCKED))

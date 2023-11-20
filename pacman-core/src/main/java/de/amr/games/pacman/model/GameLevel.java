@@ -169,7 +169,7 @@ public class GameLevel {
 		bonusSymbols[0] = nextBonusSymbol();
 		bonusSymbols[1] = nextBonusSymbol();
 
-		ghostHouseManagement = new GhostHouseManagement(number);
+		ghostHouseManagement = new GhostHouseManagement(this);
 
 		Logger.trace("Game level {} ({}) created.", levelNumber, game.variant());
 	}
@@ -486,7 +486,7 @@ public class GameLevel {
 			pac.rest(GameModel.RESTING_TICKS_NORMAL_PELLET);
 			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 		}
-		ghostHouseManagement.onFoodFound(this);
+		ghostHouseManagement.onFoodFound();
 		if (world.uneatenFoodCount() == elroy1DotsLeft) {
 			setCruiseElroyState((byte) 1);
 		} else if (world.uneatenFoodCount() == elroy2DotsLeft) {
@@ -625,7 +625,7 @@ public class GameLevel {
 	}
 
 	private void unlockGhost() {
-		ghostHouseManagement.checkIfNextGhostCanLeaveHouse(this).ifPresent(unlocked -> {
+		ghostHouseManagement.checkIfNextGhostCanLeaveHouse().ifPresent(unlocked -> {
 			var ghost = unlocked.ghost();
 			if (ghost.insideHouse()) {
 				ghost.enterStateLeavingHouse();

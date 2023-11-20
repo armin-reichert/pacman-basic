@@ -13,7 +13,7 @@
 		<vs.junit>4.13.2</vs.junit>
 		<vs.maven-compiler-plugin>3.10.1</vs.maven-compiler-plugin>
 		<vs.maven-source-plugin>3.3.0</vs.maven-source-plugin>
-		<vs.tinylog>2.6.1</vs.tinylog>
+		<vs.tinylog>2.6.2</vs.tinylog>
 	</properties>
 
 	<build>
