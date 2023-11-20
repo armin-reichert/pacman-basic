@@ -389,20 +389,14 @@ public class GameModel {
 
 	public int[] huntingDurations(int levelNumber) {
 		checkLevelNumber(levelNumber);
-		switch (variant) {
-			case MS_PACMAN:
-				return HUNTING_DURATIONS_MS_PACMAN[levelNumber <= 4 ? 0 : 1];
-			case PACMAN:
-				if (levelNumber == 1) {
-					return HUNTING_DURATIONS_PACMAN[0];
-				} else if (levelNumber <= 4) {
-					return HUNTING_DURATIONS_PACMAN[1];
-				} else {
-					return HUNTING_DURATIONS_PACMAN[2];
-				}
-			default:
-				throw new IllegalGameVariantException(variant);
-		}
+		return switch (variant) {
+			case MS_PACMAN -> HUNTING_DURATIONS_MS_PACMAN[levelNumber <= 4 ? 0 : 1];
+			case PACMAN -> switch (levelNumber) {
+					case 1       -> HUNTING_DURATIONS_PACMAN[0];
+					case 2, 3, 4 -> HUNTING_DURATIONS_PACMAN[1];
+					default      -> HUNTING_DURATIONS_PACMAN[2];
+					};
+			};
 	}
 
 	// Ms. Pac-Man bonus #3 is an orange, not a peach! (Found in official Arcade machine manual)
@@ -467,7 +461,7 @@ public class GameModel {
 	}
 
 	/**
-	 * Creates the level with the given number.
+	 * Sets the game level with the given number.
 	 * 
 	 * @param levelNumber level number (starting at 1)
 	 */
@@ -489,22 +483,18 @@ public class GameModel {
 	public void createDemoLevel() {
 		scoringEnabled = false;
 		switch (variant) {
-			case MS_PACMAN: {
+			case MS_PACMAN -> {
 				var world = createMsPacManWorld(1);
 				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
-				level.setPacSteering(new RuleBasedSteering());
 				// TODO this is not the exact behavior from the Arcade game
-				break;
+				level.setPacSteering(new RuleBasedSteering());
 			}
-			case PACMAN: {
+			case PACMAN -> {
 				var world = createPacManWorld();
 				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
-				level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMO_LEVEL_ROUTE)));
 				// TODO this is not the exact behavior from the Arcade game
-				break;
+				level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMO_LEVEL_ROUTE)));
 			}
-			default:
-				throw new IllegalGameVariantException(variant);
 		}
 		Logger.info("Demo level created ({})", variant);
 		GameController.it().publishGameEvent(GameEventType.LEVEL_CREATED);
