@@ -11,6 +11,7 @@ import org.tinylog.Logger;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static de.amr.games.pacman.lib.Globals.checkLevelNotNull;
 import static de.amr.games.pacman.model.GameModel.*;
 import static de.amr.games.pacman.model.actors.GhostState.LOCKED;
 
@@ -53,20 +54,15 @@ class GhostHouseManagement {
 	private boolean         globalDotCounterEnabled;
 
 	public GhostHouseManagement(GameLevel level) {
+		checkLevelNotNull(level);
 		this.level = level;
 		pacStarvingTicksLimit = level.number() < 5 ? 4 * GameModel.FPS : 3 * GameModel.FPS;
 		globalGhostDotLimits = new byte[] { -1, 7, 17, -1 };
-		switch (level.number()) {
-		case 1:
-			privateGhostDotLimits = new byte[] { 0, 0, 30, 60 };
-			break;
-		case 2:
-			privateGhostDotLimits = new byte[] { 0, 0, 0, 50 };
-			break;
-		default:
-			privateGhostDotLimits = new byte[] { 0, 0, 0, 0 };
-			break;
-		}
+		privateGhostDotLimits = switch (level.number()) {
+			case 1  -> new byte[] { 0, 0, 30, 60 };
+			case 2  -> new byte[] { 0, 0,  0, 50 };
+			default -> new byte[] { 0, 0,  0,  0 };
+		};
 		ghostDotCounters = new int[] { 0, 0, 0, 0 };
 		globalDotCounter = 0;
 		globalDotCounterEnabled = false;
@@ -103,9 +99,9 @@ class GhostHouseManagement {
 
 	public Optional<GhostUnlockInfo> checkIfNextGhostCanLeaveHouse() {
 		var unlockedGhost = Stream.of(RED_GHOST, PINK_GHOST, CYAN_GHOST, ORANGE_GHOST)
-				.map(level::ghost)
-				.filter(ghost -> ghost.is(LOCKED))
-				.findFirst().orElse(null);
+			.map(level::ghost)
+			.filter(ghost -> ghost.is(LOCKED))
+			.findFirst().orElse(null);
 
 		if (unlockedGhost == null) {
 			return Optional.empty();
