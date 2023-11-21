@@ -442,8 +442,7 @@ public class Ghost extends Creature {
 	// --- ENTERING_HOUSE ---
 
 	/**
-	 * When an eaten ghost reaches the ghost house, he enters and moves (is lead) to his revival position. Because the
-	 * exact route from the house entry to the revival tile is house-specific, this logic is in the house implementation.
+	 * When an eaten ghost reaches the ghost house, he enters and follows the path to his revival position.
 	 */
 	public void enterStateEnteringHouse() {
 		state = ENTERING_HOUSE;
