@@ -119,9 +119,9 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public void update(GameLevel level) {
 		switch (state) {
+
 		case STATE_INACTIVE:
-			// nothing to do
-			break;
+			break; // nothing to do
 
 		case STATE_EDIBLE: {
 			if (sameTile(level.pac())) {
@@ -133,7 +133,7 @@ public class MovingBonus extends Creature implements Bonus {
 			steering.steer(level, this);
 			if (steering.isComplete()) {
 				setInactive();
-				Logger.trace("Bonus reached target: {}", this);
+				Logger.trace("Bonus left world: {}", this);
 				GameController.it().publishGameEvent(GameEventType.BONUS_EXPIRED, tile());
 			} else {
 				navigateTowardsTarget();
@@ -151,6 +151,7 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 			break;
 		}
+
 		default:
 			throw new IllegalStateException();
 		}
