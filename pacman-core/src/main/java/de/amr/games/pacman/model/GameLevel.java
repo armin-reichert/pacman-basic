@@ -88,8 +88,6 @@ public class GameLevel {
 
 	private final Ghost[] ghosts;
 
-	private Steering pacSteering;
-
 	private byte huntingPhase;
 
 	private int numGhostsKilledInLevel;
@@ -165,11 +163,11 @@ public class GameLevel {
 				? ghosts[ORANGE_GHOST].scatterTile()
 				: pac.tile());
 
+		ghostHouseManagement = new GhostHouseManagement(this);
+
 		bonusSymbols = new byte[2];
 		bonusSymbols[0] = nextBonusSymbol();
 		bonusSymbols[1] = nextBonusSymbol();
-
-		ghostHouseManagement = new GhostHouseManagement(this);
 
 		Logger.trace("Game level {} ({}) created.", levelNumber, game.variant());
 	}
@@ -207,14 +205,6 @@ public class GameLevel {
 
 	public Pac pac() {
 		return pac;
-	}
-
-	public Optional<Steering> pacSteering() {
-		return Optional.ofNullable(pacSteering);
-	}
-
-	public void setPacSteering(Steering pacSteering) {
-		this.pacSteering = pacSteering;
 	}
 
 	/**
@@ -554,7 +544,7 @@ public class GameLevel {
 
 		// Update guys
 		unlockGhost();
-		var steering = pacSteering().orElse(GameController.it().steering());
+		var steering = pac.steering().orElse(GameController.it().steering());
 		steering.steer(this, pac);
 		pac.update();
 		ghosts().forEach(Ghost::update);

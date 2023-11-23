@@ -4,8 +4,11 @@ See file LICENSE in repository root directory for details.
 */
 package de.amr.games.pacman.model.actors;
 
+import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.GameModel;
+
+import java.util.Optional;
 
 /**
  * Pac-Man / Ms. Pac-Man.
@@ -20,6 +23,7 @@ public class Pac extends Creature {
 	private boolean dead;
 	private long restingTicks;
 	private long starvingTicks;
+	private Steering steering;
 
 	public Pac(String name) {
 		super(name);
@@ -118,4 +122,13 @@ public class Pac extends Creature {
 	public boolean isStandingStill() {
 		return velocity().length() == 0 || !moved() || restingTicks == REST_FOREVER;
 	}
+
+	public Optional<Steering> steering() {
+		return Optional.ofNullable(steering);
+	}
+
+	public void setSteering(Steering steering) {
+		this.steering = steering;
+	}
+
 }

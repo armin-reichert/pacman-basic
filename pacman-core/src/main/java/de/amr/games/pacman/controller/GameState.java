@@ -217,7 +217,7 @@ public enum GameState implements FsmState<GameModel> {
 				GameController.it().resumePreviousState();
 			} else {
 				game.level().ifPresent(level -> {
-					var steering = level.pacSteering().orElse(GameController.it().steering());
+					var steering = level.pac().steering().orElse(GameController.it().steering());
 					steering.steer(level, level.pac());
 					level.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE, GhostState.ENTERING_HOUSE)
 							.forEach(Ghost::update);

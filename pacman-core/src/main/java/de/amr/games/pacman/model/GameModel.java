@@ -487,13 +487,13 @@ public class GameModel {
 				var world = createMsPacManWorld(1);
 				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
 				// TODO this is not the exact behavior from the Arcade game
-				level.setPacSteering(new RuleBasedSteering());
+				level.pac().setSteering(new RuleBasedSteering());
 			}
 			case PACMAN -> {
 				var world = createPacManWorld();
 				level = new GameLevel(this, world, 1, LEVEL_DATA[0], true);
 				// TODO this is not the exact behavior from the Arcade game
-				level.setPacSteering(new RouteBasedSteering(List.of(PACMAN_DEMO_LEVEL_ROUTE)));
+				level.pac().setSteering(new RouteBasedSteering(List.of(PACMAN_DEMO_LEVEL_ROUTE)));
 			}
 		}
 		Logger.info("Demo level created ({})", variant);
