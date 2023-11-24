@@ -217,29 +217,14 @@ public class Ghost extends Creature {
 	 */
 	public void update() {
 		switch (state) {
-		case LOCKED:
-			updateStateLocked();
-			break;
-		case LEAVING_HOUSE:
-			updateStateLeavingHouse();
-			break;
-		case HUNTING_PAC:
-			updateStateHuntingPac();
-			break;
-		case FRIGHTENED:
-			updateStateFrightened();
-			break;
-		case EATEN:
-			updateStateEaten();
-			break;
-		case RETURNING_TO_HOUSE:
-			updateStateReturningToHouse();
-			break;
-		case ENTERING_HOUSE:
-			updateStateEnteringHouse();
-			break;
-		default:
-			throw new IllegalArgumentException(String.format("Unknown ghost state: '%s'", state));
+		case LOCKED             -> updateStateLocked();
+		case LEAVING_HOUSE      -> updateStateLeavingHouse();
+		case HUNTING_PAC        -> updateStateHuntingPac();
+		case FRIGHTENED         -> updateStateFrightened();
+		case EATEN              -> updateStateEaten();
+		case RETURNING_TO_HOUSE -> updateStateReturningToHouse();
+		case ENTERING_HOUSE     -> updateStateEnteringHouse();
+		default                 -> throw new IllegalArgumentException(String.format("Unknown ghost state: '%s'", state));
 		}
 	}
 
