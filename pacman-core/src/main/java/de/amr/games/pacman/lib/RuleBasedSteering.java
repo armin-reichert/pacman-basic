@@ -6,6 +6,7 @@ package de.amr.games.pacman.lib;
 
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.actors.*;
 import org.tinylog.Logger;
 
@@ -104,7 +105,7 @@ public class RuleBasedSteering extends Steering {
 	private void takeAction(GameLevel level, CollectedData data) {
 		var pac = level.pac();
 		if (data.hunterAhead != null) {
-			Direction escapeDir = null;
+			Direction escapeDir;
 			if (data.hunterBehind != null) {
 				escapeDir = findEscapeDirectionExcluding(level, EnumSet.of(pac.moveDir(), pac.moveDir().opposite()));
 				Logger.trace("Detected ghost {} behind, escape direction is {}", data.hunterAhead.name(), escapeDir);
@@ -122,19 +123,16 @@ public class RuleBasedSteering extends Steering {
 		if (pac.moved() && !level.world().isIntersection(pac.tile()))
 			return;
 
-		if (!data.frightenedGhosts.isEmpty() && pac.powerTimer().remaining() >= 1 * 60) {
+		if (!data.frightenedGhosts.isEmpty() && pac.powerTimer().remaining() >= GameModel.FPS) {
 			Ghost prey = data.frightenedGhosts.get(0);
 			Logger.trace("Detected frightened ghost {} {} tiles away", prey.name(),
 					prey.tile().manhattanDistance(pac.tile()));
 			pac.setTargetTile(prey.tile());
 		} else if (isEdibleBonusNearPac(level, pac)) {
-			Logger.trace("Detected active bonus");
-			level.bonus().ifPresent(bonus -> {
-				pac.setTargetTile(tileAt(bonus.entity().position()));
-			});
+			Logger.trace("Active bonus detected, get it!");
+			level.bonus().ifPresent(bonus -> pac.setTargetTile(tileAt(bonus.entity().position())));
 		} else {
-			Vector2i foodTile = findTileFarestFromGhosts(level, findNearestFoodTiles(level));
-			pac.setTargetTile(foodTile);
+			pac.setTargetTile(findTileFarthestFromGhosts(level, findNearestFoodTiles(level)));
 		}
 		pac.navigateTowardsTarget();
 	}
@@ -251,21 +249,22 @@ public class RuleBasedSteering extends Steering {
 		return foodTiles;
 	}
 
-	private Vector2i findTileFarestFromGhosts(GameLevel level, List<Vector2i> tiles) {
-		Vector2i farestTile = null;
+	private Vector2i findTileFarthestFromGhosts(GameLevel level, List<Vector2i> tiles) {
+		Vector2i farthestTile = null;
 		float maxDist = -1;
 		for (Vector2i tile : tiles) {
 			float dist = minDistanceFromGhosts(level);
 			if (dist > maxDist) {
 				maxDist = dist;
-				farestTile = tile;
+				farthestTile = tile;
 			}
 		}
-		return farestTile;
+		return farthestTile;
 	}
 
 	private float minDistanceFromGhosts(GameLevel level) {
-		var pac = level.pac();
-		return (float) level.ghosts().map(Ghost::tile).mapToDouble(pac.tile()::manhattanDistance).min().getAsDouble();
+		return (float) level.ghosts().map(Ghost::tile)
+			.mapToDouble(level.pac().tile()::manhattanDistance)
+			.min().orElse(Float.MAX_VALUE);
 	}
 }
