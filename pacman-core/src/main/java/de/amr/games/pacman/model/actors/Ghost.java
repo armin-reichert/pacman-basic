@@ -298,41 +298,47 @@ public class Ghost extends Creature {
 
 	/**
 	 * Ghosts first move sidewards to the center, then they raise until the house entry/exit position outside is reached.
+	 *
+	 * @return <code>true</code> if ghost has left house
 	 */
 	private boolean leaveHouse(House house) {
 		var endPosition = house.door().entryPosition();
 		if (position().y() <= endPosition.y()) {
-			setPosition(endPosition); // valign at house entry
+			setPosition(endPosition); // align vertically at house entry
 			return true;
 		}
+		float centerX = center().x();
 		float houseCenterX = house.center().x();
 		float speed = GameModel.SPEED_PX_INSIDE_HOUSE;
-		if (differsAtMost(0.5 * speed, center().x(), houseCenterX)) {
-			// valign and raise
+		if (differsAtMost(0.5 * speed, centerX, houseCenterX)) {
+			// align horizontally and raise
 			setX(houseCenterX - HTS);
 			setMoveAndWishDir(UP);
 		} else {
 			// move sidewards until center axis is reached
-			setMoveAndWishDir(center().x() < houseCenterX ? RIGHT : LEFT);
+			setMoveAndWishDir(centerX < houseCenterX ? RIGHT : LEFT);
 		}
 		move();
 		return false;
 	}
 
 	/**
-	 * Ghost moves down on the vertical axis to the center, then returns or moves sidewards to its seat.
+	 * Ghost moves down on the vertical axis to the center, then reverts or moves sidewards to reach his target position.
+	 *
+	 * @return <code>true</code> if ghost has reached target position
 	 */
 	private boolean moveInsideHouse(House house, Vector2f targetPosition) {
 		var entryPosition = house.door().entryPosition();
+		var houseCenter = house.center();
 		if (position().almostEquals(entryPosition, velocity().length() / 2, 0) && moveDir() != Direction.DOWN) {
 			// near entry, start entering
 			setPosition(entryPosition);
 			setMoveAndWishDir(Direction.DOWN);
-		} else if (position().y() >= house.center().y()) {
-			setY(house.center().y());
-			if (targetPosition.x() < house.center().x()) {
+		} else if (position().y() >= houseCenter.y()) {
+			setY(houseCenter.y());
+			if (targetPosition.x() < houseCenter.x()) {
 				setMoveAndWishDir(LEFT);
-			} else if (targetPosition.x() > house.center().x()) {
+			} else if (targetPosition.x() > houseCenter.x()) {
 				setMoveAndWishDir(RIGHT);
 			}
 		}
