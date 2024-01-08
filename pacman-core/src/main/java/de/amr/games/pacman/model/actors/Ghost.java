@@ -131,8 +131,8 @@ public class Ghost extends Creature {
 		var currentTile = tile();
 		for (var dir : Direction.values()) {
 			if (targetTile.equals(currentTile.plus(dir.vector())) && !level.isSteeringAllowed(this, dir)) {
-				Logger.trace("{} cannot access tile {} because he cannot move to %s at {}", name(), targetTile, dir,
-						currentTile);
+				Logger.trace("Ghost {} cannot access tile {} because he cannot move %s at tile {}",
+					name(), targetTile, dir, currentTile);
 				return false;
 			}
 		}
@@ -157,7 +157,7 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * While chasing Pac-Man, a ghost aims toward his chasing target (depends on ghost personality).
+	 * While chasing, a ghost aims toward the tile computed by his fnChasingTarget function.
 	 */
 	public void chase() {
 		setTargetTile(fnChasingTarget.get());
@@ -231,7 +231,7 @@ public class Ghost extends Creature {
 	// --- LOCKED ---
 
 	/**
-	 * In locked state, ghosts inside the house are bouncing up and down. They become blue and blink if Pac-Man gets/loses
+	 * In locked state, ghosts inside the house are bouncing up and down. They become blue/blink if Pac-Man gets/fades
 	 * power. After that, they return to their normal color.
 	 */
 	public void enterStateLocked() {
