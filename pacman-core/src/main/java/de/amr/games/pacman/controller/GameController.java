@@ -69,6 +69,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return it;
 	}
 
+	private final Collection<GameEventListener> gameEventListeners = new ArrayList<>();
 	private GameModel game;
 	private Steering autopilot = new RuleBasedSteering();
 	private Steering manualPacSteering = Steering.NONE;
@@ -222,16 +223,14 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	// Events
 
-	private final Collection<GameEventListener> subscribers = new ArrayList<>();
-
-	public void addListener(GameEventListener subscriber) {
-		checkNotNull(subscriber);
-		subscribers.add(subscriber);
+	public void addListener(GameEventListener gameEventListener) {
+		checkNotNull(gameEventListener);
+		gameEventListeners.add(gameEventListener);
 	}
 
-	public void removeListener(GameEventListener subscriber) {
-		checkNotNull(subscriber);
-		subscribers.remove(subscriber);
+	public void removeListener(GameEventListener gameEventListener) {
+		checkNotNull(gameEventListener);
+		gameEventListeners.remove(gameEventListener);
 	}
 
 	public void publishGameEvent(GameEventType type) {
@@ -244,6 +243,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void publishGameEvent(GameEvent event) {
 		Logger.trace("Publish game event: {}", event);
-		subscribers.forEach(subscriber -> subscriber.onGameEvent(event));
+		gameEventListeners.forEach(subscriber -> subscriber.onGameEvent(event));
 	}
 }

@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 public abstract class Fsm<S extends FsmState<C>, C> {
 
-	protected final ArrayList<FsmStateChangeListener<S>> subscribers = new ArrayList<>(5);
+	protected final ArrayList<FsmStateChangeListener<S>> stateChangeListeners = new ArrayList<>(5);
 	protected final S[] states;
 	protected S currentState;
 	protected S prevState;
@@ -70,7 +70,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	 * @param listener a state change listener
 	 */
 	public synchronized void addStateChangeListener(FsmStateChangeListener<S> listener) {
-		subscribers.add(listener);
+		stateChangeListeners.add(listener);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	 * @param listener a state change listener
 	 */
 	public synchronized void removeStateChangeListener(FsmStateChangeListener<S> listener) {
-		subscribers.remove(listener);
+		stateChangeListeners.remove(listener);
 	}
 
 	/**
@@ -135,7 +135,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		Logger.trace("Enter state {} timer={}", currentState, currentState.timer());
 		currentState.onEnter(context);
 		Logger.trace("After Enter state {} timer={}", currentState, currentState.timer());
-		subscribers.forEach(listener -> listener.onStateChange(prevState, currentState));
+		stateChangeListeners.forEach(listener -> listener.onStateChange(prevState, currentState));
 	}
 
 	public void clearState() {
