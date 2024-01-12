@@ -53,7 +53,8 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	public void reset() {
 		// entity
 		visible = false;
-		position = Vector2f.ZERO;
+		pos_x = 0;
+		pos_y = 0;
 		velocity = Vector2f.ZERO;
 		acceleration = Vector2f.ZERO;
 
@@ -372,15 +373,18 @@ public abstract class Creature extends Entity implements AnimationDirector {
 
 	private void teleport(Portal portal) {
 		var tile = tile();
-		var oldPosition = position;
-		if (tile.y() == portal.leftTunnelEnd().y() && position.x() < (portal.leftTunnelEnd().x() - portal.depth()) * TS) {
+		var old_pos_x = pos_x;
+		var old_pos_y = pos_y;
+		if (tile.y() == portal.leftTunnelEnd().y() && pos_x < (portal.leftTunnelEnd().x() - portal.depth()) * TS) {
 			placeAtTile(portal.rightTunnelEnd());
 			moveResult.teleported = true;
-			moveResult.addMessage(String.format("%s: Teleported from %s to %s", name, oldPosition, position));
+			moveResult.addMessage(String.format("%s: Teleported from (%.2f,%.2f) to (%.2f,%.2f)",
+				name, old_pos_x, old_pos_y, pos_x, pos_y));
 		} else if (tile.equals(portal.rightTunnelEnd().plus(portal.depth(), 0))) {
 			placeAtTile(portal.leftTunnelEnd().minus(portal.depth(), 0));
 			moveResult.teleported = true;
-			moveResult.addMessage(String.format("%s: Teleported from %s to %s", name, oldPosition, position));
+			moveResult.addMessage(String.format("%s: Teleported from (%.2f,%.2f) to (%.2f,%.2f)",
+				name, old_pos_x, old_pos_y, pos_x, pos_y));
 		}
 	}
 

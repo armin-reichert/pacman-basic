@@ -36,8 +36,12 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public String toString() {
-		return String.format("[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]",
-				symbol, points, state, position, timer);
+		return "StaticBonus{" +
+			"symbol=" + symbol +
+			", points=" + points +
+			", timer=" + timer +
+			", state=" + state +
+			'}';
 	}
 
 	@Override

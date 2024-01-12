@@ -33,10 +33,12 @@ public class Pac extends Creature {
 
 	@Override
 	public String toString() {
-		return "Pac [powerTimer=" + powerTimer + ", dead=" + dead + ", restingTicks=" + restingTicks + ", starvingTicks="
-				+ starvingTicks + ", newTileEntered=" + newTileEntered + ", gotReverseCommand=" + gotReverseCommand
-				+ ", canTeleport=" + canTeleport + ", corneringSpeedUp=" + corneringSpeedUp + ", name=" + name() + ", visible="
-				+ visible + ", position=" + position + ", velocity=" + velocity + ", acceleration=" + acceleration + "]";
+		return "Pac{" +
+			"powerTimer=" + powerTimer +
+			", dead=" + dead +
+			", restingTicks=" + restingTicks +
+			", starvingTicks=" + starvingTicks +
+			'}';
 	}
 
 	@Override

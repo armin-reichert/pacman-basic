@@ -43,11 +43,15 @@ public class Ghost extends Creature {
 
 	@Override
 	public String toString() {
-		return "Ghost [id=" + id + ", state=" + state + ", initialPosition=" + initialPosition + ", revivalPosition="
-				+ revivalPosition + ", scatterTile=" + scatterTile + ", initialDirection=" + initialDirection + ", killedIndex="
-				+ killedIndex + ", newTileEntered=" + newTileEntered + ", gotReverseCommand=" + gotReverseCommand
-				+ ", canTeleport=" + canTeleport + ", corneringSpeedUp=" + corneringSpeedUp + ", name=" + name() + ", visible="
-				+ visible + ", position=" + position + ", velocity=" + velocity + ", acceleration=" + acceleration + "]";
+		return "Ghost{" +
+			"id=" + id +
+			", state=" + state +
+			", initialPosition=" + initialPosition +
+			", revivalPosition=" + revivalPosition +
+			", scatterTile=" + scatterTile +
+			", initialDirection=" + initialDirection +
+			", killedIndex=" + killedIndex +
+			'}';
 	}
 
 	/**
@@ -244,9 +248,9 @@ public class Ghost extends Creature {
 		if (insideHouse()) {
 			var minY = initialPosition.y() - HTS;
 			var maxY = initialPosition.y() + HTS;
-			if (position.y() <= minY) {
+			if (pos_y <= minY) {
 				setMoveAndWishDir(DOWN);
-			} else if (position.y() >= maxY) {
+			} else if (pos_y >= maxY) {
 				setMoveAndWishDir(UP);
 			}
 			setPixelSpeed(GameModel.SPEED_PX_INSIDE_HOUSE);

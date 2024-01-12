@@ -17,14 +17,20 @@ import static de.amr.games.pacman.lib.Globals.*;
 public class Entity {
 
 	protected boolean visible = false;
-	protected Vector2f position = Vector2f.ZERO;
+	protected float pos_x;
+	protected float pos_y;
 	protected Vector2f velocity = Vector2f.ZERO;
 	protected Vector2f acceleration = Vector2f.ZERO;
 
 	@Override
 	public String toString() {
-		return "Entity[visible=" + visible + ", position=" + position + ", velocity=" + velocity
-				+ ", acceleration=" + acceleration + "]";
+		return "Entity{" +
+			"visible=" + visible +
+			", pos_x=" + pos_x +
+			", pos_y=" + pos_y +
+			", velocity=" + velocity +
+			", acceleration=" + acceleration +
+			'}';
 	}
 
 	public boolean isVisible() {
@@ -47,29 +53,31 @@ public class Entity {
 	 * @return upper left corner of the entity collision box which is a square of size one tile.
 	 */
 	public Vector2f position() {
-		return position;
+		return v2f(pos_x, pos_y);
 	}
 
 	public void setPosition(float x, float y) {
-		position = v2f(x, y);
+		pos_x = x;
+		pos_y = y;
 	}
 
 	public void setX(float x) {
-		position = v2f(x, position.y());
+		pos_x = x;
 	}
 
 	public void setY(float y) {
-		position = v2f(position.x(), y);
+		pos_y = y;
 	}
 
 	public void setPosition(Vector2f position) {
 		checkNotNull(position, "Position of entity must not be null");
-		this.position = position;
+		pos_x = position.x();
+		pos_y = position.y();
 	}
 
 	/** @return Center position of entity collision box (position property stores *upper left corner* of box). */
 	public Vector2f center() {
-		return position.plus(HTS, HTS);
+		return v2f(pos_x + HTS, pos_y + HTS);
 	}
 
 	public Vector2f velocity() {
@@ -102,20 +110,20 @@ public class Entity {
 	 * Moves this entity by its current velocity and increases its velocity by its current acceleration.
 	 */
 	public void move() {
-		position = position.plus(velocity);
+		pos_x += velocity.x();
+		pos_y += velocity.y();
 		velocity = velocity.plus(acceleration);
 	}
 
 	/** @return Tile containing the center of the entity collision box. */
 	public Vector2i tile() {
-		return tileAt(position.x() + HTS, position.y() + HTS);
+		return tileAt(pos_x + HTS, pos_y + HTS);
 	}
 
 	/** @return Offset inside current tile: (0, 0) if centered, range: [-4, +4) */
 	public Vector2f offset() {
 		var tile = tile();
-		var tileOrigin = v2f(TS * tile.x(), TS * tile.y());
-		return position.minus(tileOrigin);
+		return v2f(pos_x - TS * tile.x(), pos_y - TS * tile.y());
 	}
 
 	/**
