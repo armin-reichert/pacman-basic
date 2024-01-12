@@ -10,7 +10,8 @@ import de.amr.games.pacman.lib.Vector2i;
 import static de.amr.games.pacman.lib.Globals.*;
 
 /**
- * Base class for all "entities" used inside the game, e.g. creatures and bonus entities.
+ * Base class for all "entities", e.g. creatures and bonus entities. Each entity has a position, velocity, acceleration
+ * and visibility.
  * 
  * @author Armin Reichert
  */
@@ -19,8 +20,10 @@ public class Entity {
 	protected boolean visible = false;
 	protected float pos_x;
 	protected float pos_y;
-	protected Vector2f velocity = Vector2f.ZERO;
-	protected Vector2f acceleration = Vector2f.ZERO;
+	protected float vel_x;
+	protected float vel_y;
+	protected float acc_x;
+	protected float acc_y;
 
 	@Override
 	public String toString() {
@@ -28,9 +31,21 @@ public class Entity {
 			"visible=" + visible +
 			", pos_x=" + pos_x +
 			", pos_y=" + pos_y +
-			", velocity=" + velocity +
-			", acceleration=" + acceleration +
+			", vel_x=" + vel_x +
+			", vel_y=" + vel_y +
+			", acc_x=" + acc_x +
+			", acc_y=" + acc_y +
 			'}';
+	}
+
+	public void reset() {
+		visible = false;
+		pos_x = 0;
+		pos_y = 0;
+		vel_x = 0;
+		vel_y = 0;
+		acc_x = 0;
+		acc_y = 0;
 	}
 
 	public boolean isVisible() {
@@ -81,38 +96,43 @@ public class Entity {
 	}
 
 	public Vector2f velocity() {
-		return velocity;
+		return v2f(vel_x, vel_y);
 	}
 
 	public void setVelocity(Vector2f velocity) {
 		checkNotNull(velocity, "Velocity of entity must not be null");
-		this.velocity = velocity;
+		vel_x = velocity.x();
+		vel_y = velocity.y();
 	}
 
 	public void setVelocity(float vx, float vy) {
-		velocity = v2f(vx, vy);
+		vel_x = vx;
+		vel_y = vy;
 	}
 
 	public Vector2f acceleration() {
-		return acceleration;
+		return v2f(acc_x, acc_y);
 	}
 
 	public void setAcceleration(Vector2f acceleration) {
 		checkNotNull(acceleration, "Acceleration of entity must not be null");
-		this.acceleration = acceleration;
+		acc_x = acceleration.x();
+		acc_y = acceleration.y();
 	}
 
 	public void setAcceleration(float ax, float ay) {
-		acceleration = v2f(ax, ay);
+		acc_x = ax;
+		acc_y = ay;
 	}
 
 	/**
 	 * Moves this entity by its current velocity and increases its velocity by its current acceleration.
 	 */
 	public void move() {
-		pos_x += velocity.x();
-		pos_y += velocity.y();
-		velocity = velocity.plus(acceleration);
+		pos_x += vel_x;
+		pos_y += vel_y;
+		vel_x += acc_x;
+		vel_y += acc_y;
 	}
 
 	/** @return Tile containing the center of the entity collision box. */

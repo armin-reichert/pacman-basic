@@ -51,12 +51,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	}
 
 	public void reset() {
-		// entity
-		visible = false;
-		pos_x = 0;
-		pos_y = 0;
-		velocity = Vector2f.ZERO;
-		acceleration = Vector2f.ZERO;
+		super.reset();
 
 		moveDir = RIGHT;
 		wishDir = RIGHT;
@@ -210,7 +205,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		checkDirectionNotNull(dir);
 		if (moveDir != dir) {
 			moveDir = dir;
-			velocity = moveDir.vector().toFloatVec().scaled(velocity.length());
+			setVelocity(moveDir.vector().toFloatVec().scaled(velocity().length()));
 			Logger.trace("{}: New moveDir: {}. {}", name, moveDir, this);
 		}
 	}
@@ -278,7 +273,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		if (pixelSpeed < 0) {
 			throw new IllegalArgumentException("Negative pixel speed: " + pixelSpeed);
 		}
-		velocity = pixelSpeed == 0 ? Vector2f.ZERO : moveDir.vector().toFloatVec().scaled(pixelSpeed);
+		setVelocity(pixelSpeed == 0 ? Vector2f.ZERO : moveDir.vector().toFloatVec().scaled(pixelSpeed));
 	}
 
 	/**
@@ -392,7 +387,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		final var tileBeforeMove = tile();
 		final var aroundCorner = !dir.sameOrientation(moveDir);
 		final var dirVector = dir.vector().toFloatVec();
-		final var newVelocity = dirVector.scaled(velocity.length());
+		final var newVelocity = dirVector.scaled(velocity().length());
 		final var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
 		final var touchedTile = tileAt(touchPosition);
 
@@ -417,7 +412,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 
 		if (aroundCorner && corneringSpeedUp > 0) {
 			setVelocity(newVelocity.plus(dirVector.scaled(corneringSpeedUp)));
-			Logger.trace("{} velocity around corner: {}", name(), velocity.length());
+			Logger.trace("{} velocity around corner: {}", name(), velocity().length());
 			move();
 			setVelocity(newVelocity);
 		} else {
