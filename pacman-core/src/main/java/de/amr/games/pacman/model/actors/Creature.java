@@ -78,7 +78,8 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	}
 
 	public boolean insideHouse() {
-		return level != null && level.world().house().contains(tile());
+		checkLevelNotNull(level);
+		return level.world().house().contains(tile());
 	}
 
 	public void setLevel(GameLevel level) {
@@ -175,9 +176,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	 */
 	public boolean canAccessTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		if (level == null) {
-			return false;
-		}
+		checkLevelNotNull(level);
 		var world = level.world();
 		if (world.insideBounds(tile)) {
 			return !world.isWall(tile) && !world.house().door().occupies(tile);
@@ -275,6 +274,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		if (targetTile == null) {
 			return;
 		}
+		checkLevelNotNull(level);
 		if (level.world().belongsToPortal(tile())) {
 			return; // inside portal, no navigation happens
 		}
@@ -320,6 +320,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	 * possible, it keeps moving to its current move direction.
 	 */
 	public void tryMoving() {
+		checkLevelNotNull(level);
 		moveResult.clear();
 		tryTeleport(level.world().portals());
 		if (!moveResult.teleported) {
@@ -373,6 +374,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	}
 
 	private void tryMoving(Direction dir) {
+		checkLevelNotNull(level);
 		final var tileBeforeMove = tile();
 		final var aroundCorner = !dir.sameOrientation(moveDir);
 		final var dirVector = dir.vector().toFloatVec();
