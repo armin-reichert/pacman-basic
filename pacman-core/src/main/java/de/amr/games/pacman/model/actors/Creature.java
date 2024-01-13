@@ -33,10 +33,10 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	private Vector2i targetTile;
 	protected GameLevel level;
 	protected final MoveResult moveResult = new MoveResult();
-	protected boolean newTileEntered; // TODO put this into move result but currently it has another lifetime
+	protected boolean newTileEntered;
 	protected boolean gotReverseCommand;
 	protected boolean canTeleport;
-	protected float corneringSpeedUp = 0;
+	protected float corneringSpeedUp;
 
 	private Animations<?, ?> animations;
 
@@ -78,20 +78,14 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	}
 
 	public boolean insideHouse() {
-		return level().world().house().contains(tile());
+		return level != null && level.world().house().contains(tile());
 	}
 
-	/**
-	 * @param level the level to set
-	 */
 	public void setLevel(GameLevel level) {
 		checkLevelNotNull(level);
 		this.level = level;
 	}
 
-	/**
-	 * @return if the creature can reverse its direction
-	 */
 	public abstract boolean canReverse();
 
 	/** Tells if the creature entered a new tile with its last move or placement. */
@@ -99,18 +93,10 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		return newTileEntered;
 	}
 
-	/**
-	 * Set teleport capability for this creature.
-	 * 
-	 * @param canTeleport if this creature can teleport
-	 */
 	public void setCanTeleport(boolean canTeleport) {
 		this.canTeleport = canTeleport;
 	}
 
-	/**
-	 * @return if this creature can teleport
-	 */
 	public boolean canTeleport() {
 		return canTeleport;
 	}
@@ -125,7 +111,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	}
 
 	/**
-	 * @return (Optional) target tile. Can be inaccessible or outside of the world.
+	 * @return (Optional) target tile. Can be inaccessible or outside the world.
 	 */
 	public Optional<Vector2i> targetTile() {
 		return Optional.ofNullable(targetTile);
@@ -189,6 +175,9 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	 */
 	public boolean canAccessTile(Vector2i tile) {
 		checkTileNotNull(tile);
+		if (level == null) {
+			return false;
+		}
 		var world = level.world();
 		if (world.insideBounds(tile)) {
 			return !world.isWall(tile) && !world.house().door().occupies(tile);

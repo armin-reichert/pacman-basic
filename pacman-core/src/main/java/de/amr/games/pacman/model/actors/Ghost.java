@@ -287,7 +287,7 @@ public class Ghost extends Creature {
 		} else {
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
-		var outOfHouse = leaveHouse(level.world().house());
+		var outOfHouse = leaveHouse(level().world().house());
 		if (outOfHouse) {
 			setMoveAndWishDir(LEFT);
 			newTileEntered = false; // keep moving left until new tile is entered
