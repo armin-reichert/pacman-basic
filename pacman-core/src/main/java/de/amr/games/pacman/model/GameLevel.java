@@ -123,6 +123,8 @@ public class GameLevel {
 		final House house = world.house();
 
 		pac = new Pac(msPacManGame ? "Ms. Pac-Man" : "Pac-Man");
+		pac.setLevel(this);
+
 		ghosts = new Ghost[] {
 			new Ghost(RED_GHOST,  "Blinky"),
 			new Ghost(PINK_GHOST, "Pinky"),
@@ -130,7 +132,7 @@ public class GameLevel {
 			new Ghost(ORANGE_GHOST, msPacManGame ? "Sue" : "Clyde")
 		};
 
-		guys().forEach(guy -> guy.setLevel(this));
+		ghosts().forEach(guy -> guy.setLevel(this));
 
 		// Blinky: attacks Pac-Man directly
 		ghosts[RED_GHOST].setInitialDirection(Direction.LEFT);
@@ -291,11 +293,10 @@ public class GameLevel {
 	}
 
 	public List<Vector2i> upwardsBlockedTiles() {
-		switch (game.variant()) {
-		case MS_PACMAN:	return Collections.emptyList();
-		case PACMAN:		return GameModel.PACMAN_RED_ZONE;
-		default:  			throw new IllegalGameVariantException(game.variant());
-		}
+		return switch (game.variant()) {
+			case MS_PACMAN -> Collections.emptyList();
+			case PACMAN    -> GameModel.PACMAN_RED_ZONE;
+		};
 	}
 
 	/**
@@ -640,21 +641,16 @@ public class GameLevel {
 			return nextMsPacManBonusSymbol();
 		}
 		// In the Pac-Man game, each level has a single bonus symbol appearing twice
-		switch (levelNumber) {
-			case 1:  return GameModel.PACMAN_CHERRIES;
-			case 2:  return GameModel.PACMAN_STRAWBERRY;
-			case 3:
-			case 4:  return GameModel.PACMAN_PEACH;
-			case 5:
-			case 6:  return GameModel.PACMAN_APPLE;
-			case 7:
-			case 8:  return GameModel.PACMAN_GRAPES;
-			case 9:
-			case 10: return GameModel.PACMAN_GALAXIAN;
-			case 11:
-			case 12: return GameModel.PACMAN_BELL;
-			default: return GameModel.PACMAN_KEY;
-		}
+		return switch (levelNumber) {
+			case 1      -> GameModel.PACMAN_CHERRIES;
+			case 2      -> GameModel.PACMAN_STRAWBERRY;
+			case 3, 4   -> GameModel.PACMAN_PEACH;
+			case 5, 6   -> GameModel.PACMAN_APPLE;
+			case 7, 8   -> GameModel.PACMAN_GRAPES;
+			case 9, 10  -> GameModel.PACMAN_GALAXIAN;
+			case 11, 12 -> GameModel.PACMAN_BELL;
+			default     -> GameModel.PACMAN_KEY;
+		};
 	}
 
 	/**
@@ -714,11 +710,10 @@ public class GameLevel {
 	}
 
 	public boolean isBonusReached() {
-		switch (game.variant()) {
-			case MS_PACMAN: return world().eatenFoodCount() == 64 || world().eatenFoodCount() == 176;
-			case PACMAN:		return world().eatenFoodCount() == 70 || world().eatenFoodCount() == 170;
-			default:  			throw new IllegalGameVariantException(game.variant());
-		}
+		return switch (game.variant()) {
+			case MS_PACMAN -> world().eatenFoodCount() == 64 || world().eatenFoodCount() == 176;
+			case PACMAN    -> world().eatenFoodCount() == 70 || world().eatenFoodCount() == 170;
+		};
 	}
 
 	public Optional<Bonus> bonus() {

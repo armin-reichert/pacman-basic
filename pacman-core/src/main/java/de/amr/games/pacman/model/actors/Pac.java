@@ -6,7 +6,9 @@ package de.amr.games.pacman.model.actors;
 
 import de.amr.games.pacman.controller.Steering;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.world.World;
 
 import java.util.Optional;
 
@@ -24,6 +26,8 @@ public class Pac extends Creature {
 	private long restingTicks;
 	private long starvingTicks;
 	private Steering steering;
+
+	private GameLevel level;
 
 	public Pac(String name) {
 		super(name);
@@ -45,6 +49,15 @@ public class Pac extends Creature {
 			", acc_x=" + acc_x +
 			", acc_y=" + acc_y +
 			'}';
+	}
+
+	public void setLevel(GameLevel level) {
+		this.level = level;
+	}
+
+	@Override
+	public World world() {
+		return level.world();
 	}
 
 	@Override

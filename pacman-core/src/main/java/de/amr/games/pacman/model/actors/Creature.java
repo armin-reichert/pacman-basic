@@ -7,9 +7,9 @@ package de.amr.games.pacman.model.actors;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
-import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.Portal;
+import de.amr.games.pacman.model.world.World;
 import org.tinylog.Logger;
 
 import java.util.List;
@@ -31,7 +31,6 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	private Direction moveDir;
 	private Direction wishDir;
 	private Vector2i targetTile;
-	protected GameLevel level;
 	protected final MoveResult moveResult = new MoveResult();
 	protected boolean newTileEntered;
 	protected boolean gotReverseCommand;
@@ -73,21 +72,13 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		return Optional.ofNullable(animations);
 	}
 
-	public GameLevel level() {
-		return level;
-	}
-
-	public boolean insideHouse() {
-		checkLevelNotNull(level);
-		return level.world().house().contains(tile());
-	}
-
-	public void setLevel(GameLevel level) {
-		checkLevelNotNull(level);
-		this.level = level;
-	}
+	public abstract World world();
 
 	public abstract boolean canReverse();
+
+	public boolean insideHouse() {
+		return world().house().contains(tile());
+	}
 
 	/** Tells if the creature entered a new tile with its last move or placement. */
 	public boolean isNewTileEntered() {
@@ -176,12 +167,10 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	 */
 	public boolean canAccessTile(Vector2i tile) {
 		checkTileNotNull(tile);
-		checkLevelNotNull(level);
-		var world = level.world();
-		if (world.insideBounds(tile)) {
-			return !world.isWall(tile) && !world.house().door().occupies(tile);
+		if (world().insideBounds(tile)) {
+			return !world().isWall(tile) && !world().house().door().occupies(tile);
 		}
-		return world.belongsToPortal(tile);
+		return world().belongsToPortal(tile);
 	}
 
 	/**
@@ -274,8 +263,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 		if (targetTile == null) {
 			return;
 		}
-		checkLevelNotNull(level);
-		if (level.world().belongsToPortal(tile())) {
+		if (world().belongsToPortal(tile())) {
 			return; // inside portal, no navigation happens
 		}
 		computeTargetDirection().ifPresent(this::setWishDir);
@@ -314,15 +302,14 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	}
 
 	/**
-	 * Tries moving through the game level.
+	 * Tries moving through the game world.
 	 * <p>
 	 * First checks if the creature can teleport, then if the creature can move to its wish direction. If this is not
 	 * possible, it keeps moving to its current move direction.
 	 */
 	public void tryMoving() {
-		checkLevelNotNull(level);
 		moveResult.clear();
-		tryTeleport(level.world().portals());
+		tryTeleport(world().portals());
 		if (!moveResult.teleported) {
 			checkReverseCommand();
 			tryMoving(wishDir);
@@ -374,7 +361,6 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	}
 
 	private void tryMoving(Direction dir) {
-		checkLevelNotNull(level);
 		final var tileBeforeMove = tile();
 		final var aroundCorner = !dir.sameOrientation(moveDir);
 		final var dirVector = dir.vector().toFloatVec();
@@ -413,7 +399,7 @@ public abstract class Creature extends Entity implements AnimationDirector {
 
 		newTileEntered = !tileBeforeMove.equals(tile());
 		moveResult.moved = true;
-		moveResult.tunnelEntered = !level.world().isTunnel(tileBeforeMove) && level.world().isTunnel(tile());
+		moveResult.tunnelEntered = !world().isTunnel(tileBeforeMove) && world().isTunnel(tile());
 		moveResult.addMessage(String.format("%5s (%.2f pixels)", dir, newVelocity.length()));
 	}
 }

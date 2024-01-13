@@ -8,8 +8,10 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Globals;
 import de.amr.games.pacman.lib.Vector2f;
 import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.world.House;
+import de.amr.games.pacman.model.world.World;
 import org.tinylog.Logger;
 
 import java.util.function.Supplier;
@@ -33,6 +35,8 @@ public class Ghost extends Creature {
 	private Vector2i scatterTile = Vector2i.ZERO;
 	private Direction initialDirection = Direction.UP;
 	private int killedIndex;
+
+	private GameLevel level;
 
 	public Ghost(byte id, String name) {
 		super(name);
@@ -66,6 +70,15 @@ public class Ghost extends Creature {
 	public void reset() {
 		super.reset();
 		setKilledIndex(-1);
+	}
+
+	public void setLevel(GameLevel level) {
+		this.level = level;
+	}
+
+	@Override
+	public World world() {
+		return level.world();
 	}
 
 	/**
@@ -177,7 +190,7 @@ public class Ghost extends Creature {
 	 * @see <a href="https://www.youtube.com/watch?v=eFP0_rkjwlY">YouTube: How Frightened Ghosts Decide Where to Go</a>
 	 */
 	public void roam() {
-		if (!level.world().belongsToPortal(tile()) && (isNewTileEntered() || !moved())) {
+		if (!world().belongsToPortal(tile()) && (isNewTileEntered() || !moved())) {
 			setWishDir(chooseFrightenedDirection());
 		}
 		tryMoving();
@@ -287,7 +300,7 @@ public class Ghost extends Creature {
 		} else {
 			selectAnimation(GhostAnimations.GHOST_NORMAL);
 		}
-		var outOfHouse = leaveHouse(level().world().house());
+		var outOfHouse = leaveHouse(world().house());
 		if (outOfHouse) {
 			setMoveAndWishDir(LEFT);
 			newTileEntered = false; // keep moving left until new tile is entered
@@ -388,7 +401,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateFrightened() {
-		var speed = level.world().isTunnel(tile()) ? level.ghostSpeedTunnel : level.ghostSpeedFrightened;
+		var speed = world().isTunnel(tile()) ? level.ghostSpeedTunnel : level.ghostSpeedFrightened;
 		setRelSpeed(speed);
 		roam();
 		selectFrightenedAnimation();
@@ -417,12 +430,12 @@ public class Ghost extends Creature {
 	 */
 	public void enterStateReturningToHouse() {
 		state = RETURNING_TO_HOUSE;
-		setTargetTile(level.world().house().door().leftWing());
+		setTargetTile(world().house().door().leftWing());
 		selectAnimation(GhostAnimations.GHOST_EYES);
 	}
 
 	private void updateStateReturningToHouse() {
-		var houseEntry = level.world().house().door().entryPosition();
+		var houseEntry = world().house().door().entryPosition();
 		// TODO should this check for difference by speed instead of 1?
 		if (position().almostEquals(houseEntry, 1, 0)) {
 			setPosition(houseEntry);
@@ -446,7 +459,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateEnteringHouse() {
-		boolean atRevivalPosition = moveInsideHouse(level.world().house(), revivalPosition);
+		boolean atRevivalPosition = moveInsideHouse(world().house(), revivalPosition);
 		if (atRevivalPosition) {
 			setMoveAndWishDir(UP);
 			enterStateLocked();

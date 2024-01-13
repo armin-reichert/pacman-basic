@@ -12,6 +12,7 @@ import de.amr.games.pacman.lib.Pulse;
 import de.amr.games.pacman.lib.RouteBasedSteering;
 import de.amr.games.pacman.model.GameLevel;
 import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.world.World;
 import org.tinylog.Logger;
 
 import java.util.List;
@@ -34,6 +35,8 @@ public class MovingBonus extends Creature implements Bonus {
 	private long eatenTimer;
 	private byte state;
 
+	private GameLevel level;
+
 	public MovingBonus(byte symbol, int points) {
 		super("MovingBonus-" + symbol);
 		reset();
@@ -43,6 +46,15 @@ public class MovingBonus extends Creature implements Bonus {
 		canTeleport = false; // override default from Creature
 		eatenTimer = 0;
 		state = Bonus.STATE_INACTIVE;
+	}
+
+	public void setLevel(GameLevel level) {
+		this.level = level;
+	}
+
+	@Override
+	public World world() {
+		return level.world();
 	}
 
 	@Override
