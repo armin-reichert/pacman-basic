@@ -55,6 +55,10 @@ public class Pac extends Creature {
 		this.level = level;
 	}
 
+	public GameLevel level() {
+		return level;
+	}
+
 	@Override
 	public World world() {
 		return level.world();
