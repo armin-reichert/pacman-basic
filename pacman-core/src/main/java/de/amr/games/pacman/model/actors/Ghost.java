@@ -333,7 +333,7 @@ public class Ghost extends Creature {
 		float speed = GameModel.SPEED_PX_INSIDE_HOUSE;
 		if (differsAtMost(0.5 * speed, centerX, houseCenterX)) {
 			// align horizontally and raise
-			setX(houseCenterX - HTS);
+			setPos_x(houseCenterX - HTS);
 			setMoveAndWishDir(UP);
 		} else {
 			// move sidewards until center axis is reached
@@ -356,7 +356,7 @@ public class Ghost extends Creature {
 			setPosition(entryPosition);
 			setMoveAndWishDir(Direction.DOWN);
 		} else if (position().y() >= houseCenter.y()) {
-			setY(houseCenter.y());
+			setPos_y(houseCenter.y());
 			if (targetPosition.x() < houseCenter.x()) {
 				setMoveAndWishDir(LEFT);
 			} else if (targetPosition.x() > houseCenter.x()) {

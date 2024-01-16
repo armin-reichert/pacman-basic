@@ -64,6 +64,14 @@ public class Entity {
 		visible = false;
 	}
 
+	public float pos_x() {
+		return pos_x;
+	}
+
+	public float pos_y() {
+		return pos_y;
+	}
+
 	/**
 	 * @return upper left corner of the entity collision box which is a square of size one tile.
 	 */
@@ -71,16 +79,16 @@ public class Entity {
 		return v2f(pos_x, pos_y);
 	}
 
+	public void setPos_x(float pos_x) {
+		this.pos_x = pos_x;
+	}
+
+	public void setPos_y(float pos_y) {
+		this.pos_y = pos_y;
+	}
+
 	public void setPosition(float x, float y) {
 		pos_x = x;
-		pos_y = y;
-	}
-
-	public void setX(float x) {
-		pos_x = x;
-	}
-
-	public void setY(float y) {
 		pos_y = y;
 	}
 

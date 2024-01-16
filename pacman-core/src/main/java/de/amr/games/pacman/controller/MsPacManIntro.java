@@ -25,7 +25,7 @@ import static de.amr.games.pacman.lib.Globals.*;
  */
 public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Context> {
 
-	public static class Context {
+	public class Context {
 		public float          speed                = 1.1f;
 		public int            stopY                = TS * 11 + 1;
 		public int            stopX                = TS * 6 - 4; 
@@ -41,8 +41,14 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 				new Ghost(GameModel.PINK_GHOST,  "Pinky"),
 				new Ghost(GameModel.CYAN_GHOST,  "Inky"),
 				new Ghost(GameModel.ORANGE_GHOST,"Sue")
+
+
 		};
 		public int ghostIndex = 0;
+
+		public MsPacManIntro intro() {
+			return MsPacManIntro.this;
+		}
 
 		/**
 		 * In the Arcade game, 6 of the 96 bulbs are switched-on every frame, shifting every tick. The bulbs in the leftmost
@@ -82,7 +88,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 					ghost.setPixelSpeed(ctx.speed);
 					ghost.enterStateHuntingPac();
 					ghost.startAnimation();
-				};
+				}
 				ctx.ghostIndex = 0;
 			}
 
@@ -90,12 +96,12 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			public void onUpdate(MsPacManIntro.Context ctx) {
 				ctx.marqueeTimer.advance();
 				if (timer.atSecond(1)) {
-					intro.changeState(State.GHOSTS);
+					ctx.intro().changeState(State.GHOSTS_MARCHING_IN);
 				}
 			}
 		},
 
-		GHOSTS {
+		GHOSTS_MARCHING_IN {
 			@Override
 			public void onUpdate(MsPacManIntro.Context ctx) {
 				ctx.marqueeTimer.advance();
@@ -104,7 +110,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 
 				if (ghost.moveDir() == Direction.LEFT) {
 					if (ghost.position().x() <= ctx.stopX) {
-						ghost.setX(ctx.stopX);
+						ghost.setPos_x(ctx.stopX);
 						ghost.setMoveAndWishDir(Direction.UP);
 						ctx.ticksUntilLifting = 2;
 					} else {
@@ -126,7 +132,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 							ani.resetSelected();
 						});
 						if (ctx.ghostIndex == 3) {
-							intro.changeState(State.MSPACMAN);
+							ctx.intro().changeState(State.MS_PACMAN_MARCHING_IN);
 						} else {
 							++ctx.ghostIndex;
 						}
@@ -137,7 +143,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			}
 		},
 
-		MSPACMAN {
+		MS_PACMAN_MARCHING_IN {
 			@Override
 			public void onUpdate(MsPacManIntro.Context ctx) {
 				ctx.marqueeTimer.advance();
@@ -146,7 +152,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 				if (ctx.msPacMan.position().x() <= ctx.stopMsPacX) {
 					ctx.msPacMan.setPixelSpeed(0);
 					ctx.msPacMan.animations().ifPresent(Animations::resetSelected);
-					intro.changeState(State.READY_TO_PLAY);
+					ctx.intro().changeState(State.READY_TO_PLAY);
 				}
 			}
 		},
@@ -164,7 +170,6 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			}
 		};
 
-		MsPacManIntro intro;
 		final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
@@ -173,14 +178,10 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 		}
 	}
 
-	private final Context introData;
+	private final Context introData = new Context();
 
 	public MsPacManIntro() {
 		super(State.values());
-		for (var state : states) {
-			state.intro = this;
-		}
-		introData = new Context();
 	}
 
 	@Override

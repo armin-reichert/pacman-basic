@@ -121,7 +121,7 @@ public class MsPacManIntermission3 {
 			++numBagBounces;
 			if (numBagBounces < 3) {
 				bag.setVelocity(-0.2f, -1f / numBagBounces);
-				bag.setY(LANE_Y);
+				bag.setPos_y(LANE_Y);
 			} else {
 				bagOpen = true;
 				bag.setVelocity(Vector2f.ZERO);
