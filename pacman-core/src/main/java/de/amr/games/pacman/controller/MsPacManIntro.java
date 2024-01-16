@@ -23,59 +23,53 @@ import static de.amr.games.pacman.lib.Globals.*;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Context> {
+public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro> {
 
-	public class Context {
-		public float          speed                = 1.1f;
-		public int            stopY                = TS * 11 + 1;
-		public int            stopX                = TS * 6 - 4; 
-		public int            stopMsPacX           = TS * 15 + 2;
-		public int            ticksUntilLifting    = 0;
-		public Vector2i       titlePosition        = v2i(TS * 10, TS * 8);
-		public TickTimer      marqueeTimer         = new TickTimer("marquee-timer");
-		public int            numBulbs             = 96;
-		public int            bulbOnDistance       = 16;
-		public Pac            msPacMan             = new Pac("Ms. Pac-Man");
-		public Ghost[]        ghosts               = {
-				new Ghost(GameModel.RED_GHOST,   "Blinky"),
-				new Ghost(GameModel.PINK_GHOST,  "Pinky"),
-				new Ghost(GameModel.CYAN_GHOST,  "Inky"),
-				new Ghost(GameModel.ORANGE_GHOST,"Sue")
+	public float          speed                = 1.1f;
+	public int            stopY                = TS * 11 + 1;
+	public int            stopX                = TS * 6 - 4;
+	public int            stopMsPacX           = TS * 15 + 2;
+	public int            ticksUntilLifting    = 0;
+	public Vector2i       titlePosition        = v2i(TS * 10, TS * 8);
+	public TickTimer      marqueeTimer         = new TickTimer("marquee-timer");
+	public int            numBulbs             = 96;
+	public int            bulbOnDistance       = 16;
+	public Pac            msPacMan             = new Pac("Ms. Pac-Man");
+	public Ghost[]        ghosts               = {
+			new Ghost(GameModel.RED_GHOST,   "Blinky"),
+			new Ghost(GameModel.PINK_GHOST,  "Pinky"),
+			new Ghost(GameModel.CYAN_GHOST,  "Inky"),
+			new Ghost(GameModel.ORANGE_GHOST,"Sue")
 
 
-		};
-		public int ghostIndex = 0;
+	};
+	public int ghostIndex = 0;
 
-		public MsPacManIntro intro() {
-			return MsPacManIntro.this;
+	/**
+	 * In the Arcade game, 6 of the 96 bulbs are switched-on every frame, shifting every tick. The bulbs in the leftmost
+	 * column however are switched-off every second frame. Maybe a bug?
+	 *
+	 * @return bitset indicating which marquee bulbs are on
+	 */
+	public BitSet marqueeState() {
+		var state = new BitSet(numBulbs);
+		long t = marqueeTimer.tick();
+		for (int b = 0; b < 6; ++b) {
+			state.set((int) (b * bulbOnDistance + t) % numBulbs);
 		}
-
-		/**
-		 * In the Arcade game, 6 of the 96 bulbs are switched-on every frame, shifting every tick. The bulbs in the leftmost
-		 * column however are switched-off every second frame. Maybe a bug?
-		 * 
-		 * @return bitset indicating which marquee bulbs are on
-		 */
-		public BitSet marqueeState() {
-			var state = new BitSet(numBulbs);
-			long t = marqueeTimer.tick();
-			for (int b = 0; b < 6; ++b) {
-				state.set((int) (b * bulbOnDistance + t) % numBulbs);
+		for (int i = 81; i < numBulbs; ++i) {
+			if (isOdd(i)) {
+				state.clear(i);
 			}
-			for (int i = 81; i < numBulbs; ++i) {
-				if (isOdd(i)) {
-					state.clear(i);
-				}
-			}
-			return state;
 		}
+		return state;
 	}
 
-	public enum State implements FsmState<MsPacManIntro.Context> {
+	public enum State implements FsmState<MsPacManIntro> {
 
 		START {
 			@Override
-			public void onEnter(MsPacManIntro.Context ctx) {
+			public void onEnter(MsPacManIntro ctx) {
 				ctx.marqueeTimer.restartIndefinitely();
 				ctx.msPacMan.setPosition(TS * 31, TS * 20);
 				ctx.msPacMan.setMoveDir(Direction.LEFT);
@@ -93,17 +87,17 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			}
 
 			@Override
-			public void onUpdate(MsPacManIntro.Context ctx) {
+			public void onUpdate(MsPacManIntro ctx) {
 				ctx.marqueeTimer.advance();
 				if (timer.atSecond(1)) {
-					ctx.intro().changeState(State.GHOSTS_MARCHING_IN);
+					ctx.changeState(State.GHOSTS_MARCHING_IN);
 				}
 			}
 		},
 
 		GHOSTS_MARCHING_IN {
 			@Override
-			public void onUpdate(MsPacManIntro.Context ctx) {
+			public void onUpdate(MsPacManIntro ctx) {
 				ctx.marqueeTimer.advance();
 				var ghost = ctx.ghosts[ctx.ghostIndex];
 				ghost.show();
@@ -132,7 +126,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 							ani.resetSelected();
 						});
 						if (ctx.ghostIndex == 3) {
-							ctx.intro().changeState(State.MS_PACMAN_MARCHING_IN);
+							ctx.changeState(State.MS_PACMAN_MARCHING_IN);
 						} else {
 							++ctx.ghostIndex;
 						}
@@ -145,21 +139,21 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 
 		MS_PACMAN_MARCHING_IN {
 			@Override
-			public void onUpdate(MsPacManIntro.Context ctx) {
+			public void onUpdate(MsPacManIntro ctx) {
 				ctx.marqueeTimer.advance();
 				ctx.msPacMan.show();
 				ctx.msPacMan.move();
 				if (ctx.msPacMan.position().x() <= ctx.stopMsPacX) {
 					ctx.msPacMan.setPixelSpeed(0);
 					ctx.msPacMan.animations().ifPresent(Animations::resetSelected);
-					ctx.intro().changeState(State.READY_TO_PLAY);
+					ctx.changeState(State.READY_TO_PLAY);
 				}
 			}
 		},
 
 		READY_TO_PLAY {
 			@Override
-			public void onUpdate(MsPacManIntro.Context ctx) {
+			public void onUpdate(MsPacManIntro ctx) {
 				ctx.marqueeTimer.advance();
 				if (timer.atSecond(2.0) && !GameController.it().hasCredit()) {
 					GameController.it().changeState(GameState.READY);
@@ -178,14 +172,12 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 		}
 	}
 
-	private final Context introData = new Context();
-
 	public MsPacManIntro() {
 		super(State.values());
 	}
 
 	@Override
-	public Context context() {
-		return introData;
+	public MsPacManIntro context() {
+		return this;
 	}
 }

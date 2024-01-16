@@ -21,7 +21,7 @@ import static de.amr.games.pacman.lib.Globals.TS;
  * 
  * @author Armin Reichert
  */
-public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
+public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro> {
 
 	public static class GhostInfo {
 		public Ghost ghost;
@@ -36,55 +36,24 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 		}
 	}
 
-	public class Context {
-		public float chaseSpeed = 1.1f;
-		public int leftTileX = 4;
-		public Pulse blinking = new Pulse(10, true);
-		public Pac pacMan = new Pac("Pac-Man");
-		public GhostInfo[] ghostInfo = new GhostInfo[4];
-		public boolean creditVisible = false;
-		public boolean titleVisible = false;
-		public int ghostIndex;
-		public long ghostKilledTime;
-
-		public Context() {
-			ghostInfo[0] = new GhostInfo(GameModel.RED_GHOST,   "BLINKY","SHADOW");
-			ghostInfo[1] = new GhostInfo(GameModel.PINK_GHOST,  "PINKY", "SPEEDY");
-			ghostInfo[2] = new GhostInfo(GameModel.CYAN_GHOST,  "INKY",  "BASHFUL");
-			ghostInfo[3] = new GhostInfo(GameModel.ORANGE_GHOST,"CLYDE", "POKEY");
-		}
-
-		public PacManIntro intro() {
-			return PacManIntro.this;
-		}
-
-		public Ghost ghost(int id) {
-			return ghostInfo[id].ghost;
-		}
-
-		public Stream<Ghost> ghosts() {
-			return Stream.of(ghostInfo).map(info -> info.ghost);
-		}
-	}
-
-	public enum State implements FsmState<Context> {
+	public enum State implements FsmState<PacManIntro> {
 
 		START {
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(PacManIntro ctx) {
 				if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.tick() == 3) {
 					ctx.titleVisible = true;
 				} else if (timer.atSecond(1)) {
-					ctx.intro().changeState(State.PRESENTING_GHOSTS);
+					ctx.changeState(State.PRESENTING_GHOSTS);
 				}
 			}
 		},
 
 		PRESENTING_GHOSTS {
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(PacManIntro ctx) {
 				if (timer.atSecond(0)) {
 					ctx.ghostInfo[ctx.ghostIndex].pictureVisible = true;
 				} else if (timer.atSecond(1.0)) {
@@ -96,28 +65,28 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 						timer.resetIndefinitely();
 					}
 				} else if (timer.atSecond(2.5)) {
-					ctx.intro().changeState(State.SHOWING_POINTS);
+					ctx.changeState(State.SHOWING_POINTS);
 				}
 			}
 		},
 
 		SHOWING_POINTS {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(PacManIntro ctx) {
 				ctx.blinking.stop();
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(PacManIntro ctx) {
 				if (timer.atSecond(1)) {
-					ctx.intro().changeState(State.CHASING_PAC);
+					ctx.changeState(State.CHASING_PAC);
 				}
 			}
 		},
 
 		CHASING_PAC {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(PacManIntro ctx) {
 				timer.restartIndefinitely();
 				ctx.pacMan.setPosition(TS * 36, TS * 20);
 				ctx.pacMan.setMoveDir(Direction.LEFT);
@@ -137,13 +106,13 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(PacManIntro ctx) {
 				if (timer.atSecond(1)) {
 					ctx.blinking.start();
 				}
 				// Pac-Man reaches the energizer at the left and turns
 				if (ctx.pacMan.position().x() <= TS * ctx.leftTileX) {
-					ctx.intro().changeState(State.CHASING_GHOSTS);
+					ctx.changeState(State.CHASING_GHOSTS);
 				}
 				// Ghosts already reverse direction before Pac-Man eats the energizer and turns!
 				else if (ctx.pacMan.position().x() <= TS * ctx.leftTileX + HTS) {
@@ -166,7 +135,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 
 		CHASING_GHOSTS {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(PacManIntro ctx) {
 				timer.restartIndefinitely();
 				ctx.ghostKilledTime = timer.tick();
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
@@ -174,10 +143,10 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(PacManIntro ctx) {
 				if (ctx.ghosts().allMatch(ghost -> ghost.is(GhostState.EATEN))) {
 					ctx.pacMan.hide();
-					ctx.intro().changeState(READY_TO_PLAY);
+					ctx.changeState(READY_TO_PLAY);
 					return;
 				}
 				var nextVictim = ctx.ghosts()//
@@ -218,7 +187,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 
 		READY_TO_PLAY {
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(PacManIntro ctx) {
 				if (timer.atSecond(0.75)) {
 					ctx.ghostInfo[3].ghost.hide();
 					if (!GameController.it().hasCredit()) {
@@ -239,14 +208,35 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 		}
 	}
 
-	private final Context introData = new Context();
+	public float chaseSpeed = 1.1f;
+	public int leftTileX = 4;
+	public Pulse blinking = new Pulse(10, true);
+	public Pac pacMan = new Pac("Pac-Man");
+	public GhostInfo[] ghostInfo = {
+		new GhostInfo(GameModel.RED_GHOST,   "BLINKY","SHADOW"),
+		new GhostInfo(GameModel.PINK_GHOST,  "PINKY", "SPEEDY"),
+		new GhostInfo(GameModel.CYAN_GHOST,  "INKY",  "BASHFUL"),
+		new GhostInfo(GameModel.ORANGE_GHOST,"CLYDE", "POKEY")
+	};
+	public boolean creditVisible = false;
+	public boolean titleVisible = false;
+	public int ghostIndex;
+	public long ghostKilledTime;
+
+	public Ghost ghost(int id) {
+		return ghostInfo[id].ghost;
+	}
+
+	public Stream<Ghost> ghosts() {
+		return Stream.of(ghostInfo).map(info -> info.ghost);
+	}
 
 	public PacManIntro() {
 		super(State.values());
 	}
 
 	@Override
-	public Context context() {
-		return introData;
+	public PacManIntro context() {
+		return this;
 	}
 }
