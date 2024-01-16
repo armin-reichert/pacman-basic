@@ -36,7 +36,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 		}
 	}
 
-	public static class Context {
+	public class Context {
 		public float chaseSpeed = 1.1f;
 		public int leftTileX = 4;
 		public Pulse blinking = new Pulse(10, true);
@@ -52,6 +52,10 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			ghostInfo[1] = new GhostInfo(GameModel.PINK_GHOST,  "PINKY", "SPEEDY");
 			ghostInfo[2] = new GhostInfo(GameModel.CYAN_GHOST,  "INKY",  "BASHFUL");
 			ghostInfo[3] = new GhostInfo(GameModel.ORANGE_GHOST,"CLYDE", "POKEY");
+		}
+
+		public PacManIntro intro() {
+			return PacManIntro.this;
 		}
 
 		public Ghost ghost(int id) {
@@ -73,7 +77,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 				} else if (timer.tick() == 3) {
 					ctx.titleVisible = true;
 				} else if (timer.atSecond(1)) {
-					controller.changeState(State.PRESENTING_GHOSTS);
+					ctx.intro().changeState(State.PRESENTING_GHOSTS);
 				}
 			}
 		},
@@ -92,7 +96,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 						timer.resetIndefinitely();
 					}
 				} else if (timer.atSecond(2.5)) {
-					controller.changeState(State.SHOWING_POINTS);
+					ctx.intro().changeState(State.SHOWING_POINTS);
 				}
 			}
 		},
@@ -106,7 +110,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
-					controller.changeState(State.CHASING_PAC);
+					ctx.intro().changeState(State.CHASING_PAC);
 				}
 			}
 		},
@@ -139,7 +143,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 				}
 				// Pac-Man reaches the energizer at the left and turns
 				if (ctx.pacMan.position().x() <= TS * ctx.leftTileX) {
-					controller.changeState(State.CHASING_GHOSTS);
+					ctx.intro().changeState(State.CHASING_GHOSTS);
 				}
 				// Ghosts already reverse direction before Pac-Man eats the energizer and turns!
 				else if (ctx.pacMan.position().x() <= TS * ctx.leftTileX + HTS) {
@@ -173,7 +177,7 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			public void onUpdate(Context ctx) {
 				if (ctx.ghosts().allMatch(ghost -> ghost.is(GhostState.EATEN))) {
 					ctx.pacMan.hide();
-					controller.changeState(READY_TO_PLAY);
+					ctx.intro().changeState(READY_TO_PLAY);
 					return;
 				}
 				var nextVictim = ctx.ghosts()//
@@ -219,7 +223,6 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 					ctx.ghostInfo[3].ghost.hide();
 					if (!GameController.it().hasCredit()) {
 						GameController.it().changeState(GameState.READY);
-						return;
 					}
 				}
 				else if (timer.atSecond(5)) {
@@ -228,7 +231,6 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 			}
 		};
 
-		PacManIntro controller;
 		final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
@@ -237,19 +239,14 @@ public class PacManIntro extends Fsm<PacManIntro.State, PacManIntro.Context> {
 		}
 	}
 
-	private final Context introData;
+	private final Context introData = new Context();
 
 	public PacManIntro() {
 		super(State.values());
-		for (var state : states) {
-			state.controller = this;
-		}
-		introData = new Context();
 	}
 
 	@Override
 	public Context context() {
 		return introData;
 	}
-
 }
