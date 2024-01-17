@@ -68,6 +68,10 @@ public class Globals {
 		return v2f(TS * tileX + HTS, TS * tileY + HTS);
 	}
 
+	public static double t(double tiles) {
+		return tiles * TS;
+	}
+
 	public static void checkNotNull(Object value) {
 		Objects.requireNonNull(value, "");
 	}
@@ -187,7 +191,7 @@ public class Globals {
 		return n % 2 != 0;
 	}
 
-	public static final float percent(int value) {
+	public static float percent(int value) {
 		return value / 100f;
 	}
 
