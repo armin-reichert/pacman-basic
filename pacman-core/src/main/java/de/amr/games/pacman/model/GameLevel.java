@@ -19,8 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.Direction.*;
 import static de.amr.games.pacman.lib.Globals.*;
 import static de.amr.games.pacman.lib.NavigationPoint.np;
 import static de.amr.games.pacman.model.GameModel.*;
@@ -135,28 +134,25 @@ public class GameLevel {
 		ghosts().forEach(guy -> guy.setLevel(this));
 
 		// Blinky: attacks Pac-Man directly
-		ghosts[RED_GHOST].setInitialDirection(Direction.LEFT);
 		ghosts[RED_GHOST].setInitialPosition(house.door().entryPosition());
 		ghosts[RED_GHOST].setRevivalPosition(house.seat("middle"));
 		ghosts[RED_GHOST].setScatterTile(v2i(25, 0));
 		ghosts[RED_GHOST].setChasingTarget(pac::tile);
 
 		// Pinky: ambushes Pac-Man
-		ghosts[PINK_GHOST].setInitialDirection(Direction.DOWN);
+		ghosts[PINK_GHOST].setWishDir(Direction.DOWN);
 		ghosts[PINK_GHOST].setInitialPosition(house.seat("middle"));
 		ghosts[PINK_GHOST].setRevivalPosition(house.seat("middle"));
 		ghosts[PINK_GHOST].setScatterTile(v2i(2, 0));
 		ghosts[PINK_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(4));
 
 		// Inky: attacks from opposite side as Blinky
-		ghosts[CYAN_GHOST].setInitialDirection(Direction.UP);
 		ghosts[CYAN_GHOST].setInitialPosition(house.seat("left"));
 		ghosts[CYAN_GHOST].setRevivalPosition(house.seat("left"));
 		ghosts[CYAN_GHOST].setScatterTile(v2i(27, 34));
 		ghosts[CYAN_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(2).scaled(2).minus(ghosts[RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
-		ghosts[ORANGE_GHOST].setInitialDirection(Direction.UP);
 		ghosts[ORANGE_GHOST].setInitialPosition(house.seat("right"));
 		ghosts[ORANGE_GHOST].setRevivalPosition(house.seat("right"));
 		ghosts[ORANGE_GHOST].setScatterTile(v2i(0, 34));
@@ -171,6 +167,15 @@ public class GameLevel {
 		bonusSymbols[1] = nextBonusSymbol();
 
 		Logger.trace("Game level {} ({}) created.", levelNumber, game.variant());
+	}
+
+	private Direction initialGhostDirection(Ghost ghost) {
+		return switch (ghost.id()) {
+			case RED_GHOST -> LEFT;
+			case PINK_GHOST -> DOWN;
+			case CYAN_GHOST, ORANGE_GHOST -> UP;
+			default -> throw new IllegalGhostIDException(ghost.id());
+		};
 	}
 
 	public void end() {
@@ -412,7 +417,7 @@ public class GameLevel {
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setPosition(ghost.initialPosition());
-			ghost.setMoveAndWishDir(ghost.initialDirection());
+			ghost.setMoveAndWishDir(initialGhostDirection(ghost));
 			ghost.setVisible(false);
 			ghost.enterStateLocked();
 			ghost.stopAnimation();

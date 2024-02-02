@@ -33,7 +33,6 @@ public class Ghost extends Creature {
 	private Vector2f initialPosition = Vector2f.ZERO;
 	private Vector2f revivalPosition = Vector2f.ZERO;
 	private Vector2i scatterTile = Vector2i.ZERO;
-	private Direction initialDirection = Direction.UP;
 	private int killedIndex;
 
 	private GameLevel level;
@@ -53,7 +52,6 @@ public class Ghost extends Creature {
 			", initialPosition=" + initialPosition +
 			", revivalPosition=" + revivalPosition +
 			", scatterTile=" + scatterTile +
-			", initialDirection=" + initialDirection +
 			", killedIndex=" + killedIndex +
 			'}';
 	}
@@ -120,15 +118,6 @@ public class Ghost extends Creature {
 	public void setScatterTile(Vector2i tile) {
 		checkNotNull(tile);
 		this.scatterTile = tile;
-	}
-
-	public Direction initialDirection() {
-		return initialDirection;
-	}
-
-	public void setInitialDirection(Direction dir) {
-		checkNotNull(dir);
-		this.initialDirection = dir;
 	}
 
 	/**
