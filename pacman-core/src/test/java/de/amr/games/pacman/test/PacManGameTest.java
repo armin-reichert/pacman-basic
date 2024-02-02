@@ -71,25 +71,21 @@ public class PacManGameTest {
 		game.level().ifPresent(level -> {
 			var redGhost = level.ghost(GameModel.RED_GHOST);
 			assertEquals(-1, redGhost.killedIndex());
-			assertNotEquals(Vector2f.ZERO, redGhost.initialPosition());
 			assertNotEquals(Vector2f.ZERO, redGhost.revivalPosition());
 			assertNotEquals(Vector2i.ZERO, redGhost.scatterTile());
 
 			var pinkGhost = level.ghost(GameModel.PINK_GHOST);
 			assertEquals(-1, pinkGhost.killedIndex());
-			assertNotEquals(Vector2f.ZERO, pinkGhost.initialPosition());
 			assertNotEquals(Vector2f.ZERO, pinkGhost.revivalPosition());
 			assertNotEquals(Vector2i.ZERO, pinkGhost.scatterTile());
 
 			var cyanGhost = level.ghost(GameModel.CYAN_GHOST);
 			assertEquals(-1, cyanGhost.killedIndex());
-			assertNotEquals(Vector2f.ZERO, cyanGhost.initialPosition());
 			assertNotEquals(Vector2f.ZERO, cyanGhost.revivalPosition());
 			assertNotEquals(Vector2i.ZERO, cyanGhost.scatterTile());
 
 			var orangeGhost = level.ghost(GameModel.ORANGE_GHOST);
 			assertEquals(-1, orangeGhost.killedIndex());
-			assertNotEquals(Vector2f.ZERO, orangeGhost.initialPosition());
 			assertNotEquals(Vector2f.ZERO, orangeGhost.revivalPosition());
 			assertNotEquals(Vector2i.ZERO, orangeGhost.scatterTile());
 		});

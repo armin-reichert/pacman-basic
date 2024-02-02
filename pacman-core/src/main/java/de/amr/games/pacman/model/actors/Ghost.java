@@ -30,7 +30,6 @@ public class Ghost extends Creature {
 	private final byte id;
 	private GhostState state;
 	private Supplier<Vector2i> fnChasingTarget = () -> null;
-	private Vector2f initialPosition = Vector2f.ZERO;
 	private Vector2f revivalPosition = Vector2f.ZERO;
 	private Vector2i scatterTile = Vector2i.ZERO;
 	private byte killedIndex;
@@ -49,7 +48,6 @@ public class Ghost extends Creature {
 		return "Ghost{" +
 			"id=" + id +
 			", state=" + state +
-			", initialPosition=" + initialPosition +
 			", revivalPosition=" + revivalPosition +
 			", scatterTile=" + scatterTile +
 			", killedIndex=" + killedIndex +
@@ -91,15 +89,6 @@ public class Ghost extends Creature {
 	public void setChasingTarget(Supplier<Vector2i> fnChasingTarget) {
 		checkNotNull(fnChasingTarget);
 		this.fnChasingTarget = fnChasingTarget;
-	}
-
-	public Vector2f initialPosition() {
-		return initialPosition;
-	}
-
-	public void setInitialPosition(Vector2f pos) {
-		checkNotNull(pos);
-		this.initialPosition = pos;
 	}
 
 	public Vector2f revivalPosition() {
@@ -252,8 +241,8 @@ public class Ghost extends Creature {
 
 	private void updateStateLocked() {
 		if (insideHouse()) {
-			var minY = initialPosition.y() - HTS;
-			var maxY = initialPosition.y() + HTS;
+			var minY = level.initialGhostPosition(this).y() - HTS;
+			var maxY = level.initialGhostPosition(this).y() + HTS;
 			if (pos_y <= minY) {
 				setMoveAndWishDir(DOWN);
 			} else if (pos_y >= maxY) {

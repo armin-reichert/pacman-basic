@@ -6,10 +6,7 @@ package de.amr.games.pacman.model;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.NavigationPoint;
-import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.Vector2i;
+import de.amr.games.pacman.lib.*;
 import de.amr.games.pacman.model.actors.*;
 import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.World;
@@ -139,25 +136,21 @@ public class GameLevel {
 		ghosts().forEach(guy -> guy.setLevel(this));
 
 		// Blinky: attacks Pac-Man directly
-		ghosts[RED_GHOST].setInitialPosition(house.door().entryPosition());
 		ghosts[RED_GHOST].setRevivalPosition(house.seat("middle"));
 		ghosts[RED_GHOST].setScatterTile(v2i(25, 0));
 		ghosts[RED_GHOST].setChasingTarget(pac::tile);
 
 		// Pinky: ambushes Pac-Man
-		ghosts[PINK_GHOST].setInitialPosition(house.seat("middle"));
 		ghosts[PINK_GHOST].setRevivalPosition(house.seat("middle"));
 		ghosts[PINK_GHOST].setScatterTile(v2i(2, 0));
 		ghosts[PINK_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(4));
 
 		// Inky: attacks from opposite side as Blinky
-		ghosts[CYAN_GHOST].setInitialPosition(house.seat("left"));
 		ghosts[CYAN_GHOST].setRevivalPosition(house.seat("left"));
 		ghosts[CYAN_GHOST].setScatterTile(v2i(27, 34));
 		ghosts[CYAN_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(2).scaled(2).minus(ghosts[RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
-		ghosts[ORANGE_GHOST].setInitialPosition(house.seat("right"));
 		ghosts[ORANGE_GHOST].setRevivalPosition(house.seat("right"));
 		ghosts[ORANGE_GHOST].setScatterTile(v2i(0, 34));
 		ghosts[ORANGE_GHOST].setChasingTarget(() -> ghosts[ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8
@@ -173,11 +166,21 @@ public class GameLevel {
 		Logger.trace("Game level {} ({}) created.", levelNumber, game.variant());
 	}
 
-	private Direction initialGhostDirection(Ghost ghost) {
+	public Direction initialGhostDirection(Ghost ghost) {
 		return switch (ghost.id()) {
 			case RED_GHOST -> LEFT;
 			case PINK_GHOST -> DOWN;
 			case CYAN_GHOST, ORANGE_GHOST -> UP;
+			default -> throw new IllegalGhostIDException(ghost.id());
+		};
+	}
+
+	public Vector2f initialGhostPosition(Ghost ghost) {
+		return switch (ghost.id()) {
+			case RED_GHOST    -> world.house().door().entryPosition();
+			case PINK_GHOST   -> world.house().seat("middle");
+			case CYAN_GHOST   -> world.house().seat("left");
+			case ORANGE_GHOST -> world.house().seat("right");
 			default -> throw new IllegalGhostIDException(ghost.id());
 		};
 	}
@@ -416,15 +419,13 @@ public class GameLevel {
 		pac.setPosition(halfTileRightOf(13, 26));
 		pac.setMoveAndWishDir(Direction.LEFT);
 		pac.setVisible(false);
-		pac.stopAnimation();
 		pac.resetAnimation();
 		ghosts().forEach(ghost -> {
 			ghost.reset();
-			ghost.setPosition(ghost.initialPosition());
+			ghost.setPosition(initialGhostPosition(ghost));
 			ghost.setMoveAndWishDir(initialGhostDirection(ghost));
 			ghost.setVisible(false);
 			ghost.enterStateLocked();
-			ghost.stopAnimation();
 			ghost.resetAnimation();
 		});
 		world.mazeFlashing().reset();
