@@ -117,7 +117,7 @@ public class MsPacManIntermission3 {
 		}
 
 		// (closed) bag reaches ground for first time?
-		if (!bagOpen && bag.position().y() > LANE_Y) {
+		if (!bagOpen && bag.pos_y() > LANE_Y) {
 			++numBagBounces;
 			if (numBagBounces < 3) {
 				bag.setVelocity(-0.2f, -1f / numBagBounces);

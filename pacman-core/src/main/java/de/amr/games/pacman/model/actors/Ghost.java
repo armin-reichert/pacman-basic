@@ -324,7 +324,7 @@ public class Ghost extends Creature {
 	 */
 	private boolean leaveHouse(House house) {
 		var endPosition = house.door().entryPosition();
-		if (position().y() <= endPosition.y()) {
+		if (pos_y() <= endPosition.y()) {
 			setPosition(endPosition); // align vertically at house entry
 			return true;
 		}
@@ -355,7 +355,7 @@ public class Ghost extends Creature {
 			// near entry, start entering
 			setPosition(entryPosition);
 			setMoveAndWishDir(Direction.DOWN);
-		} else if (position().y() >= houseCenter.y()) {
+		} else if (pos_y() >= houseCenter.y()) {
 			setPos_y(houseCenter.y());
 			if (targetPosition.x() < houseCenter.x()) {
 				setMoveAndWishDir(LEFT);
@@ -364,8 +364,8 @@ public class Ghost extends Creature {
 			}
 		}
 		move();
-		boolean reachedTarget = differsAtMost(1, position().x(), targetPosition.x())
-				&& position().y() >= targetPosition.y();
+		boolean reachedTarget = differsAtMost(1, pos_x(), targetPosition.x())
+				&& pos_y() >= targetPosition.y();
 		if (reachedTarget) {
 			setPosition(targetPosition);
 		}
