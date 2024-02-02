@@ -232,13 +232,13 @@ public abstract class Creature extends Entity implements AnimationDirector {
 	/**
 	 * Sets the speed as a fraction of the base speed (1.25 pixels/sec).
 	 * 
-	 * @param fraction fraction of base speed
+	 * @param percentage percentage of base speed
 	 */
-	public void setRelSpeed(float fraction) {
-		if (fraction < 0) {
-			throw new IllegalArgumentException("Negative speed fraction: " + fraction);
+	public void setRelSpeed(byte percentage) {
+		if (percentage < 0) {
+			throw new IllegalArgumentException("Negative speed percentage: " + percentage);
 		}
-		setPixelSpeed(fraction * GameModel.SPEED_PX_100_PERCENT);
+		setPixelSpeed((float) 0.01 *  percentage * GameModel.SPEED_PX_100_PERCENT);
 	}
 
 	/**

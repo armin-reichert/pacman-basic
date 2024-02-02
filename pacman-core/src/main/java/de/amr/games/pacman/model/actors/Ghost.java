@@ -376,7 +376,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateHuntingPac() {
-		setRelSpeed(level.huntingSpeed(this));
+		setRelSpeed(level.huntingSpeedPercentage(this));
 		level.doGhostHuntingAction(this);
 	}
 
@@ -394,7 +394,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateFrightened() {
-		var speed = world().isTunnel(tile()) ? level.ghostSpeedTunnel : level.ghostSpeedFrightened;
+		var speed = world().isTunnel(tile()) ? level.ghostSpeedTunnelPercentage : level.ghostSpeedFrightenedPercentage;
 		setRelSpeed(speed);
 		roam();
 		selectFrightenedAnimation();

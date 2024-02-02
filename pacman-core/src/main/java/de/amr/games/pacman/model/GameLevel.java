@@ -31,31 +31,31 @@ import static de.amr.games.pacman.model.actors.GhostState.*;
 public class GameLevel {
 
 	/** Relative Pac-Man speed (percentage of base speed). */
-	public final float pacSpeed;
+	public final byte pacSpeedPercentage;
 
 	/** Relative ghost speed when hunting or scattering. */
-	public final float ghostSpeed;
+	public final byte ghostSpeedPercentage;
 
 	/** Relative ghost speed inside tunnel. */
-	public final float ghostSpeedTunnel;
+	public final byte ghostSpeedTunnelPercentage;
 
 	/** Number of pellets left when Blinky becomes "Cruise Elroy" grade 1. */
 	public final byte elroy1DotsLeft;
 
 	/** Relative speed of Blinky being "Cruise Elroy" grade 1. */
-	public final float elroy1Speed;
+	public final byte elroy1SpeedPercentage;
 
 	/** Number of pellets left when Blinky becomes "Cruise Elroy" grade 2. */
 	public final byte elroy2DotsLeft;
 
 	/** Relative speed of Blinky being "Cruise Elroy" grade 2. */
-	public final float elroy2Speed;
+	public final byte elroy2SpeedPercentage;
 
 	/** Relative speed of Pac-Man in power mode. */
-	public final float pacSpeedPowered;
+	public final byte pacSpeedPoweredPercentage;
 
 	/** Relative speed of frightened ghost. */
-	public final float ghostSpeedFrightened;
+	public final byte ghostSpeedFrightenedPercentage;
 
 	/** Number of seconds Pac-Man gets power. */
 	public final byte pacPowerSeconds;
@@ -105,18 +105,18 @@ public class GameLevel {
 		this.levelNumber = number;
 		this.demoLevel   = demoLevel;
 
-		pacSpeed             = percent(data[0]);
-		ghostSpeed           = percent(data[1]);
-		ghostSpeedTunnel     = percent(data[2]);
-		elroy1DotsLeft       = data[3];
-		elroy1Speed          = percent(data[4]);
-		elroy2DotsLeft       = data[5];
-		elroy2Speed          = percent(data[6]);
-		pacSpeedPowered      = percent(data[7]);
-		ghostSpeedFrightened = percent(data[8]);
-		pacPowerSeconds      = data[9];
-		numFlashes           = data[10];
-		intermissionNumber   = data[11];
+		pacSpeedPercentage             = data[0];
+		ghostSpeedPercentage           = data[1];
+		ghostSpeedTunnelPercentage     = data[2];
+		elroy1DotsLeft                 = data[3];
+		elroy1SpeedPercentage          = data[4];
+		elroy2DotsLeft                 = data[5];
+		elroy2SpeedPercentage          = data[6];
+		pacSpeedPoweredPercentage      = data[7];
+		ghostSpeedFrightenedPercentage = data[8];
+		pacPowerSeconds                = data[9];
+		numFlashes                     = data[10];
+		intermissionNumber             = data[11];
 
 		final boolean msPacManGame = game.variant() == GameVariant.MS_PACMAN;
 		final House house = world.house();
@@ -428,19 +428,19 @@ public class GameLevel {
 
 	/**
 	 * @param ghost a ghost
-	 * @return relative speed of ghost
+	 * @return relative speed of ghost in percent of the base speed
 	 */
-	public float huntingSpeed(Ghost ghost) {
+	public byte huntingSpeedPercentage(Ghost ghost) {
 		if (world.isTunnel(ghost.tile())) {
-			return ghostSpeedTunnel;
+			return ghostSpeedTunnelPercentage;
 		}
 		if (ghost.id() == RED_GHOST && cruiseElroyState == 1) {
-			return elroy1Speed;
+			return elroy1SpeedPercentage;
 		}
 		if (ghost.id() == RED_GHOST && cruiseElroyState == 2) {
-			return elroy2Speed;
+			return elroy2SpeedPercentage;
 		}
-		return ghostSpeed;
+		return ghostSpeedPercentage;
 	}
 
 	/* --- Here comes the main logic of the game. --- */
