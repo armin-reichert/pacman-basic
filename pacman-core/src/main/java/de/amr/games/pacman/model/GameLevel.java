@@ -26,45 +26,62 @@ import static de.amr.games.pacman.model.GameModel.*;
 import static de.amr.games.pacman.model.actors.GhostState.*;
 
 /**
+ * Game level data.
+ * <pre>
+ * 	pacSpeedPercentage             = data[0];
+ * 	ghostSpeedPercentage           = data[1];
+ * 	ghostSpeedTunnelPercentage     = data[2];
+ * 	elroy1DotsLeft                 = data[3];
+ * 	elroy1SpeedPercentage          = data[4];
+ * 	elroy2DotsLeft                 = data[5];
+ * 	elroy2SpeedPercentage          = data[6];
+ * 	pacSpeedPoweredPercentage      = data[7];
+ * 	ghostSpeedFrightenedPercentage = data[8];
+ * 	pacPowerSeconds                = data[9];
+ * 	numFlashes                     = data[10];
+ * 	intermissionNumber             = data[11];
+ * 	</pre>
  * @author Armin Reichert
  */
 public class GameLevel {
 
+	private final byte[] data;
+
 	/** Relative Pac-Man speed (percentage of base speed). */
-	public final byte pacSpeedPercentage;
+	public final byte pacSpeedPercentage() { return data[0]; }
 
 	/** Relative ghost speed when hunting or scattering. */
-	public final byte ghostSpeedPercentage;
+	public final byte ghostSpeedPercentage() { return data[1]; }
 
 	/** Relative ghost speed inside tunnel. */
-	public final byte ghostSpeedTunnelPercentage;
+	public final byte ghostSpeedTunnelPercentage() { return data[2]; }
 
 	/** Number of pellets left when Blinky becomes "Cruise Elroy" grade 1. */
-	public final byte elroy1DotsLeft;
+	public final byte elroy1DotsLeft() { return data[3]; }
 
 	/** Relative speed of Blinky being "Cruise Elroy" grade 1. */
-	public final byte elroy1SpeedPercentage;
+	public final byte elroy1SpeedPercentage() { return data[4]; }
 
 	/** Number of pellets left when Blinky becomes "Cruise Elroy" grade 2. */
-	public final byte elroy2DotsLeft;
+	public final byte elroy2DotsLeft() { return data[5]; }
 
 	/** Relative speed of Blinky being "Cruise Elroy" grade 2. */
-	public final byte elroy2SpeedPercentage;
+	public final byte elroy2SpeedPercentage() { return data[6]; }
 
 	/** Relative speed of Pac-Man in power mode. */
-	public final byte pacSpeedPoweredPercentage;
+	public final byte pacSpeedPoweredPercentage() { return data[7]; }
 
 	/** Relative speed of frightened ghost. */
-	public final byte ghostSpeedFrightenedPercentage;
+	public final byte ghostSpeedFrightenedPercentage() { return data[8]; }
 
 	/** Number of seconds Pac-Man gets power. */
-	public final byte pacPowerSeconds;
+	public final byte pacPowerSeconds() { return data[9]; }
 
 	/** Number of maze flashes at end of this level. */
-	public final byte numFlashes;
+	public final byte numFlashes() { return data[10]; }
 
 	/** Number of intermission scene played after this level (1-3. 0 = no intermission). */
-	public final byte intermissionNumber;
+	public final byte intermissionNumber() { return data[11]; }
 
 	private final GameModel game;
 
@@ -88,9 +105,9 @@ public class GameLevel {
 
 	private byte huntingPhase;
 
-	private int numGhostsKilledInLevel;
+	private byte numGhostsKilledInLevel;
 
-	private int numGhostsKilledByEnergizer;
+	private byte numGhostsKilledByEnergizer;
 
 	private byte cruiseElroyState;
 
@@ -103,20 +120,8 @@ public class GameLevel {
 		this.game        = game;
 		this.world       = world;
 		this.levelNumber = number;
+		this.data        = data;
 		this.demoLevel   = demoLevel;
-
-		pacSpeedPercentage             = data[0];
-		ghostSpeedPercentage           = data[1];
-		ghostSpeedTunnelPercentage     = data[2];
-		elroy1DotsLeft                 = data[3];
-		elroy1SpeedPercentage          = data[4];
-		elroy2DotsLeft                 = data[5];
-		elroy2SpeedPercentage          = data[6];
-		pacSpeedPoweredPercentage      = data[7];
-		ghostSpeedFrightenedPercentage = data[8];
-		pacPowerSeconds                = data[9];
-		numFlashes                     = data[10];
-		intermissionNumber             = data[11];
 
 		final boolean msPacManGame = game.variant() == GameVariant.MS_PACMAN;
 		final House house = world.house();
@@ -432,15 +437,15 @@ public class GameLevel {
 	 */
 	public byte huntingSpeedPercentage(Ghost ghost) {
 		if (world.isTunnel(ghost.tile())) {
-			return ghostSpeedTunnelPercentage;
+			return ghostSpeedTunnelPercentage();
 		}
 		if (ghost.id() == RED_GHOST && cruiseElroyState == 1) {
-			return elroy1SpeedPercentage;
+			return elroy1SpeedPercentage();
 		}
 		if (ghost.id() == RED_GHOST && cruiseElroyState == 2) {
-			return elroy2SpeedPercentage;
+			return elroy2SpeedPercentage();
 		}
-		return ghostSpeedPercentage;
+		return ghostSpeedPercentage();
 	}
 
 	/* --- Here comes the main logic of the game. --- */
@@ -452,7 +457,7 @@ public class GameLevel {
 			thisFrame.foodFoundTile  = pacTile;
 			thisFrame.energizerFound = world.isEnergizerTile(pacTile);
 		}
-		if (thisFrame.energizerFound && pacPowerSeconds > 0) {
+		if (thisFrame.energizerFound && pacPowerSeconds() > 0) {
 			thisFrame.pacPowerStarts = true;
 			thisFrame.pacPowerActive = true;
 		} else {
@@ -481,16 +486,16 @@ public class GameLevel {
 			game.scorePoints(GameModel.POINTS_NORMAL_PELLET);
 		}
 		ghostHouseManagement.onFoodFound();
-		if (world.uneatenFoodCount() == elroy1DotsLeft) {
+		if (world.uneatenFoodCount() == elroy1DotsLeft()) {
 			setCruiseElroyState((byte) 1);
-		} else if (world.uneatenFoodCount() == elroy2DotsLeft) {
+		} else if (world.uneatenFoodCount() == elroy2DotsLeft()) {
 			setCruiseElroyState((byte) 2);
 		}
 		GameController.it().publishGameEvent(GameEventType.PAC_FOUND_FOOD, foodTile);
 	}
 
 	private void handlePacPowerStarts() {
-		pac.powerTimer().restartSeconds(pacPowerSeconds);
+		pac.powerTimer().restartSeconds(pacPowerSeconds());
 		Logger.info("{} power starting, duration {} ticks", pac.name(), pac.powerTimer().duration());
 		ghosts(HUNTING_PAC).forEach(Ghost::enterStateFrightened);
 		ghosts(FRIGHTENED).forEach(Ghost::reverseAsSoonAsPossible);
@@ -590,7 +595,7 @@ public class GameLevel {
 	public void killEdibleGhosts() {
 		if (!thisFrame.pacPrey.isEmpty()) {
 			thisFrame.pacPrey.forEach(this::killGhost);
-			numGhostsKilledInLevel += thisFrame.pacPrey.size();
+			numGhostsKilledInLevel += (byte) thisFrame.pacPrey.size();
 			if (numGhostsKilledInLevel == 16) {
 				int points = GameModel.POINTS_ALL_GHOSTS_KILLED_IN_LEVEL;
 				game.scorePoints(points);

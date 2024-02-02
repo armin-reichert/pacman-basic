@@ -394,7 +394,9 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateFrightened() {
-		var speed = world().isTunnel(tile()) ? level.ghostSpeedTunnelPercentage : level.ghostSpeedFrightenedPercentage;
+		var speed = world().isTunnel(tile())
+			? level.ghostSpeedTunnelPercentage()
+			: level.ghostSpeedFrightenedPercentage();
 		setRelSpeed(speed);
 		roam();
 		selectFrightenedAnimation();

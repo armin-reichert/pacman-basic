@@ -85,7 +85,7 @@ public class Pac extends Creature {
 			return;
 		}
 		if (restingTicks == 0) {
-			byte speed = powerTimer.isRunning() ? level.pacSpeedPoweredPercentage : level.pacSpeedPercentage;
+			byte speed = powerTimer.isRunning() ? level.pacSpeedPoweredPercentage() : level.pacSpeedPercentage();
 			setRelSpeed(speed);
 			tryMoving();
 			if (moved()) {

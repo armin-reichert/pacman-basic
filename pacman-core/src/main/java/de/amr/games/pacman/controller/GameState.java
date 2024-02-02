@@ -139,7 +139,7 @@ public enum GameState implements FsmState<GameModel> {
 					GameController.it().changeState(LEVEL_COMPLETE);
 				} else if (level.thisFrame().pacKilled) {
 					GameController.it().changeState(PACMAN_DYING);
-				} else if (level.thisFrame().pacPrey.size() > 0) {
+				} else if (!level.thisFrame().pacPrey.isEmpty()) {
 					level.killEdibleGhosts();
 					GameController.it().changeState(GHOST_DYING);
 				}
@@ -163,7 +163,7 @@ public enum GameState implements FsmState<GameModel> {
 					if (!GameController.it().hasCredit()) {
 						GameController.it().changeState(INTRO);
 						// attract mode -> back to intro scene
-					} else if (level.intermissionNumber > 0) {
+					} else if (level.intermissionNumber() > 0) {
 						GameController.it().changeState(INTERMISSION); // play intermission scene
 					} else {
 						GameController.it().changeState(CHANGING_TO_NEXT_LEVEL); // next level
@@ -173,7 +173,7 @@ public enum GameState implements FsmState<GameModel> {
 					level.pac().resetAnimation();
 					var flashing = level.world().mazeFlashing();
 					if (timer.atSecond(1)) {
-						flashing.restart(2 * level.numFlashes);
+						flashing.restart(2 * level.numFlashes());
 					} else {
 						flashing.tick();
 					}
@@ -360,7 +360,7 @@ public enum GameState implements FsmState<GameModel> {
 						level.guys().forEach(Creature::hide);
 					} else if (timer.atSecond(6.5)) {
 						var flashing = level.world().mazeFlashing();
-						flashing.restart(2 * level.numFlashes);
+						flashing.restart(2 * level.numFlashes());
 					} else if (timer.atSecond(12.0)) {
 						level.end();
 						game.nextLevel();
