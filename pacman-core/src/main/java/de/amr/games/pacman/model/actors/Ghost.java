@@ -408,7 +408,7 @@ public class Ghost extends Creature {
 	 */
 	public void enterStateEaten() {
 		state = EATEN;
-		selectAnimation(GhostAnimations.GHOST_NUMBER, killedIndex);
+		selectAnimation(GhostAnimations.GHOST_NUMBER, (int) killedIndex);
 	}
 
 	private void updateStateEaten() {
