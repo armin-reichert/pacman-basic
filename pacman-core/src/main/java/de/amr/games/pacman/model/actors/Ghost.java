@@ -33,7 +33,7 @@ public class Ghost extends Creature {
 	private Vector2f initialPosition = Vector2f.ZERO;
 	private Vector2f revivalPosition = Vector2f.ZERO;
 	private Vector2i scatterTile = Vector2i.ZERO;
-	private int killedIndex;
+	private byte killedIndex;
 
 	private GameLevel level;
 
@@ -124,7 +124,7 @@ public class Ghost extends Creature {
 	 * @return Index <code>(0,1,2,3)</code> telling when this ghost was killed during Pac-Man power phase. If not killed,
 	 *         value is -1.
 	 */
-	public int killedIndex() {
+	public byte killedIndex() {
 		return killedIndex;
 	}
 
@@ -132,7 +132,7 @@ public class Ghost extends Creature {
 		if (index < -1 || index > 3) {
 			throw new IllegalArgumentException("Killed index must be one of -1, 0, 1, 2, 3, but is: " + index);
 		}
-		this.killedIndex = index;
+		this.killedIndex = (byte) index;
 	}
 
 	@Override
