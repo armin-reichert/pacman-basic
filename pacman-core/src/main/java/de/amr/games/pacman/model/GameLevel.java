@@ -140,7 +140,6 @@ public class GameLevel {
 		ghosts[RED_GHOST].setChasingTarget(pac::tile);
 
 		// Pinky: ambushes Pac-Man
-		ghosts[PINK_GHOST].setWishDir(Direction.DOWN);
 		ghosts[PINK_GHOST].setInitialPosition(house.seat("middle"));
 		ghosts[PINK_GHOST].setRevivalPosition(house.seat("middle"));
 		ghosts[PINK_GHOST].setScatterTile(v2i(2, 0));
