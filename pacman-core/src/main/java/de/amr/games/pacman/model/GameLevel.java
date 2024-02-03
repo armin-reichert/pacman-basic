@@ -8,7 +8,6 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.*;
 import de.amr.games.pacman.model.actors.*;
-import de.amr.games.pacman.model.world.House;
 import de.amr.games.pacman.model.world.World;
 import org.tinylog.Logger;
 
@@ -23,7 +22,7 @@ import static de.amr.games.pacman.model.GameModel.*;
 import static de.amr.games.pacman.model.actors.GhostState.*;
 
 /**
- * Game level data.
+ * A game level. Each level is parametrized by the following data:
  * <pre>
  * 	pacSpeedPercentage             = data[0];
  * 	ghostSpeedPercentage           = data[1];
@@ -38,47 +37,12 @@ import static de.amr.games.pacman.model.actors.GhostState.*;
  * 	numFlashes                     = data[10];
  * 	intermissionNumber             = data[11];
  * 	</pre>
+ *
  * @author Armin Reichert
  */
 public class GameLevel {
 
 	private final byte[] data;
-
-	/** Relative Pac-Man speed (percentage of base speed). */
-	public final byte pacSpeedPercentage() { return data[0]; }
-
-	/** Relative ghost speed when hunting or scattering. */
-	public final byte ghostSpeedPercentage() { return data[1]; }
-
-	/** Relative ghost speed inside tunnel. */
-	public final byte ghostSpeedTunnelPercentage() { return data[2]; }
-
-	/** Number of pellets left when Blinky becomes "Cruise Elroy" grade 1. */
-	public final byte elroy1DotsLeft() { return data[3]; }
-
-	/** Relative speed of Blinky being "Cruise Elroy" grade 1. */
-	public final byte elroy1SpeedPercentage() { return data[4]; }
-
-	/** Number of pellets left when Blinky becomes "Cruise Elroy" grade 2. */
-	public final byte elroy2DotsLeft() { return data[5]; }
-
-	/** Relative speed of Blinky being "Cruise Elroy" grade 2. */
-	public final byte elroy2SpeedPercentage() { return data[6]; }
-
-	/** Relative speed of Pac-Man in power mode. */
-	public final byte pacSpeedPoweredPercentage() { return data[7]; }
-
-	/** Relative speed of frightened ghost. */
-	public final byte ghostSpeedFrightenedPercentage() { return data[8]; }
-
-	/** Number of seconds Pac-Man gets power. */
-	public final byte pacPowerSeconds() { return data[9]; }
-
-	/** Number of maze flashes at end of this level. */
-	public final byte numFlashes() { return data[10]; }
-
-	/** Number of intermission scene played after this level (1-3. 0 = no intermission). */
-	public final byte intermissionNumber() { return data[11]; }
 
 	private final GameModel game;
 
@@ -120,38 +84,34 @@ public class GameLevel {
 		this.data        = data;
 		this.demoLevel   = demoLevel;
 
-		final boolean msPacManGame = game.variant() == GameVariant.MS_PACMAN;
-		final House house = world.house();
-
-		pac = new Pac(msPacManGame ? "Ms. Pac-Man" : "Pac-Man");
+		pac = new Pac(game.variant() == GameVariant.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man");
 		pac.setLevel(this);
 
 		ghosts = new Ghost[] {
 			new Ghost(RED_GHOST,  "Blinky"),
 			new Ghost(PINK_GHOST, "Pinky"),
 			new Ghost(CYAN_GHOST, "Inky"),
-			new Ghost(ORANGE_GHOST, msPacManGame ? "Sue" : "Clyde")
+			new Ghost(ORANGE_GHOST, game.variant() == GameVariant.MS_PACMAN ? "Sue" : "Clyde")
 		};
-
-		ghosts().forEach(guy -> guy.setLevel(this));
+		ghosts().forEach(ghost -> ghost.setLevel(this));
 
 		// Blinky: attacks Pac-Man directly
-		ghosts[RED_GHOST].setRevivalPosition(house.seat("middle"));
+		ghosts[RED_GHOST].setRevivalPosition(world.house().seat("middle"));
 		ghosts[RED_GHOST].setScatterTile(v2i(25, 0));
 		ghosts[RED_GHOST].setChasingTarget(pac::tile);
 
 		// Pinky: ambushes Pac-Man
-		ghosts[PINK_GHOST].setRevivalPosition(house.seat("middle"));
+		ghosts[PINK_GHOST].setRevivalPosition(world.house().seat("middle"));
 		ghosts[PINK_GHOST].setScatterTile(v2i(2, 0));
 		ghosts[PINK_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(4));
 
 		// Inky: attacks from opposite side as Blinky
-		ghosts[CYAN_GHOST].setRevivalPosition(house.seat("left"));
+		ghosts[CYAN_GHOST].setRevivalPosition(world.house().seat("left"));
 		ghosts[CYAN_GHOST].setScatterTile(v2i(27, 34));
 		ghosts[CYAN_GHOST].setChasingTarget(() -> pac.tilesAheadBuggy(2).scaled(2).minus(ghosts[RED_GHOST].tile()));
 
 		// Clyde/Sue: attacks directly but retreats if Pac is near
-		ghosts[ORANGE_GHOST].setRevivalPosition(house.seat("right"));
+		ghosts[ORANGE_GHOST].setRevivalPosition(world.house().seat("right"));
 		ghosts[ORANGE_GHOST].setScatterTile(v2i(0, 34));
 		ghosts[ORANGE_GHOST].setChasingTarget(() -> ghosts[ORANGE_GHOST].tile().euclideanDistance(pac.tile()) < 8
 				? ghosts[ORANGE_GHOST].scatterTile()
@@ -194,6 +154,43 @@ public class GameLevel {
 		stopHuntingTimer();
 		Logger.trace("Game level {} ({}) ended.", levelNumber, game.variant());
 	}
+
+
+	/** Relative Pac-Man speed (percentage of base speed). */
+	public final byte pacSpeedPercentage() { return data[0]; }
+
+	/** Relative ghost speed when hunting or scattering. */
+	public final byte ghostSpeedPercentage() { return data[1]; }
+
+	/** Relative ghost speed inside tunnel. */
+	public final byte ghostSpeedTunnelPercentage() { return data[2]; }
+
+	/** Number of pellets left when Blinky becomes "Cruise Elroy" grade 1. */
+	public final byte elroy1DotsLeft() { return data[3]; }
+
+	/** Relative speed of Blinky being "Cruise Elroy" grade 1. */
+	public final byte elroy1SpeedPercentage() { return data[4]; }
+
+	/** Number of pellets left when Blinky becomes "Cruise Elroy" grade 2. */
+	public final byte elroy2DotsLeft() { return data[5]; }
+
+	/** Relative speed of Blinky being "Cruise Elroy" grade 2. */
+	public final byte elroy2SpeedPercentage() { return data[6]; }
+
+	/** Relative speed of Pac-Man in power mode. */
+	public final byte pacSpeedPoweredPercentage() { return data[7]; }
+
+	/** Relative speed of frightened ghost. */
+	public final byte ghostSpeedFrightenedPercentage() { return data[8]; }
+
+	/** Number of seconds Pac-Man gets power. */
+	public final byte pacPowerSeconds() { return data[9]; }
+
+	/** Number of maze flashes at end of this level. */
+	public final byte numFlashes() { return data[10]; }
+
+	/** Number of intermission scene played after this level (1-3. 0 = no intermission). */
+	public final byte intermissionNumber() { return data[11]; }
 
 	public GameModel game() {
 		return game;
@@ -264,12 +261,12 @@ public class GameLevel {
 	/**
 	 * @param cruiseElroyState Values: <code>0, 1, 2, -1, -2</code>. (0=off, negative=disabled).
 	 */
-	public void setCruiseElroyState(byte cruiseElroyState) {
+	public void setCruiseElroyState(int cruiseElroyState) {
 		if (cruiseElroyState < -2 || cruiseElroyState > 2) {
 			throw new IllegalArgumentException(
 					"Cruise Elroy state must be one of -2, -1, 0, 1, 2, but is " + cruiseElroyState);
 		}
-		this.cruiseElroyState = cruiseElroyState;
+		this.cruiseElroyState = (byte) cruiseElroyState;
 		Logger.trace("Cruise Elroy state set to {}", cruiseElroyState);
 	}
 
@@ -299,7 +296,7 @@ public class GameLevel {
 		if (upwardsBlockedTiles().isEmpty()) {
 			return true;
 		}
-		// In the Pac-Man game, hunting ghosts cannot move upwards at specific tiles
+		// In the Pac-Man game, *hunting* ghosts cannot move upwards at specific tiles
 		boolean upwardsBlocked = upwardsBlockedTiles().contains(ghost.tile());
 		return !(upwardsBlocked && dir == UP && ghost.is(HUNTING_PAC));
 	}
@@ -367,28 +364,27 @@ public class GameLevel {
 	public void doGhostHuntingAction(Ghost ghost) {
 		boolean cruiseElroy = ghost.id() == RED_GHOST && cruiseElroyState > 0;
 		switch (game.variant()) {
-		case MS_PACMAN:
-			/*
-			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* hunting/scatter phase. Some say, the original
-			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
-			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
-			 */
-			if (scatterPhase().isPresent() && (ghost.id() == RED_GHOST || ghost.id() == PINK_GHOST)) {
-				ghost.roam();
-			} else if (chasingPhase().isPresent() || cruiseElroy) {
-				ghost.chase();
-			} else {
-				ghost.scatter();
+			case MS_PACMAN -> {
+				/*
+				 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* hunting/scatter phase. Some say,
+				 * the original intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man
+				 * but because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who knows?
+				 */
+				if (scatterPhase().isPresent() && (ghost.id() == RED_GHOST || ghost.id() == PINK_GHOST)) {
+					ghost.roam();
+				} else if (chasingPhase().isPresent() || cruiseElroy) {
+					ghost.chase();
+				} else {
+					ghost.scatter();
+				}
 			}
-			break;
-		case PACMAN:
-			if (chasingPhase().isPresent() || cruiseElroy) {
-				ghost.chase();
-			} else {
-				ghost.scatter();
+			case PACMAN -> {
+				if (chasingPhase().isPresent() || cruiseElroy) {
+					ghost.chase();
+				} else {
+					ghost.scatter();
+				}
 			}
-			break;
-		default: throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
@@ -488,9 +484,9 @@ public class GameLevel {
 		}
 		ghostHouseManagement.onFoodFound();
 		if (world.uneatenFoodCount() == elroy1DotsLeft()) {
-			setCruiseElroyState((byte) 1);
+			setCruiseElroyState(1);
 		} else if (world.uneatenFoodCount() == elroy2DotsLeft()) {
-			setCruiseElroyState((byte) 2);
+			setCruiseElroyState(2);
 		}
 		GameController.it().publishGameEvent(GameEventType.PAC_FOUND_FOOD, foodTile);
 	}
