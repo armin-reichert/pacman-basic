@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'org.javamodularity.moduleplugin' version '1.8.12'
+}
+
+group 'de.amr.games.pacman'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    //junitVersion = '5.10.0'
+}
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    implementation 'org.tinylog:tinylog-api:2.7.0'
+    implementation 'org.tinylog:tinylog-impl:2.7.0'
+    // https://mvnrepository.com/artifact/junit/junit
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+}
+
+test {
+    //useJUnitPlatform()
+}
