@@ -105,6 +105,7 @@ public class Pac extends Creature {
 		dead = true;
 		starvingTicks = 0;
 		restingTicks = 0;
+		powerTimer.stop();
 	}
 
 	public boolean isPowerFading() {
@@ -113,10 +114,6 @@ public class Pac extends Creature {
 
 	public TickTimer powerTimer() {
 		return powerTimer;
-	}
-
-	public boolean isDead() {
-		return dead;
 	}
 
 	/* Number of ticks Pac is resting and not moving. */

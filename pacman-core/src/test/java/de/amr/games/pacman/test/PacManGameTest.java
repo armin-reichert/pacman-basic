@@ -60,7 +60,6 @@ public class PacManGameTest {
 	public void testPacCreatedAndInitialized() {
 		game.level().ifPresent(level -> {
 			var pac = level.pac();
-			assertFalse(pac.isDead());
 			assertEquals(0, pac.restingTicks());
 			assertEquals(0, pac.starvingTicks());
 		});
@@ -108,16 +107,6 @@ public class PacManGameTest {
 			assertEquals(1, pac.starvingTicks());
 			pac.starve();
 			assertEquals(2, pac.starvingTicks());
-		});
-	}
-
-	@Test
-	public void testPacDying() {
-		game.level().ifPresent(level -> {
-			var pac = level.pac();
-			assertFalse(pac.isDead());
-			pac.killed();
-			assertTrue(pac.isDead());
 		});
 	}
 
