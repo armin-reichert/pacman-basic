@@ -126,22 +126,22 @@ public class GameLevel {
 		Logger.trace("Game level {} ({}) created.", levelNumber, game.variant());
 	}
 
-	public Direction initialGhostDirection(Ghost ghost) {
-		return switch (ghost.id()) {
+	public Direction initialGhostDirection(byte ghostID) {
+		return switch (ghostID) {
 			case RED_GHOST -> LEFT;
 			case PINK_GHOST -> DOWN;
 			case CYAN_GHOST, ORANGE_GHOST -> UP;
-			default -> throw new IllegalGhostIDException(ghost.id());
+			default -> throw new IllegalGhostIDException(ghostID);
 		};
 	}
 
-	public Vector2f initialGhostPosition(Ghost ghost) {
-		return switch (ghost.id()) {
+	public Vector2f initialGhostPosition(byte ghostID) {
+		return switch (ghostID) {
 			case RED_GHOST    -> world.house().door().entryPosition();
 			case PINK_GHOST   -> world.house().seat("middle");
 			case CYAN_GHOST   -> world.house().seat("left");
 			case ORANGE_GHOST -> world.house().seat("right");
-			default -> throw new IllegalGhostIDException(ghost.id());
+			default -> throw new IllegalGhostIDException(ghostID);
 		};
 	}
 
@@ -418,8 +418,8 @@ public class GameLevel {
 		pac.resetAnimation();
 		ghosts().forEach(ghost -> {
 			ghost.reset();
-			ghost.setPosition(initialGhostPosition(ghost));
-			ghost.setMoveAndWishDir(initialGhostDirection(ghost));
+			ghost.setPosition(initialGhostPosition(ghost.id()));
+			ghost.setMoveAndWishDir(initialGhostDirection(ghost.id()));
 			ghost.setVisible(false);
 			ghost.enterStateLocked();
 			ghost.resetAnimation();

@@ -241,8 +241,8 @@ public class Ghost extends Creature {
 
 	private void updateStateLocked() {
 		if (insideHouse()) {
-			var minY = level.initialGhostPosition(this).y() - HTS;
-			var maxY = level.initialGhostPosition(this).y() + HTS;
+			var minY = level.initialGhostPosition(id).y() - HTS;
+			var maxY = level.initialGhostPosition(id).y() + HTS;
 			if (pos_y <= minY) {
 				setMoveAndWishDir(DOWN);
 			} else if (pos_y >= maxY) {
