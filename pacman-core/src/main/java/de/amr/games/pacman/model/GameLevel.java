@@ -743,7 +743,7 @@ public class GameLevel {
 	 */
 	public void handleBonusReached(int bonusIndex) {
 		switch (game.variant()) {
-			case MS_PACMAN: {
+			case MS_PACMAN -> {
 				if (bonusIndex == 1 && bonus != null && bonus.state() != Bonus.STATE_INACTIVE) {
 					Logger.info("First bonus still active, skip second one");
 					return;
@@ -752,18 +752,15 @@ public class GameLevel {
 				bonus = createMovingBonus(symbol, GameModel.BONUS_VALUES_MS_PACMAN[symbol] * 100, RND.nextBoolean());
 				bonus.setEdible(TickTimer.INDEFINITE);
 				GameController.it().publishGameEvent(GameEventType.BONUS_ACTIVATED, bonus.entity().tile());
-				break;
 			}
-			case PACMAN: {
+			case PACMAN -> {
 				byte symbol = bonusSymbols[bonusIndex];
 				bonus = new StaticBonus(symbol, GameModel.BONUS_VALUES_PACMAN[symbol] * 100);
 				bonus.entity().setPosition(GameModel.BONUS_POSITION_PACMAN);
 				int ticks = randomInt(9 * FPS, 10 * FPS); // between 9 and 10 seconds
 				bonus.setEdible(ticks);
 				GameController.it().publishGameEvent(GameEventType.BONUS_ACTIVATED, bonus.entity().tile());
-				break;
 			}
-			default: throw new IllegalGameVariantException(game.variant());
 		}
 	}
 
