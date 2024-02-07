@@ -4,7 +4,7 @@ Pac-Man and Ms. Pac-Man game implementation written in Java with levels, timing,
 
 
 
-The code in this project (The sources have moved to repository [pacman-javafx](https://github.com/armin-reichert/pacman-javafx/tree/main/pacman-core) is more "to the point" than the one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
+The code in this project (The sources have moved to repository [pacman-javafx](https://github.com/armin-reichert/pacman-javafx/tree/main/pacman-core)) is more "to the point" than the one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
 
 The implementation follows the Model-View-Controller design pattern:
 - The game controller is a [finite-state machine](https://github.com/armin-reichert/pacman-javafx/tree/main/pacman-core/src/main/java/de/amr/games/pacman/lib/Fsm.java) with states
