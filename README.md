@@ -1,10 +1,10 @@
 ## Pac-Man and Ms. Pac-Man (game model+logic, sound events, animation control, no UI!)
 
-Pac-Man and Ms. Pac-Man game implementation written in Java with levels, timing, ghost "AI" etc. following the details given in the (highly appreciated) [Pac-Man Dossier](https://pacman.holenet.info) by Jamey Pittman. The Ms. Pac-Man levels probably are not 100% accurate because I could not find a similarly detailed description as the Pac-Man dossier. Any hints? 
+A Pac-Man and Ms. Pac-Man game implementation in Java with levels, timing, ghost "AI" etc. following the details given in the (highly appreciated) [Pac-Man Dossier](https://pacman.holenet.info) by Jamey Pittman. The Ms. Pac-Man levels probably are not 100% accurate because I could not find a similarly detailed description as the Pac-Man dossier. Any hints? 
 
+**Source code has been moved to repository [pacman-javafx](https://github.com/armin-reichert/pacman-javafx)**
 
-
-The code in this project (The sources have moved to repository [pacman-javafx](https://github.com/armin-reichert/pacman-javafx/tree/main/pacman-core)) is more "to the point" than the one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
+The code in this project is more "to the point" than the one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
 
 The implementation follows the Model-View-Controller design pattern:
 - The game controller is a [finite-state machine](https://github.com/armin-reichert/pacman-javafx/tree/main/pacman-core/src/main/java/de/amr/games/pacman/lib/Fsm.java) with states
